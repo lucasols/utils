@@ -31,4 +31,4 @@ for (const exportedUtil of exportedUtils) {
 
 packageJson.exports = newExportsField;
 
-writeFileSync('./package.json', JSON.stringify(packageJson, null, 2));
+writeFileSync('./package.json', `${JSON.stringify(packageJson, null, 2)}\n`);
