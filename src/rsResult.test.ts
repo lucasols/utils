@@ -107,7 +107,7 @@ test('normalized error toString and toJSON', () => {
         message: 'Not found',
       }),
     ),
-  ).toMatchInlineSnapshot(`"notFound (code:404): Not found"`);
+  ).toMatchInlineSnapshot(`"404#notFound: Not found"`);
 });
 
 test('normalized error with metadata', () => {
