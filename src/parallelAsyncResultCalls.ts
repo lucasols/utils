@@ -22,12 +22,6 @@ type Succeeded<R, M> = {
   metadata: M;
 };
 
-/**
- * Executes multiple asynchronous calls in parallel and collects the results in a easier to use format.
- *
- * @template R - The type of the result value.
- * @template M - The type of the call metadata.
- */
 class ParallelAsyncResultCalls<
   M extends ValidErrorMetadata | undefined = undefined,
   R = unknown,
@@ -137,6 +131,12 @@ class ParallelAsyncResultCalls<
   }
 }
 
+/**
+ * Executes multiple asynchronous calls in parallel and collects the results in a easier to use format.
+ *
+ * @template R - The type of the result value.
+ * @template M - The type of the call metadata.
+ */
 export function parallelAsyncResultCalls<
   M extends ValidErrorMetadata | undefined = undefined,
   R = unknown,
