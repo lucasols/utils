@@ -10,7 +10,7 @@
     "tsc": "tsc -p tsconfig.prod.json",
     "eslint": "CI=true eslint --color --ext .jsx,.js,.ts,.tsx src/ tests/",
     "build": "pnpm test:run && pnpm lint && pnpm build:no-test",
-    "build:no-test": "tsup --minify --dts",
+    "build:no-test": "tsup",
     "build-test": "tsup --config tsup.test.config.ts",
     "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build "
   },
@@ -20,13 +20,10 @@
   "repository": "github:lucasols/utils",
   "author": "Lucas Santos",
   "type": "module",
-  "main": "./dist/main.cjs",
-  "module": "./dist/main.js",
-  "types": "./dist/main.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/main.js",
-      "require": "./dist/main.cjs"
+    "./*": {
+      "import": "./dist/*.js",
+      "types": "./dist/*.d.ts"
     }
   },
   "sideEffects": false,
