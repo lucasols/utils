@@ -40,6 +40,7 @@ test('runAllSettled with success and metadata', async () => {
 
   expect(result).toMatchInlineSnapshot(`
     {
+      "allFailed": false,
       "failed": [],
       "succeeded": [
         {
@@ -81,6 +82,7 @@ test('runAllSettled with some failures', async () => {
 
   expect(result).toMatchInlineSnapshot(`
     {
+      "allFailed": false,
       "failed": [
         {
           "error": [NormalizedError: error 3],
