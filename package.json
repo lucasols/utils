@@ -9,11 +9,11 @@
     "lint": "pnpm tsc && pnpm eslint",
     "tsc": "tsc -p tsconfig.prod.json",
     "eslint": "CI=true eslint --color",
-    "build": "pnpm test:run && pnpm lint && pnpm build:no-test",
+    "build": "pnpm test:run && pnpm lint && pnpm build:no-test && pnpm build:update-exports",
     "build:no-test": "tsup",
     "build:update-exports": "tsm scripts/updatePackageExports.ts",
     "build-test": "tsup --config tsup.test.config.ts",
-    "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build "
+    "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build"
   },
   "files": [
     "dist"
@@ -22,13 +22,45 @@
   "author": "Lucas Santos",
   "type": "module",
   "exports": {
-    "./*": {
-      "import": "./dist/*.js",
-      "types": "./dist/*.d.ts"
+    "./arrayUtils": {
+      "import": "./dist/arrayUtils.js",
+      "types": "./dist/arrayUtils.d.ts"
     },
     "./assertions": {
       "import": "./dist/assertions.js",
       "types": "./dist/assertions.d.ts"
+    },
+    "./dedent": {
+      "import": "./dist/dedent.js",
+      "types": "./dist/dedent.d.ts"
+    },
+    "./enhancedMap": {
+      "import": "./dist/enhancedMap.js",
+      "types": "./dist/enhancedMap.d.ts"
+    },
+    "./internalUtils": {
+      "import": "./dist/internalUtils.js",
+      "types": "./dist/internalUtils.d.ts"
+    },
+    "./objUtils": {
+      "import": "./dist/objUtils.js",
+      "types": "./dist/objUtils.d.ts"
+    },
+    "./parallelAsyncResultCalls": {
+      "import": "./dist/parallelAsyncResultCalls.js",
+      "types": "./dist/parallelAsyncResultCalls.d.ts"
+    },
+    "./rsResult": {
+      "import": "./dist/rsResult.js",
+      "types": "./dist/rsResult.d.ts"
+    },
+    "./sleep": {
+      "import": "./dist/sleep.js",
+      "types": "./dist/sleep.d.ts"
+    },
+    "./stringUtils": {
+      "import": "./dist/stringUtils.js",
+      "types": "./dist/stringUtils.d.ts"
     }
   },
   "sideEffects": false,
