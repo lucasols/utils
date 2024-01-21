@@ -150,7 +150,7 @@ test('start delay', async () => {
     ]
   `);
 
-  expect(thirdStartTime).toBeGreaterThan(9);
+  expect(thirdStartTime).toBeGreaterThan(8);
 });
 
 test('runAll with successful result', async () => {

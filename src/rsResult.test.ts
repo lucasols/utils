@@ -94,9 +94,20 @@ test('normalized error toString and toJSON', () => {
       "metadata": {
         "hello": "world"
       },
+      "code": 0,
       "cause": "Error: Cannot divide by zero"
     }"
   `);
+
+  expect(
+    String(
+      new NormalizedError({
+        code: 404,
+        id: 'notFound',
+        message: 'Not found',
+      }),
+    ),
+  ).toMatchInlineSnapshot(`"notFound (code:404): Not found"`);
 });
 
 test('normalized error with metadata', () => {

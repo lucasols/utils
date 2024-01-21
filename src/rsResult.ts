@@ -171,23 +171,27 @@ export class NormalizedError<T = string> extends Error {
   id: T;
   metadata?: ValidErrorMetadata;
   cause?: Error;
+  code: number;
 
   constructor({
     id,
     message,
     metadata,
     cause,
+    code = 0,
   }: {
     id: T;
     message: string;
     metadata?: ValidErrorMetadata;
     cause?: Error;
+    code?: number;
   }) {
     super(message);
     this.id = id;
     this.name = 'NormalizedError';
     this.metadata = metadata;
     this.cause = cause;
+    this.code = code;
 
     setTimeout(() => {
       if (normalizedErrorSideEffects) {
@@ -198,7 +202,9 @@ export class NormalizedError<T = string> extends Error {
 
   toString() {
     return joinStrings(
-      `${this.id}: ${this.message}`,
+      !!this.code && `${this.code}#`,
+      `${this.id}`,
+      `: ${this.message}`,
       !!this.cause && `\n  Caused by: ${this.cause}`,
       !!this.metadata && `\n  Metadata: ${JSON.stringify(this.metadata)}`,
     );
@@ -209,6 +215,7 @@ export class NormalizedError<T = string> extends Error {
       id: this.id,
       message: this.message,
       metadata: this.metadata,
+      code: this.code,
       cause:
         this.cause ?
           'toJSON' in this.cause ?
