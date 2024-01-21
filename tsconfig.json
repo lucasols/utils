@@ -8,16 +8,12 @@
     "skipLibCheck": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "strictNullChecks": true,
     "noImplicitReturns": true,
-    "noImplicitAny": true,
-    "alwaysStrict": true,
     "resolveJsonModule": true,
     "allowJs": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true,
     "stripInternal": true,
-    "strictPropertyInitialization": true
-  }
+  },
 }
