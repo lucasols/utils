@@ -9,49 +9,50 @@ import {
 } from './rsResult';
 import { sleep } from './sleep';
 
+type RunProps = {
+  delayStart?: (index: number) => number;
+};
+
+type Failed<M> = {
+  metadata: M;
+  error: NormalizedError;
+};
+type Succeeded<R, M> = {
+  value: R;
+  metadata: M;
+};
+
 /**
  * Executes multiple asynchronous calls in parallel and collects the results in a easier to use format.
  *
  * @template R - The type of the result value.
  * @template M - The type of the call metadata.
  */
-export function parallelAsyncResultCalls<
+class ParallelAsyncResultCalls<
   M extends ValidErrorMetadata | undefined = undefined,
   R = unknown,
->() {
-  const pendingCalls: {
+> {
+  pendingCalls: {
     metadata: M;
     fn: () => Promise<Result<R>>;
   }[] = [];
 
-  function add(
+  constructor() {}
+
+  add(
     call: M extends undefined ? () => Promise<Result<R>>
     : { metadata: M; fn: () => Promise<Result<R>> },
   ) {
-    pendingCalls.push(
+    this.pendingCalls.push(
       isObject(call) ? call : { metadata: undefined as any, fn: call },
     );
 
-    return methods;
+    return this;
   }
 
-  type Failed = {
-    metadata: M;
-    error: NormalizedError;
-  };
-  type Succeeded = {
-    value: R;
-    metadata: M;
-  };
-
-  type RunProps = {
-    delayStart?: (index: number) => number;
-  };
-
-  /** Runs all the calls in parallel and returns the results. */
-  async function runAllSettled({ delayStart }: RunProps = {}) {
+  async runAllSettled({ delayStart }: RunProps = {}) {
     const asyncResults = await Promise.allSettled(
-      pendingCalls.map(async (call, i) => {
+      this.pendingCalls.map(async (call, i) => {
         try {
           if (delayStart) {
             await sleep(delayStart(i));
@@ -69,8 +70,8 @@ export function parallelAsyncResultCalls<
       }),
     );
 
-    const failed: Failed[] = [];
-    const succeeded: Succeeded[] = [];
+    const failed: Failed<M>[] = [];
+    const succeeded: Succeeded<R, M>[] = [];
 
     for (const asyncResult of asyncResults) {
       invariant(asyncResult.status === 'fulfilled');
@@ -93,15 +94,14 @@ export function parallelAsyncResultCalls<
     return { failed, succeeded };
   }
 
-  /** Runs all the calls in parallel and rejects if any of them fails. */
-  async function runAll({
+  async runAll({
     delayStart,
   }: { delayStart?: (index: number) => number } = {}): Promise<
-    Result<Succeeded[], NormalizedErrorWithMetadata<M>>
+    Result<Succeeded<R, M>[], NormalizedErrorWithMetadata<M>>
   > {
     try {
       const asyncResults = await Promise.all(
-        pendingCalls.map(async (call, i) => {
+        this.pendingCalls.map(async (call, i) => {
           try {
             if (delayStart) {
               await sleep(delayStart(i));
@@ -135,8 +135,11 @@ export function parallelAsyncResultCalls<
       return Result.err(exception as NormalizedErrorWithMetadata<M>);
     }
   }
+}
 
-  const methods = { add, runAllSettled, runAll };
-
-  return methods;
+export function parallelAsyncResultCalls<
+  M extends ValidErrorMetadata | undefined = undefined,
+  R = unknown,
+>() {
+  return new ParallelAsyncResultCalls<M, R>();
 }
