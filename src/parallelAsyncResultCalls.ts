@@ -85,7 +85,11 @@ class ParallelAsyncResultCalls<
       }
     }
 
-    return { failed, succeeded };
+    return {
+      failed,
+      succeeded,
+      allFailed: failed.length === this.pendingCalls.length,
+    };
   }
 
   async runAll({
