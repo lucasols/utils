@@ -113,10 +113,10 @@ export function parallelAsyncResultCalls<
               throw result.error;
             }
 
-            return Result.ok({
+            return {
               value: result.value,
               metadata: call.metadata,
-            });
+            };
           } catch (exception) {
             const error = normalizeError(exception);
 
@@ -130,12 +130,7 @@ export function parallelAsyncResultCalls<
         }),
       );
 
-      return Result.ok(
-        asyncResults.map((result) => ({
-          value: result.unwrap(),
-          metadata: result.unwrap(),
-        })),
-      );
+      return Result.ok(asyncResults);
     } catch (exception) {
       return Result.err(exception as NormalizedErrorWithMetadata<M>);
     }

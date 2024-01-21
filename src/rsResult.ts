@@ -155,6 +155,16 @@ export type ValidErrorMetadata =
   | boolean
   | undefined;
 
+let normalizedErrorSideEffects:
+  | ((normalizedError: NormalizedError) => void)
+  | undefined = undefined;
+
+export function setNormalizedErrorSideEffects(
+  callback: (normalizedError: NormalizedError) => void,
+) {
+  normalizedErrorSideEffects = callback;
+}
+
 export class NormalizedError<T = string> extends Error {
   id: T;
   metadata?: ValidErrorMetadata;
@@ -176,6 +186,12 @@ export class NormalizedError<T = string> extends Error {
     this.name = 'NormalizedError';
     this.metadata = metadata;
     this.cause = cause;
+
+    setTimeout(() => {
+      if (normalizedErrorSideEffects) {
+        normalizedErrorSideEffects(this as NormalizedError);
+      }
+    }, 1);
   }
 
   toString() {
