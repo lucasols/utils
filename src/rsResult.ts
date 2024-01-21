@@ -89,16 +89,19 @@ function normalizedErr(message: string): ErrResult<NormalizedError>;
 function normalizedErr<T extends string>(
   id: T,
   message: string,
+  code?: number,
 ): ErrResult<NormalizedError<T>>;
 function normalizedErr(
   idOrMessage: string,
   message?: string,
+  code?: number,
 ): ErrResult<NormalizedError> {
   if (message) {
     return err(
       new NormalizedError({
         id: idOrMessage,
         message,
+        code,
       }),
     );
   }
@@ -107,6 +110,7 @@ function normalizedErr(
     new NormalizedError({
       id: 'Error',
       message: idOrMessage,
+      code,
     }),
   );
 }
