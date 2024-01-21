@@ -1,0 +1,51 @@
+{
+  "name": "@lucasols/utils",
+  "description": "Typescript utils",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest --ui",
+    "test:run": "vitest run",
+    "lint": "pnpm tsc && pnpm eslint",
+    "tsc": "tsc -p tsconfig.prod.json",
+    "eslint": "CI=true eslint --color --ext .jsx,.js,.ts,.tsx src/ tests/",
+    "build": "pnpm test:run && pnpm lint && pnpm build:no-test",
+    "build:no-test": "tsup --minify --dts",
+    "build-test": "tsup --config tsup.test.config.ts",
+    "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build "
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": "github:lucasols/utils",
+  "author": "Lucas Santos",
+  "type": "module",
+  "main": "./dist/main.cjs",
+  "module": "./dist/main.js",
+  "types": "./dist/main.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/main.js",
+      "require": "./dist/main.cjs"
+    }
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@lucasols/eslint-plugin-extended-lint": "^1.5.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-vitest": "^0.3.20",
+    "prettier": "3.2.4",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "tsm": "^2.3.0",
+    "typescript": "^5.3.3",
+    "tsup": "^8.0.1",
+    "@vitest/ui": "^1.2.1",
+    "vite": "^5.0.12",
+    "vitest": "^1.2.1"
+  }
+}
