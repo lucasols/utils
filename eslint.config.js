@@ -1,16 +1,18 @@
 // @ts-check
 // @ts-ignore
-import tsParser from '@typescript-eslint/parser'
-import js from '@eslint/js'
-import ts from '@typescript-eslint/eslint-plugin'
-import { rules } from '@lucasols/eslint-plugin-extended-lint'
+import tsParser from '@typescript-eslint/parser';
+import js from '@eslint/js';
+import ts from '@typescript-eslint/eslint-plugin';
+// @ts-ignore
+import { rules } from '@lucasols/eslint-plugin-extended-lint';
 
-const isCI = process.env.CI === 'true'
+const isCI = process.env.CI === 'true';
 
-const OFF = 0
-const WARN = 1
-const ERROR = 2
-const ERROR_IN_CI = isCI ? ERROR : WARN
+const OFF = 0;
+const WARN = 1;
+const ERROR = 2;
+const ERROR_IN_CI = isCI ? ERROR : WARN;
+const ERROR_IN_CI_ONLY = isCI ? ERROR : OFF;
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 const config = [
@@ -118,6 +120,6 @@ const config = [
       '@lucasols/extended-lint/no-unused-type-props-in-args': ERROR_IN_CI,
     },
   },
-]
+];
 
-export default config
+export default config;
