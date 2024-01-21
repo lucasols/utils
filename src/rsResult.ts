@@ -52,7 +52,9 @@ function okUnwrapOr<T>(this: Ok<T>) {
 
 type OkResult<T, M = any> = Ok<T> & ResultMethods<M>;
 
-function ok<T>(value: T): OkResult<T> {
+function ok(): OkResult<void>;
+function ok<T>(value: T): OkResult<T>;
+function ok(value: any = undefined): OkResult<any> {
   return {
     ok: true,
     value,

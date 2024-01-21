@@ -133,3 +133,19 @@ test('normalized error with metadata', () => {
       Metadata: "appended metadata""
   `);
 });
+
+test('Result.ok() should return a void result', () => {
+  function voidFn(): Result<void> {
+    return Result.ok();
+  }
+
+  const result = voidFn();
+
+  invariant(result.ok);
+
+  expect(result.value).toEqual(undefined);
+
+  // void should be assignable to void
+  const result2: void = result.value;
+  const result3: void = result.unwrap();
+});
