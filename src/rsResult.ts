@@ -256,6 +256,7 @@ export class NormalizedErrorWithMetadata<
         cause: props.error.cause,
       });
       this.metadata = props.metadata;
+      this.stack = props.error.stack;
     } else {
       super(props);
       this.metadata = props.metadata;

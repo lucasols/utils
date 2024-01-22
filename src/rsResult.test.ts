@@ -126,7 +126,9 @@ test('normalized error with metadata', () => {
 
   // NormalizedErrorWithMetadata should be assignable to NormalizedError type
   const normalizedErr: NormalizedError = err;
+});
 
+test('Appending metadata to a normalized error', () => {
   const baseErr = new NormalizedError({
     id: 'base error',
     message: 'Base error',
@@ -143,6 +145,8 @@ test('normalized error with metadata', () => {
       Caused by: Error: Cannot divide by zero
       Metadata: "appended metadata""
   `);
+
+  expect(baseErr.stack).toEqual(errWithBaseErr.stack);
 });
 
 test('Result.ok() should return a void result', () => {
