@@ -1,9 +1,17 @@
-import { expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { parallelAsyncResultCalls } from './parallelAsyncResultCalls';
-import { asyncResultify } from './rsResult';
+import {
+  NormalizedError,
+  NormalizedErrorWithMetadata,
+  Result,
+  asyncResultify,
+} from './rsResult';
 import { sleep } from './sleep';
+import { Equal, expectType } from './internalUtils/typingTestUtils';
+import { omit } from './objUtils';
+import { invariant } from './assertions';
 
-function asyncResultFn<T extends string | Error | number>(
+function asyncResultFn<T extends string | Error | number | boolean>(
   value: T,
   duration: number = 10,
 ) {
@@ -38,7 +46,7 @@ test('runAllSettled with success and metadata', async () => {
     })
     .runAllSettled();
 
-  expect(result).toMatchInlineSnapshot(`
+  expect(omit(result, ['results'])).toMatchInlineSnapshot(`
     {
       "allFailed": false,
       "failed": [],
@@ -80,7 +88,7 @@ test('runAllSettled with some failures', async () => {
     })
     .runAllSettled();
 
-  expect(result).toMatchInlineSnapshot(`
+  expect(omit(result, ['results'])).toMatchInlineSnapshot(`
     {
       "allFailed": false,
       "failed": [
@@ -235,4 +243,197 @@ test('runAll without metadata', async () => {
       },
     ]
   `);
+});
+
+describe('addTuple', () => {
+  test('runAll', async () => {
+    const result = await parallelAsyncResultCalls()
+      .addTuple(
+        () => asyncResultFn('1' as const, 15),
+        () => asyncResultFn(2 as const, 10),
+        () => asyncResultFn(false as const, 5),
+      )
+      .runAll();
+
+    type Succeeded<R, M> = {
+      value: R;
+      metadata: M;
+    };
+
+    invariant(result.ok, 'result should be ok');
+
+    expectType<
+      Equal<
+        typeof result.value,
+        [
+          Succeeded<'1', undefined>,
+          Succeeded<2, undefined>,
+          Succeeded<false, undefined>,
+        ]
+      >
+    >();
+
+    expect(result.value).toMatchInlineSnapshot(`
+      [
+        {
+          "metadata": undefined,
+          "value": "1",
+        },
+        {
+          "metadata": undefined,
+          "value": 2,
+        },
+        {
+          "metadata": undefined,
+          "value": false,
+        },
+      ]
+    `);
+  });
+
+  test('runAllSettled', async () => {
+    const result = await parallelAsyncResultCalls()
+      .addTuple(
+        () => asyncResultFn('1' as const, 15),
+        () => asyncResultFn(2 as const, 10),
+        () => asyncResultFn(false as const, 5),
+      )
+      .runAllSettled();
+
+    type Succeeded<R, M> = {
+      value: R;
+      metadata: M;
+    };
+
+    type Failed<M> = {
+      metadata: M;
+      error: NormalizedError;
+    };
+
+    expectType<
+      Equal<
+        typeof result,
+        {
+          allFailed: boolean;
+          results: [
+            Succeeded<'1', undefined> | Failed<undefined>,
+            Succeeded<2, undefined> | Failed<undefined>,
+            Succeeded<false, undefined> | Failed<undefined>,
+          ];
+        }
+      >
+    >();
+
+    expect(result.results).toMatchInlineSnapshot(`
+      [
+        {
+          "metadata": undefined,
+          "value": "1",
+        },
+        {
+          "metadata": undefined,
+          "value": 2,
+        },
+        {
+          "metadata": undefined,
+          "value": false,
+        },
+      ]
+    `);
+  });
+
+  test('runAll with metadata', async () => {
+    const result = await parallelAsyncResultCalls<number>()
+      .addTuple(
+        { metadata: 1 as const, fn: () => asyncResultFn('1' as const, 15) },
+        {
+          metadata: 2 as const,
+          fn: () => asyncResultFn('error: fail' as const, 10),
+        },
+        { metadata: 3 as const, fn: () => asyncResultFn(false as const, 5) },
+      )
+      .runAll();
+
+    type Succeeded<R, M> = {
+      value: R;
+      metadata: M;
+    };
+
+    expectType<
+      Equal<
+        typeof result,
+        Result<
+          [Succeeded<'1', 1>, Succeeded<'error: fail', 2>, Succeeded<false, 3>],
+          | NormalizedErrorWithMetadata<1>
+          | NormalizedErrorWithMetadata<2>
+          | NormalizedErrorWithMetadata<3>
+        >
+      >
+    >();
+
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "error": [NormalizedError: fail],
+        "errorResult": [Function],
+        "ok": false,
+        "unwrap": [Function],
+        "unwrapOr": [Function],
+        "unwrapOrNull": [Function],
+      }
+    `);
+  });
+
+  test('runAllSettled with metadata', async () => {
+    const result = await parallelAsyncResultCalls<number>()
+      .addTuple(
+        { metadata: 1 as const, fn: () => asyncResultFn('1' as const, 15) },
+        {
+          metadata: 2 as const,
+          fn: () => asyncResultFn('error: fail' as const, 10),
+        },
+        { metadata: 3 as const, fn: () => asyncResultFn(false as const, 5) },
+      )
+      .runAllSettled();
+
+    type Succeeded<R, M> = {
+      value: R;
+      metadata: M;
+    };
+
+    type Failed<M> = {
+      metadata: M;
+      error: NormalizedError;
+    };
+
+    expectType<
+      Equal<
+        typeof result,
+        {
+          allFailed: boolean;
+          results: [
+            Succeeded<'1', 1> | Failed<1>,
+            Succeeded<'error: fail', 2> | Failed<2>,
+            Succeeded<false, 3> | Failed<3>,
+          ];
+        }
+      >
+    >();
+
+    expect(result.results).toMatchInlineSnapshot(`
+      [
+        {
+          "metadata": 1,
+          "value": "1",
+        },
+        {
+          "error": [NormalizedError: fail],
+          "metadata": 2,
+        },
+        {
+          "metadata": 3,
+          "value": false,
+        },
+      ]
+    `);
+  });
 });

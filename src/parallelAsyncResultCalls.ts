@@ -8,6 +8,25 @@ import {
 } from './rsResult';
 import { sleep } from './sleep';
 
+type TupleRunAllSuccess<T> =
+  T extends () => Promise<Result<infer V>> ? Succeeded<V, undefined>
+  : T extends { metadata: infer M; fn: () => Promise<Result<infer V>> } ?
+    Succeeded<V, M>
+  : never;
+
+type TupleRunAllFailed<T> =
+  T extends () => Promise<Result<any>> ? NormalizedErrorWithMetadata<undefined>
+  : T extends { metadata: infer M extends ValidErrorMetadata } ?
+    NormalizedErrorWithMetadata<M>
+  : never;
+
+type TupleRunAllSettled<T> =
+  T extends () => Promise<Result<infer V>> ?
+    Succeeded<V, undefined> | Failed<undefined>
+  : T extends { metadata: infer M; fn: () => Promise<Result<infer V>> } ?
+    Succeeded<V, M> | Failed<M>
+  : never;
+
 type RunProps = {
   delayStart?: (index: number) => number;
 };
@@ -25,10 +44,11 @@ class ParallelAsyncResultCalls<
   M extends ValidErrorMetadata | undefined = undefined,
   R = unknown,
 > {
-  pendingCalls: {
+  private pendingCalls: {
     metadata: M;
     fn: () => Promise<Result<R>>;
   }[] = [];
+  alreadyRun = false;
 
   constructor() {}
 
@@ -43,7 +63,43 @@ class ParallelAsyncResultCalls<
     return this;
   }
 
+  /** adds calls return tuples with infered results */
+  addTuple<
+    T extends (M extends undefined ? () => Promise<Result<R>>
+    : { metadata: M; fn: () => Promise<Result<R>> })[],
+  >(
+    ...calls: T
+  ): {
+    runAllSettled: (props?: RunProps) => Promise<{
+      results: {
+        [I in keyof T]: TupleRunAllSettled<T[I]>;
+      };
+      allFailed: boolean;
+    }>;
+    runAll: (props?: RunProps) => Promise<
+      Result<
+        {
+          [I in keyof T]: TupleRunAllSuccess<T[I]>;
+        },
+        TupleRunAllFailed<T[number]>
+      >
+    >;
+  } {
+    for (const call of calls) {
+      this.pendingCalls.push(
+        isObject(call) ? call : { metadata: undefined as any, fn: call },
+      );
+    }
+
+    return {
+      runAll: this.runAll.bind(this) as any,
+      runAllSettled: this.runAllSettled.bind(this) as any,
+    };
+  }
+
   async runAllSettled({ delayStart }: RunProps = {}) {
+    invariant(!this.alreadyRun, 'Already run');
+
     const asyncResults = await Promise.allSettled(
       this.pendingCalls.map(async (call, i) => {
         try {
@@ -65,6 +121,7 @@ class ParallelAsyncResultCalls<
 
     const failed: Failed<M>[] = [];
     const succeeded: Succeeded<R, M>[] = [];
+    const results: (Failed<M> | Succeeded<R, M>)[] = [];
 
     for (const asyncResult of asyncResults) {
       invariant(asyncResult.status === 'fulfilled');
@@ -72,22 +129,26 @@ class ParallelAsyncResultCalls<
       const { result, callMetadata } = asyncResult.value;
 
       if (result.ok) {
-        succeeded.push({
-          value: result.value,
-          metadata: callMetadata,
-        });
+        const success = { value: result.value, metadata: callMetadata };
+        results.push(success);
+        succeeded.push(success);
       } else {
-        failed.push({
-          metadata: callMetadata,
-          error: result.error,
-        });
+        const fail = { metadata: callMetadata, error: result.error };
+        results.push(fail);
+        failed.push(fail);
       }
     }
+
+    const allFailed = failed.length === this.pendingCalls.length;
+
+    this.alreadyRun = true;
+    this.pendingCalls = [];
 
     return {
       failed,
       succeeded,
-      allFailed: failed.length === this.pendingCalls.length,
+      allFailed,
+      results,
     };
   }
 
@@ -96,6 +157,8 @@ class ParallelAsyncResultCalls<
   }: { delayStart?: (index: number) => number } = {}): Promise<
     Result<Succeeded<R, M>[], NormalizedErrorWithMetadata<M>>
   > {
+    invariant(!this.alreadyRun, 'Already run');
+
     try {
       const asyncResults = await Promise.all(
         this.pendingCalls.map(async (call, i) => {
@@ -130,6 +193,9 @@ class ParallelAsyncResultCalls<
       return Result.ok(asyncResults);
     } catch (exception) {
       return Result.err(exception as NormalizedErrorWithMetadata<M>);
+    } finally {
+      this.alreadyRun = true;
+      this.pendingCalls = [];
     }
   }
 }
