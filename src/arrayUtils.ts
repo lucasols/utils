@@ -39,15 +39,32 @@ export type FilterAndMapReturn<T> = false | T;
 
 type SortOrder = 'desc' | 'asc';
 
-/** Use `Infinity` as as wildcard to absulute max and min values */
+/**
+ * Sort an array based on a value
+ *
+ * Sort by `ascending` order by default
+ *
+ * Use `Infinity` as as wildcard to absulute max and min values
+ *
+ * @example
+ * const items = [1, 3, 2, 4];
+ *
+ * const sortedItems = sortBy(items, (item) => item);
+ * // [1, 2, 3, 4]
+ *
+ * const items2 = [{ a: 1, b: 2 }, { a: 2, b: 1 }, { a: 1, b: 1}]
+ *
+ * // return a array to sort by multiple values
+ * const sortedItems = sortBy(items, (item) => [item.a, item.b]);
+ **/
 export function sortBy<T>(
   arr: T[],
-  getPriority: (item: T) => (number | string)[] | number | string,
+  sortByValue: (item: T) => (number | string)[] | number | string,
   { order = 'asc' }: { order?: SortOrder | SortOrder[] } = {},
 ) {
   return [...arr].sort((a, b) => {
-    const _aPriority = getPriority(a);
-    const _bPriority = getPriority(b);
+    const _aPriority = sortByValue(a);
+    const _bPriority = sortByValue(b);
 
     const aPriority = Array.isArray(_aPriority) ? _aPriority : [_aPriority];
     const bPriority = Array.isArray(_bPriority) ? _bPriority : [_bPriority];
