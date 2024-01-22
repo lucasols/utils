@@ -1,5 +1,4 @@
-import { invariant } from './assertions';
-import { isObject } from './objUtils';
+import { invariant, isObject } from './assertions';
 import {
   NormalizedError,
   NormalizedErrorWithMetadata,
