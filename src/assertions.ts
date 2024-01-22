@@ -65,3 +65,11 @@ export function exhaustiveCheck<Except = never>(
 ): Error {
   return new Error('This should never happen');
 }
+
+export function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+export function isFunction(value: unknown): value is (...args: any[]) => any {
+  return typeof value === 'function';
+}
