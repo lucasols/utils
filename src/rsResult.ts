@@ -1,4 +1,4 @@
-import { isObject } from './objUtils';
+import { isObject } from './assertions';
 import { joinStrings } from './stringUtils';
 
 type Ok<T> = {
