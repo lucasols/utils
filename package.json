@@ -50,6 +50,10 @@
       "import": "./dist/parallelAsyncResultCalls.js",
       "types": "./dist/parallelAsyncResultCalls.d.ts"
     },
+    "./promiseUtils": {
+      "import": "./dist/promiseUtils.js",
+      "types": "./dist/promiseUtils.d.ts"
+    },
     "./rsResult": {
       "import": "./dist/rsResult.js",
       "types": "./dist/rsResult.d.ts"
