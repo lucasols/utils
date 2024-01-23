@@ -168,11 +168,23 @@ function normalizedErr(
   );
 }
 
+/** Unwraps a promise result */
+async function unwrap<T>(result: Promise<Result<T>>): Promise<T> {
+  const unwrapped = await result;
+
+  if (unwrapped.ok) {
+    return unwrapped.value;
+  }
+
+  throw unwrapped.error;
+}
+
 export const Result = {
   ok,
   err,
   normalizedErr,
   normalizedUnknownErr,
+  unwrap,
 };
 
 /** transfor a function in a result function */

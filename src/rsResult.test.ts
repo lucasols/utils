@@ -6,6 +6,7 @@ import {
   Result,
   resultify,
 } from './rsResult';
+import { sleep } from './sleep';
 
 function divide(a: number, b: number): Result<number> {
   if (b === 0) {
@@ -214,4 +215,20 @@ describe('normalized error result', () => {
       expect(result.error.stack).not.toEqual(wrongResult.error.stack);
     }
   });
+});
+
+test('Result.asyncUnwrap()', async () => {
+  async function divideAsync(a: number, b: number): Promise<Result<number>> {
+    await sleep(10);
+
+    if (b === 0) {
+      return Result.normalizedErr('Cannot divide by zero');
+    }
+
+    return Result.ok(a / b);
+  }
+
+  const result = await Result.unwrap(divideAsync(10, 2));
+
+  expect(result).toEqual(5);
 });
