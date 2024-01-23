@@ -91,15 +91,40 @@ function normalizedErr<T extends string>(
   message: string,
   code?: number,
 ): ErrResult<NormalizedError<T>>;
+function normalizedErr<T extends string>(err: {
+  id: T;
+  message: string;
+  code?: number;
+  metadata?: ValidErrorMetadata;
+}): ErrResult<NormalizedError<T>>;
 function normalizedErr(
-  idOrMessage: string,
+  idOrMessageOrErr:
+    | string
+    | {
+        id: string;
+        message: string;
+        code?: number;
+        metadata?: ValidErrorMetadata;
+        cause?: Error;
+      },
   message?: string,
   code?: number,
 ): ErrResult<NormalizedError> {
+  if (typeof idOrMessageOrErr === 'object') {
+    return err(
+      new NormalizedError({
+        id: idOrMessageOrErr.id,
+        message: idOrMessageOrErr.message,
+        code: idOrMessageOrErr.code,
+        cause: idOrMessageOrErr.cause,
+      }),
+    );
+  }
+
   if (message) {
     return err(
       new NormalizedError({
-        id: idOrMessage,
+        id: idOrMessageOrErr,
         message,
         code,
       }),
@@ -109,7 +134,7 @@ function normalizedErr(
   return err(
     new NormalizedError({
       id: 'Error',
-      message: idOrMessage,
+      message: idOrMessageOrErr,
       code,
     }),
   );
