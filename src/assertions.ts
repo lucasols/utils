@@ -61,7 +61,6 @@ export function invariant(
 export function exhaustiveCheck<Except = never>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we use this function only for type checking
   narrowedType: NoInfer<Except>,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function -- we use this function only for type checking only
 ): Error {
   return new Error('This should never happen');
 }

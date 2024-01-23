@@ -1,6 +1,4 @@
 import { defineConfig } from 'tsup';
-import pkg from './package.json';
-import { writeFileSync } from 'fs';
 
 export default defineConfig({
   entry: ['src/*.ts', '!src/*.test.ts'],

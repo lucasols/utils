@@ -19,6 +19,8 @@ const ERROR_IN_CI_ONLY = isCI ? ERROR : OFF;
 const config = [
   {
     files: ['**/*.ts', '**/*.tsx'],
+    ignores: ['dist/**', 'node_modules/**'],
+
     languageOptions: {
       parser: tsParser,
       parserOptions: { project: './tsconfig.json' },
@@ -98,6 +100,7 @@ const config = [
         ERROR_IN_CI,
         { ignoreOnInitialization: true, allow: ['expect'] },
       ],
+      '@typescript-eslint/no-unsafe-call': ERROR_IN_CI,
 
       '@typescript-eslint/no-non-null-assertion': OFF,
       '@typescript-eslint/no-empty-function': OFF,
@@ -107,8 +110,8 @@ const config = [
       '@typescript-eslint/no-misused-promises': OFF,
       '@typescript-eslint/restrict-template-expressions': OFF,
       '@typescript-eslint/unbound-method': OFF,
-      '@typescript-eslint/no-unsafe-call': ERROR_IN_CI,
       '@typescript-eslint/no-unsafe-return': OFF,
+      '@typescript-eslint/no-unsafe-member-access': OFF,
 
       /* vitest */
       'vitest/expect-expect': ERROR_IN_CI,

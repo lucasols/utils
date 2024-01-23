@@ -14,7 +14,6 @@ export function pick<T, K extends keyof T>(
   }
 
   for (const key of keys) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     result[rename?.[key] || key] = obj[key];
   }
   return result;
@@ -44,7 +43,7 @@ export function omit<T extends Record<string, unknown>, K extends keyof T>(
   const result: any = {};
 
   for (const key of Object.keys(obj)) {
-    if (!keys.includes(key as any)) {
+    if (!keys.includes(key as K)) {
       result[key] = obj[key];
     }
   }

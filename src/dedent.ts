@@ -41,6 +41,7 @@ export function dedent(
     }
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (mindent !== null) {
     const m = mindent; // appease Flow
     result = lines.map((l) => (l.startsWith(' ') ? l.slice(m) : l)).join('\n');
