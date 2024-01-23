@@ -14,6 +14,14 @@
       "command": "pnpm pre-publish && pnpm version ${input:version} && pnpm publish",
       "problemMatcher": []
     },
+    {
+      "label": "run lint",
+      "type": "npm",
+      "script": "lint",
+      "presentation": {
+        "clear": true
+      }
+    }
   ],
   "inputs": [
     {
