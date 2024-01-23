@@ -375,6 +375,7 @@ describe('addTuple', () => {
       {
         "error": [NormalizedError: fail],
         "errorResult": [Function],
+        "normalizedErrorResult": [Function],
         "ok": false,
         "unwrap": [Function],
         "unwrapOr": [Function],

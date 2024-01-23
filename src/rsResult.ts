@@ -6,10 +6,22 @@ type Ok<T> = {
   value: T;
 };
 
+type NormalizedErrorResultProps = {
+  id: string;
+  message: string;
+  code?: number;
+  metadata?: ValidErrorMetadata;
+};
+
 type Err<E extends Error> = {
   ok: false;
   error: E;
   errorResult: () => Result<any, E>;
+  normalizedErrorResult: (
+    normalizedErr: E extends NormalizedError ?
+      { withMetadata: ValidErrorMetadata } | NormalizedErrorResultProps
+    : NormalizedErrorResultProps,
+  ) => Result<any, NormalizedError>;
 };
 
 type ResultMethods<T> = {
@@ -75,6 +87,21 @@ function err<E extends Error>(error: E): ErrResult<E> {
     errorResult() {
       return err(error);
     },
+    normalizedErrorResult(normalizedErr) {
+      return err(
+        'withMetadata' in normalizedErr && error instanceof NormalizedError ?
+          new NormalizedErrorWithMetadata({
+            error,
+            metadata: normalizedErr.withMetadata as ValidErrorMetadata,
+          })
+        : new NormalizedError({
+            id: normalizedErr.id,
+            message: normalizedErr.message,
+            code: normalizedErr.code,
+            cause: error,
+          }),
+      );
+    },
     unwrap() {
       throw error;
     },
@@ -92,7 +119,7 @@ function normalizedErr<T extends string>(
   code?: number,
   metadata?: ValidErrorMetadata,
 ): ErrResult<NormalizedError<T>>;
-function normalizedErr<T extends string>(err: {
+function normalizedErr<T extends string>(errorProps: {
   id: T;
   message: string;
   code?: number;
@@ -233,7 +260,7 @@ export class NormalizedError<T = string> extends Error {
   toString() {
     return joinStrings(
       !!this.code && `${this.code}#`,
-      `${this.id}`,
+      String(this.id),
       `: ${this.message}`,
       !!this.cause && `\n  Caused by: ${this.cause}`,
       !!this.metadata && `\n  Metadata: ${JSON.stringify(this.metadata)}`,

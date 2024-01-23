@@ -5,6 +5,7 @@ import js from '@eslint/js';
 import ts from '@typescript-eslint/eslint-plugin';
 // @ts-ignore
 import { rules } from '@lucasols/eslint-plugin-extended-lint';
+import vitest from 'eslint-plugin-vitest';
 
 const isCI = process.env.CI === 'true';
 
@@ -28,6 +29,7 @@ const config = [
     plugins: {
       '@typescript-eslint': ts,
       '@lucasols/extended-lint': { rules },
+      vitest: vitest,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -41,6 +43,7 @@ const config = [
       'no-param-reassign': ERROR_IN_CI,
       'prefer-template': ERROR_IN_CI,
       'prefer-const': [ERROR_IN_CI, { destructuring: 'all' }],
+      'no-redeclare': OFF,
 
       'no-prototype-builtins': OFF,
       'no-inner-declarations': OFF,
@@ -82,23 +85,18 @@ const config = [
           format: ['PascalCase'],
         },
       ],
-      '@typescript-eslint/no-throw-literal': ERROR_IN_CI,
       '@typescript-eslint/no-unused-expressions': ERROR_IN_CI,
       '@typescript-eslint/no-unused-vars': [
         ERROR_IN_CI,
-        { argsIgnorePattern: '^_', ignoreRestSiblings: true },
+        {
+          argsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+          varsIgnorePattern: '^_',
+        },
       ],
       '@typescript-eslint/no-shadow': [
         ERROR_IN_CI,
         { ignoreOnInitialization: true, allow: ['expect'] },
-      ],
-      '@typescript-eslint/ban-types': [
-        ERROR_IN_CI,
-        {
-          types: {
-            Error: 'Dont use error type',
-          },
-        },
       ],
 
       '@typescript-eslint/no-non-null-assertion': OFF,

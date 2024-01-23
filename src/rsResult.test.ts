@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { invariant } from './assertions';
 import {
   NormalizedError,
@@ -125,7 +125,7 @@ test('normalized error with metadata', () => {
   `);
 
   // NormalizedErrorWithMetadata should be assignable to NormalizedError type
-  const normalizedErr: NormalizedError = err;
+  const _normalizedErr: NormalizedError = err;
 });
 
 test('Appending metadata to a normalized error', () => {
@@ -161,6 +161,57 @@ test('Result.ok() should return a void result', () => {
   expect(result.value).toEqual(undefined);
 
   // void should be assignable to void
-  const result2: void = result.value;
-  const result3: void = result.unwrap();
+  const _result2: void = result.value;
+  const _result3: void = result.unwrap();
+});
+
+describe('normalized error result', () => {
+  test('append metadata to existing normalized error', () => {
+    const wrongResult = divide(10, 0);
+
+    if (!wrongResult.ok) {
+      const result = wrongResult.normalizedErrorResult({
+        withMetadata: 'appended metadata',
+      });
+
+      invariant(!result.ok);
+
+      expect(result.error.toJSON()).toMatchInlineSnapshot(`
+        {
+          "cause": undefined,
+          "code": 0,
+          "id": "Error",
+          "message": "Cannot divide by zero",
+          "metadata": "appended metadata",
+        }
+      `);
+
+      expect(result.error.stack).toEqual(wrongResult.error.stack);
+    }
+  });
+
+  test('normalized error result with cause', () => {
+    const wrongResult = divide(10, 0);
+
+    if (!wrongResult.ok) {
+      const result = wrongResult.normalizedErrorResult({
+        id: 'Error',
+        message: 'Parent error',
+      });
+
+      invariant(!result.ok);
+
+      expect(result.error.toJSON()).toMatchInlineSnapshot(`
+        {
+          "cause": [NormalizedError: Cannot divide by zero],
+          "code": 0,
+          "id": "Error",
+          "message": "Parent error",
+          "metadata": undefined,
+        }
+      `);
+
+      expect(result.error.stack).not.toEqual(wrongResult.error.stack);
+    }
+  });
 });
