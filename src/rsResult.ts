@@ -322,7 +322,7 @@ export function normalizeError(error: unknown): NormalizedError {
 
   if (typeof error === 'string') {
     return new NormalizedError({
-      id: 'Error',
+      id: 'unknown',
       message: error,
     });
   }
@@ -337,7 +337,7 @@ export function normalizeError(error: unknown): NormalizedError {
 
   if (isObject(error)) {
     return new NormalizedError({
-      id: 'id' in error ? String(error.id) : 'Error',
+      id: 'id' in error ? String(error.id) : 'unknown',
       message:
         'message' in error ? String(error.message) : JSON.stringify(error),
       metadata: error,
@@ -346,6 +346,6 @@ export function normalizeError(error: unknown): NormalizedError {
 
   return new NormalizedError({
     message: JSON.stringify(error),
-    id: 'Error',
+    id: 'unknown',
   });
 }
