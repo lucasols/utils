@@ -90,6 +90,7 @@ function normalizedErr<T extends string>(
   id: T,
   message: string,
   code?: number,
+  metadata?: ValidErrorMetadata,
 ): ErrResult<NormalizedError<T>>;
 function normalizedErr<T extends string>(err: {
   id: T;
