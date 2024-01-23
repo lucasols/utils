@@ -161,7 +161,7 @@ function normalizedErr(
 
   return err(
     new NormalizedError({
-      id: 'Error',
+      id: 'unknown',
       message: idOrMessageOrErr,
       code,
     }),
