@@ -180,7 +180,7 @@ describe('normalized error result', () => {
         {
           "cause": undefined,
           "code": 0,
-          "id": "Error",
+          "id": "unknown",
           "message": "Cannot divide by zero",
           "metadata": "appended metadata",
         }
