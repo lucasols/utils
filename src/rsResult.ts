@@ -175,7 +175,9 @@ function normalizedErr(
 }
 
 /** Unwraps a promise result */
-async function unwrap<T>(result: Promise<Result<T, any>>): Promise<T> {
+async function unwrap<T>(
+  result: Promise<Result<T, ResultValidErrors>>,
+): Promise<T> {
   const unwrapped = await result;
 
   if (unwrapped.ok) {
