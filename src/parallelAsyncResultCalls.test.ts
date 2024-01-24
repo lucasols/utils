@@ -4,6 +4,7 @@ import { omit } from './objUtils';
 import { parallelAsyncResultCalls } from './parallelAsyncResultCalls';
 import { NormalizedError, Result, asyncResultify } from './rsResult';
 import { sleep } from './sleep';
+import { invariant } from './assertions';
 
 function asyncResultFn<T extends string | Error | number | boolean>(
   value: T,
@@ -439,9 +440,11 @@ describe('addTuple', () => {
       >
     >();
 
-    const value = await Result.unwrap(result);
+    const value = await result;
 
-    expect(value).toMatchInlineSnapshot(`
+    invariant(value.ok);
+
+    expect(value.value).toMatchInlineSnapshot(`
       [
         {
           "metadata": undefined,
