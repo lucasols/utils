@@ -3,10 +3,10 @@ import { KeysType } from './internalUtils/types';
 export const enhancedMapReject = Symbol();
 
 export class EnhancedMap<K, V> extends Map<K, V> {
-  find(predicate: (value: V, key: K) => boolean): V | undefined {
+  find(predicate: (value: V, key: K) => boolean): { key: K, value: V} | undefined {
     for (const [key, value] of this) {
       if (predicate(value, key)) {
-        return value;
+        return { key, value };
       }
     }
 
