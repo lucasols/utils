@@ -64,7 +64,7 @@ function okUnwrapOr<T>(this: Ok<T>) {
 
 type OkResult<T, M = any> = Ok<T> & ResultMethods<M>;
 
-type ResultValidErrors = Error | Record<string, unknown>;
+type ResultValidErrors = Error | Record<string, unknown> | string;
 
 function ok(): OkResult<void>;
 function ok<T>(value: T): OkResult<T>;
