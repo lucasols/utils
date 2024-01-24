@@ -13,7 +13,7 @@ type NormalizedErrorResultProps = {
   metadata?: ValidErrorMetadata;
 };
 
-type Err<E extends Error> = {
+type Err<E extends ResultValidErrors> = {
   ok: false;
   error: E;
   errorResult: () => Result<any, E>;
@@ -54,7 +54,7 @@ type ResultMethods<T> = {
  *   // result.error is an Error
  * }
  */
-export type Result<T, E extends Error = NormalizedError> =
+export type Result<T, E extends ResultValidErrors = NormalizedError> =
   | OkResult<T, T>
   | ErrResult<E, T>;
 
@@ -63,6 +63,8 @@ function okUnwrapOr<T>(this: Ok<T>) {
 }
 
 type OkResult<T, M = any> = Ok<T> & ResultMethods<M>;
+
+type ResultValidErrors = Error | Record<string, unknown>;
 
 function ok(): OkResult<void>;
 function ok<T>(value: T): OkResult<T>;
@@ -76,9 +78,10 @@ function ok(value: any = undefined): OkResult<any> {
   };
 }
 
-type ErrResult<E extends Error, T = any> = Err<E> & ResultMethods<T>;
+type ErrResult<E extends ResultValidErrors, T = any> = Err<E> &
+  ResultMethods<T>;
 
-function err<E extends Error>(error: E): ErrResult<E> {
+function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
   return {
     ok: false,
     error,
@@ -98,7 +101,7 @@ function err<E extends Error>(error: E): ErrResult<E> {
             id: normalizedErr.id,
             message: normalizedErr.message,
             code: normalizedErr.code,
-            cause: error,
+            cause: error instanceof Error ? error : undefined,
           }),
       );
     },

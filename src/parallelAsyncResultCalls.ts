@@ -15,9 +15,10 @@ type TupleRunAllSuccess<T> =
   : never;
 
 type TupleRunAllFailed<T> =
-  T extends () => Promise<Result<any>> ? NormalizedErrorWithMetadata<undefined>
+  T extends () => Promise<Result<any>> ?
+    { metadata: undefined; error: NormalizedError }
   : T extends { metadata: infer M extends ValidErrorMetadata } ?
-    NormalizedErrorWithMetadata<M>
+    { metadata: M; error: NormalizedError }
   : never;
 
 type TupleRunAllSettled<T> =
@@ -155,7 +156,13 @@ class ParallelAsyncResultCalls<
   async runAll({
     delayStart,
   }: { delayStart?: (index: number) => number } = {}): Promise<
-    Result<Succeeded<R, M>[], NormalizedErrorWithMetadata<M>>
+    Result<
+      Succeeded<R, M>[],
+      {
+        metadata: M;
+        error: NormalizedError;
+      }
+    >
   > {
     invariant(!this.alreadyRun, 'Already run');
 
@@ -178,21 +185,22 @@ class ParallelAsyncResultCalls<
               metadata: call.metadata,
             };
           } catch (exception) {
-            const error = normalizeError(exception);
-
-            throw new NormalizedErrorWithMetadata({
-              id: error.id,
-              message: error.message,
-              cause: error.cause,
+            throw {
               metadata: call.metadata,
-            });
+              error: normalizeError(exception),
+            };
           }
         }),
       );
 
       return Result.ok(asyncResults);
     } catch (exception) {
-      return Result.err(exception as NormalizedErrorWithMetadata<M>);
+      return Result.err(
+        exception as {
+          metadata: M;
+          error: NormalizedError;
+        },
+      );
     } finally {
       this.alreadyRun = true;
       this.pendingCalls = [];

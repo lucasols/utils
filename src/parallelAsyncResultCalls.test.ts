@@ -1,15 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { parallelAsyncResultCalls } from './parallelAsyncResultCalls';
-import {
-  NormalizedError,
-  NormalizedErrorWithMetadata,
-  Result,
-  asyncResultify,
-} from './rsResult';
-import { sleep } from './sleep';
 import { Equal, expectType } from './internalUtils/typingTestUtils';
 import { omit } from './objUtils';
-import { invariant } from './assertions';
+import { parallelAsyncResultCalls } from './parallelAsyncResultCalls';
+import { NormalizedError, Result, asyncResultify } from './rsResult';
+import { sleep } from './sleep';
 
 function asyncResultFn<T extends string | Error | number | boolean>(
   value: T,
@@ -216,7 +210,10 @@ test('runAll with some failures', async () => {
     .runAll();
 
   expect(!result.ok && result.error).toMatchInlineSnapshot(`
-    [NormalizedError: error 3]
+    {
+      "error": [NormalizedError: error 3],
+      "metadata": 3,
+    }
   `);
 });
 
@@ -260,20 +257,21 @@ describe('addTuple', () => {
       metadata: M;
     };
 
-    invariant(result.ok, 'result should be ok');
-
     expectType<
       Equal<
-        typeof result.value,
-        [
-          Succeeded<'1', undefined>,
-          Succeeded<2, undefined>,
-          Succeeded<false, undefined>,
-        ]
+        typeof result,
+        Result<
+          [
+            Succeeded<'1', undefined>,
+            Succeeded<2, undefined>,
+            Succeeded<false, undefined>,
+          ],
+          { metadata: undefined; error: NormalizedError }
+        >
       >
     >();
 
-    expect(result.value).toMatchInlineSnapshot(`
+    expect(result.ok && result.value).toMatchInlineSnapshot(`
       [
         {
           "metadata": undefined,
@@ -364,16 +362,19 @@ describe('addTuple', () => {
         typeof result,
         Result<
           [Succeeded<'1', 1>, Succeeded<'error: fail', 2>, Succeeded<false, 3>],
-          | NormalizedErrorWithMetadata<1>
-          | NormalizedErrorWithMetadata<2>
-          | NormalizedErrorWithMetadata<3>
+          | { metadata: 1; error: NormalizedError }
+          | { metadata: 2; error: NormalizedError }
+          | { metadata: 3; error: NormalizedError }
         >
       >
     >();
 
     expect(result).toMatchInlineSnapshot(`
       {
-        "error": [NormalizedError: fail],
+        "error": {
+          "error": [NormalizedError: fail],
+          "metadata": 2,
+        },
         "errorResult": [Function],
         "normalizedErrorResult": [Function],
         "ok": false,
