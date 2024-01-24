@@ -13,6 +13,9 @@ type NormalizedErrorResultProps = {
   metadata?: ValidErrorMetadata;
 };
 
+type IsExactlyAny<T> =
+  boolean extends (T extends never ? true : false) ? true : false;
+
 type Err<E extends ResultValidErrors> = {
   ok: false;
   error: E;
@@ -24,12 +27,17 @@ type Err<E extends ResultValidErrors> = {
   ) => Result<any, NormalizedError>;
 };
 
-type ResultMethods<T> = {
+type Unwrap<E, T> =
+  IsExactlyAny<E> extends true ? any
+  : E extends Error ? () => T
+  : unknown;
+
+type ResultMethods<T, E> = {
   /** Returns the value if the result is Ok, otherwise returns null */
   unwrapOrNull: () => T | null;
   /** Returns the value if the result is Ok, otherwise returns the provided default value */
   unwrapOr: <R extends T>(defaultValue: R) => T | R;
-  unwrap: () => T;
+  unwrap: Unwrap<E, T>;
 };
 
 /**
@@ -55,20 +63,21 @@ type ResultMethods<T> = {
  * }
  */
 export type Result<T, E extends ResultValidErrors = NormalizedError> =
-  | OkResult<T, T>
+  | OkResult<T, E, T>
   | ErrResult<E, T>;
 
 function okUnwrapOr<T>(this: Ok<T>) {
   return this.value;
 }
 
-type OkResult<T, M = any> = Ok<T> & ResultMethods<M>;
+type OkResult<T, E extends ResultValidErrors, M = any> = Ok<T> &
+  ResultMethods<M, E>;
 
 type ResultValidErrors = Error | Record<string, unknown> | string;
 
-function ok(): OkResult<void>;
-function ok<T>(value: T): OkResult<T>;
-function ok(value: any = undefined): OkResult<any> {
+function ok(): OkResult<void, any>;
+function ok<T>(value: T): OkResult<T, any>;
+function ok(value: any = undefined): OkResult<any, any> {
   return {
     ok: true,
     value,
@@ -79,7 +88,7 @@ function ok(value: any = undefined): OkResult<any> {
 }
 
 type ErrResult<E extends ResultValidErrors, T = any> = Err<E> &
-  ResultMethods<T>;
+  ResultMethods<T, E>;
 
 function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
   return {
@@ -105,9 +114,9 @@ function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
           }),
       );
     },
-    unwrap() {
+    unwrap: (() => {
       throw error;
-    },
+    }) as any,
   };
 }
 
@@ -175,9 +184,7 @@ function normalizedErr(
 }
 
 /** Unwraps a promise result */
-async function unwrap<T>(
-  result: Promise<Result<T, ResultValidErrors>>,
-): Promise<T> {
+async function unwrap<T>(result: Promise<Result<T, Error>>): Promise<T> {
   const unwrapped = await result;
 
   if (unwrapped.ok) {
@@ -196,7 +203,7 @@ export const Result = {
 };
 
 /** transfor a function in a result function */
-export function resultify<T, E extends Error = NormalizedError>(
+export function resultify<T, E extends ResultValidErrors = NormalizedError>(
   fn: () => T,
   errorNormalizer?: (err: unknown) => E,
 ): Result<T, E> {

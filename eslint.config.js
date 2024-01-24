@@ -114,7 +114,6 @@ const config = [
       '@typescript-eslint/no-unsafe-member-access': OFF,
 
       /* vitest */
-      'vitest/expect-expect': ERROR_IN_CI,
       'vitest/no-identical-title': ERROR_IN_CI,
 
       /* extended-lint */

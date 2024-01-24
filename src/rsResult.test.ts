@@ -7,6 +7,7 @@ import {
   resultify,
 } from './rsResult';
 import { sleep } from './sleep';
+import { Equal, expectType } from './internalUtils/typingTestUtils';
 
 function divide(a: number, b: number): Result<number> {
   if (b === 0) {
@@ -49,6 +50,18 @@ test('rethrowing error results', () => {
 
   expect(!wrongResult.ok && wrongResult.error).toMatchInlineSnapshot(
     '[NormalizedError: Cannot divide by zero]',
+  );
+});
+
+test('result.unwrap()', () => {
+  const noError = divide(10, 2).unwrap();
+
+  expectType<Equal<typeof noError, number>>();
+
+  expect(noError).toEqual(5);
+
+  expect(() => divide(10, 0).unwrap()).toThrowErrorMatchingInlineSnapshot(
+    `[NormalizedError: Cannot divide by zero]`,
   );
 });
 
@@ -230,7 +243,21 @@ test('Result.unwrap() async results', async () => {
 
   const result = await Result.unwrap(divideAsync(10, 2));
 
+  expectType<Equal<typeof result, number>>();
+
   expect(result).toEqual(5);
+});
+
+test('Result.unwrap() should accept only Error instances', async () => {
+  const fnWithWrongResult = async (): Promise<Result<number, string>> => {
+    return Promise.resolve(Result.err('error'));
+  };
+
+  // @ts-expect-error - only Result<any, Error> should be accepted
+  Result.unwrap(fnWithWrongResult());
+
+  // @ts-expect-error - only Result<any, Error> should be accepted
+  (await fnWithWrongResult()).unwrap();
 });
 
 test('Result.normalizedErr() error with metadata', () => {
