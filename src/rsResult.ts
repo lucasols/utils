@@ -125,12 +125,6 @@ function normalizedUnknownErr(error: unknown) {
 }
 
 function normalizedErr(message: string): ErrResult<NormalizedError>;
-function normalizedErr<T extends string>(
-  id: T,
-  message: string,
-  code?: number,
-  metadata?: ValidErrorMetadata,
-): ErrResult<NormalizedError<T>>;
 function normalizedErr<T extends string>(errorProps: {
   id: T;
   message: string;
@@ -147,9 +141,6 @@ function normalizedErr(
         metadata?: ValidErrorMetadata;
         cause?: Error;
       },
-  message?: string,
-  code?: number,
-  metadata?: ValidErrorMetadata,
 ): ErrResult<NormalizedError> {
   if (typeof idOrMessageOrErr === 'object') {
     return err(
@@ -163,22 +154,10 @@ function normalizedErr(
     );
   }
 
-  if (message !== undefined) {
-    return err(
-      new NormalizedError({
-        id: idOrMessageOrErr,
-        message,
-        code,
-        metadata,
-      }),
-    );
-  }
-
   return err(
     new NormalizedError({
       id: 'unknown',
       message: idOrMessageOrErr,
-      code,
     }),
   );
 }

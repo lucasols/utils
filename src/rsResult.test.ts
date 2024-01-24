@@ -282,7 +282,11 @@ test('Result.normalizedErr() error with metadata', () => {
   `);
 
   expect(
-    Result.normalizedErr('id', 'message', 0, 'testMetadata').error.toJSON(),
+    Result.normalizedErr({
+      id: 'id',
+      message: 'message',
+      metadata: 'testMetadata',
+    }).error.toJSON(),
   ).toMatchInlineSnapshot(`
     {
       "cause": undefined,
