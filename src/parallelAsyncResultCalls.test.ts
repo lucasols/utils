@@ -243,6 +243,16 @@ test('runAll without metadata', async () => {
 });
 
 describe('addTuple', () => {
+  type Succeeded<R, M> = {
+    value: R;
+    metadata: M;
+  };
+
+  type Failed<M> = {
+    metadata: M;
+    error: NormalizedError;
+  };
+
   test('runAll', async () => {
     const result = await parallelAsyncResultCalls()
       .addTuple(
@@ -251,11 +261,6 @@ describe('addTuple', () => {
         () => asyncResultFn(false as const, 5),
       )
       .runAll();
-
-    type Succeeded<R, M> = {
-      value: R;
-      metadata: M;
-    };
 
     expectType<
       Equal<
@@ -297,16 +302,6 @@ describe('addTuple', () => {
         () => asyncResultFn(false as const, 5),
       )
       .runAllSettled();
-
-    type Succeeded<R, M> = {
-      value: R;
-      metadata: M;
-    };
-
-    type Failed<M> = {
-      metadata: M;
-      error: NormalizedError;
-    };
 
     expectType<
       Equal<
@@ -352,11 +347,6 @@ describe('addTuple', () => {
       )
       .runAll();
 
-    type Succeeded<R, M> = {
-      value: R;
-      metadata: M;
-    };
-
     expectType<
       Equal<
         typeof result,
@@ -397,16 +387,6 @@ describe('addTuple', () => {
       )
       .runAllSettled();
 
-    type Succeeded<R, M> = {
-      value: R;
-      metadata: M;
-    };
-
-    type Failed<M> = {
-      metadata: M;
-      error: NormalizedError;
-    };
-
     expectType<
       Equal<
         typeof result,
@@ -434,6 +414,42 @@ describe('addTuple', () => {
         {
           "metadata": 3,
           "value": false,
+        },
+      ]
+    `);
+  });
+
+  test('Result.unwrap on runAll', async () => {
+    const result = parallelAsyncResultCalls()
+      .addTuple(
+        () => asyncResultFn('1' as const, 15),
+        () => asyncResultFn('2' as const, 10),
+      )
+      .runAll();
+
+    expectType<
+      Equal<
+        typeof result,
+        Promise<
+          Result<
+            [Succeeded<'1', undefined>, Succeeded<'2', undefined>],
+            { metadata: undefined; error: NormalizedError }
+          >
+        >
+      >
+    >();
+
+    const value = await Result.unwrap(result);
+
+    expect(value).toMatchInlineSnapshot(`
+      [
+        {
+          "metadata": undefined,
+          "value": "1",
+        },
+        {
+          "metadata": undefined,
+          "value": "2",
         },
       ]
     `);
