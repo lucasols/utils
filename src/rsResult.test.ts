@@ -253,10 +253,12 @@ test('Result.unwrap() should accept only Error instances', async () => {
     return Promise.resolve(Result.err('error'));
   };
 
-  // @ts-expect-error - only Result<any, Error> should be accepted
-  Result.unwrap(fnWithWrongResult());
+  await expect(async () => {
+    // @ts-expect-error - only Result<any, Error> should be accepted
+    await Result.unwrap(fnWithWrongResult());
+  }).rejects.toThrow();
 
-  expect(async () => {
+  await expect(async () => {
     // @ts-expect-error - only Result<any, Error> should be accepted
     (await fnWithWrongResult()).unwrap();
   }).rejects.toThrow();
