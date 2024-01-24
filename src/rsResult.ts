@@ -104,7 +104,10 @@ function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
         'withMetadata' in normalizedErr && error instanceof NormalizedError ?
           new NormalizedErrorWithMetadata({
             error,
-            metadata: normalizedErr.withMetadata as ValidErrorMetadata,
+            metadata: {
+              ...error.metadata,
+              ...(normalizedErr.withMetadata as ValidErrorMetadata),
+            },
           })
         : new NormalizedError({
             id: normalizedErr.id,
@@ -227,12 +230,7 @@ export async function asyncResultify<T, E extends Error = NormalizedError>(
   }
 }
 
-export type ValidErrorMetadata =
-  | Record<string, unknown>
-  | string
-  | number
-  | boolean
-  | undefined;
+export type ValidErrorMetadata = Record<string, unknown> | undefined;
 
 let normalizedErrorSideEffects:
   | ((normalizedError: NormalizedError) => void)

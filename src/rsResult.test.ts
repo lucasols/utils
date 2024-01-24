@@ -125,11 +125,11 @@ test('normalized error toString and toJSON', () => {
 });
 
 test('normalized error with metadata', () => {
-  const err = new NormalizedErrorWithMetadata<'testMetadata'>({
+  const err = new NormalizedErrorWithMetadata<{ test: 'metadata' }>({
     id: 'testError',
     message: 'Cannot divide by zero',
     cause: new Error('Cannot divide by zero'),
-    metadata: 'testMetadata',
+    metadata: { test: 'metadata' },
   });
 
   expect(err.toString()).toMatchInlineSnapshot(`
@@ -151,7 +151,7 @@ test('Appending metadata to a normalized error', () => {
 
   const errWithBaseErr = new NormalizedErrorWithMetadata({
     error: baseErr,
-    metadata: 'appended metadata',
+    metadata: { test: 'appended metadata' },
   });
 
   expect(errWithBaseErr.toString()).toMatchInlineSnapshot(`
@@ -185,7 +185,7 @@ describe('normalized error result', () => {
 
     if (!wrongResult.ok) {
       const result = wrongResult.normalizedErrorResult({
-        withMetadata: 'appended metadata',
+        withMetadata: { test2: 'appended metadata' },
       });
 
       invariant(!result.ok);
@@ -269,7 +269,7 @@ test('Result.normalizedErr() error with metadata', () => {
     Result.normalizedErr({
       id: 'testError',
       message: 'Cannot divide by zero',
-      metadata: 'testMetadata',
+      metadata: { testMetadata: 'testMetadata' },
     }).error.toJSON(),
   ).toMatchInlineSnapshot(`
     {
@@ -285,7 +285,7 @@ test('Result.normalizedErr() error with metadata', () => {
     Result.normalizedErr({
       id: 'id',
       message: 'message',
-      metadata: 'testMetadata',
+      metadata: { testMetadata: 'testMetadata' },
     }).error.toJSON(),
   ).toMatchInlineSnapshot(`
     {
