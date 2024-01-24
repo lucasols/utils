@@ -256,8 +256,10 @@ test('Result.unwrap() should accept only Error instances', async () => {
   // @ts-expect-error - only Result<any, Error> should be accepted
   Result.unwrap(fnWithWrongResult());
 
-  // @ts-expect-error - only Result<any, Error> should be accepted
-  (await fnWithWrongResult()).unwrap();
+  expect(() => {
+    // @ts-expect-error - only Result<any, Error> should be accepted
+    (await fnWithWrongResult()).unwrap();
+  }).toThrow();
 });
 
 test('Result.normalizedErr() error with metadata', () => {
