@@ -1,7 +1,6 @@
 import { invariant, isObject } from './assertions';
 import {
   NormalizedError,
-  NormalizedErrorWithMetadata,
   Result,
   ValidErrorMetadata,
   normalizeError,
