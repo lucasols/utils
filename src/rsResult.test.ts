@@ -135,7 +135,7 @@ test('normalized error with metadata', () => {
   expect(err.toString()).toMatchInlineSnapshot(`
     "testError: Cannot divide by zero
       Caused by: Error: Cannot divide by zero
-      Metadata: "testMetadata""
+      Metadata: {"test":"metadata"}"
   `);
 
   // NormalizedErrorWithMetadata should be assignable to NormalizedError type
@@ -157,7 +157,7 @@ test('Appending metadata to a normalized error', () => {
   expect(errWithBaseErr.toString()).toMatchInlineSnapshot(`
     "base error: Base error
       Caused by: Error: Cannot divide by zero
-      Metadata: "appended metadata""
+      Metadata: {"test":"appended metadata"}"
   `);
 
   expect(baseErr.stack).toEqual(errWithBaseErr.stack);
@@ -196,7 +196,9 @@ describe('normalized error result', () => {
           "code": 0,
           "id": "unknown",
           "message": "Cannot divide by zero",
-          "metadata": "appended metadata",
+          "metadata": {
+            "test2": "appended metadata",
+          },
         }
       `);
 
@@ -277,7 +279,9 @@ test('Result.normalizedErr() error with metadata', () => {
       "code": 0,
       "id": "testError",
       "message": "Cannot divide by zero",
-      "metadata": "testMetadata",
+      "metadata": {
+        "testMetadata": "testMetadata",
+      },
     }
   `);
 
@@ -293,7 +297,9 @@ test('Result.normalizedErr() error with metadata', () => {
       "code": 0,
       "id": "id",
       "message": "message",
-      "metadata": "testMetadata",
+      "metadata": {
+        "testMetadata": "testMetadata",
+      },
     }
   `);
 });
