@@ -137,6 +137,7 @@ function normalizedErr(
       },
   message?: string,
   code?: number,
+  metadata?: ValidErrorMetadata,
 ): ErrResult<NormalizedError> {
   if (typeof idOrMessageOrErr === 'object') {
     return err(
@@ -145,16 +146,18 @@ function normalizedErr(
         message: idOrMessageOrErr.message,
         code: idOrMessageOrErr.code,
         cause: idOrMessageOrErr.cause,
+        metadata: idOrMessageOrErr.metadata,
       }),
     );
   }
 
-  if (message) {
+  if (message !== undefined) {
     return err(
       new NormalizedError({
         id: idOrMessageOrErr,
         message,
         code,
+        metadata,
       }),
     );
   }

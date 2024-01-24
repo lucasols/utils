@@ -217,7 +217,7 @@ describe('normalized error result', () => {
   });
 });
 
-test('Result.asyncUnwrap()', async () => {
+test('Result.unwrap() async results', async () => {
   async function divideAsync(a: number, b: number): Promise<Result<number>> {
     await sleep(10);
 
@@ -231,4 +231,34 @@ test('Result.asyncUnwrap()', async () => {
   const result = await Result.unwrap(divideAsync(10, 2));
 
   expect(result).toEqual(5);
+});
+
+test('Result.normalizedErr() error with metadata', () => {
+  expect(
+    Result.normalizedErr({
+      id: 'testError',
+      message: 'Cannot divide by zero',
+      metadata: 'testMetadata',
+    }).error.toJSON(),
+  ).toMatchInlineSnapshot(`
+    {
+      "cause": undefined,
+      "code": 0,
+      "id": "testError",
+      "message": "Cannot divide by zero",
+      "metadata": "testMetadata",
+    }
+  `);
+
+  expect(
+    Result.normalizedErr('id', 'message', 0, 'testMetadata').error.toJSON(),
+  ).toMatchInlineSnapshot(`
+    {
+      "cause": undefined,
+      "code": 0,
+      "id": "id",
+      "message": "message",
+      "metadata": "testMetadata",
+    }
+  `);
 });
