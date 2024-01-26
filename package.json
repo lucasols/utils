@@ -30,6 +30,10 @@
       "import": "./dist/assertions.js",
       "types": "./dist/assertions.d.ts"
     },
+    "./consoleFmt": {
+      "import": "./dist/consoleFmt.js",
+      "types": "./dist/consoleFmt.d.ts"
+    },
     "./dedent": {
       "import": "./dist/dedent.js",
       "types": "./dist/dedent.d.ts"
