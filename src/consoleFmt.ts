@@ -55,7 +55,8 @@ const bgColorToCodeASCII = {
 };
 
 function bgColor(color: keyof typeof bgColorToCodeASCII, text: string) {
-  return `\x1b[40;${bgColorToCodeASCII[color]}m${text}\x1b[0m`;
+  const resetBgColor = '\x1b[49m';
+  return `${bgColorToCodeASCII[color]}${text}${resetBgColor}\x1b[0m`;
 }
 
 export const consoleFmt = {
