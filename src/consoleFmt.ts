@@ -29,14 +29,6 @@ function underline(text: string) {
   return `\x1b[4m${text}\x1b[0m`;
 }
 
-function italic(text: string) {
-  return `\x1b[3m${text}\x1b[0m`;
-}
-
-function strikethrough(text: string) {
-  return `\x1b[9m${text}\x1b[0m`;
-}
-
 const bgColorToCodeASCII = {
   red: '\x1b[41m',
   green: '\x1b[42m',
@@ -65,7 +57,5 @@ export const consoleFmt = {
   color: consoleColors,
   bold,
   underline,
-  italic,
-  strikethrough,
   bgColor,
 };

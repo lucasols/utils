@@ -13,7 +13,8 @@
     "build:no-test": "tsup",
     "build:update-exports": "tsm --no-warnings scripts/updatePackageExports.ts",
     "build-test": "tsup --config tsup.test.config.ts",
-    "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build"
+    "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build",
+    "test:console-fmt": "tsm --no-warnings scripts/testConsoleFmt.ts"
   },
   "files": [
     "dist"
