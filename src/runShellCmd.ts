@@ -15,7 +15,11 @@ import { spawn } from 'child_process';
 export function runCmd(
   label: string | null,
   command: string | string[],
-  { mock, silent }: { mock?: CmdResult; silent?: boolean } = {},
+  {
+    mock,
+    silent,
+    cwd = process.cwd(),
+  }: { mock?: CmdResult; silent?: boolean; cwd?: string } = {},
 ): Promise<CmdResult> {
   if (mock) return Promise.resolve(mock);
 
@@ -27,7 +31,9 @@ export function runCmd(
   return new Promise((resolve) => {
     const [cmd = '', ...args] =
       Array.isArray(command) ? command : command.split(' ');
-    const child = spawn(cmd, args);
+    const child = spawn(cmd, args, {
+      cwd,
+    });
 
     let stdout = '';
     let stderr = '';
