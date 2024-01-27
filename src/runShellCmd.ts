@@ -54,7 +54,7 @@ export function runCmd(
     child.on('close', (code) => {
       const hasError = code !== 0;
 
-      if (!silent) {
+      if (!silent && label) {
         if (!hasError) {
           console.timeEnd('✅');
         }
