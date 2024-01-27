@@ -136,6 +136,7 @@ function normalizedErr<T extends string>(errorProps: {
   id: T;
   message: string;
   code?: number;
+  cause?: Error;
   metadata?: ValidErrorMetadata;
 }): ErrResult<NormalizedError<T>>;
 function normalizedErr(
