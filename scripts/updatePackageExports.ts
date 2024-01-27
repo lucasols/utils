@@ -38,7 +38,8 @@ if (!deepEqual(packageJson.exports, newExportsField)) {
   writeFileSync('./package.json', `${JSON.stringify(packageJson, null, 2)}\n`);
 
   await sleep(500);
-
   runCmd(null, 'git add package.json');
+
+  await sleep(500);
   runCmd(null, ['git', 'commit', '-m', '"update package.json exports"']);
 }
