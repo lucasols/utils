@@ -1,4 +1,3 @@
-/* eslint-disable jest/valid-title */
 import { shallowEqual } from '../src/shallowEqual';
 import { expect, describe, test } from 'vitest';
 
@@ -257,7 +256,7 @@ describe('shallow equal', () => {
     different(NaN, null);
     different(1, -1);
     same(0, -0);
-    // eslint-disable-next-line no-void
+
     same(void 0, undefined);
     same(undefined, undefined);
     different(null, undefined);
