@@ -11,7 +11,7 @@
     "eslint": "CI=true eslint src/ scripts/ --color --max-warnings=0",
     "build": "pnpm test:run && pnpm lint && pnpm build:no-test && pnpm build:update-exports",
     "build:no-test": "tsup",
-    "build:update-exports": "tsm scripts/updatePackageExports.ts",
+    "build:update-exports": "tsm --no-warnings scripts/updatePackageExports.ts",
     "build-test": "tsup --config tsup.test.config.ts",
     "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build"
   },
@@ -38,6 +38,10 @@
       "import": "./dist/dedent.js",
       "types": "./dist/dedent.d.ts"
     },
+    "./deepEqual": {
+      "import": "./dist/deepEqual.js",
+      "types": "./dist/deepEqual.d.ts"
+    },
     "./enhancedMap": {
       "import": "./dist/enhancedMap.js",
       "types": "./dist/enhancedMap.d.ts"
@@ -57,10 +61,6 @@
     "./promiseUtils": {
       "import": "./dist/promiseUtils.js",
       "types": "./dist/promiseUtils.d.ts"
-    },
-    "./rsResult": {
-      "import": "./dist/rsResult.js",
-      "types": "./dist/rsResult.d.ts"
     },
     "./sleep": {
       "import": "./dist/sleep.js",
