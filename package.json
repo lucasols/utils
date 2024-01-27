@@ -62,6 +62,18 @@
       "import": "./dist/promiseUtils.js",
       "types": "./dist/promiseUtils.d.ts"
     },
+    "./rsResult": {
+      "import": "./dist/rsResult.js",
+      "types": "./dist/rsResult.d.ts"
+    },
+    "./runShellCmd": {
+      "import": "./dist/runShellCmd.js",
+      "types": "./dist/runShellCmd.d.ts"
+    },
+    "./shallowEqual": {
+      "import": "./dist/shallowEqual.js",
+      "types": "./dist/shallowEqual.d.ts"
+    },
     "./sleep": {
       "import": "./dist/sleep.js",
       "types": "./dist/sleep.d.ts"
