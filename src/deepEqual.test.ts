@@ -1,4 +1,3 @@
-/* eslint-disable jest/valid-title */
 import { deepEqual } from '../src/deepEqual';
 import { expect, describe, test } from 'vitest';
 
@@ -257,7 +256,6 @@ describe('deep equal', () => {
     different(NaN, null);
     different(1, -1);
     same(0, -0);
-    // eslint-disable-next-line no-void
     same(void 0, undefined);
     same(undefined, undefined);
     different(null, undefined);
@@ -312,12 +310,12 @@ describe('deep equal', () => {
   });
 
   test('maps nested', () => {
-    const hello = new Map([
+    const hello = new Map<string, any>([
       ['foo', { a: 1 }],
       ['bar', [1, 2, 3]],
     ]);
 
-    const world = new Map([['foo', 'bar']]);
+    const world = new Map<string, any>([['foo', 'bar']]);
 
     different(hello, world);
 
