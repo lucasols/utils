@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync, writeFileSync } from 'fs';
 import { deepEqual } from '../src/deepEqual';
 import { runCmd } from '../src/runShellCmd';
+import { sleep } from '../src/sleep';
 
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
@@ -35,6 +36,8 @@ if (!deepEqual(packageJson.exports, newExportsField)) {
   packageJson.exports = newExportsField;
 
   writeFileSync('./package.json', `${JSON.stringify(packageJson, null, 2)}\n`);
+
+  await sleep(500);
 
   runCmd(null, 'git add package.json');
   runCmd(null, ['git', 'commit', '-m', '"update package.json exports"']);
