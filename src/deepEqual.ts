@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-var */
 /** forked from https://github.com/lukeed/dequal to conside invalid dates as equal */
 
 var has = Object.prototype.hasOwnProperty;
