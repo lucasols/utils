@@ -25,15 +25,25 @@ const newExportsField: Record<
   }
 > = {};
 
+const newTypesVersions: Record<'*', Record<string, string[]>> = {
+  '*': {},
+};
+
 for (const exportedUtil of exportedUtils) {
   newExportsField[`./${exportedUtil}`] = {
     import: `./dist/${exportedUtil}.js`,
     types: `./dist/${exportedUtil}.d.ts`,
   };
+
+  newTypesVersions['*'][exportedUtil] = [`./dist/${exportedUtil}.d.ts`];
 }
 
-if (!deepEqual(packageJson.exports, newExportsField)) {
+if (
+  !deepEqual(packageJson.exports, newExportsField) ||
+  !deepEqual(packageJson.typesVersions, newTypesVersions)
+) {
   packageJson.exports = newExportsField;
+  packageJson.typesVersions = newTypesVersions;
 
   writeFileSync('./package.json', `${JSON.stringify(packageJson, null, 2)}\n`);
 
