@@ -105,5 +105,54 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
     "vitest": "^1.2.1"
+  },
+  "typesVersions": {
+    "*": {
+      "arrayUtils": [
+        "./dist/arrayUtils.d.ts"
+      ],
+      "assertions": [
+        "./dist/assertions.d.ts"
+      ],
+      "consoleFmt": [
+        "./dist/consoleFmt.d.ts"
+      ],
+      "dedent": [
+        "./dist/dedent.d.ts"
+      ],
+      "deepEqual": [
+        "./dist/deepEqual.d.ts"
+      ],
+      "enhancedMap": [
+        "./dist/enhancedMap.d.ts"
+      ],
+      "internalUtils": [
+        "./dist/internalUtils.d.ts"
+      ],
+      "objUtils": [
+        "./dist/objUtils.d.ts"
+      ],
+      "parallelAsyncResultCalls": [
+        "./dist/parallelAsyncResultCalls.d.ts"
+      ],
+      "promiseUtils": [
+        "./dist/promiseUtils.d.ts"
+      ],
+      "rsResult": [
+        "./dist/rsResult.d.ts"
+      ],
+      "runShellCmd": [
+        "./dist/runShellCmd.d.ts"
+      ],
+      "shallowEqual": [
+        "./dist/shallowEqual.d.ts"
+      ],
+      "sleep": [
+        "./dist/sleep.d.ts"
+      ],
+      "stringUtils": [
+        "./dist/stringUtils.d.ts"
+      ]
+    }
   }
 }
