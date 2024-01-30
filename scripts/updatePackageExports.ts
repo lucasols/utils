@@ -29,8 +29,6 @@ const newTypesVersions: Record<'*', Record<string, string[]>> = {
   '*': {},
 };
 
-let referencesFile = '';
-
 for (const exportedUtil of exportedUtils) {
   newExportsField[`./${exportedUtil}`] = {
     import: `./dist/${exportedUtil}.js`,
@@ -38,11 +36,7 @@ for (const exportedUtil of exportedUtils) {
   };
 
   newTypesVersions['*'][exportedUtil] = [`./dist/${exportedUtil}.d.ts`];
-
-  referencesFile += `///<reference path="${exportedUtil}.d.ts" />\n`;
 }
-
-writeFileSync('./dist/main.d.ts', referencesFile);
 
 if (
   !deepEqual(packageJson.exports, newExportsField) ||
