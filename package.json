@@ -22,6 +22,7 @@
   "repository": "github:lucasols/utils",
   "author": "Lucas Santos",
   "type": "module",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./arrayUtils": {
       "import": "./dist/arrayUtils.js",
