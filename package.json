@@ -25,6 +25,10 @@
   "types": "./dist/main.d.ts",
   "module": "./dist/main.js",
   "exports": {
+    ".": {
+      "import": "./dist/main.js",
+      "types": "./dist/main.d.ts"
+    },
     "./arrayUtils": {
       "import": "./dist/arrayUtils.js",
       "types": "./dist/arrayUtils.d.ts"
@@ -49,9 +53,17 @@
       "import": "./dist/enhancedMap.js",
       "types": "./dist/enhancedMap.d.ts"
     },
+    "./exaustiveMatch": {
+      "import": "./dist/exaustiveMatch.js",
+      "types": "./dist/exaustiveMatch.d.ts"
+    },
     "./internalUtils": {
       "import": "./dist/internalUtils.js",
       "types": "./dist/internalUtils.d.ts"
+    },
+    "./main": {
+      "import": "./dist/main.js",
+      "types": "./dist/main.d.ts"
     },
     "./objUtils": {
       "import": "./dist/objUtils.js",
@@ -128,8 +140,14 @@
       "enhancedMap": [
         "./dist/enhancedMap.d.ts"
       ],
+      "exaustiveMatch": [
+        "./dist/exaustiveMatch.d.ts"
+      ],
       "internalUtils": [
         "./dist/internalUtils.d.ts"
+      ],
+      "main": [
+        "./dist/main.d.ts"
       ],
       "objUtils": [
         "./dist/objUtils.d.ts"
