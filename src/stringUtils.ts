@@ -101,3 +101,9 @@ export function convertToSnakeCase(str: string) {
     .replace(/[^a-z0-9_]/g, '')
     .toLowerCase();
 }
+
+export function truncateString(str: string, length: number, ellipsis = '…') {
+  if (str.length <= length) return str;
+
+  return str.slice(0, length - 1) + ellipsis;
+}
