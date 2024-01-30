@@ -251,8 +251,8 @@ test('Result.unwrap() async results', async () => {
 });
 
 test('Result.unwrap() should accept only Error instances', async () => {
-  const fnWithWrongResult = async (): Promise<Result<number, string>> => {
-    return Promise.resolve(Result.err('error'));
+  const fnWithWrongResult = async (): Promise<Result<number, [string]>> => {
+    return Promise.resolve(Result.err(['error']));
   };
 
   await expect(async () => {
