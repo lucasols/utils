@@ -53,9 +53,9 @@
       "import": "./dist/enhancedMap.js",
       "types": "./dist/enhancedMap.d.ts"
     },
-    "./exaustiveMatch": {
-      "import": "./dist/exaustiveMatch.js",
-      "types": "./dist/exaustiveMatch.d.ts"
+    "./exhaustiveMatch": {
+      "import": "./dist/exhaustiveMatch.js",
+      "types": "./dist/exhaustiveMatch.d.ts"
     },
     "./internalUtils": {
       "import": "./dist/internalUtils.js",
@@ -140,8 +140,8 @@
       "enhancedMap": [
         "./dist/enhancedMap.d.ts"
       ],
-      "exaustiveMatch": [
-        "./dist/exaustiveMatch.d.ts"
+      "exhaustiveMatch": [
+        "./dist/exhaustiveMatch.d.ts"
       ],
       "internalUtils": [
         "./dist/internalUtils.d.ts"
