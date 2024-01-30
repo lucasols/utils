@@ -23,7 +23,12 @@ const newExportsField: Record<
     import: string;
     types: string;
   }
-> = {};
+> = {
+  '.': {
+    import: './dist/main.js',
+    types: './dist/main.d.ts',
+  },
+};
 
 const newTypesVersions: Record<'*', Record<string, string[]>> = {
   '*': {},

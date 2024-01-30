@@ -23,6 +23,7 @@
   "author": "Lucas Santos",
   "type": "module",
   "types": "./dist/main.d.ts",
+  "module": "./dist/main.js",
   "exports": {
     "./arrayUtils": {
       "import": "./dist/arrayUtils.js",
