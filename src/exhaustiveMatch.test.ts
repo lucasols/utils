@@ -1,4 +1,4 @@
-import { exhaustiveMatch } from './exaustiveMatch';
+import { exhaustiveMatch } from './exhaustiveMatch';
 import { expect, test } from 'vitest';
 
 function hasType<T>(value: T) {
