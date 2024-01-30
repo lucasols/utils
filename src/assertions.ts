@@ -72,3 +72,7 @@ export function isObject(value: unknown): value is Record<string, unknown> {
 export function isFunction(value: unknown): value is (...args: any[]) => any {
   return typeof value === 'function';
 }
+
+export function isPromise(value: unknown): value is Promise<unknown> {
+  return isObject(value) && 'then' in value;
+}
