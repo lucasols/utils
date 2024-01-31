@@ -41,6 +41,10 @@
       "import": "./dist/consoleFmt.js",
       "types": "./dist/consoleFmt.d.ts"
     },
+    "./createThrottleController": {
+      "import": "./dist/createThrottleController.js",
+      "types": "./dist/createThrottleController.d.ts"
+    },
     "./dedent": {
       "import": "./dist/dedent.js",
       "types": "./dist/dedent.d.ts"
@@ -130,6 +134,9 @@
       ],
       "consoleFmt": [
         "./dist/consoleFmt.d.ts"
+      ],
+      "createThrottleController": [
+        "./dist/createThrottleController.d.ts"
       ],
       "dedent": [
         "./dist/dedent.d.ts"
