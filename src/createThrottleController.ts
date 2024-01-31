@@ -7,7 +7,7 @@ type Options = {
 };
 
 type ThrottleController = {
-  shouldSkip(callId?: string | number | string[]): boolean;
+  shouldSkip(callId?: string | number | (string | number)[]): boolean;
   /** @internal */
   _currentWindows: EnhancedMap<
     string,
