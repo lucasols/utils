@@ -6,11 +6,20 @@ type Options = {
   cleanupCheckSecsInterval?: number;
 };
 
+type ThrottleController = {
+  shouldSkip(callId?: string | number | string[]): boolean;
+  /** @internal */
+  _currentWindows: EnhancedMap<
+    string,
+    { windowStartTime: number; calls: number }
+  >;
+};
+
 export function createThrottleController({
   maxCalls,
   per,
   cleanupCheckSecsInterval = 60 * 30,
-}: Options) {
+}: Options): ThrottleController {
   let msInterval = 0;
 
   if (per.ms) {
@@ -54,7 +63,7 @@ export function createThrottleController({
   }
 
   return {
-    shouldSkip(callId: string | number | string[] = '') {
+    shouldSkip(callId = '') {
       const now = Date.now();
 
       const serializedCallId = String(callId);
@@ -79,7 +88,6 @@ export function createThrottleController({
 
       return false;
     },
-    /** @internal */
     _currentWindows: windows,
   };
 }
