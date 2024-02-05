@@ -112,6 +112,7 @@ const config = [
       '@typescript-eslint/unbound-method': OFF,
       '@typescript-eslint/no-unsafe-return': OFF,
       '@typescript-eslint/no-unsafe-member-access': OFF,
+      '@typescript-eslint/method-signature-style': ERROR_IN_CI,
 
       /* vitest */
       'vitest/no-identical-title': ERROR_IN_CI,
