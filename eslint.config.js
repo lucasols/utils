@@ -101,6 +101,7 @@ const config = [
         { ignoreOnInitialization: true, allow: ['expect'] },
       ],
       '@typescript-eslint/no-unsafe-call': ERROR_IN_CI,
+      '@typescript-eslint/method-signature-style': ERROR_IN_CI,
 
       '@typescript-eslint/no-non-null-assertion': OFF,
       '@typescript-eslint/no-empty-function': OFF,
@@ -112,7 +113,6 @@ const config = [
       '@typescript-eslint/unbound-method': OFF,
       '@typescript-eslint/no-unsafe-return': OFF,
       '@typescript-eslint/no-unsafe-member-access': OFF,
-      '@typescript-eslint/method-signature-style': ERROR_IN_CI,
 
       /* vitest */
       'vitest/no-identical-title': ERROR_IN_CI,
