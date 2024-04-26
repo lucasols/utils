@@ -29,14 +29,28 @@ function stringifyValue(
         continue;
       }
 
-      if (isObject(objVal) || Array.isArray(objVal)) {
+      const valueString = stringifyValue(objVal, childIndent, maxLineLength);
+
+      if (Array.isArray(objVal)) {
+        const arrayIsSingleLine = valueString.split('\n').length === 1;
+
+        if (arrayIsSingleLine) {
+          result += `${indent}${key}: `;
+        } else {
+          result += `${indent}${key}:\n`;
+        }
+      } else if (isObject(objVal)) {
         result += `${indent}${key}:\n`;
       } else {
         result += `${indent}${key}: `;
       }
 
-      result += stringifyValue(objVal, childIndent, maxLineLength);
+      result += valueString;
       result += '\n';
+
+      if (indent === '' && isObject(objVal)) {
+        result += '\n';
+      }
     }
   }
 
@@ -44,6 +58,7 @@ function stringifyValue(
     let arrayWasAdded = false;
 
     if (
+      value.length === 0 ||
       value.every(
         (item) =>
           typeof item === 'string' ||

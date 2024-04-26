@@ -168,6 +168,7 @@ test('array inside object with object inside', () => {
         1,
         2,
         3,
+        [],
         [
           'Hello',
           true,
@@ -177,6 +178,8 @@ test('array inside object with object inside', () => {
             a: 1,
             b: 2,
             c: 'Hello',
+            d: [],
+            e: [1, 2],
           },
         ],
       ],
@@ -187,6 +190,7 @@ test('array inside object with object inside', () => {
       - 1
       - 2
       - 3
+      - []
       - - 'Hello'
         - true
         - null
@@ -194,6 +198,8 @@ test('array inside object with object inside', () => {
         - a: 1
           b: 2
           c: 'Hello'
+          d: []
+          e: [1, 2]
     "
   `);
 });
@@ -314,6 +320,27 @@ test('multiline string', () => {
         - |
           Hello
           world
+    "
+  `);
+});
+
+test('multiple objects at root level', () => {
+  expect(
+    getSnapshot({
+      a: { a: 1 },
+      b: { b: 2 },
+      c: { c: 3 },
+    }),
+  ).toMatchInlineSnapshot(`
+    "
+    a:
+      a: 1
+
+    b:
+      b: 2
+
+    c:
+      c: 3
     "
   `);
 });
