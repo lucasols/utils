@@ -108,13 +108,13 @@ function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
             error,
             metadata: {
               ...error.metadata,
-              ...(normalizedErr.withMetadata as ValidErrorMetadata),
+              ...normalizedErr.withMetadata,
             },
           })
         : new NormalizedError({
-            id: normalizedErr.id,
-            message: normalizedErr.message,
-            code: normalizedErr.code,
+            id: (normalizedErr as NormalizedErrorResultProps).id,
+            message: (normalizedErr as NormalizedErrorResultProps).message,
+            code: (normalizedErr as NormalizedErrorResultProps).code,
             cause: error instanceof Error ? error : undefined,
           }),
       );
