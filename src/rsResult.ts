@@ -217,7 +217,7 @@ export function resultify<T, E extends ResultValidErrors = NormalizedError>(
   }
 }
 
-/** transfor a async function in a result function */
+/** transform a async function in a result function */
 export async function asyncResultify<T, E extends Error = NormalizedError>(
   fn: () => Promise<T>,
   errorNormalizer?: (err: unknown) => E,
