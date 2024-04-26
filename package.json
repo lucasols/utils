@@ -100,6 +100,10 @@
     "./stringUtils": {
       "import": "./dist/stringUtils.js",
       "types": "./dist/stringUtils.d.ts"
+    },
+    "./yamlStringify": {
+      "import": "./dist/yamlStringify.js",
+      "types": "./dist/yamlStringify.d.ts"
     }
   },
   "sideEffects": false,
@@ -179,6 +183,9 @@
       ],
       "stringUtils": [
         "./dist/stringUtils.d.ts"
+      ],
+      "yamlStringify": [
+        "./dist/yamlStringify.d.ts"
       ]
     }
   }
