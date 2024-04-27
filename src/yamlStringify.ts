@@ -27,6 +27,10 @@ function stringifyValue(
   const childIndent = `${indent}  `;
 
   if (isObject(value)) {
+    if (Object.keys(value).length === 0) {
+      return '{}';
+    }
+
     for (const [key, objVal] of Object.entries(value)) {
       if (objVal === undefined && !showUndefined) {
         continue;
@@ -48,7 +52,11 @@ function stringifyValue(
           result += `${indent}${key}:\n`;
         }
       } else if (isObject(objVal)) {
-        result += `${indent}${key}:\n`;
+        if (Object.keys(objVal).length === 0) {
+          result += `${indent}${key}: `;
+        } else {
+          result += `${indent}${key}:\n`;
+        }
       } else {
         result += `${indent}${key}: `;
       }

@@ -389,3 +389,31 @@ test('showUndefined', () => {
     "undefined"
   `);
 });
+
+test('empty objs', () => {
+  expect(
+    getSnapshot({
+      payload: {
+        object_type: 'PavcJkwZSvh8bgfSibKxW',
+        data: {
+          id_PavcJkwZSvh8bgfSibKxW: null,
+          test: false,
+        },
+      },
+      diffs: {},
+      count: 0,
+    }),
+  ).toMatchInlineSnapshot(`
+    "
+    payload:
+      object_type: 'PavcJkwZSvh8bgfSibKxW'
+      data:
+        id_PavcJkwZSvh8bgfSibKxW: null
+        test: false
+
+    diffs: {}
+
+    count: 0
+    "
+  `);
+});
