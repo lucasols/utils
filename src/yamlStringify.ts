@@ -81,7 +81,15 @@ function stringifyValue(
       line += `[`;
 
       line += value
-        .map((item) => stringifyValue(item, '', maxLineLength, showUndefined))
+        .map((item) => {
+          let valueToUse = item;
+
+          if (typeof valueToUse === 'string' && valueToUse.includes('\n')) {
+            valueToUse = valueToUse.replace(/\n/g, '\\n');
+          }
+
+          return stringifyValue(valueToUse, '', maxLineLength, showUndefined);
+        })
         .join(', ');
 
       line += ']';

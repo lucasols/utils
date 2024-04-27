@@ -80,6 +80,14 @@ test('simple arrays', () => {
     `);
 });
 
+test('simple arrays with multiline strings', () => {
+  expect(getSnapshot({ a: [1, 2, 3, 'Hello\nworld'] })).toMatchInlineSnapshot(`
+    "
+    a: [1, 2, 3, 'Hello\\nworld']
+    "
+  `);
+});
+
 test('simple arrays over max line length', () => {
   expect(
     getSnapshot([1, 2, 3, 'Hello', true, null, undefined], {
