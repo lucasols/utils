@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { ArgumentsType, expect, test } from 'vitest';
 import { yamlStringify } from './yamlStringify';
 
 test('values thar are not objects should be returned as JSON', () => {
@@ -12,11 +12,14 @@ test('values thar are not objects should be returned as JSON', () => {
 
   expect(yamlStringify(null)).toBe('null');
 
-  expect(yamlStringify(undefined)).toBe('null');
+  expect(yamlStringify(undefined)).toBe('undefined');
 });
 
-function getSnapshot(value: unknown, maxLineLength?: number) {
-  return `\n${yamlStringify(value, { maxLineLength })}`;
+function getSnapshot(
+  value: unknown,
+  options?: ArgumentsType<typeof yamlStringify>[1],
+) {
+  return `\n${yamlStringify(value, options)}`;
 }
 
 test('simple objects', () => {
@@ -78,8 +81,11 @@ test('simple arrays', () => {
 });
 
 test('simple arrays over max line length', () => {
-  expect(getSnapshot([1, 2, 3, 'Hello', true, null, undefined], 5))
-    .toMatchInlineSnapshot(`
+  expect(
+    getSnapshot([1, 2, 3, 'Hello', true, null, undefined], {
+      maxLineLength: 5,
+    }),
+  ).toMatchInlineSnapshot(`
     "
     - 1
     - 2
@@ -103,8 +109,11 @@ test('nested arrays', () => {
       "
     `);
 
-  expect(getSnapshot([1, 2, 3, ['Hello', true, null, undefined]], 5))
-    .toMatchInlineSnapshot(`
+  expect(
+    getSnapshot([1, 2, 3, ['Hello', true, null, undefined]], {
+      maxLineLength: 5,
+    }),
+  ).toMatchInlineSnapshot(`
       "
       - 1
       - 2
@@ -146,8 +155,12 @@ test('array inside object', () => {
 });
 
 test('array inside object with max line length', () => {
-  expect(getSnapshot({ a: [1, 2, 3, ['Hello', true, null, undefined]] }, 5))
-    .toMatchInlineSnapshot(`
+  expect(
+    getSnapshot(
+      { a: [1, 2, 3, ['Hello', true, null, undefined]] },
+      { maxLineLength: 5 },
+    ),
+  ).toMatchInlineSnapshot(`
       "
       a:
         - 1
@@ -342,5 +355,29 @@ test('multiple objects at root level', () => {
     c:
       c: 3
     "
+  `);
+});
+
+test('showUndefined', () => {
+  expect(
+    getSnapshot(
+      {
+        a: 1,
+        b: undefined,
+        c: null,
+      },
+      { showUndefined: true },
+    ),
+  ).toMatchInlineSnapshot(`
+    "
+    a: 1
+    b: undefined
+    c: null
+    "
+  `);
+
+  expect(yamlStringify(undefined, { showUndefined: true }))
+    .toMatchInlineSnapshot(`
+    "undefined"
   `);
 });

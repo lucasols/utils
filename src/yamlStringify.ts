@@ -4,32 +4,40 @@ export function yamlStringify(
   obj: unknown,
   {
     maxLineLength = 100,
+    showUndefined,
   }: {
     maxLineLength?: number;
+    showUndefined?: boolean;
   } = {},
 ): string {
   if (isObject(obj) || Array.isArray(obj)) {
-    return `${stringifyValue(obj, '', maxLineLength)}\n`;
+    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined)}\n`;
   }
 
-  return JSON.stringify(obj) || 'null';
+  return JSON.stringify(obj) || 'undefined';
 }
 
 function stringifyValue(
   value: unknown,
   indent: string,
   maxLineLength: number,
+  showUndefined: boolean,
 ): string {
   let result = '';
   const childIndent = `${indent}  `;
 
   if (isObject(value)) {
     for (const [key, objVal] of Object.entries(value)) {
-      if (objVal === undefined) {
+      if (objVal === undefined && !showUndefined) {
         continue;
       }
 
-      const valueString = stringifyValue(objVal, childIndent, maxLineLength);
+      const valueString = stringifyValue(
+        objVal,
+        childIndent,
+        maxLineLength,
+        showUndefined,
+      );
 
       if (Array.isArray(objVal)) {
         const arrayIsSingleLine = valueString.split('\n').length === 1;
@@ -73,7 +81,7 @@ function stringifyValue(
       line += `[`;
 
       line += value
-        .map((item) => stringifyValue(item, '', maxLineLength))
+        .map((item) => stringifyValue(item, '', maxLineLength, showUndefined))
         .join(', ');
 
       line += ']';
@@ -89,7 +97,12 @@ function stringifyValue(
         result += `${indent}- `;
 
         if (Array.isArray(item) || isObject(item)) {
-          let arrayString = stringifyValue(item, childIndent, maxLineLength);
+          let arrayString = stringifyValue(
+            item,
+            childIndent,
+            maxLineLength,
+            showUndefined,
+          );
 
           const arrayLines = arrayString.split('\n');
 
@@ -99,7 +112,12 @@ function stringifyValue(
 
           result += arrayString;
         } else {
-          result += stringifyValue(item, childIndent, maxLineLength);
+          result += stringifyValue(
+            item,
+            childIndent,
+            maxLineLength,
+            showUndefined,
+          );
         }
 
         result += '\n';
