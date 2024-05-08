@@ -417,3 +417,48 @@ test('empty objs', () => {
     "
   `);
 });
+
+test('bug: array of objects', () => {
+  expect(
+    getSnapshot({
+      block_style: {
+        type: 'hex',
+        color: '#ffffff',
+        bg_blur: false,
+      },
+      columns: [
+        {
+          key: 'name',
+        },
+        {
+          key: 'text',
+        },
+        {
+          key: 'largeText',
+        },
+        {
+          key: 'number',
+          key2: 'number2',
+        },
+        [1],
+      ],
+      update_form: null,
+    }),
+  ).toMatchInlineSnapshot(`
+    "
+    block_style:
+      type: 'hex'
+      color: '#ffffff'
+      bg_blur: false
+
+    columns:
+      - key: 'name'
+      - key: 'text'
+      - key: 'largeText'
+      - key: 'number'
+        key2: 'number2'
+      - [1]
+    update_form: null
+    "
+  `);
+});

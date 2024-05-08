@@ -120,11 +120,7 @@ function stringifyValue(
             showUndefined,
           );
 
-          const arrayLines = arrayString.split('\n');
-
-          if (arrayLines.length > 1) {
-            arrayString = arrayString.trimStart();
-          }
+          arrayString = arrayString.trimStart();
 
           result += arrayString;
         } else {
