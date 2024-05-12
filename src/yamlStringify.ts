@@ -1,4 +1,6 @@
-import { isObject } from './assertions';
+import { isObject, isPlainObject } from './assertions';
+import { bytesToHumanReadable } from './convertions';
+import { truncateString } from './stringUtils';
 
 export function yamlStringify(
   obj: unknown,
@@ -10,7 +12,7 @@ export function yamlStringify(
     showUndefined?: boolean;
   } = {},
 ): string {
-  if (isObject(obj) || Array.isArray(obj)) {
+  if (isObject(obj) || Array.isArray(obj) || typeof obj === 'function') {
     return `${stringifyValue(obj, '', maxLineLength, !!showUndefined)}\n`;
   }
 
@@ -26,14 +28,21 @@ function stringifyValue(
   let result = '';
   const childIndent = `${indent}  `;
 
-  if (isObject(value)) {
+  if (isPlainObject(value)) {
     if (Object.keys(value).length === 0) {
       return '{}';
     }
 
-    for (const [key, objVal] of Object.entries(value)) {
+    for (let [key, objVal] of Object.entries(value)) {
       if (objVal === undefined && !showUndefined) {
         continue;
+      }
+
+      const normalizedValue = normalizeValue(objVal);
+
+      if (normalizedValue !== null) {
+        objVal = normalizedValue[1];
+        key = `${key}{${normalizedValue[0]}}`;
       }
 
       const valueString = stringifyValue(
@@ -46,7 +55,7 @@ function stringifyValue(
       if (Array.isArray(objVal)) {
         const arrayIsSingleLine = valueString.split('\n').length === 1;
 
-        if (arrayIsSingleLine) {
+        if (arrayIsSingleLine && !valueString.trim().startsWith('-')) {
           result += `${indent}${key}: `;
         } else {
           result += `${indent}${key}:\n`;
@@ -68,6 +77,8 @@ function stringifyValue(
         result += '\n';
       }
     }
+
+    return result.trimEnd();
   }
 
   if (Array.isArray(value)) {
@@ -135,6 +146,8 @@ function stringifyValue(
         result += '\n';
       }
     }
+
+    return result.trimEnd();
   }
 
   if (typeof value === 'string') {
@@ -161,6 +174,8 @@ function stringifyValue(
         result += `'${value}'`;
       }
     }
+
+    return result.trimEnd();
   }
 
   if (
@@ -169,8 +184,141 @@ function stringifyValue(
     value === null ||
     value === undefined
   ) {
-    result += String(value);
+    return String(value).trimEnd();
   }
 
-  return result.trimEnd();
+  const normalizedValue = normalizeValue(value);
+
+  if (normalizedValue !== null) {
+    return stringifyValue(
+      {
+        [`${normalizedValue[0]}#`]: normalizedValue[1],
+      },
+      indent,
+      maxLineLength,
+      showUndefined,
+    );
+  }
+
+  return JSON.stringify(value);
+}
+
+function normalizeValue(value: unknown): [string, unknown] | null {
+  if (value === null || isPlainObject(value) || Array.isArray(value)) {
+    return null;
+  }
+
+  if (value instanceof Map) {
+    const mapEntries = Array.from(value.entries());
+
+    let mapValue: unknown;
+
+    if (mapEntries.every(([key]) => typeof key === 'string')) {
+      const mapObjValue: Record<string, unknown> = {};
+
+      for (const [key, val] of mapEntries) {
+        mapObjValue[key] = val;
+      }
+
+      mapValue = mapObjValue;
+    } else {
+      mapValue = mapEntries.map(([key, val]) => ({
+        key,
+        value: val,
+      }));
+    }
+
+    return ['Map', mapValue];
+  }
+
+  if (value instanceof Set) {
+    const setValue = Array.from(value);
+
+    return ['Set', setValue];
+  }
+
+  if (value instanceof Date) {
+    return ['Date', value.toISOString()];
+  }
+
+  if (value instanceof RegExp) {
+    return ['RegExp', value.toString()];
+  }
+
+  if (value instanceof Error) {
+    return [
+      'Error',
+      {
+        message: value.message,
+        name: value.name,
+        stack: value.stack,
+      },
+    ];
+  }
+
+  if (value instanceof File) {
+    return [
+      'File',
+      {
+        name: value.name,
+        type: value.type,
+        lastModified: new Date(value.lastModified).toISOString(),
+        size: bytesToHumanReadable(value.size),
+      },
+    ];
+  }
+
+  if (typeof value === 'object') {
+    if ('toJSON' in value && typeof value.toJSON === 'function') {
+      return [value.constructor.name, value.toJSON()];
+    }
+
+    if ('toString' in value && typeof value.toString === 'function') {
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
+      const stringValue = value.toString();
+
+      if (stringValue.toString() !== '[object Object]') {
+        return [value.constructor.name, stringValue];
+      }
+    }
+
+    const objectValue = { ...value };
+
+    const displayValue: Record<string, unknown> = {};
+    let addedKeys = 0;
+
+    for (const [key, item] of Object.entries(objectValue)) {
+      if (addedKeys > 4) {
+        displayValue['...and more properties'] =
+          Object.keys(objectValue).length - 4;
+        break;
+      }
+
+      if (
+        typeof item === 'string' ||
+        typeof item === 'number' ||
+        typeof item === 'boolean' ||
+        item === null ||
+        item === undefined
+      ) {
+        displayValue[key] = item;
+        addedKeys++;
+      }
+    }
+
+    return [String(value.constructor.name), displayValue];
+  }
+
+  if (typeof value === 'function') {
+    const functionString = value.toString();
+
+    return [
+      `Function`,
+      functionString.includes('\n') ?
+        truncateString(functionString.split('\n').join(''), 40)
+      : functionString,
+    ];
+  }
+
+  return null;
 }

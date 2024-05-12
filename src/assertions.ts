@@ -76,3 +76,22 @@ export function isFunction(value: unknown): value is (...args: any[]) => any {
 export function isPromise(value: unknown): value is Promise<unknown> {
   return isObject(value) && 'then' in value;
 }
+
+export function isPlainObject(value: any): value is Record<string, unknown> {
+  if (!value || typeof value !== 'object') return false;
+  const proto = Object.getPrototypeOf(value);
+  if (proto === null) {
+    return true;
+  }
+  const Ctor =
+    Object.hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+
+  if (Ctor === Object) return true;
+
+  const objectCtorString = Object.prototype.constructor.toString();
+
+  return (
+    typeof Ctor == 'function' &&
+    Function.toString.call(Ctor) === objectCtorString
+  );
+}

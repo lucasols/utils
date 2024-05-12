@@ -1,4 +1,4 @@
-import { ArgumentsType, expect, test } from 'vitest';
+import { ArgumentsType, describe, expect, test } from 'vitest';
 import { yamlStringify } from './yamlStringify';
 
 test('values thar are not objects should be returned as JSON', () => {
@@ -461,4 +461,251 @@ test('bug: array of objects', () => {
     update_form: null
     "
   `);
+});
+
+test('bug: array with single object', () => {
+  expect(
+    getSnapshot({
+      block_style: {
+        type: 'hex',
+        color: '#ffffff',
+        bg_blur: false,
+      },
+      columns: [
+        {
+          key: 'name',
+        },
+      ],
+      update_form: null,
+    }),
+  ).toMatchInlineSnapshot(`
+    "
+    block_style:
+      type: 'hex'
+      color: '#ffffff'
+      bg_blur: false
+
+    columns:
+      - key: 'name'
+    update_form: null
+    "
+  `);
+});
+
+describe('Classes', () => {
+  test('Map with string keys', () => {
+    expect(
+      getSnapshot(
+        new Map([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3],
+        ]),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      Map#:
+        a: 1
+        b: 2
+        c: 3
+      "
+    `);
+  });
+
+  test('Map with non string keys', () => {
+    expect(
+      getSnapshot(
+        new Map([
+          [{ a: 1 }, 1],
+          [{ b: 2 }, 2],
+          [{ c: 3 }, 3],
+        ]),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      Map#:
+        - key:
+            a: 1
+          value: 1
+        - key:
+            b: 2
+          value: 2
+        - key:
+            c: 3
+          value: 3
+      "
+    `);
+  });
+
+  test('Set', () => {
+    expect(getSnapshot(new Set(['a', 'b', 'c']))).toMatchInlineSnapshot(`
+      "
+      Set#: ['a', 'b', 'c']
+      "
+    `);
+  });
+
+  test('Date', () => {
+    expect(getSnapshot(new Date('2023-01-01'))).toMatchInlineSnapshot(`
+      "
+      Date#: '2023-01-01T00:00:00.000Z'
+      "
+    `);
+  });
+
+  test('RegExp', () => {
+    expect(getSnapshot(/a/)).toMatchInlineSnapshot(`
+      "
+      RegExp#: '/a/'
+      "
+    `);
+  });
+
+  test('Error', () => {
+    const err = new Error('a');
+
+    err.stack = 'a';
+
+    expect(getSnapshot(err)).toMatchInlineSnapshot(`
+      "
+      Error#:
+        message: 'a'
+        name: 'Error'
+        stack: 'a'
+      "
+    `);
+  });
+
+  test('File', async () => {
+    const base64 =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+
+    const file = new File(
+      [Uint8Array.from(btoa(base64), (m) => m.codePointAt(0)!)],
+      'a',
+      { type: 'image/png', lastModified: 1715542595505 },
+    );
+
+    expect(getSnapshot(file)).toMatchInlineSnapshot(`
+      "
+      File#:
+        name: 'a'
+        type: 'image/png'
+        lastModified: '2024-05-12T19:36:35.505Z'
+        size: '184 B'
+      "
+    `);
+  });
+
+  test('Unknown class with toJSON', () => {
+    const classA = new (class A {
+      a = 1;
+
+      toJSON() {
+        return {
+          a: 1,
+        };
+      }
+    })();
+
+    expect(getSnapshot(classA)).toMatchInlineSnapshot(`
+      "
+      A#:
+        a: 1
+      "
+    `);
+  });
+
+  test('Unknown class with toString', () => {
+    const classA = new (class A {
+      a = 1;
+
+      toString() {
+        return 'a';
+      }
+    })();
+
+    expect(getSnapshot(classA)).toMatchInlineSnapshot(`
+      "
+      A#: 'a'
+      "
+    `);
+  });
+
+  test('Unknown class without toJSON or toString', () => {
+    const classA = new (class A {
+      a = 1;
+    })();
+
+    expect(getSnapshot(classA)).toMatchInlineSnapshot(`
+      "
+      A#:
+        a: 1
+      "
+    `);
+  });
+
+  test('Unknown class with a lot of properties', () => {
+    const classA = new (class A {
+      a = 1;
+      b = { a: 1 };
+      c = 3;
+      d = 4;
+      e = 5;
+      f = 6;
+      g = 7;
+    })();
+
+    expect(getSnapshot(classA)).toMatchInlineSnapshot(`
+      "
+      A#:
+        a: 1
+        c: 3
+        d: 4
+        e: 5
+        f: 6
+        ...and more properties: 3
+      "
+    `);
+  });
+
+  test('inside object', () => {
+    expect(
+      getSnapshot({
+        map: new Map([['a', 1]]),
+        set: new Set(['a']),
+        date: new Date('2023-01-01'),
+        regexp: /a/,
+        array: [1, new Set(['a']), new Map([['a', 1]])],
+      }),
+    ).toMatchInlineSnapshot(`
+      "
+      map{Map}:
+        a: 1
+
+      set{Set}: ['a']
+      date{Date}: '2023-01-01T00:00:00.000Z'
+      regexp{RegExp}: '/a/'
+      array:
+        - 1
+        - Set#: ['a']
+        - Map#:
+            a: 1
+      "
+    `);
+  });
+});
+
+describe('Functions', () => {
+  test('Function', () => {
+    expect(
+      getSnapshot({
+        fn: () => {},
+      }),
+    ).toMatchInlineSnapshot(`
+      "
+      fn{Function}: '() => {        }'
+      "
+    `);
+  });
 });
