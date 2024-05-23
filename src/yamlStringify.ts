@@ -1,5 +1,5 @@
 import { isObject, isPlainObject } from './assertions';
-import { bytesToHumanReadable } from './convertions';
+import { bytesToHumanReadable } from './conversions';
 import { truncateString } from './stringUtils';
 
 export function yamlStringify(
@@ -7,13 +7,15 @@ export function yamlStringify(
   {
     maxLineLength = 100,
     showUndefined,
+    maxDepth = 50,
   }: {
     maxLineLength?: number;
     showUndefined?: boolean;
+    maxDepth?: number;
   } = {},
 ): string {
   if (isObject(obj) || Array.isArray(obj) || typeof obj === 'function') {
-    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined)}\n`;
+    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0)}\n`;
   }
 
   return JSON.stringify(obj) || 'undefined';
@@ -24,6 +26,8 @@ function stringifyValue(
   indent: string,
   maxLineLength: number,
   showUndefined: boolean,
+  maxDepth: number,
+  depth: number,
 ): string {
   let result = '';
   const childIndent = `${indent}  `;
@@ -38,6 +42,10 @@ function stringifyValue(
         continue;
       }
 
+      if (depth > maxDepth) {
+        objVal = `{max depth reached}`;
+      }
+
       const normalizedValue = normalizeValue(objVal);
 
       if (normalizedValue !== null) {
@@ -50,6 +58,8 @@ function stringifyValue(
         childIndent,
         maxLineLength,
         showUndefined,
+        maxDepth,
+        depth + 1,
       );
 
       if (Array.isArray(objVal)) {
@@ -103,11 +113,22 @@ function stringifyValue(
         .map((item) => {
           let valueToUse = item;
 
+          if (depth > maxDepth) {
+            valueToUse = `{max depth reached}`;
+          }
+
           if (typeof valueToUse === 'string' && valueToUse.includes('\n')) {
             valueToUse = valueToUse.replace(/\n/g, '\\n');
           }
 
-          return stringifyValue(valueToUse, '', maxLineLength, showUndefined);
+          return stringifyValue(
+            valueToUse,
+            '',
+            maxLineLength,
+            showUndefined,
+            maxDepth,
+            depth + 1,
+          );
         })
         .join(', ');
 
@@ -120,7 +141,11 @@ function stringifyValue(
     }
 
     if (!arrayWasAdded) {
-      for (const item of value) {
+      for (let item of value) {
+        if (depth > maxDepth) {
+          item = `{max depth reached}`;
+        }
+
         result += `${indent}- `;
 
         if (Array.isArray(item) || isObject(item)) {
@@ -129,6 +154,8 @@ function stringifyValue(
             childIndent,
             maxLineLength,
             showUndefined,
+            maxDepth,
+            depth + 1,
           );
 
           arrayString = arrayString.trimStart();
@@ -140,6 +167,8 @@ function stringifyValue(
             childIndent,
             maxLineLength,
             showUndefined,
+            maxDepth,
+            depth + 1,
           );
         }
 
@@ -197,6 +226,8 @@ function stringifyValue(
       indent,
       maxLineLength,
       showUndefined,
+      maxDepth,
+      depth + 1,
     );
   }
 

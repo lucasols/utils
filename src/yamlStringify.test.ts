@@ -709,3 +709,39 @@ describe('Functions', () => {
     `);
   });
 });
+
+describe('max depth', () => {
+  test('Map', () => {
+    const map = new Map<string, unknown>();
+
+    map.set('a', map);
+
+    expect(getSnapshot(map, { maxDepth: 4 })).toMatchInlineSnapshot(`
+      "
+      Map#:
+        a{Map}:
+          a{Map}:
+            a{Map}:
+              a: '{max depth reached}'
+      "
+    `);
+  });
+
+  test('Array', () => {
+    const array: any[] = ['a'];
+
+    array.push(array);
+
+    expect(getSnapshot(array, { maxDepth: 4 })).toMatchInlineSnapshot(`
+      "
+      - 'a'
+      - - 'a'
+        - - 'a'
+          - - 'a'
+            - - 'a'
+              - - '{max depth reached}'
+                - '{max depth reached}'
+      "
+    `);
+  });
+});
