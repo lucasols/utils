@@ -41,9 +41,9 @@
       "import": "./dist/consoleFmt.js",
       "types": "./dist/consoleFmt.d.ts"
     },
-    "./convertions": {
-      "import": "./dist/convertions.js",
-      "types": "./dist/convertions.d.ts"
+    "./conversions": {
+      "import": "./dist/conversions.js",
+      "types": "./dist/conversions.d.ts"
     },
     "./createThrottleController": {
       "import": "./dist/createThrottleController.js",
@@ -143,8 +143,8 @@
       "consoleFmt": [
         "./dist/consoleFmt.d.ts"
       ],
-      "convertions": [
-        "./dist/convertions.d.ts"
+      "conversions": [
+        "./dist/conversions.d.ts"
       ],
       "createThrottleController": [
         "./dist/createThrottleController.d.ts"
