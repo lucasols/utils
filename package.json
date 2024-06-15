@@ -73,6 +73,10 @@
       "import": "./dist/main.js",
       "types": "./dist/main.d.ts"
     },
+    "./mathUtils": {
+      "import": "./dist/mathUtils.js",
+      "types": "./dist/mathUtils.d.ts"
+    },
     "./objUtils": {
       "import": "./dist/objUtils.js",
       "types": "./dist/objUtils.d.ts"
@@ -104,6 +108,14 @@
     "./stringUtils": {
       "import": "./dist/stringUtils.js",
       "types": "./dist/stringUtils.d.ts"
+    },
+    "./testUtils": {
+      "import": "./dist/testUtils.js",
+      "types": "./dist/testUtils.d.ts"
+    },
+    "./typingTestUtils": {
+      "import": "./dist/typingTestUtils.js",
+      "types": "./dist/typingTestUtils.d.ts"
     },
     "./yamlStringify": {
       "import": "./dist/yamlStringify.js",
@@ -167,6 +179,9 @@
       "main": [
         "./dist/main.d.ts"
       ],
+      "mathUtils": [
+        "./dist/mathUtils.d.ts"
+      ],
       "objUtils": [
         "./dist/objUtils.d.ts"
       ],
@@ -190,6 +205,12 @@
       ],
       "stringUtils": [
         "./dist/stringUtils.d.ts"
+      ],
+      "testUtils": [
+        "./dist/testUtils.d.ts"
+      ],
+      "typingTestUtils": [
+        "./dist/typingTestUtils.d.ts"
       ],
       "yamlStringify": [
         "./dist/yamlStringify.d.ts"
