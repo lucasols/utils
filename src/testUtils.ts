@@ -11,14 +11,14 @@ export function createLoggerStore({
   filterKeys?: string[];
   rejectKeys?: string[];
 } = {}) {
-  let renders: Record<string, unknown>[] = [];
-  let rendersTime: number[] = [];
+  let logs: Record<string, unknown>[] = [];
+  let logsTime: number[] = [];
   let startTime = Date.now();
-  let onNextRender: () => void = () => {};
+  let onNextLog: () => void = () => {};
 
   function reset(keepLastRender = false) {
-    renders = keepLastRender ? [renders.at(-1)!] : [];
-    rendersTime = [];
+    logs = keepLastRender ? [logs.at(-1)!] : [];
+    logsTime = [];
     startTime = Date.now();
   }
 
@@ -27,35 +27,35 @@ export function createLoggerStore({
   ) {
     if (!isObject(render)) {
       for (const [i, r] of render.entries()) {
-        renders.push({
+        logs.push({
           i: i + 1,
           ...r,
         });
-        rendersTime.push(Date.now() - startTime);
+        logsTime.push(Date.now() - startTime);
       }
     } else {
-      renders.push(render);
-      rendersTime.push(Date.now() - startTime);
+      logs.push(render);
+      logsTime.push(Date.now() - startTime);
     }
 
-    onNextRender();
+    onNextLog();
 
-    if (renders.length > 100) {
-      throw new Error('Too many renders');
+    if (logs.length > 100) {
+      throw new Error('Too many logs');
     }
   }
 
-  function renderCount() {
-    return renders.filter((item) => !item._lastSnapshotMark).length;
+  function logsCount() {
+    return logs.filter((item) => !item._lastSnapshotMark).length;
   }
 
-  async function waitNextRender(timeout = 50) {
+  async function waitNextLog(timeout = 50) {
     return new Promise<void>((resolve) => {
       const timeoutId = setTimeout(() => {
         throw new Error('Timeout');
       }, timeout);
 
-      onNextRender = () => {
+      onNextLog = () => {
         clearTimeout(timeoutId);
         resolve();
       };
@@ -75,12 +75,12 @@ export function createLoggerStore({
     rejectKeys?: string[];
     includeLastSnapshotEndMark?: boolean;
   } = {}) {
-    let rendersToUse = renders;
+    let rendersToUse = logs;
 
     if (changesOnly || filterKeys || rejectKeys) {
       rendersToUse = [];
 
-      for (let { item, prev } of arrayWithPrevAndIndex(renders)) {
+      for (let { item, prev } of arrayWithPrevAndIndex(logs)) {
         if (item._lastSnapshotMark || item._mark) {
           rendersToUse.push(item);
           continue;
@@ -102,7 +102,7 @@ export function createLoggerStore({
       }
     }
 
-    renders.push({ _lastSnapshotMark: true });
+    logs.push({ _lastSnapshotMark: true });
 
     return `\n${filterAndMap(rendersToUse, (render, i) => {
       if (render._lastSnapshotMark) {
@@ -173,16 +173,16 @@ export function createLoggerStore({
     add,
     reset,
     getSnapshot,
-    waitNextRender,
+    waitNextLog,
     get changesSnapshot() {
       return getSnapshot({ changesOnly: true });
     },
     get snapshot() {
       return getSnapshot({ changesOnly: false });
     },
-    renderCount,
+    logsCount,
     get rendersTime() {
-      return rendersTime;
+      return logsTime;
     },
     addMark,
   };
