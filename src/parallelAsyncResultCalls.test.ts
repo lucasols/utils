@@ -1,10 +1,12 @@
 import { describe, expect, test } from 'vitest';
-import { Equal, expectType } from './internalUtils/typingTestUtils';
+import { invariant } from './assertions';
 import { omit } from './objUtils';
 import { parallelAsyncResultCalls } from './parallelAsyncResultCalls';
 import { NormalizedError, Result, asyncResultify } from './rsResult';
 import { sleep } from './sleep';
-import { invariant } from './assertions';
+import { TestTypeIsEqual, typingTest } from './typingTestUtils';
+
+const { expectType } = typingTest;
 
 function asyncResultFn<T extends string | Error | number | boolean>(
   value: T,
@@ -264,7 +266,7 @@ describe('addTuple', () => {
       .runAll();
 
     expectType<
-      Equal<
+      TestTypeIsEqual<
         typeof result,
         Result<
           [
@@ -305,7 +307,7 @@ describe('addTuple', () => {
       .runAllSettled();
 
     expectType<
-      Equal<
+      TestTypeIsEqual<
         typeof result,
         {
           allFailed: boolean;
@@ -349,7 +351,7 @@ describe('addTuple', () => {
       .runAll();
 
     expectType<
-      Equal<
+      TestTypeIsEqual<
         typeof result,
         Result<
           [Succeeded<'1', 1>, Succeeded<'error: fail', 2>, Succeeded<false, 3>],
@@ -389,7 +391,7 @@ describe('addTuple', () => {
       .runAllSettled();
 
     expectType<
-      Equal<
+      TestTypeIsEqual<
         typeof result,
         {
           allFailed: boolean;
@@ -429,7 +431,7 @@ describe('addTuple', () => {
       .runAll();
 
     expectType<
-      Equal<
+      TestTypeIsEqual<
         typeof result,
         Promise<
           Result<

@@ -7,7 +7,9 @@ import {
   resultify,
 } from './rsResult';
 import { sleep } from './sleep';
-import { Equal, expectType } from './internalUtils/typingTestUtils';
+import { TestTypeIsEqual, typingTest } from './typingTestUtils';
+
+const { expectType } = typingTest;
 
 function divide(a: number, b: number): Result<number> {
   if (b === 0) {
@@ -56,7 +58,7 @@ test('rethrowing error results', () => {
 test('result.unwrap()', () => {
   const noError = divide(10, 2).unwrap();
 
-  expectType<Equal<typeof noError, number>>();
+  expectType<TestTypeIsEqual<typeof noError, number>>();
 
   expect(noError).toEqual(5);
 
@@ -245,7 +247,7 @@ test('Result.unwrap() async results', async () => {
 
   const result = await Result.unwrap(divideAsync(10, 2));
 
-  expectType<Equal<typeof result, number>>();
+  expectType<TestTypeIsEqual<typeof result, number>>();
 
   expect(result).toEqual(5);
 });
