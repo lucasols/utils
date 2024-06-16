@@ -8,14 +8,16 @@ export function yamlStringify(
     maxLineLength = 100,
     showUndefined,
     maxDepth = 50,
+    addRootObjSpaces = 'beforeAndAfter',
   }: {
     maxLineLength?: number;
     showUndefined?: boolean;
     maxDepth?: number;
+    addRootObjSpaces?: 'before' | 'after' | 'beforeAndAfter' | false;
   } = {},
 ): string {
   if (isObject(obj) || Array.isArray(obj) || typeof obj === 'function') {
-    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0)}\n`;
+    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0, addRootObjSpaces)}\n`;
   }
 
   return JSON.stringify(obj) || 'undefined';
@@ -28,6 +30,7 @@ function stringifyValue(
   showUndefined: boolean,
   maxDepth: number,
   depth: number,
+  addObjSpaces: 'before' | 'after' | 'beforeAndAfter' | false,
 ): string {
   let result = '';
   const childIndent = `${indent}  `;
@@ -36,6 +39,9 @@ function stringifyValue(
     if (Object.keys(value).length === 0) {
       return '{}';
     }
+
+    let prevValue: unknown;
+    let afterSpaceWasAdded = false;
 
     for (let [key, objVal] of Object.entries(value)) {
       if (objVal === undefined && !showUndefined) {
@@ -60,7 +66,18 @@ function stringifyValue(
         showUndefined,
         maxDepth,
         depth + 1,
+        addObjSpaces,
       );
+
+      if (
+        !afterSpaceWasAdded &&
+        indent === '' &&
+        isObject(objVal) &&
+        prevValue &&
+        (addObjSpaces === 'before' || addObjSpaces === 'beforeAndAfter')
+      ) {
+        result += '\n';
+      }
 
       if (Array.isArray(objVal)) {
         const arrayIsSingleLine = valueString.split('\n').length === 1;
@@ -83,9 +100,18 @@ function stringifyValue(
       result += valueString;
       result += '\n';
 
-      if (indent === '' && isObject(objVal)) {
-        result += '\n';
+      if (indent === '') {
+        if (isObject(objVal)) {
+          if (addObjSpaces === 'after' || addObjSpaces === 'beforeAndAfter') {
+            result += '\n';
+            afterSpaceWasAdded = true;
+          } else {
+            afterSpaceWasAdded = false;
+          }
+        }
       }
+
+      prevValue = objVal;
     }
 
     return result.trimEnd();
@@ -128,6 +154,7 @@ function stringifyValue(
             showUndefined,
             maxDepth,
             depth + 1,
+            addObjSpaces,
           );
         })
         .join(', ');
@@ -156,6 +183,7 @@ function stringifyValue(
             showUndefined,
             maxDepth,
             depth + 1,
+            addObjSpaces,
           );
 
           arrayString = arrayString.trimStart();
@@ -169,6 +197,7 @@ function stringifyValue(
             showUndefined,
             maxDepth,
             depth + 1,
+            addObjSpaces,
           );
         }
 
@@ -228,6 +257,7 @@ function stringifyValue(
       showUndefined,
       maxDepth,
       depth + 1,
+      addObjSpaces,
     );
   }
 

@@ -60,6 +60,7 @@ test('nested objects', () => {
   ).toMatchInlineSnapshot(`
     "
     a: 1
+
     b:
       c: 2
       d:
@@ -259,6 +260,7 @@ test('complex object', () => {
   ).toMatchInlineSnapshot(`
     "
     a: 1
+
     b:
       c: 2
       d:
@@ -323,6 +325,7 @@ test('multiline string', () => {
     multiline: |-
       Hello
       world
+
     a:
       multiline: |-
         Hello
@@ -741,6 +744,65 @@ describe('max depth', () => {
             - - 'a'
               - - '{max depth reached}'
                 - '{max depth reached}'
+      "
+    `);
+  });
+});
+
+describe('add obj spaces', () => {
+  test('default: beforeAndAfter', () => {
+    expect(getSnapshot({ a: 1, obj: { a: 1 }, b: 2 })).toMatchInlineSnapshot(`
+      "
+      a: 1
+
+      obj:
+        a: 1
+
+      b: 2
+      "
+    `);
+  });
+
+  test('before', () => {
+    expect(
+      getSnapshot(
+        { a: 1, obj: { a: 1 }, b: 2 },
+        { addRootObjSpaces: 'before' },
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      a: 1
+
+      obj:
+        a: 1
+      b: 2
+      "
+    `);
+  });
+
+  test('after', () => {
+    expect(
+      getSnapshot({ a: 1, obj: { a: 1 }, b: 2 }, { addRootObjSpaces: 'after' }),
+    ).toMatchInlineSnapshot(`
+      "
+      a: 1
+      obj:
+        a: 1
+
+      b: 2
+      "
+    `);
+  });
+
+  test('none', () => {
+    expect(
+      getSnapshot({ a: 1, obj: { a: 1 }, b: 2 }, { addRootObjSpaces: false }),
+    ).toMatchInlineSnapshot(`
+      "
+      a: 1
+      obj:
+        a: 1
+      b: 2
       "
     `);
   });
