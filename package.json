@@ -37,6 +37,10 @@
       "import": "./dist/assertions.js",
       "types": "./dist/assertions.d.ts"
     },
+    "./castValues": {
+      "import": "./dist/castValues.js",
+      "types": "./dist/castValues.d.ts"
+    },
     "./consoleFmt": {
       "import": "./dist/consoleFmt.js",
       "types": "./dist/consoleFmt.d.ts"
@@ -151,6 +155,9 @@
       ],
       "assertions": [
         "./dist/assertions.d.ts"
+      ],
+      "castValues": [
+        "./dist/castValues.d.ts"
       ],
       "consoleFmt": [
         "./dist/consoleFmt.d.ts"
