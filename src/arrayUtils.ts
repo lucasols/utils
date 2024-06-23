@@ -44,7 +44,7 @@ type SortOrder = 'desc' | 'asc';
  *
  * Sort by `ascending` order by default
  *
- * Use `Infinity` as as wildcard to absulute max and min values
+ * Use `Infinity` as as wildcard to absolute max and min values
  *
  * @example
  * const items = [1, 3, 2, 4];
@@ -60,8 +60,13 @@ type SortOrder = 'desc' | 'asc';
 export function sortBy<T>(
   arr: T[],
   sortByValue: (item: T) => (number | string)[] | number | string,
-  { order = 'asc' }: { order?: SortOrder | SortOrder[] } = {},
+  props: { order?: SortOrder | SortOrder[] } | SortOrder | SortOrder[] = 'asc',
 ) {
+  const order =
+    Array.isArray(props) || typeof props === 'string' ?
+      props
+    : props.order ?? 'asc';
+
   return [...arr].sort((a, b) => {
     const _aPriority = sortByValue(a);
     const _bPriority = sortByValue(b);
@@ -105,4 +110,17 @@ export function arrayWithPrevAndIndex<T>(
     prev: array[i - 1] ?? null,
     index: i,
   }));
+}
+
+export function isInArray<T, const U extends T>(
+  value: T,
+  oneOf: readonly U[],
+): value is U {
+  for (let i = 0; i < oneOf.length; i++) {
+    if (oneOf[i] === value) {
+      return true;
+    }
+  }
+
+  return false;
 }

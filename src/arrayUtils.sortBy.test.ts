@@ -1,81 +1,68 @@
 import { describe, expect, test } from 'vitest';
 import { sortBy } from './arrayUtils';
 
-test('default props', () => {
-  expect(
-    sortBy<[number, string]>(
-      [
-        [1, '2021-07-01'],
-        [2, '2021-07-06'],
-        [1, '2021-07-08'],
-      ],
-      (item) => item,
-    ),
-  ).toStrictEqual([
-    [1, '2021-07-01'],
-    [1, '2021-07-08'],
-    [2, '2021-07-06'],
-  ]);
-});
-
-test('have different levels order', () => {
-  expect(
-    sortBy<[number, string]>(
-      [
-        [0, '2021-07-01'],
-        [0, '2021-07-06'],
-        [0, '2021-07-08'],
-      ],
-      (item) => {
-        return item;
-      },
-      {
-        order: ['desc', 'asc'],
-      },
-    ),
-  ).toStrictEqual([
-    [0, '2021-07-01'],
-    [0, '2021-07-06'],
-    [0, '2021-07-08'],
-  ]);
-});
-
-describe('handles infinity', () => {
-  test('highest to lower', () => {
+describe('single level sort', () => {
+  test('default props (asc)', () => {
     expect(
-      sortBy<[number, string | number]>(
+      sortBy(
         [
-          [0, '2021-07-01'],
-          [0, '2021-07-06'],
-          [0, '2021-07-08'],
-          [0, Infinity],
-          [0, Infinity],
+          { id: 1, price: 10 },
+          { id: 2, price: 2 },
+          { id: 3, price: 40 },
         ],
-        (item) => {
-          return item;
-        },
-        {
-          order: ['desc', 'desc'],
-        },
+        (item) => item.price,
       ),
     ).toStrictEqual([
-      [0, Infinity],
-      [0, Infinity],
-      [0, '2021-07-08'],
-      [0, '2021-07-06'],
-      [0, '2021-07-01'],
+      { id: 2, price: 2 },
+      { id: 1, price: 10 },
+      { id: 3, price: 40 },
     ]);
   });
 
-  test('lowest to higher', () => {
+  test('desc sort order', () => {
     expect(
-      sortBy<[number, string | number]>(
+      sortBy(
         [
-          [0, '2021-07-08'],
+          { id: 1, price: 10 },
+          { id: 2, price: 2 },
+          { id: 3, price: 40 },
+        ],
+        (item) => item.price,
+        'desc',
+      ),
+    ).toStrictEqual([
+      { id: 3, price: 40 },
+      { id: 1, price: 10 },
+      { id: 2, price: 2 },
+    ]);
+  });
+});
+
+describe('multilevel sort', () => {
+  test('default props (asc)', () => {
+    expect(
+      sortBy<[number, string]>(
+        [
+          [1, '2021-07-01'],
+          [2, '2021-07-06'],
+          [1, '2021-07-08'],
+        ],
+        (item) => item,
+      ),
+    ).toStrictEqual([
+      [1, '2021-07-01'],
+      [1, '2021-07-08'],
+      [2, '2021-07-06'],
+    ]);
+  });
+
+  test('have different levels order', () => {
+    expect(
+      sortBy<[number, string]>(
+        [
           [0, '2021-07-01'],
-          [0, Infinity],
           [0, '2021-07-06'],
-          [0, Infinity],
+          [0, '2021-07-08'],
         ],
         (item) => {
           return item;
@@ -88,45 +75,95 @@ describe('handles infinity', () => {
       [0, '2021-07-01'],
       [0, '2021-07-06'],
       [0, '2021-07-08'],
-      [0, Infinity],
-      [0, Infinity],
     ]);
   });
-});
 
-test('sort by single level', () => {
-  expect(
-    sortBy<[number, string]>(
-      [
-        [4, '2021-07-01'],
-        [2, '2021-07-06'],
-        [1, '2021-07-08'],
-      ],
-      (item) => item[0],
-    ),
-  ).toStrictEqual([
-    [1, '2021-07-08'],
-    [2, '2021-07-06'],
-    [4, '2021-07-01'],
-  ]);
-});
+  describe('handles infinity', () => {
+    test('highest to lower', () => {
+      expect(
+        sortBy<[number, string | number]>(
+          [
+            [0, '2021-07-01'],
+            [0, '2021-07-06'],
+            [0, '2021-07-08'],
+            [0, Infinity],
+            [0, Infinity],
+          ],
+          (item) => {
+            return item;
+          },
+          ['desc', 'desc'],
+        ),
+      ).toStrictEqual([
+        [0, Infinity],
+        [0, Infinity],
+        [0, '2021-07-08'],
+        [0, '2021-07-06'],
+        [0, '2021-07-01'],
+      ]);
+    });
 
-test('sort by single level desc', () => {
-  expect(
-    sortBy<[number, string]>(
-      [
-        [4, '2021-07-01'],
-        [2, '2021-07-06'],
-        [1, '2021-07-08'],
-      ],
-      (item) => item[0],
-      {
-        order: 'desc',
-      },
-    ),
-  ).toStrictEqual([
-    [4, '2021-07-01'],
-    [2, '2021-07-06'],
-    [1, '2021-07-08'],
-  ]);
+    test('lowest to higher', () => {
+      expect(
+        sortBy<[number, string | number]>(
+          [
+            [0, '2021-07-08'],
+            [0, '2021-07-01'],
+            [0, Infinity],
+            [0, '2021-07-06'],
+            [0, Infinity],
+          ],
+          (item) => {
+            return item;
+          },
+          {
+            order: ['desc', 'asc'],
+          },
+        ),
+      ).toStrictEqual([
+        [0, '2021-07-01'],
+        [0, '2021-07-06'],
+        [0, '2021-07-08'],
+        [0, Infinity],
+        [0, Infinity],
+      ]);
+    });
+  });
+
+  test('sort by single level', () => {
+    expect(
+      sortBy<[number, string]>(
+        [
+          [4, '2021-07-01'],
+          [2, '2021-07-06'],
+          [1, '2021-07-08'],
+        ],
+        (item) => item[0],
+      ),
+    ).toStrictEqual([
+      [1, '2021-07-08'],
+      [2, '2021-07-06'],
+      [4, '2021-07-01'],
+    ]);
+  });
+
+  test('sort by single level desc', () => {
+    expect(
+      sortBy<[number, string]>(
+        [
+          [4, '2021-07-01'],
+          [2, '2021-07-06'],
+          [1, '2021-07-08'],
+        ],
+        (item) => item[0],
+        {
+          order: 'desc',
+        },
+      ),
+    ).toStrictEqual([
+      [4, '2021-07-01'],
+      [2, '2021-07-06'],
+      [1, '2021-07-08'],
+    ]);
+  });
 });
