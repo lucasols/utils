@@ -15,9 +15,17 @@ export class EnhancedMap<K, V> extends Map<K, V> {
     return undefined;
   }
 
-  setMultiple(...values: [key: K, value: V][]): this {
-    for (const [key, value] of values) {
-      this.set(key, value);
+  setMultiple(values: Record<K & string, V>): this;
+  setMultiple(...values: [key: K, value: V][]): this;
+  setMultiple(...values: [key: K, value: V][] | [Record<K & string, V>]): this {
+    if (Array.isArray(values[0])) {
+      for (const [key, value] of values as [key: K, value: V][]) {
+        this.set(key, value);
+      }
+    } else {
+      for (const [key, value] of Object.entries(values[0])) {
+        this.set(key as K, value as V);
+      }
     }
 
     return this;

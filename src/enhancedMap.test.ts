@@ -19,6 +19,17 @@ describe('EnhancedMap', () => {
     expect(map.get('two')).toBe(2);
   });
 
+  test('setMultiple with object', () => {
+    const map = new EnhancedMap<string, number>();
+    map.setMultiple({ one: 1, two: 2 });
+    expect(map.get('one')).toBe(1);
+    expect(map.get('two')).toBe(2);
+
+    const map2 = new EnhancedMap<{ obj: string }, number>();
+    // @ts-expect-error - maps with non string keys should not allow to use objects in setMultiple
+    map2.setMultiple({ obj: 'one', two: 2 });
+  });
+
   test('getOrThrow', () => {
     const map = new EnhancedMap<string, number>([['one', 1]]);
     expect(map.getOrThrow('one')).toBe(1);
