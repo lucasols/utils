@@ -1,5 +1,3 @@
-import { NoInfer } from './internalUtils/types.js';
-
 const undefErrMsg = 'not undefined assertion failed';
 const nullishErrMsg = 'not nullish assertion failed';
 

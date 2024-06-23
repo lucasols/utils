@@ -8,6 +8,7 @@
     "test:run": "vitest run",
     "lint": "pnpm tsc && pnpm eslint",
     "tsc": "tsc -p tsconfig.prod.json",
+    "tsc:watch": "tsc -p tsconfig.prod.json --watch",
     "eslint": "CI=true eslint src/ scripts/ --color --max-warnings=0",
     "build": "pnpm test:run && pnpm lint && pnpm build:no-test && pnpm build:update-exports",
     "build:no-test": "tsup",
@@ -144,7 +145,7 @@
     "prettier-plugin-organize-imports": "^3.2.4",
     "tsm": "^2.3.0",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.5",
+    "typescript": "^5.5.2",
     "vite": "^5.2.10",
     "vitest": "^1.5.2"
   },

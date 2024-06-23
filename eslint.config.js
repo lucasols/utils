@@ -1,8 +1,8 @@
 // @ts-check
 // @ts-ignore
-import tsParser from '@typescript-eslint/parser';
 import js from '@eslint/js';
 import ts from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
 // @ts-ignore
 import { rules } from '@lucasols/eslint-plugin-extended-lint';
 import vitest from 'eslint-plugin-vitest';
@@ -46,6 +46,7 @@ const config = [
       'prefer-template': ERROR_IN_CI,
       'prefer-const': [ERROR_IN_CI, { destructuring: 'all' }],
       'no-redeclare': OFF,
+      'no-dupe-class-members': OFF,
 
       'no-prototype-builtins': OFF,
       'no-inner-declarations': OFF,

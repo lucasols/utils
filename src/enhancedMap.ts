@@ -1,9 +1,11 @@
-import { KeysType } from './internalUtils/types';
+import { isFunction } from './assertions';
 
 export const enhancedMapReject = Symbol();
 
 export class EnhancedMap<K, V> extends Map<K, V> {
-  find(predicate: (value: V, key: K) => boolean): { key: K, value: V} | undefined {
+  find(
+    predicate: (value: V, key: K) => boolean,
+  ): { key: K; value: V } | undefined {
     for (const [key, value] of this) {
       if (predicate(value, key)) {
         return { key, value };
@@ -11,6 +13,14 @@ export class EnhancedMap<K, V> extends Map<K, V> {
     }
 
     return undefined;
+  }
+
+  setMultiple(...values: [key: K, value: V][]): this {
+    for (const [key, value] of values) {
+      this.set(key, value);
+    }
+
+    return this;
   }
 
   getOrThrow(key: K): V {
@@ -63,7 +73,7 @@ export class EnhancedMap<K, V> extends Map<K, V> {
     return values;
   }
 
-  toObjMap<ObjKey extends KeysType, ObjValue>(
+  toObjMap<ObjKey extends PropertyKey, ObjValue>(
     mapFunction: (value: V, key: K) => [key: ObjKey, value: ObjValue] | false,
   ): Record<ObjKey, ObjValue> {
     const values: Record<ObjKey, ObjValue> = {} as any;
@@ -87,6 +97,7 @@ export class EnhancedMap<K, V> extends Map<K, V> {
     return [...this.keys()];
   }
 
+  /** @deprecated, will be removed in v5 use `from` method instead */
   static fromIterMap<T, K, V>(
     array: T[] | Iterable<T>,
     mapFunction: (item: T) => [key: K, value: V] | false,
@@ -98,6 +109,43 @@ export class EnhancedMap<K, V> extends Map<K, V> {
 
       if (result) {
         map.set(result[0], result[1]);
+      }
+    }
+
+    return map;
+  }
+
+  static from<T extends Record<string, unknown>, K extends keyof T>(
+    array: T[] | Iterable<T> | null | undefined,
+    key: K,
+  ): EnhancedMap<T[K], T>;
+  static from<T, K, V>(
+    array: T[] | Iterable<T> | null | undefined,
+    mapFunction: (item: T) => [key: K, value: V] | false,
+  ): EnhancedMap<K, V>;
+  static from(
+    array: any[] | Iterable<any> | null | undefined,
+    mapFunction: ((item: any) => [key: any, value: any] | false) | string,
+  ): EnhancedMap<any, any> {
+    const map = new EnhancedMap<any, any>();
+
+    if (!array) return map;
+
+    const isFn = isFunction(mapFunction);
+
+    for (const item of array) {
+      if (isFn) {
+        const result = mapFunction(item);
+
+        if (result) {
+          map.set(result[0], result[1]);
+        }
+      } else {
+        const key = item[mapFunction];
+
+        if (key !== undefined) {
+          map.set(key, item);
+        }
       }
     }
 

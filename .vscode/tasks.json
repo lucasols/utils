@@ -21,6 +21,14 @@
       "presentation": {
         "clear": true
       }
+    },
+    {
+      "label": "tsc watch",
+      "type": "npm",
+      "script": "tsc:watch",
+      "presentation": {
+        "clear": true
+      }
     }
   ],
   "inputs": [
