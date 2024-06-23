@@ -1,7 +1,7 @@
 {
-  "name": "@lucasols/utils",
+  "name": "@ls-stack/utils",
   "description": "Typescript utils",
-  "version": "4.31.0",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "test": "vitest --ui",
