@@ -102,17 +102,7 @@ export class EnhancedMap<K, V> extends Map<K, V> {
     array: T[] | Iterable<T>,
     mapFunction: (item: T) => [key: K, value: V] | false,
   ): EnhancedMap<K, V> {
-    const map = new EnhancedMap<K, V>();
-
-    for (const item of array) {
-      const result = mapFunction(item);
-
-      if (result) {
-        map.set(result[0], result[1]);
-      }
-    }
-
-    return map;
+    return this.from(array, mapFunction);
   }
 
   static from<T extends Record<string, unknown>, K extends keyof T>(
