@@ -70,10 +70,6 @@
       "import": "./dist/exhaustiveMatch.js",
       "types": "./dist/exhaustiveMatch.d.ts"
     },
-    "./internalUtils": {
-      "import": "./dist/internalUtils.js",
-      "types": "./dist/internalUtils.d.ts"
-    },
     "./main": {
       "import": "./dist/main.js",
       "types": "./dist/main.d.ts"
@@ -118,9 +114,17 @@
       "import": "./dist/testUtils.js",
       "types": "./dist/testUtils.d.ts"
     },
+    "./typingFnUtils": {
+      "import": "./dist/typingFnUtils.js",
+      "types": "./dist/typingFnUtils.d.ts"
+    },
     "./typingTestUtils": {
       "import": "./dist/typingTestUtils.js",
       "types": "./dist/typingTestUtils.d.ts"
+    },
+    "./typingUtils": {
+      "import": "./dist/typingUtils.js",
+      "types": "./dist/typingUtils.d.ts"
     },
     "./yamlStringify": {
       "import": "./dist/yamlStringify.js",
@@ -181,9 +185,6 @@
       "exhaustiveMatch": [
         "./dist/exhaustiveMatch.d.ts"
       ],
-      "internalUtils": [
-        "./dist/internalUtils.d.ts"
-      ],
       "main": [
         "./dist/main.d.ts"
       ],
@@ -217,8 +218,14 @@
       "testUtils": [
         "./dist/testUtils.d.ts"
       ],
+      "typingFnUtils": [
+        "./dist/typingFnUtils.d.ts"
+      ],
       "typingTestUtils": [
         "./dist/typingTestUtils.d.ts"
+      ],
+      "typingUtils": [
+        "./dist/typingUtils.d.ts"
       ],
       "yamlStringify": [
         "./dist/yamlStringify.d.ts"
