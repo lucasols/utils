@@ -54,6 +54,10 @@
       "import": "./dist/createThrottleController.js",
       "types": "./dist/createThrottleController.d.ts"
     },
+    "./debounce": {
+      "import": "./dist/debounce.js",
+      "types": "./dist/debounce.d.ts"
+    },
     "./dedent": {
       "import": "./dist/dedent.js",
       "types": "./dist/dedent.d.ts"
@@ -172,6 +176,9 @@
       ],
       "createThrottleController": [
         "./dist/createThrottleController.d.ts"
+      ],
+      "debounce": [
+        "./dist/debounce.d.ts"
       ],
       "dedent": [
         "./dist/dedent.d.ts"
