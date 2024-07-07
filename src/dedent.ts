@@ -1,10 +1,10 @@
 // fork of https://github.com/dmnd/dedent
 
-export function dedent(strings: string): string;
 export function dedent(
   strings: TemplateStringsArray,
   ...values: string[]
 ): string;
+export function dedent(strings: string): string;
 export function dedent(
   strings: TemplateStringsArray | string,
   ...values: string[]
