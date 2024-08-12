@@ -12,25 +12,32 @@ import { spawn } from 'child_process';
 
 (process.env as any).FORCE_COLOR = true;
 
+type RunCmdOptions = {
+  mock?: CmdResult;
+  silent?: boolean | 'timeOnly';
+  cwd?: string;
+  throwOnError?: boolean;
+};
+
 export function runCmd(
   label: string | null,
   command: string | string[],
-  {
-    mock,
-    silent,
-    cwd = process.cwd(),
-  }: { mock?: CmdResult; silent?: boolean; cwd?: string } = {},
+  { mock, silent, throwOnError, cwd = process.cwd() }: RunCmdOptions = {},
 ): Promise<CmdResult> {
   if (mock) return Promise.resolve(mock);
 
-  if (label && !silent) {
+  if (label && (!silent || silent === 'timeOnly')) {
     console.log(`----${label}----`);
     console.time('✅');
   }
 
   return new Promise((resolve) => {
     const [cmd = '', ...args] =
-      Array.isArray(command) ? command : command.split(' ');
+      Array.isArray(command) ?
+        command.flatMap((item) =>
+          item.startsWith('$') ? item.replace('$', '').split(' ') : item,
+        )
+      : command.split(' ');
     const child = spawn(cmd, args, {
       cwd,
     });
@@ -60,12 +67,25 @@ export function runCmd(
     child.on('close', (code) => {
       const hasError = code !== 0;
 
-      if (!silent && label) {
+      if (!silent || silent === 'timeOnly') {
         if (!hasError) {
           console.timeEnd('✅');
         }
 
         console.log('\n');
+      }
+
+      if (throwOnError && hasError) {
+        if (silent) {
+          if (label) {
+            console.log(`----${label}----`);
+          } else {
+            console.trace();
+          }
+          console.error(stderr);
+        }
+
+        process.exit(1);
       }
 
       resolve({ label, out, stderr, stdout, error: hasError });
@@ -84,10 +104,10 @@ export async function concurrentCmd(
 
   onResult(result);
 
-  const ellapsedSeconds = (Date.now() - start) / 1000;
+  const elapsedSeconds = (Date.now() - start) / 1000;
 
   console.log(
-    `${result.error ? '🔴' : '✅'} ${result.label} (${ellapsedSeconds.toFixed(
+    `${result.error ? '🔴' : '✅'} ${result.label} (${elapsedSeconds.toFixed(
       1,
     )}s)`,
   );
@@ -99,4 +119,24 @@ export async function concurrentCmd(
       console.log('\n');
     }
   };
+}
+
+export async function runCmdUnwrap(
+  label: string | null,
+  command: string | string[],
+  {
+    silent,
+  }: {
+    silent?: boolean | 'timeOnly';
+  } = {},
+) {
+  return (await runCmd(label, command, { silent, throwOnError: true })).stdout;
+}
+
+export function runCmdSilent(command: string | string[]) {
+  return runCmd(null, command, { silent: true });
+}
+
+export function runCmdSilentUnwrap(command: string | string[]) {
+  return runCmdUnwrap(null, command, { silent: true });
 }
