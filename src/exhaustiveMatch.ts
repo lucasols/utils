@@ -33,7 +33,13 @@ export function exhaustiveMatch<T extends string>(value: T) {
     throw new Error(`Exhaustive match failed: no match for ${value}`);
   }
 
+  /** match with early evaluation of the values */
+  function withObject<R>(pattern: Record<T, R>): R {
+    return pattern[value];
+  }
+
   return {
     with: matchWith,
+    withObject,
   };
 }
