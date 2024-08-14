@@ -95,7 +95,7 @@ export function runCmd(
 
 export async function concurrentCmd(
   label: string,
-  cmd: string,
+  cmd: string | string[],
   onResult: (result: CmdResult) => void,
 ) {
   const start = Date.now();
