@@ -1,5 +1,5 @@
-import { notNullish } from './assertions';
-import { clampRange } from './mathUtils';
+import { invariant } from './assertions';
+import { clampMax, clampMin, clampRange } from './mathUtils';
 
 type Interval = [number, number];
 
@@ -30,18 +30,32 @@ export function interpolate(
   input: number,
   inputRange: number[],
   outputRange: number[],
-  clamp = true,
+  clamp: boolean | 'start' | 'end' = true,
 ) {
+  invariant(
+    inputRange.length === outputRange.length,
+    'Ranges must have the same length',
+  );
+
   const range = findRange(input, inputRange);
-  const inStart = notNullish(inputRange[range]);
-  const inEnd = notNullish(inputRange[range + 1]);
-  const outStart = notNullish(outputRange[range]);
-  const outEnd = notNullish(outputRange[range + 1]);
+  const inStart = inputRange[range]!;
+  const inEnd = inputRange[range + 1]!;
+  const outStart = outputRange[range]!;
+  const outEnd = outputRange[range + 1]!;
 
   const interpolatedValue =
     ((input - inStart) / (inEnd - inStart)) * (outEnd - outStart) + outStart;
 
-  return clamp ?
-      clampRange(interpolatedValue, outStart, outEnd)
-    : interpolatedValue;
+  const outputIsAscending = outStart < outEnd;
+
+  return (
+    clamp === 'start' ?
+      outputIsAscending ? clampMin(interpolatedValue, outStart)
+      : clampMax(interpolatedValue, outStart)
+    : clamp === 'end' ?
+      outputIsAscending ? clampMax(interpolatedValue, outEnd)
+      : clampMin(interpolatedValue, outEnd)
+    : clamp ? clampRange(interpolatedValue, outStart, outEnd)
+    : interpolatedValue
+  );
 }
