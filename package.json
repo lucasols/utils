@@ -74,6 +74,10 @@
       "import": "./dist/exhaustiveMatch.js",
       "types": "./dist/exhaustiveMatch.d.ts"
     },
+    "./interpolate": {
+      "import": "./dist/interpolate.js",
+      "types": "./dist/interpolate.d.ts"
+    },
     "./main": {
       "import": "./dist/main.js",
       "types": "./dist/main.d.ts"
@@ -191,6 +195,9 @@
       ],
       "exhaustiveMatch": [
         "./dist/exhaustiveMatch.d.ts"
+      ],
+      "interpolate": [
+        "./dist/interpolate.d.ts"
       ],
       "main": [
         "./dist/main.d.ts"
