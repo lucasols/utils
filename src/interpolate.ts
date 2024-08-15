@@ -37,7 +37,7 @@ export function interpolate({
   input,
   in: inputRange,
   out,
-  clamp,
+  clamp = true,
 }: InterpolateArgs): number {
   invariant(
     inputRange.length === out.length,
