@@ -26,12 +26,42 @@ function findRange(input: number, inputRange: number[]) {
   return inputRange.length - 2;
 }
 
+type InterpolateArgs = {
+  input: number;
+  in_: number[];
+  out: number[];
+  clamp?: boolean | 'start' | 'end';
+};
+
+export function interpolate(args: InterpolateArgs): number;
 export function interpolate(
   input: number,
   inputRange: number[],
   outputRange: number[],
-  clamp: boolean | 'start' | 'end' = true,
+  clamp?: boolean | 'start' | 'end',
+): number;
+export function interpolate(
+  ...args:
+    | [InterpolateArgs]
+    | [number, number[], number[], (boolean | 'start' | 'end')?]
 ) {
+  let input: number;
+  let inputRange: number[];
+  let outputRange: number[];
+  let clamp: boolean | 'start' | 'end';
+
+  if (args.length === 1) {
+    input = args[0].input;
+    inputRange = args[0].in_;
+    outputRange = args[0].out;
+    clamp = args[0].clamp ?? true;
+  } else {
+    input = args[0];
+    inputRange = args[1];
+    outputRange = args[2];
+    clamp = args[3] ?? true;
+  }
+
   invariant(
     inputRange.length === outputRange.length,
     'Ranges must have the same length',
