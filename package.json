@@ -79,6 +79,10 @@
       "import": "./dist/interpolate.js",
       "types": "./dist/interpolate.d.ts"
     },
+    "./levenshtein": {
+      "import": "./dist/levenshtein.js",
+      "types": "./dist/levenshtein.d.ts"
+    },
     "./main": {
       "import": "./dist/main.js",
       "types": "./dist/main.d.ts"
@@ -200,6 +204,9 @@
       ],
       "interpolate": [
         "./dist/interpolate.d.ts"
+      ],
+      "levenshtein": [
+        "./dist/levenshtein.d.ts"
       ],
       "main": [
         "./dist/main.d.ts"
