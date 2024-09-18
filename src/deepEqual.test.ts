@@ -1,5 +1,6 @@
+/* eslint-disable vitest/expect-expect */
+import { describe, expect, test } from 'vitest';
 import { deepEqual } from '../src/deepEqual';
-import { expect, describe, test } from 'vitest';
 
 const obj1 = {
   foo: 'bar',

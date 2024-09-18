@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable no-param-reassign */
-/** forked from https://github.com/lukeed/dequal to conside invalid dates as equal */
+/** forked from https://github.com/lukeed/dequal to consider invalid dates as equal */
 
-var has = Object.prototype.hasOwnProperty;
+const has = Object.prototype.hasOwnProperty;
 
 function find(iter: any[], tar: any, key?: any) {
   for (key of iter.keys()) {
@@ -12,7 +12,7 @@ function find(iter: any[], tar: any, key?: any) {
 }
 
 export function deepEqual(foo: any, bar: any): boolean {
-  var ctor, len, tmp;
+  let ctor, len, tmp;
   if (foo === bar) return true;
 
   if (foo && bar && (ctor = foo.constructor) === bar.constructor) {

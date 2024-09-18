@@ -60,7 +60,7 @@ class ParallelAsyncResultCalls<
     return this;
   }
 
-  /** adds calls return tuples with infered results */
+  /** adds calls return tuples with inferred results */
   addTuple<
     T extends (M extends undefined ? () => Promise<Result<R>>
     : { metadata: M; fn: () => Promise<Result<R>> })[],

@@ -1,17 +1,18 @@
-import { exhaustiveMatch } from './exhaustiveMatch';
 import { expect, test } from 'vitest';
+import { exhaustiveMatch } from './exhaustiveMatch';
+import { typingTest } from './typingTestUtils';
 
 function hasType<T>(value: T) {
   return value;
 }
 
-test('simple check', () => {
+typingTest.test('simple check', () => {
   exhaustiveMatch('a' as const).with({
     a: () => 'a',
   });
 });
 
-test('check excess keys', () => {
+typingTest.test('check excess keys', () => {
   exhaustiveMatch('a' as const).with({
     a: () => 'a',
     // @ts-expect-error missing keys

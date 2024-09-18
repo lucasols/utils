@@ -146,6 +146,7 @@ export function debounce<T extends (...args: any[]) => void>(
     const time = Date.now();
     const isInvoking = shouldInvoke(time);
 
+    // eslint-disable-next-line prefer-rest-params
     lastArgs = arguments;
     // eslint-disable-next-line @typescript-eslint/no-this-alias -- this is a forked code, so a refactor is not worth it
     lastThis = this;
