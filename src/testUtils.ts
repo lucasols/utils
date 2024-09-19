@@ -187,3 +187,12 @@ export function createLoggerStore({
     addMark,
   };
 }
+
+export function getResultFn<T extends (...args: any[]) => any>(
+  fnGetter: () => T,
+): T {
+  return ((...args: any[]) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return fnGetter()(...args);
+  }) as T;
+}
