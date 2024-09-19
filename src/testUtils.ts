@@ -179,7 +179,7 @@ export function createLoggerStore({
 
         if (typeof value === 'object' && value !== null) {
           value = JSON.stringify(value)
-            .replace(/:""/g, "''")
+            .replace(/:""/g, ":''")
             .replace(/"/g, '')
             .replace(/,/g, ', ');
         }
