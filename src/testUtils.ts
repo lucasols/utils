@@ -7,9 +7,19 @@ import { omit, pick } from './objUtils';
 export function createLoggerStore({
   filterKeys: defaultFilterKeys,
   rejectKeys: defaultRejectKeys,
+  splitLongLines: defaultSplitLongLines = true,
+  maxLineLengthBeforeSplit: defaultMaxLineLengthBeforeSplit = 80,
+  fromLastSnapshot: defaultFromLastSnapshot = false,
+  arrays: defaultArrays = { firstNItems: 1 },
+  changesOnly: defaultChangesOnly = false,
 }: {
   filterKeys?: string[];
   rejectKeys?: string[];
+  splitLongLines?: true;
+  maxLineLengthBeforeSplit?: number;
+  fromLastSnapshot?: boolean;
+  arrays?: 'all' | 'firstAndLast' | 'length' | { firstNItems: number };
+  changesOnly?: boolean;
 } = {}) {
   let logs: Record<string, unknown>[] = [];
   let logsTime: number[] = [];
@@ -63,17 +73,23 @@ export function createLoggerStore({
   }
 
   function getSnapshot({
-    arrays = { firstNItems: 1 },
-    changesOnly = true,
+    arrays = defaultArrays,
+    changesOnly = defaultChangesOnly,
     filterKeys = defaultFilterKeys,
     rejectKeys = defaultRejectKeys,
     includeLastSnapshotEndMark = true,
+    splitLongLines = defaultSplitLongLines,
+    maxLineLengthBeforeSplit = defaultMaxLineLengthBeforeSplit,
+    fromLastSnapshot = defaultFromLastSnapshot,
   }: {
     arrays?: 'all' | 'firstAndLast' | 'length' | { firstNItems: number };
     changesOnly?: boolean;
     filterKeys?: string[];
     rejectKeys?: string[];
     includeLastSnapshotEndMark?: boolean;
+    splitLongLines?: boolean;
+    maxLineLengthBeforeSplit?: number;
+    fromLastSnapshot?: boolean;
   } = {}) {
     let rendersToUse = logs;
 
@@ -100,6 +116,14 @@ export function createLoggerStore({
           rendersToUse.push(item);
         }
       }
+    }
+
+    if (fromLastSnapshot) {
+      const lastSnapshotMark = rendersToUse.findLastIndex(
+        (item) => item._lastSnapshotMark === true,
+      );
+
+      rendersToUse = rendersToUse.slice(clampMin(lastSnapshotMark, 0));
     }
 
     logs.push({ _lastSnapshotMark: true });
@@ -161,6 +185,33 @@ export function createLoggerStore({
       }
 
       line = line.slice(0, -4);
+
+      if (splitLongLines && line.length > maxLineLengthBeforeSplit) {
+        const parts = line.split(' -- ');
+
+        if (parts.length === 1) {
+          return line;
+        }
+
+        line = '';
+
+        for (const { item, index } of arrayWithPrevAndIndex(parts)) {
+          if (index === 0) {
+            line += '┌─\n⎢ ';
+          } else if (index === parts.length - 1) {
+            line += '⎢ ';
+          } else {
+            line += '⎢ ';
+          }
+
+          line += `${item}\n`;
+
+          if (index === parts.length - 1) {
+            line += '└─';
+          }
+        }
+      }
+
       return line;
     }).join('\n')}\n`;
   }
@@ -178,7 +229,10 @@ export function createLoggerStore({
       return getSnapshot({ changesOnly: true });
     },
     get snapshot() {
-      return getSnapshot({ changesOnly: false });
+      return getSnapshot();
+    },
+    get snapshotFromLast() {
+      return getSnapshot({ fromLastSnapshot: true });
     },
     logsCount,
     get rendersTime() {
