@@ -144,7 +144,10 @@ export function createLoggerStore({
       }
 
       if (render._mark) {
-        let mark = `\n>>> ${String(render._mark)}`;
+        const prevIsLastSnapshotMark = rendersToUse[i - 1]?._lastSnapshotMark;
+        let mark = `${
+          prevIsLastSnapshotMark ? '' : '\n'
+        }>>> ${String(render._mark)}`;
 
         const nextRender = rendersToUse[i + 1];
 

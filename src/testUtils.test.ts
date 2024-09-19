@@ -70,7 +70,6 @@ describe('createLoggerStore', () => {
     expect(store.snapshotFromLast).toMatchInlineSnapshot(`
       "
       ⋅⋅⋅
-
       >>> mark
 
       -> name: Jane ⋅ age: 25
