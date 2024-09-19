@@ -69,7 +69,7 @@ describe('createLoggerStore', () => {
 
     expect(store.snapshotFromLast).toMatchInlineSnapshot(`
       "
-      ---
+      ⋅⋅⋅
 
       >>> mark
 
