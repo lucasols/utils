@@ -134,10 +134,18 @@ export function createLoggerStore({
 
     const propDivider = '⋅';
 
-    return `\n${filterAndMap(rendersToUse, (render, i) => {
+    const snapShot = `\n${filterAndMap(rendersToUse, (render, i) => {
       if (render._lastSnapshotMark) {
-        if (includeLastSnapshotEndMark && i !== rendersToUse.length - 1) {
-          return '⋅⋅⋅';
+        if (includeLastSnapshotEndMark) {
+          if (rendersToUse.length === 1) {
+            return '⋅⋅⋅';
+          }
+
+          if (i !== rendersToUse.length - 1) {
+            return '⋅⋅⋅';
+          }
+
+          return false;
         } else {
           return false;
         }
@@ -232,6 +240,8 @@ export function createLoggerStore({
 
       return line;
     }).join('\n')}\n`;
+
+    return snapShot === `\n⋅⋅⋅\n` ? '⋅⋅⋅empty⋅⋅⋅' : snapShot;
   }
 
   function addMark(label: string) {

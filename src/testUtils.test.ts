@@ -177,4 +177,20 @@ describe('createLoggerStore', () => {
       "
     `);
   });
+
+  test('snapshot from last empty', () => {
+    const store = createLoggerStore({ fromLastSnapshot: true });
+
+    store.add({ name: 'John', age: 30 });
+    store.add({ name: 'John', age: 30 });
+
+    expect(store.snapshot).toMatchInlineSnapshot(`
+      "
+      -> name: John ⋅ age: 30
+      -> name: John ⋅ age: 30
+      "
+    `);
+
+    expect(store.snapshotFromLast).toMatchInlineSnapshot(`"⋅⋅⋅empty⋅⋅⋅"`);
+  });
 });
