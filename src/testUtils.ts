@@ -12,6 +12,7 @@ export function createLoggerStore({
   fromLastSnapshot: defaultFromLastSnapshot = false,
   arrays: defaultArrays = { firstNItems: 1 },
   changesOnly: defaultChangesOnly = false,
+  useEmojiForBooleans: defaultUseEmojiForBooleans = true,
 }: {
   filterKeys?: string[];
   rejectKeys?: string[];
@@ -20,6 +21,7 @@ export function createLoggerStore({
   fromLastSnapshot?: boolean;
   arrays?: 'all' | 'firstAndLast' | 'length' | { firstNItems: number };
   changesOnly?: boolean;
+  useEmojiForBooleans?: boolean;
 } = {}) {
   let logs: Record<string, unknown>[] = [];
   let logsTime: number[] = [];
@@ -81,6 +83,7 @@ export function createLoggerStore({
     splitLongLines = defaultSplitLongLines,
     maxLineLengthBeforeSplit = defaultMaxLineLengthBeforeSplit,
     fromLastSnapshot = defaultFromLastSnapshot,
+    useEmojiForBooleans = defaultUseEmojiForBooleans,
   }: {
     arrays?: 'all' | 'firstAndLast' | 'length' | { firstNItems: number };
     changesOnly?: boolean;
@@ -90,6 +93,7 @@ export function createLoggerStore({
     splitLongLines?: boolean;
     maxLineLengthBeforeSplit?: number;
     fromLastSnapshot?: boolean;
+    useEmojiForBooleans?: boolean;
   } = {}) {
     let rendersToUse = logs;
 
@@ -128,6 +132,8 @@ export function createLoggerStore({
 
     logs.push({ _lastSnapshotMark: true });
 
+    const propDivider = '⋅';
+
     return `\n${filterAndMap(rendersToUse, (render, i) => {
       if (render._lastSnapshotMark) {
         if (includeLastSnapshotEndMark && i !== rendersToUse.length - 1) {
@@ -160,17 +166,17 @@ export function createLoggerStore({
           } else if (arrays === 'firstAndLast' && value.length > 2) {
             const intermediateSize = clampMin(value.length - 2, 0);
 
-            value = [
-              value[0],
-              `...(${intermediateSize} between)`,
-              value.at(-1),
-            ];
+            value = [value[0], `…(${intermediateSize} between)`, value.at(-1)];
           } else if (typeof arrays === 'object' && value.length > 2) {
             value = [
               ...value.slice(0, arrays.firstNItems),
-              `...(${value.length - arrays.firstNItems} more)`,
+              `…(${value.length - arrays.firstNItems} more)`,
             ];
           }
+        }
+
+        if (typeof value === 'boolean' && useEmojiForBooleans) {
+          value = value ? '✅' : '❌';
         }
 
         if (value === '') {
@@ -179,18 +185,20 @@ export function createLoggerStore({
 
         if (typeof value === 'object' && value !== null) {
           value = JSON.stringify(value)
+            .replace(/:true/g, ':✅')
+            .replace(/:false/g, ':❌')
             .replace(/:""/g, ":''")
             .replace(/"/g, '')
             .replace(/,/g, ', ');
         }
 
-        line += `${key}: ${value} -- `;
+        line += `${key}: ${value} ${propDivider} `;
       }
 
-      line = line.slice(0, -4);
+      line = line.slice(0, (propDivider.length + 2) * -1);
 
       if (splitLongLines && line.length > maxLineLengthBeforeSplit) {
-        const parts = line.split(' -- ');
+        const parts = line.split(` ${propDivider} `);
 
         if (parts.length === 1) {
           return line;
@@ -198,13 +206,15 @@ export function createLoggerStore({
 
         line = '';
 
+        const propDividerML = '⋅';
+
         for (const { item, index } of arrayWithPrevAndIndex(parts)) {
           if (index === 0) {
-            line += '┌─\n⎢ ';
+            line += `┌─\n${propDividerML} `;
           } else if (index === parts.length - 1) {
-            line += '⎢ ';
+            line += `${propDividerML} `;
           } else {
-            line += '⎢ ';
+            line += `${propDividerML} `;
           }
 
           line += `${item}\n`;
@@ -213,6 +223,8 @@ export function createLoggerStore({
             line += '└─';
           }
         }
+      } else {
+        line = `-> ${line}`;
       }
 
       return line;

@@ -5,15 +5,15 @@ describe('createLoggerStore', () => {
   test('should add logs and return correct snapshot', () => {
     const store = createLoggerStore();
 
-    store.add({ name: 'John', age: 30 });
-    store.add({ name: 'John', age: 30 });
-    store.add({ name: 'Jane', age: 25 });
+    store.add({ name: 'John', age: 30, address: '123 Main St' });
+    store.add({ name: 'John', age: 30, address: '123 Main St' });
+    store.add({ name: 'Jane', age: 25, address: '456 Elm St' });
 
     expect(store.snapshot).toMatchInlineSnapshot(`
       "
-      name: John -- age: 30
-      name: John -- age: 30
-      name: Jane -- age: 25
+      -> name: John ⋅ age: 30 ⋅ address: 123 Main St
+      -> name: John ⋅ age: 30 ⋅ address: 123 Main St
+      -> name: Jane ⋅ age: 25 ⋅ address: 456 Elm St
       "
     `);
   });
@@ -27,11 +27,11 @@ describe('createLoggerStore', () => {
 
     expect(store.snapshot).toMatchInlineSnapshot(`
       "
-      name: John -- age: 30
+      -> name: John ⋅ age: 30
 
       >>> mark
 
-      name: Jane -- age: 25
+      -> name: Jane ⋅ age: 25
       "
     `);
   });
@@ -45,8 +45,8 @@ describe('createLoggerStore', () => {
 
     expect(store.changesSnapshot).toMatchInlineSnapshot(`
       "
-      name: John -- age: 30
-      name: Jane -- age: 25
+      -> name: John ⋅ age: 30
+      -> name: Jane ⋅ age: 25
       "
     `);
   });
@@ -59,8 +59,8 @@ describe('createLoggerStore', () => {
 
     expect(store.snapshotFromLast).toMatchInlineSnapshot(`
       "
-      name: John -- age: 30
-      name: John -- age: 30
+      -> name: John ⋅ age: 30
+      -> name: John ⋅ age: 30
       "
     `);
 
@@ -73,7 +73,7 @@ describe('createLoggerStore', () => {
 
       >>> mark
 
-      name: Jane -- age: 25
+      -> name: Jane ⋅ age: 25
       "
     `);
   });
@@ -102,20 +102,20 @@ describe('createLoggerStore', () => {
     expect(store.snapshot).toMatchInlineSnapshot(`
       "
       ┌─
-      ⎢ name: John Smith
-      ⎢ age: 30
-      ⎢ address: 123 Main St
-      ⎢ city: New York
-      ⎢ country: USA
-      ⎢ children: [Bob, ...(3 more)]
+      ⋅ name: John Smith
+      ⋅ age: 30
+      ⋅ address: 123 Main St
+      ⋅ city: New York
+      ⋅ country: USA
+      ⋅ children: [Bob, …(3 more)]
       └─
       ┌─
-      ⎢ name: Lisa Smith
-      ⎢ age: 25
-      ⎢ address: 456 Elm St
-      ⎢ city: Los Angeles
-      ⎢ country: USA
-      ⎢ children: [Bob, Jane]
+      ⋅ name: Lisa Smith
+      ⋅ age: 25
+      ⋅ address: 456 Elm St
+      ⋅ city: Los Angeles
+      ⋅ country: USA
+      ⋅ children: [Bob, Jane]
       └─
       "
     `);
@@ -133,7 +133,48 @@ describe('createLoggerStore', () => {
 
     expect(store.snapshot).toMatchInlineSnapshot(`
       "
-      name: John Smith -- age: 30 -- address: '' -- obj: {a:1, empty:'', b:2}
+      -> name: John Smith ⋅ age: 30 ⋅ address: '' ⋅ obj: {a:1, empty:'', b:2}
+      "
+    `);
+  });
+
+  test('use emoji for booleans', () => {
+    const store = createLoggerStore();
+
+    store.add({
+      ok: null,
+    });
+
+    store.add({
+      name: 'John Smith',
+      age: 30,
+      obj: { a: 1, bool: false, b: 2, c: true },
+      isActive: true,
+      isDisabled: false,
+    });
+
+    store.add({
+      yes: true,
+      no: false,
+    });
+
+    store.add({
+      yes: false,
+      no: true,
+    });
+
+    expect(store.snapshot).toMatchInlineSnapshot(`
+      "
+      -> ok: null
+      ┌─
+      ⋅ name: John Smith
+      ⋅ age: 30
+      ⋅ obj: {a:1, bool:❌, b:2, c:✅}
+      ⋅ isActive: ✅
+      ⋅ isDisabled: ❌
+      └─
+      -> yes: ✅ ⋅ no: ❌
+      -> yes: ❌ ⋅ no: ✅
       "
     `);
   });
