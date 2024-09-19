@@ -190,9 +190,17 @@ export function createLoggerStore({
 
 export function getResultFn<T extends (...args: any[]) => any>(
   fnGetter: () => T,
+  wrapper?: (...args: any[]) => any,
 ): T {
   return ((...args: any[]) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return fnGetter()(...args);
+    const fn = fnGetter();
+
+    if (wrapper) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      return wrapper(fn(...args));
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      return fn(...args);
+    }
   }) as T;
 }
