@@ -120,4 +120,21 @@ describe('createLoggerStore', () => {
       "
     `);
   });
+
+  test('handle empty string', () => {
+    const store = createLoggerStore();
+
+    store.add({
+      name: 'John Smith',
+      age: 30,
+      address: '',
+      obj: { a: 1, empty: '', b: 2 },
+    });
+
+    expect(store.snapshot).toMatchInlineSnapshot(`
+      "
+      name: John Smith -- age: 30 -- address: '' -- obj: {a:1, empty:'', b:2}
+      "
+    `);
+  });
 });
