@@ -137,7 +137,7 @@ export function createLoggerStore({
     return `\n${filterAndMap(rendersToUse, (render, i) => {
       if (render._lastSnapshotMark) {
         if (includeLastSnapshotEndMark && i !== rendersToUse.length - 1) {
-          return '---';
+          return '⋅⋅⋅';
         } else {
           return false;
         }
