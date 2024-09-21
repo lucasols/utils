@@ -91,6 +91,7 @@ export default tseslint.config(
           argsIgnorePattern: '^_',
           ignoreRestSiblings: true,
           varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
         },
       ],
       '@typescript-eslint/no-shadow': [
