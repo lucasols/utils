@@ -30,119 +30,148 @@
   "exports": {
     ".": {
       "import": "./dist/main.js",
-      "types": "./dist/main.d.ts"
+      "types": "./dist/main.d.ts",
+      "require": "./dist/main.cjs"
     },
     "./arrayUtils": {
       "import": "./dist/arrayUtils.js",
-      "types": "./dist/arrayUtils.d.ts"
+      "types": "./dist/arrayUtils.d.ts",
+      "require": "./dist/arrayUtils.cjs"
     },
     "./assertions": {
       "import": "./dist/assertions.js",
-      "types": "./dist/assertions.d.ts"
+      "types": "./dist/assertions.d.ts",
+      "require": "./dist/assertions.cjs"
     },
     "./castValues": {
       "import": "./dist/castValues.js",
-      "types": "./dist/castValues.d.ts"
+      "types": "./dist/castValues.d.ts",
+      "require": "./dist/castValues.cjs"
     },
     "./consoleFmt": {
       "import": "./dist/consoleFmt.js",
-      "types": "./dist/consoleFmt.d.ts"
+      "types": "./dist/consoleFmt.d.ts",
+      "require": "./dist/consoleFmt.cjs"
     },
     "./conversions": {
       "import": "./dist/conversions.js",
-      "types": "./dist/conversions.d.ts"
+      "types": "./dist/conversions.d.ts",
+      "require": "./dist/conversions.cjs"
     },
     "./createThrottleController": {
       "import": "./dist/createThrottleController.js",
-      "types": "./dist/createThrottleController.d.ts"
+      "types": "./dist/createThrottleController.d.ts",
+      "require": "./dist/createThrottleController.cjs"
     },
     "./debounce": {
       "import": "./dist/debounce.js",
-      "types": "./dist/debounce.d.ts"
+      "types": "./dist/debounce.d.ts",
+      "require": "./dist/debounce.cjs"
     },
     "./dedent": {
       "import": "./dist/dedent.js",
-      "types": "./dist/dedent.d.ts"
+      "types": "./dist/dedent.d.ts",
+      "require": "./dist/dedent.cjs"
     },
     "./deepEqual": {
       "import": "./dist/deepEqual.js",
-      "types": "./dist/deepEqual.d.ts"
+      "types": "./dist/deepEqual.d.ts",
+      "require": "./dist/deepEqual.cjs"
     },
     "./enhancedMap": {
       "import": "./dist/enhancedMap.js",
-      "types": "./dist/enhancedMap.d.ts"
+      "types": "./dist/enhancedMap.d.ts",
+      "require": "./dist/enhancedMap.cjs"
     },
     "./exhaustiveMatch": {
       "import": "./dist/exhaustiveMatch.js",
-      "types": "./dist/exhaustiveMatch.d.ts"
+      "types": "./dist/exhaustiveMatch.d.ts",
+      "require": "./dist/exhaustiveMatch.cjs"
     },
     "./interpolate": {
       "import": "./dist/interpolate.js",
-      "types": "./dist/interpolate.d.ts"
+      "types": "./dist/interpolate.d.ts",
+      "require": "./dist/interpolate.cjs"
     },
     "./levenshtein": {
       "import": "./dist/levenshtein.js",
-      "types": "./dist/levenshtein.d.ts"
+      "types": "./dist/levenshtein.d.ts",
+      "require": "./dist/levenshtein.cjs"
     },
     "./main": {
       "import": "./dist/main.js",
-      "types": "./dist/main.d.ts"
+      "types": "./dist/main.d.ts",
+      "require": "./dist/main.cjs"
     },
     "./mathUtils": {
       "import": "./dist/mathUtils.js",
-      "types": "./dist/mathUtils.d.ts"
+      "types": "./dist/mathUtils.d.ts",
+      "require": "./dist/mathUtils.cjs"
     },
     "./objUtils": {
       "import": "./dist/objUtils.js",
-      "types": "./dist/objUtils.d.ts"
+      "types": "./dist/objUtils.d.ts",
+      "require": "./dist/objUtils.cjs"
     },
-    "./parallelAsyncResultCalls": {
-      "import": "./dist/parallelAsyncResultCalls.js",
-      "types": "./dist/parallelAsyncResultCalls.d.ts"
+    "./parallelAsyncCalls": {
+      "import": "./dist/parallelAsyncCalls.js",
+      "types": "./dist/parallelAsyncCalls.d.ts",
+      "require": "./dist/parallelAsyncCalls.cjs"
     },
     "./promiseUtils": {
       "import": "./dist/promiseUtils.js",
-      "types": "./dist/promiseUtils.d.ts"
+      "types": "./dist/promiseUtils.d.ts",
+      "require": "./dist/promiseUtils.cjs"
     },
     "./rsResult": {
       "import": "./dist/rsResult.js",
-      "types": "./dist/rsResult.d.ts"
+      "types": "./dist/rsResult.d.ts",
+      "require": "./dist/rsResult.cjs"
     },
     "./runShellCmd": {
       "import": "./dist/runShellCmd.js",
-      "types": "./dist/runShellCmd.d.ts"
+      "types": "./dist/runShellCmd.d.ts",
+      "require": "./dist/runShellCmd.cjs"
     },
     "./shallowEqual": {
       "import": "./dist/shallowEqual.js",
-      "types": "./dist/shallowEqual.d.ts"
+      "types": "./dist/shallowEqual.d.ts",
+      "require": "./dist/shallowEqual.cjs"
     },
     "./sleep": {
       "import": "./dist/sleep.js",
-      "types": "./dist/sleep.d.ts"
+      "types": "./dist/sleep.d.ts",
+      "require": "./dist/sleep.cjs"
     },
     "./stringUtils": {
       "import": "./dist/stringUtils.js",
-      "types": "./dist/stringUtils.d.ts"
+      "types": "./dist/stringUtils.d.ts",
+      "require": "./dist/stringUtils.cjs"
     },
     "./testUtils": {
       "import": "./dist/testUtils.js",
-      "types": "./dist/testUtils.d.ts"
+      "types": "./dist/testUtils.d.ts",
+      "require": "./dist/testUtils.cjs"
     },
     "./typingFnUtils": {
       "import": "./dist/typingFnUtils.js",
-      "types": "./dist/typingFnUtils.d.ts"
+      "types": "./dist/typingFnUtils.d.ts",
+      "require": "./dist/typingFnUtils.cjs"
     },
     "./typingTestUtils": {
       "import": "./dist/typingTestUtils.js",
-      "types": "./dist/typingTestUtils.d.ts"
+      "types": "./dist/typingTestUtils.d.ts",
+      "require": "./dist/typingTestUtils.cjs"
     },
     "./typingUtils": {
       "import": "./dist/typingUtils.js",
-      "types": "./dist/typingUtils.d.ts"
+      "types": "./dist/typingUtils.d.ts",
+      "require": "./dist/typingUtils.cjs"
     },
     "./yamlStringify": {
       "import": "./dist/yamlStringify.js",
-      "types": "./dist/yamlStringify.d.ts"
+      "types": "./dist/yamlStringify.d.ts",
+      "require": "./dist/yamlStringify.cjs"
     }
   },
   "engines": {
@@ -218,8 +247,8 @@
       "objUtils": [
         "./dist/objUtils.d.ts"
       ],
-      "parallelAsyncResultCalls": [
-        "./dist/parallelAsyncResultCalls.d.ts"
+      "parallelAsyncCalls": [
+        "./dist/parallelAsyncCalls.d.ts"
       ],
       "promiseUtils": [
         "./dist/promiseUtils.d.ts"
