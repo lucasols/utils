@@ -138,6 +138,16 @@ function asyncMap<T, E extends ResultValidErrors>(
       const result = await resultPromise;
       return result.ok ? ok(mapFn(result.value)) : err(result.error);
     },
+    okAndErr: async <NewValue, NewError extends ResultValidErrors>({
+      ok: mapFn,
+      err: mapErrFn,
+    }: {
+      ok: (value: T) => NewValue;
+      err: (error: E) => NewError;
+    }): Promise<Result<NewValue, NewError>> => {
+      const result = await resultPromise;
+      return result.ok ? ok(mapFn(result.value)) : err(mapErrFn(result.error));
+    },
   };
 }
 
@@ -150,6 +160,15 @@ function syncMap<T, E extends ResultValidErrors>(result: Result<T, E>) {
     },
     ok: <NewValue>(mapFn: (value: T) => NewValue): Result<NewValue, E> => {
       return result.ok ? ok(mapFn(result.value)) : err(result.error);
+    },
+    okAndErr: <NewValue, NewError extends ResultValidErrors>({
+      ok: mapFn,
+      err: mapErrFn,
+    }: {
+      ok: (value: T) => NewValue;
+      err: (error: E) => NewError;
+    }): Result<NewValue, NewError> => {
+      return result.ok ? ok(mapFn(result.value)) : err(mapErrFn(result.error));
     },
   };
 }

@@ -162,6 +162,25 @@ describe('Result.map()', () => {
       ]).error,
     ).toEqual(['Mapped err: Cannot divide by zero']);
   });
+
+  test('map ok and err result', () => {
+    const failureDivision = divide(10, 0);
+
+    const mapOkAndErr = {
+      ok: (value: number) => value * 3,
+      err: (error: Error) => [`Mapped err: ${error.message}`],
+    };
+
+    expect(Result.map(failureDivision).okAndErr(mapOkAndErr).error).toEqual([
+      'Mapped err: Cannot divide by zero',
+    ]);
+
+    const successDivision = divide(10, 2);
+
+    expect(
+      Result.map(successDivision).okAndErr(mapOkAndErr).unwrapOrNull(),
+    ).toEqual(15);
+  });
 });
 
 describe('Result.asyncMap()', () => {
@@ -183,5 +202,26 @@ describe('Result.asyncMap()', () => {
         ])
       ).error,
     ).toEqual(['Mapped err: Cannot divide by zero']);
+  });
+
+  test('map ok and err result', async () => {
+    const failureDivision = divideAsync(10, 0);
+
+    const mapOkAndErr = {
+      ok: (value: number) => value * 3,
+      err: (error: Error) => [`Mapped err: ${error.message}`],
+    };
+
+    expect(
+      (await Result.asyncMap(failureDivision).okAndErr(mapOkAndErr)).error,
+    ).toEqual(['Mapped err: Cannot divide by zero']);
+
+    const successDivision = divideAsync(10, 2);
+
+    expect(
+      (
+        await Result.asyncMap(successDivision).okAndErr(mapOkAndErr)
+      ).unwrapOrNull(),
+    ).toEqual(15);
   });
 });
