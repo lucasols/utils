@@ -105,14 +105,6 @@ export class EnhancedMap<K, V> extends Map<K, V> {
     return [...this.keys()];
   }
 
-  /** @deprecated, will be removed in v5 use `from` method instead */
-  static fromIterMap<T, K, V>(
-    array: T[] | Iterable<T>,
-    mapFunction: (item: T) => [key: K, value: V] | false,
-  ): EnhancedMap<K, V> {
-    return this.from(array, mapFunction);
-  }
-
   static from<T extends Record<string, unknown>, K extends keyof T>(
     array: T[] | Iterable<T> | null | undefined,
     key: K,

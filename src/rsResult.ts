@@ -1,5 +1,4 @@
 import { isObject } from './assertions';
-import { joinStrings } from './stringUtils';
 
 type Ok<T> = {
   ok: true;
@@ -7,25 +6,15 @@ type Ok<T> = {
   value: T;
 };
 
-type NormalizedErrorResultProps = {
-  id: string;
-  message: string;
-  code?: number;
-  metadata?: ValidErrorMetadata;
-};
-
 type IsExactlyAny<T> =
   boolean extends (T extends never ? true : false) ? true : false;
+
+type ResultValidErrors = Error | Record<string, unknown> | unknown[] | true;
 
 type Err<E extends ResultValidErrors> = {
   ok: false;
   error: E;
   errorResult: () => Result<any, E>;
-  normalizedErrorResult: (
-    normalizedErr: E extends NormalizedError ?
-      { withMetadata: ValidErrorMetadata } | NormalizedErrorResultProps
-    : NormalizedErrorResultProps,
-  ) => Result<any, NormalizedError>;
 };
 
 type Unwrap<E, T> =
@@ -63,7 +52,7 @@ type ResultMethods<T, E> = {
  *   // result.error is an Error
  * }
  */
-export type Result<T, E extends ResultValidErrors = NormalizedError> =
+export type Result<T, E extends ResultValidErrors = Error> =
   | OkResult<T, E, T>
   | ErrResult<E, T>;
 
@@ -73,8 +62,6 @@ function okUnwrapOr<T>(this: Ok<T>) {
 
 type OkResult<T, E extends ResultValidErrors, M = any> = Ok<T> &
   ResultMethods<M, E>;
-
-type ResultValidErrors = Error | Record<string, unknown> | string[];
 
 function ok(): OkResult<void, any>;
 function ok<T>(value: T): OkResult<T, any>;
@@ -101,85 +88,27 @@ function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
     errorResult() {
       return err(error);
     },
-    normalizedErrorResult(normalizedErr) {
-      return err(
-        'withMetadata' in normalizedErr && error instanceof NormalizedError ?
-          new NormalizedErrorWithMetadata({
-            error,
-            metadata: {
-              ...error.metadata,
-              ...normalizedErr.withMetadata,
-            },
-          })
-        : new NormalizedError({
-            id: (normalizedErr as NormalizedErrorResultProps).id,
-            message: (normalizedErr as NormalizedErrorResultProps).message,
-            code: (normalizedErr as NormalizedErrorResultProps).code,
-            cause: error instanceof Error ? error : undefined,
-          }),
-      );
-    },
     unwrap: (() => {
-      throw error;
+      if (error instanceof Error) {
+        throw error;
+      }
+
+      if (Array.isArray(error)) {
+        throw new Error(error.join('\n'), { cause: error });
+      }
+
+      throw new Error(
+        isObject(error) && 'message' in error && error.message ?
+          String(error.message)
+        : 'Unwrap failed',
+        { cause: error },
+      );
     }) as any,
   };
 }
 
-function normalizedUnknownErr(error: unknown) {
+function unknownToError(error: unknown) {
   return err(normalizeError(error));
-}
-
-function normalizedErr(message: string): ErrResult<NormalizedError>;
-function normalizedErr<T extends string>(
-  id: T,
-  message: string,
-): ErrResult<NormalizedError<T>>;
-function normalizedErr<T extends string>(errorProps: {
-  id: T;
-  message: string;
-  code?: number;
-  cause?: Error;
-  metadata?: ValidErrorMetadata;
-}): ErrResult<NormalizedError<T>>;
-function normalizedErr(
-  idOrMessageOrErr:
-    | string
-    | {
-        id: string;
-        message: string;
-        code?: number;
-        metadata?: ValidErrorMetadata;
-        cause?: Error;
-      },
-  message?: string,
-): ErrResult<NormalizedError> {
-  if (typeof idOrMessageOrErr === 'object') {
-    return err(
-      new NormalizedError({
-        id: idOrMessageOrErr.id,
-        message: idOrMessageOrErr.message,
-        code: idOrMessageOrErr.code,
-        cause: idOrMessageOrErr.cause,
-        metadata: idOrMessageOrErr.metadata,
-      }),
-    );
-  }
-
-  if (message !== undefined) {
-    return err(
-      new NormalizedError({
-        id: idOrMessageOrErr,
-        message,
-      }),
-    );
-  }
-
-  return err(
-    new NormalizedError({
-      id: 'unknown',
-      message: idOrMessageOrErr,
-    }),
-  );
 }
 
 /** Unwraps a promise result */
@@ -193,16 +122,49 @@ async function unwrap<T>(result: Promise<Result<T, Error>>): Promise<T> {
   throw unwrapped.error;
 }
 
+function asyncMap<T, E extends ResultValidErrors>(
+  resultPromise: Promise<Result<T, E>>,
+) {
+  return {
+    err: async <NewError extends ResultValidErrors>(
+      mapFn: (error: E) => NewError,
+    ): Promise<Result<T, NewError>> => {
+      const result = await resultPromise;
+      return result.ok ? ok(result.value) : err(mapFn(result.error));
+    },
+    ok: async <NewValue>(
+      mapFn: (value: T) => NewValue,
+    ): Promise<Result<NewValue, E>> => {
+      const result = await resultPromise;
+      return result.ok ? ok(mapFn(result.value)) : err(result.error);
+    },
+  };
+}
+
+function syncMap<T, E extends ResultValidErrors>(result: Result<T, E>) {
+  return {
+    err: <NewError extends ResultValidErrors>(
+      mapFn: (error: E) => NewError,
+    ): Result<T, NewError> => {
+      return result.ok ? ok(result.value) : err(mapFn(result.error));
+    },
+    ok: <NewValue>(mapFn: (value: T) => NewValue): Result<NewValue, E> => {
+      return result.ok ? ok(mapFn(result.value)) : err(result.error);
+    },
+  };
+}
+
 export const Result = {
   ok,
   err,
-  normalizedErr,
-  normalizedUnknownErr,
+  unknownToError,
   unwrap,
+  asyncMap,
+  map: syncMap,
 };
 
-/** transfor a function in a result function */
-export function resultify<T, E extends ResultValidErrors = NormalizedError>(
+/** transform a function in a result function */
+export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => T,
   errorNormalizer?: (err: unknown) => E,
 ): Result<T, E> {
@@ -218,7 +180,7 @@ export function resultify<T, E extends ResultValidErrors = NormalizedError>(
 }
 
 /** transform a async function in a result function */
-export async function asyncResultify<T, E extends Error = NormalizedError>(
+export async function asyncResultify<T, E extends Error = Error>(
   fn: () => Promise<T>,
   errorNormalizer?: (err: unknown) => E,
 ): Promise<Result<Awaited<T>, E>> {
@@ -233,140 +195,44 @@ export async function asyncResultify<T, E extends Error = NormalizedError>(
   }
 }
 
-export type ValidErrorMetadata = Record<string, unknown> | undefined;
-
-let normalizedErrorSideEffects:
-  | ((normalizedError: NormalizedError) => void)
-  | undefined = undefined;
-
-export function setNormalizedErrorSideEffects(
-  callback: (normalizedError: NormalizedError) => void,
-) {
-  normalizedErrorSideEffects = callback;
-}
-
-export class NormalizedError<T = string> extends Error {
-  id: T;
-  metadata?: ValidErrorMetadata;
-  cause?: Error;
-  code: number;
-
-  constructor({
-    id,
-    message,
-    metadata,
-    cause,
-    code = 0,
-  }: {
-    id: T;
-    message: string;
-    metadata?: ValidErrorMetadata;
-    cause?: Error;
-    code?: number;
-  }) {
-    super(message);
-    this.id = id;
-    this.name = 'NormalizedError';
-    this.metadata = metadata;
-    this.cause = cause;
-    this.code = code;
-
-    setTimeout(() => {
-      if (normalizedErrorSideEffects) {
-        normalizedErrorSideEffects(this as NormalizedError);
-      }
-    }, 1);
-  }
-
-  toString() {
-    return joinStrings(
-      !!this.code && `${this.code}#`,
-      String(this.id),
-      `: ${this.message}`,
-      !!this.cause && `\n  Caused by: ${this.cause}`,
-      !!this.metadata && `\n  Metadata: ${JSON.stringify(this.metadata)}`,
-    );
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      message: this.message,
-      metadata: this.metadata,
-      code: this.code,
-      cause:
-        this.cause ?
-          'toJSON' in this.cause ?
-            this.cause
-          : String(this.cause)
-        : undefined,
-    };
-  }
-}
-
-export class NormalizedErrorWithMetadata<
-  M extends ValidErrorMetadata,
-  T = string,
-> extends NormalizedError<T> {
-  metadata: M;
-
-  constructor(
-    props:
-      | {
-          id: T;
-          message: string;
-          metadata: M;
-          cause?: Error;
-        }
-      | {
-          error: NormalizedError<T>;
-          metadata: M;
-        },
-  ) {
-    if ('error' in props) {
-      super({
-        id: props.error.id,
-        message: props.error.message,
-        cause: props.error.cause,
-      });
-      this.metadata = props.metadata;
-      this.stack = props.error.stack;
-    } else {
-      super(props);
-      this.metadata = props.metadata;
-    }
-  }
-}
-
-export function normalizeError(error: unknown): NormalizedError {
-  if (error instanceof NormalizedError) return error;
+export function normalizeError(error: unknown): Error {
+  if (error instanceof Error) return error;
 
   if (typeof error === 'string') {
-    return new NormalizedError({
-      id: 'unknown',
-      message: error,
-    });
-  }
-
-  if (error instanceof Error) {
-    return new NormalizedError({
-      id: error.name,
-      message: error.message,
-      cause: error,
-    });
+    return new Error(error);
   }
 
   if (isObject(error)) {
-    return new NormalizedError({
-      id: 'id' in error ? String(error.id) : 'unknown',
-      message:
-        'message' in error ? String(error.message) : JSON.stringify(error),
-      metadata: error,
-    });
+    return new Error(
+      'message' in error && error.message ?
+        String(error.message)
+      : (safeJsonStringify(error) ?? 'unknown'),
+      { cause: error },
+    );
   }
 
-  return new NormalizedError({
-    message: JSON.stringify(error),
-    id: 'unknown',
-  });
+  return new Error(safeJsonStringify(error) ?? 'unknown', { cause: error });
+}
+
+export function safeJsonStringify(value: unknown) {
+  try {
+    return JSON.stringify(value);
+  } catch (_) {
+    return null;
+  }
+}
+
+export type TypedResult<T, E extends ResultValidErrors = Error> = {
+  ok: (value: T) => OkResult<T, E, T>;
+  err: (error: E) => ErrResult<E, T>;
+};
+
+export function createTypedResult<
+  T,
+  E extends ResultValidErrors = Error,
+>(): TypedResult<T, E> {
+  return {
+    ok,
+    err,
+  };
 }

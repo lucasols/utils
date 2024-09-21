@@ -99,17 +99,6 @@ describe('EnhancedMap', () => {
   });
 
   describe('static methods', () => {
-    test('fromIterMap (deprecated)', () => {
-      const array = [1, 2, 3, 4];
-      const result = EnhancedMap.fromIterMap(array, (item) => {
-        if (item % 2 === 0) return [`even${item}`, item * 2];
-        return false;
-      });
-      expect(result.get('even2')).toBe(4);
-      expect(result.get('even4')).toBe(8);
-      expect(result.size).toBe(2);
-    });
-
     describe('from', () => {
       test('with key', () => {
         const array = [

@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { invariant } from './assertions';
 import { omit } from './objUtils';
-import { parallelAsyncResultCalls } from './parallelAsyncResultCalls';
-import { NormalizedError, Result, asyncResultify } from './rsResult';
+import { parallelAsyncCalls } from './parallelAsyncCalls';
+import { Result, asyncResultify } from './rsResult';
 import { sleep } from './sleep';
 import { TestTypeIsEqual, typingTest } from './typingTestUtils';
 
@@ -28,7 +28,7 @@ function asyncResultFn<T extends string | Error | number | boolean>(
 }
 
 test('runAllSettled with success and metadata', async () => {
-  const result = await parallelAsyncResultCalls<number>()
+  const result = await parallelAsyncCalls<number>()
     .add({
       metadata: 1,
       fn: () => asyncResultFn(1, 15),
@@ -66,7 +66,7 @@ test('runAllSettled with success and metadata', async () => {
 });
 
 test('runAllSettled with some failures', async () => {
-  const result = await parallelAsyncResultCalls<number>()
+  const result = await parallelAsyncCalls<number>()
     .add({
       metadata: 1,
       fn: () => asyncResultFn(1, 15),
@@ -90,11 +90,11 @@ test('runAllSettled with some failures', async () => {
       "allFailed": false,
       "failed": [
         {
-          "error": [NormalizedError: error 3],
+          "error": [Error: error 3],
           "metadata": 3,
         },
         {
-          "error": [NormalizedError: error 4],
+          "error": [Error: error 4],
           "metadata": 4,
         },
       ],
@@ -119,7 +119,7 @@ test('start delay', async () => {
 
   let thirdStartTime = 0;
 
-  await parallelAsyncResultCalls<number>()
+  await parallelAsyncCalls<number>()
     .add({
       metadata: 1,
       fn: () =>
@@ -159,7 +159,7 @@ test('start delay', async () => {
 });
 
 test('runAll with successful result', async () => {
-  const result = await parallelAsyncResultCalls<number>()
+  const result = await parallelAsyncCalls<number>()
     .add({
       metadata: 1,
       fn: () => asyncResultFn(1, 15),
@@ -193,7 +193,7 @@ test('runAll with successful result', async () => {
 });
 
 test('runAll with some failures', async () => {
-  const result = await parallelAsyncResultCalls<number>()
+  const result = await parallelAsyncCalls<number>()
     .add({
       metadata: 1,
       fn: () => asyncResultFn(1, 15),
@@ -214,14 +214,14 @@ test('runAll with some failures', async () => {
 
   expect(!result.ok && result.error).toMatchInlineSnapshot(`
     {
-      "error": [NormalizedError: error 3],
+      "error": [Error: error 3],
       "metadata": 3,
     }
   `);
 });
 
 test('runAll without metadata', async () => {
-  const result = await parallelAsyncResultCalls()
+  const result = await parallelAsyncCalls()
     .add(() => asyncResultFn(1, 15))
     .add(() => asyncResultFn(2, 10))
     .add(() => asyncResultFn(3, 5))
@@ -253,11 +253,11 @@ describe('addTuple', () => {
 
   type Failed<M> = {
     metadata: M;
-    error: NormalizedError;
+    error: Error;
   };
 
   test('runAll', async () => {
-    const result = await parallelAsyncResultCalls()
+    const result = await parallelAsyncCalls()
       .addTuple(
         () => asyncResultFn('1' as const, 15),
         () => asyncResultFn(2 as const, 10),
@@ -274,7 +274,7 @@ describe('addTuple', () => {
             Succeeded<2, undefined>,
             Succeeded<false, undefined>,
           ],
-          { metadata: undefined; error: NormalizedError }
+          { metadata: undefined; error: Error }
         >
       >
     >();
@@ -298,7 +298,7 @@ describe('addTuple', () => {
   });
 
   test('runAllSettled', async () => {
-    const result = await parallelAsyncResultCalls()
+    const result = await parallelAsyncCalls()
       .addTuple(
         () => asyncResultFn('1' as const, 15),
         () => asyncResultFn(2 as const, 10),
@@ -339,7 +339,7 @@ describe('addTuple', () => {
   });
 
   test('runAll with metadata', async () => {
-    const result = await parallelAsyncResultCalls<number>()
+    const result = await parallelAsyncCalls<number>()
       .addTuple(
         { metadata: 1 as const, fn: () => asyncResultFn('1' as const, 15) },
         {
@@ -355,9 +355,9 @@ describe('addTuple', () => {
         typeof result,
         Result<
           [Succeeded<'1', 1>, Succeeded<'error: fail', 2>, Succeeded<false, 3>],
-          | { metadata: 1; error: NormalizedError }
-          | { metadata: 2; error: NormalizedError }
-          | { metadata: 3; error: NormalizedError }
+          | { metadata: 1; error: Error }
+          | { metadata: 2; error: Error }
+          | { metadata: 3; error: Error }
         >
       >
     >();
@@ -365,11 +365,10 @@ describe('addTuple', () => {
     expect(result).toMatchInlineSnapshot(`
       {
         "error": {
-          "error": [NormalizedError: fail],
+          "error": [Error: fail],
           "metadata": 2,
         },
         "errorResult": [Function],
-        "normalizedErrorResult": [Function],
         "ok": false,
         "unwrap": [Function],
         "unwrapOr": [Function],
@@ -379,7 +378,7 @@ describe('addTuple', () => {
   });
 
   test('runAllSettled with metadata', async () => {
-    const result = await parallelAsyncResultCalls<number>()
+    const result = await parallelAsyncCalls<number>()
       .addTuple(
         { metadata: 1 as const, fn: () => asyncResultFn('1' as const, 15) },
         {
@@ -411,7 +410,7 @@ describe('addTuple', () => {
           "value": "1",
         },
         {
-          "error": [NormalizedError: fail],
+          "error": [Error: fail],
           "metadata": 2,
         },
         {
@@ -423,7 +422,7 @@ describe('addTuple', () => {
   });
 
   test('Result.unwrap on runAll', async () => {
-    const result = parallelAsyncResultCalls()
+    const result = parallelAsyncCalls()
       .addTuple(
         () => asyncResultFn('1' as const, 15),
         () => asyncResultFn('2' as const, 10),
@@ -436,7 +435,7 @@ describe('addTuple', () => {
         Promise<
           Result<
             [Succeeded<'1', undefined>, Succeeded<'2', undefined>],
-            { metadata: undefined; error: NormalizedError }
+            { metadata: undefined; error: Error }
           >
         >
       >
@@ -459,4 +458,18 @@ describe('addTuple', () => {
       ]
     `);
   });
+});
+
+test('runAll error keeps same stack trace', async () => {
+  const errorToThrow = new Error('Failed');
+
+  const result = await parallelAsyncCalls()
+    .add(() => asyncResultFn(1, 15))
+    .add(() => asyncResultFn(2, 0))
+    .add(() => asyncResultFn(errorToThrow, 5))
+    .runAll();
+
+  const error = result.error ? result.error.error : undefined;
+
+  expect(error?.stack).toEqual(errorToThrow.stack);
 });

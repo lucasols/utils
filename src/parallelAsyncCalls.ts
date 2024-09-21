@@ -1,5 +1,5 @@
 import { invariant, isObject } from './assertions';
-import { NormalizedError, Result, normalizeError } from './rsResult';
+import { Result, normalizeError } from './rsResult';
 import { sleep } from './sleep';
 
 type ValidMetadata = string | number | boolean | Record<string, unknown>;
@@ -11,10 +11,9 @@ type TupleRunAllSuccess<T> =
   : never;
 
 type TupleRunAllFailed<T> =
-  T extends () => Promise<Result<any>> ?
-    { metadata: undefined; error: NormalizedError }
+  T extends () => Promise<Result<any>> ? { metadata: undefined; error: Error }
   : T extends { metadata: infer M extends ValidMetadata } ?
-    { metadata: M; error: NormalizedError }
+    { metadata: M; error: Error }
   : never;
 
 type TupleRunAllSettled<T> =
@@ -30,7 +29,7 @@ type RunProps = {
 
 type Failed<M> = {
   metadata: M;
-  error: NormalizedError;
+  error: Error;
 };
 type Succeeded<R, M> = {
   value: R;
@@ -109,7 +108,7 @@ class ParallelAsyncResultCalls<
           return { result, callMetadata: call.metadata };
         } catch (exception) {
           return {
-            result: Result.normalizedUnknownErr(exception),
+            result: Result.unknownToError(exception),
             callMetadata: call.metadata,
           };
         }
@@ -156,7 +155,7 @@ class ParallelAsyncResultCalls<
       Succeeded<R, M>[],
       {
         metadata: M;
-        error: NormalizedError;
+        error: Error;
       }
     >
   > {
@@ -194,7 +193,7 @@ class ParallelAsyncResultCalls<
       return Result.err(
         exception as {
           metadata: M;
-          error: NormalizedError;
+          error: Error;
         },
       );
     } finally {
@@ -210,7 +209,7 @@ class ParallelAsyncResultCalls<
  * @template R - The type of the result value.
  * @template M - The type of the call metadata.
  */
-export function parallelAsyncResultCalls<
+export function parallelAsyncCalls<
   M extends ValidMetadata | undefined = undefined,
   R = unknown,
 >() {

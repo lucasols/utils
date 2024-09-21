@@ -10,19 +10,24 @@ type CmdResult = {
 
 import { spawn } from 'child_process';
 
-(process.env as any).FORCE_COLOR = true;
-
 type RunCmdOptions = {
   mock?: CmdResult;
   silent?: boolean | 'timeOnly';
   cwd?: string;
   throwOnError?: boolean;
+  noCiColorForce?: boolean;
 };
 
 export function runCmd(
   label: string | null,
   command: string | string[],
-  { mock, silent, throwOnError, cwd = process.cwd() }: RunCmdOptions = {},
+  {
+    mock,
+    silent,
+    throwOnError,
+    cwd = process.cwd(),
+    noCiColorForce,
+  }: RunCmdOptions = {},
 ): Promise<CmdResult> {
   if (mock) return Promise.resolve(mock);
 
@@ -40,6 +45,7 @@ export function runCmd(
       : command.split(' ');
     const child = spawn(cmd, args, {
       cwd,
+      env: noCiColorForce ? undefined : { ...process.env, CLICOLOR_FORCE: '1' },
     });
 
     let stdout = '';
