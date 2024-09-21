@@ -22,11 +22,13 @@ const newExportsField: Record<
   {
     import: string;
     types: string;
+    require: string;
   }
 > = {
   '.': {
     import: './dist/main.js',
     types: './dist/main.d.ts',
+    require: './dist/main.cjs',
   },
 };
 
@@ -40,6 +42,7 @@ for (const exportedUtil of exportedUtils) {
   newExportsField[`./${exportedUtil}`] = {
     import: `./dist/${exportedUtil}.js`,
     types: `./dist/${exportedUtil}.d.ts`,
+    require: `./dist/${exportedUtil}.cjs`,
   };
 
   newTypesVersions['*'][exportedUtil] = [`./dist/${exportedUtil}.d.ts`];
