@@ -362,17 +362,10 @@ describe('addTuple', () => {
       >
     >();
 
-    expect(result).toMatchInlineSnapshot(`
+    expect(result.error).toMatchInlineSnapshot(`
       {
-        "error": {
-          "error": [Error: fail],
-          "metadata": 2,
-        },
-        "errorResult": [Function],
-        "ok": false,
-        "unwrap": [Function],
-        "unwrapOr": [Function],
-        "unwrapOrNull": [Function],
+        "error": [Error: fail],
+        "metadata": 2,
       }
     `);
   });

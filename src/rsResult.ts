@@ -6,9 +6,6 @@ type Ok<T> = {
   value: T;
 };
 
-type IsExactlyAny<T> =
-  boolean extends (T extends never ? true : false) ? true : false;
-
 type ResultValidErrors = Error | Record<string, unknown> | unknown[] | true;
 
 type Err<E extends ResultValidErrors> = {
@@ -17,17 +14,20 @@ type Err<E extends ResultValidErrors> = {
   errorResult: () => Result<any, E>;
 };
 
-type Unwrap<E, T> =
-  IsExactlyAny<E> extends true ? any
-  : E extends Error ? () => T
-  : unknown;
-
-type ResultMethods<T, E> = {
+type ResultMethods<T, E extends ResultValidErrors> = {
   /** Returns the value if the result is Ok, otherwise returns null */
   unwrapOrNull: () => T | null;
   /** Returns the value if the result is Ok, otherwise returns the provided default value */
   unwrapOr: <R extends T>(defaultValue: R) => T | R;
-  unwrap: Unwrap<E, T>;
+  unwrap: () => T;
+  mapOk: <NewValue>(mapFn: (value: T) => NewValue) => Result<NewValue, E>;
+  mapErr: <NewError extends ResultValidErrors>(
+    mapFn: (error: E) => NewError,
+  ) => Result<T, NewError>;
+  mapOkAndErr: <NewValue, NewError extends ResultValidErrors>(mapFns: {
+    ok: (value: T) => NewValue;
+    err: (error: E) => NewError;
+  }) => Result<NewValue, NewError>;
 };
 
 /**
@@ -60,6 +60,45 @@ function okUnwrapOr<T>(this: Ok<T>) {
   return this.value;
 }
 
+function okMap<T, NewValue>(
+  this: Result<T, any>,
+  mapFn: (value: T) => NewValue,
+) {
+  return this.ok ? ok(mapFn(this.value)) : this;
+}
+
+function errMap<
+  E extends ResultValidErrors,
+  NewError extends ResultValidErrors,
+>(
+  this: Result<any, E>,
+  mapFn: (error: E) => ResultValidErrors,
+): Result<any, NewError> {
+  return this.ok ? (this as any) : err(mapFn(this.error));
+}
+
+function mapOkAndErr<
+  T,
+  E extends ResultValidErrors,
+  NewValue,
+  NewError extends ResultValidErrors,
+>(
+  this: Result<T, E>,
+  {
+    ok: mapFn,
+    err: mapErrFn,
+  }: {
+    ok: (value: T) => NewValue;
+    err: (error: E) => NewError;
+  },
+) {
+  return this.ok ? ok(mapFn(this.value)) : err(mapErrFn(this.error));
+}
+
+function returnResult(this: Result<any, any>) {
+  return this;
+}
+
 type OkResult<T, E extends ResultValidErrors, M = any> = Ok<T> &
   ResultMethods<M, E>;
 
@@ -73,6 +112,9 @@ function ok(value: any = undefined): OkResult<any, any> {
     unwrapOrNull: okUnwrapOr,
     unwrapOr: okUnwrapOr,
     unwrap: okUnwrapOr,
+    mapOk: okMap,
+    mapErr: returnResult,
+    mapOkAndErr,
   };
 }
 
@@ -93,17 +135,11 @@ function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
         throw error;
       }
 
-      if (Array.isArray(error)) {
-        throw new Error(error.join('\n'), { cause: error });
-      }
-
-      throw new Error(
-        isObject(error) && 'message' in error && error.message ?
-          String(error.message)
-        : 'Unwrap failed',
-        { cause: error },
-      );
+      throw normalizeError(error);
     }) as any,
+    mapOk: returnResult,
+    mapErr: errMap,
+    mapOkAndErr,
   };
 }
 
@@ -112,14 +148,20 @@ function unknownToError(error: unknown) {
 }
 
 /** Unwraps a promise result */
-async function unwrap<T>(result: Promise<Result<T, Error>>): Promise<T> {
+async function asyncUnwrap<T>(
+  result: Promise<Result<T, ResultValidErrors>>,
+): Promise<T> {
   const unwrapped = await result;
 
   if (unwrapped.ok) {
     return unwrapped.value;
   }
 
-  throw unwrapped.error;
+  if (unwrapped.error instanceof Error) {
+    throw unwrapped.error;
+  }
+
+  throw normalizeError(unwrapped.error);
 }
 
 function asyncMap<T, E extends ResultValidErrors>(
@@ -151,35 +193,12 @@ function asyncMap<T, E extends ResultValidErrors>(
   };
 }
 
-function syncMap<T, E extends ResultValidErrors>(result: Result<T, E>) {
-  return {
-    err: <NewError extends ResultValidErrors>(
-      mapFn: (error: E) => NewError,
-    ): Result<T, NewError> => {
-      return result.ok ? ok(result.value) : err(mapFn(result.error));
-    },
-    ok: <NewValue>(mapFn: (value: T) => NewValue): Result<NewValue, E> => {
-      return result.ok ? ok(mapFn(result.value)) : err(result.error);
-    },
-    okAndErr: <NewValue, NewError extends ResultValidErrors>({
-      ok: mapFn,
-      err: mapErrFn,
-    }: {
-      ok: (value: T) => NewValue;
-      err: (error: E) => NewError;
-    }): Result<NewValue, NewError> => {
-      return result.ok ? ok(mapFn(result.value)) : err(mapErrFn(result.error));
-    },
-  };
-}
-
 export const Result = {
   ok,
   err,
   unknownToError,
-  unwrap,
+  asyncUnwrap,
   asyncMap,
-  map: syncMap,
 };
 
 /** transform a function in a result function */
@@ -223,8 +242,8 @@ export function normalizeError(error: unknown): Error {
 
   if (isObject(error)) {
     return new Error(
-      'message' in error && error.message ?
-        String(error.message)
+      'message' in error && error.message && typeof error.message === 'string' ?
+        error.message
       : (safeJsonStringify(error) ?? 'unknown'),
       { cause: error },
     );

@@ -70,6 +70,10 @@ test('result.unwrap()', () => {
   expect(() => divide(10, 0).unwrap()).toThrowErrorMatchingInlineSnapshot(
     `[Error: Cannot divide by zero]`,
   );
+
+  expect(() => {
+    Result.err(['string']).unwrap();
+  }).toThrowErrorMatchingInlineSnapshot(`[Error: ["string"]]`);
 });
 
 test('resultify should return a normalized error', () => {
@@ -103,27 +107,11 @@ test('Result.ok() should return a void result', () => {
 });
 
 test('Result.unwrap() async results', async () => {
-  const result = await Result.unwrap(divideAsync(10, 2));
+  const result = await Result.asyncUnwrap(divideAsync(10, 2));
 
   expectType<TestTypeIsEqual<typeof result, number>>();
 
   expect(result).toEqual(5);
-});
-
-test('Result.unwrap() should accept only Error instances', async () => {
-  const fnWithWrongResult = async (): Promise<Result<number, [string]>> => {
-    return Promise.resolve(Result.err(['error']));
-  };
-
-  await expect(async () => {
-    // @ts-expect-error - only Result<any, Error> should be accepted
-    await Result.unwrap(fnWithWrongResult());
-  }).rejects.toThrow();
-
-  await expect(async () => {
-    // @ts-expect-error - only Result<any, Error> should be accepted
-    (await fnWithWrongResult()).unwrap();
-  }).rejects.toThrow();
 });
 
 test('Result.unknownToError() error', () => {
@@ -144,22 +132,18 @@ test('Result.unknownToError() error', () => {
   ).toMatchInlineSnapshot(`[Error: Cannot divide by zero]`);
 });
 
-describe('Result.map()', () => {
+describe('Result.map*', () => {
   test('map ok result', () => {
     const successDivision = divide(10, 2);
 
-    expect(Result.map(successDivision).ok((value) => value * 3)).toEqual(
-      Result.ok(15),
-    );
+    expect(successDivision.mapOk((value) => value * 3)).toEqual(Result.ok(15));
   });
 
   test('map err result', () => {
     const failureDivision = divide(10, 0);
 
     expect(
-      Result.map(failureDivision).err((error) => [
-        `Mapped err: ${error.message}`,
-      ]).error,
+      failureDivision.mapErr((error) => [`Mapped err: ${error.message}`]).error,
     ).toEqual(['Mapped err: Cannot divide by zero']);
   });
 
@@ -171,15 +155,13 @@ describe('Result.map()', () => {
       err: (error: Error) => [`Mapped err: ${error.message}`],
     };
 
-    expect(Result.map(failureDivision).okAndErr(mapOkAndErr).error).toEqual([
+    expect(failureDivision.mapOkAndErr(mapOkAndErr).error).toEqual([
       'Mapped err: Cannot divide by zero',
     ]);
 
     const successDivision = divide(10, 2);
 
-    expect(
-      Result.map(successDivision).okAndErr(mapOkAndErr).unwrapOrNull(),
-    ).toEqual(15);
+    expect(successDivision.mapOkAndErr(mapOkAndErr).unwrapOrNull()).toEqual(15);
   });
 });
 
