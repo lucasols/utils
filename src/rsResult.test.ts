@@ -251,3 +251,14 @@ typingTest.test('any ok type should not allow wrong err type', () => {
     return Result.ok(a as any);
   }
 });
+
+typingTest.test('any err type should not allow wrong ok type', () => {
+  function _divide(a: number, b: number): Result<number, any> {
+    if (b === 0) {
+      return Result.err({ err: 'Cannot divide by zero' });
+    }
+
+    // @ts-expect-error -- invalid return type
+    return Result.ok(a.toString());
+  }
+});
