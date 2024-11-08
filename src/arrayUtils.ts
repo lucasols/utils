@@ -65,7 +65,7 @@ export function sortBy<T>(
   const order =
     Array.isArray(props) || typeof props === 'string' ?
       props
-    : props.order ?? 'asc';
+    : (props.order ?? 'asc');
 
   return [...arr].sort((a, b) => {
     const _aPriority = sortByValue(a);
@@ -76,7 +76,7 @@ export function sortBy<T>(
 
     for (let i = 0; i < aPriority.length; i++) {
       const levelOrder: SortOrder =
-        typeof order === 'string' ? order : order[i] ?? 'asc';
+        typeof order === 'string' ? order : (order[i] ?? 'asc');
 
       const aP = aPriority[i] ?? 0;
       const bP = bPriority[i] ?? 0;
@@ -123,4 +123,38 @@ export function isInArray<T, const U extends T>(
   }
 
   return false;
+}
+
+export function findAfterIndex<T>(
+  array: T[],
+  index: number,
+  predicate: (item: T) => boolean,
+): T | undefined {
+  for (let i = index + 1; i < array.length; i++) {
+    if (predicate(array[i]!)) {
+      return array[i];
+    }
+  }
+
+  return undefined;
+}
+
+export function findBeforeIndex<T>(
+  array: T[],
+  index: number,
+  predicate: (item: T) => boolean,
+): T | undefined {
+  let indexToUse = index;
+
+  if (indexToUse >= array.length) {
+    indexToUse = array.length;
+  }
+
+  for (let i = indexToUse - 1; i >= 0; i--) {
+    if (predicate(array[i]!)) {
+      return array[i];
+    }
+  }
+
+  return undefined;
 }

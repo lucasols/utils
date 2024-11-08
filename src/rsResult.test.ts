@@ -207,3 +207,47 @@ describe('Result.asyncMap()', () => {
     ).toEqual(15);
   });
 });
+
+typingTest.test('wrong return err type', () => {
+  function _divide(a: number, b: number): Result<number, Error> {
+    if (b === 0) {
+      // @ts-expect-error -- invalid return type
+      return Result.err(['Cannot divide by zero']);
+    }
+
+    return Result.ok(a / b);
+  }
+});
+
+typingTest.test('wrong return ok type', () => {
+  function _divide(a: number, b: number): Result<number, Error> {
+    if (b === 0) {
+      return Result.err(new Error('Cannot divide by zero'));
+    }
+
+    // @ts-expect-error -- invalid return type
+    return Result.ok('Cannot divide by zero');
+  }
+});
+
+typingTest.test('any ok type should not allow wrong err type', () => {
+  function _divide(a: number, b: number): Result<number, Error> {
+    if (b === 0) {
+      // @ts-expect-error -- invalid return type
+      return Result.err(new Error(['Cannot divide by zero']));
+    }
+
+    return Result.ok(a as any);
+  }
+});
+
+typingTest.test('any ok type should not allow wrong err type', () => {
+  function _divide(a: number, b: number): Result<any, Error> {
+    if (b === 0) {
+      // @ts-expect-error -- invalid return type
+      return Result.err(new Error({ err: 'Cannot divide by zero' }));
+    }
+
+    return Result.ok(a as any);
+  }
+});
