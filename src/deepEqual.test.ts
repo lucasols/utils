@@ -232,11 +232,11 @@ const cases: [
 ];
 
 describe('deep equal', () => {
-  function same(a: any, b: any) {
-    expect(deepEqual(a, b)).toBe(true);
+  function same(a: any, b: any, maxDepth?: number) {
+    expect(deepEqual(a, b, maxDepth)).toBe(true);
   }
-  function different(a: any, b: any) {
-    expect(deepEqual(a, b)).toBe(false);
+  function different(a: any, b: any, maxDepth?: number) {
+    expect(deepEqual(a, b, maxDepth)).toBe(false);
   }
 
   cases.forEach(([name, tests]) => {
@@ -331,5 +331,47 @@ describe('deep equal', () => {
 
     world.set('baz', new Map([['hello', 'world']]));
     same(hello, world);
+  });
+
+  test('circular references', () => {
+    const hello = {
+      foo: 'bar',
+      get baz() {
+        return world;
+      },
+    };
+    const world = { baz: hello, foo: 'bar' };
+
+    different(hello, world);
+  });
+
+  test('max depth', () => {
+    const hello = {
+      a: {
+        b: {
+          c: {
+            d: {
+              e: 1,
+            },
+          },
+        },
+      },
+    };
+
+    const world = {
+      a: {
+        b: {
+          c: {
+            d: {
+              e: 1,
+            },
+          },
+        },
+      },
+    };
+
+    same(hello, world);
+
+    different(hello, world, 3);
   });
 });

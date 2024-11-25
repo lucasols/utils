@@ -15,7 +15,8 @@
     "build:update-exports": "tsm --no-warnings scripts/updatePackageExports.ts",
     "build-test": "tsup --config tsup.test.config.ts",
     "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build",
-    "test:console-fmt": "tsm --no-warnings scripts/testConsoleFmt.ts"
+    "test:console-fmt": "tsm --no-warnings scripts/testConsoleFmt.ts",
+    "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts"
   },
   "files": [
     "dist"
@@ -179,15 +180,17 @@
   },
   "devDependencies": {
     "@ls-stack/extended-lint": "^0.2.0",
+    "@types/eslint": "^9.6.1",
+    "@types/eslint__js": "^8.42.3",
     "@types/node": "^22.5.5",
     "@typescript-eslint/eslint-plugin": "^8.6.0",
     "@typescript-eslint/parser": "^8.6.0",
     "@vitest/ui": "^2.1.1",
+    "dequal": "^2.0.3",
     "eslint": "^9.10.0",
-    "@types/eslint": "^9.6.1",
-    "@types/eslint__js": "^8.42.3",
     "eslint-plugin-unicorn": "^55.0.0",
     "eslint-plugin-vitest": "^0.5.4",
+    "mitata": "^1.0.17",
     "prettier": "3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "tsm": "^2.3.0",
