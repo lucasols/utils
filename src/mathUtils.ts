@@ -21,3 +21,7 @@ export function clamp(num: number, min: number, max: number) {
     : num
   );
 }
+
+export function fixFloatingPointNumber(value: number) {
+  return Number(value.toPrecision(15));
+}
