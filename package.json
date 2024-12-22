@@ -179,7 +179,7 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
-    "@ls-stack/extended-lint": "^0.20.0",
+    "@ls-stack/extended-lint": "^0.20.1",
     "@types/eslint": "^9.6.1",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^22.10.2",
