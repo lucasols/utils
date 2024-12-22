@@ -1,5 +1,14 @@
 export function castToString(value: unknown): string | null {
-  return value !== null && value !== undefined ? String(value) : null;
+  const valueType = typeof value;
+
+  return (
+      valueType === 'string' ||
+        valueType === 'number' ||
+        valueType === 'boolean' ||
+        valueType === 'bigint'
+    ) ?
+      String(value)
+    : null;
 }
 
 export function castToNumber(value: unknown): number | null {

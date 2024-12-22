@@ -155,7 +155,7 @@ export function createLoggerStore({
         const prevIsLastSnapshotMark = rendersToUse[i - 1]?._lastSnapshotMark;
         let mark = `${
           prevIsLastSnapshotMark ? '' : '\n'
-        }>>> ${String(render._mark)}`;
+        }>>> ${String(render._mark as string)}`;
 
         const nextRender = rendersToUse[i + 1];
 

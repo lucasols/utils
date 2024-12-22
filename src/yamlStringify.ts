@@ -331,6 +331,7 @@ function normalizeValue(value: unknown): [string, unknown] | null {
 
   if (typeof value === 'object') {
     if ('toJSON' in value && typeof value.toJSON === 'function') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       return [value.constructor.name, value.toJSON()];
     }
 
