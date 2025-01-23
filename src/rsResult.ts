@@ -274,11 +274,6 @@ export function unknownToError(error: unknown): Error {
   return new Error(safeJsonStringify(error) ?? 'unknown', { cause: error });
 }
 
-/** @deprecated use unknownToError instead */
-export function normalizeError(error: unknown): Error {
-  return unknownToError(error);
-}
-
 export type TypedResult<T, E extends ResultValidErrors = Error> = {
   ok: (value: T) => OkResult<T, E, T>;
   err: (error: E) => ErrResult<E, T>;
