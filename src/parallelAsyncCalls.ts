@@ -1,5 +1,5 @@
 import { invariant, isObject } from './assertions';
-import { Result, normalizeError } from './rsResult';
+import { Result, unknownToError } from './rsResult';
 import { sleep } from './sleep';
 
 type ValidMetadata = string | number | boolean | Record<string, unknown>;
@@ -182,7 +182,7 @@ class ParallelAsyncResultCalls<
           } catch (exception) {
             throw {
               metadata: call.metadata,
-              error: normalizeError(exception),
+              error: unknownToError(exception),
             };
           }
         }),

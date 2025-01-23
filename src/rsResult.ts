@@ -1,4 +1,5 @@
 import { isObject } from './assertions';
+import { safeJsonStringify } from './safeJson';
 
 type Ok<T> = {
   ok: true;
@@ -135,7 +136,7 @@ function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
         throw error;
       }
 
-      throw normalizeError(error);
+      throw unknownToError(error);
     }) as any,
     mapOk: returnResult,
     mapErr: errMap,
@@ -143,8 +144,8 @@ function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
   };
 }
 
-function unknownToError(error: unknown) {
-  return err(normalizeError(error));
+function unknownToResultError(error: unknown) {
+  return err(unknownToError(error));
 }
 
 /** Unwraps a promise result */
@@ -161,7 +162,7 @@ async function asyncUnwrap<T>(
     throw unwrapped.error;
   }
 
-  throw normalizeError(unwrapped.error);
+  throw unknownToError(unwrapped.error);
 }
 
 function asyncMap<T, E extends ResultValidErrors>(
@@ -196,7 +197,7 @@ function asyncMap<T, E extends ResultValidErrors>(
 export const Result = {
   ok,
   err,
-  unknownToError,
+  unknownToError: unknownToResultError,
   asyncUnwrap,
   asyncMap,
 };
@@ -212,7 +213,7 @@ export function resultify<T, E extends ResultValidErrors = Error>(
     return err(
       errorNormalizer ?
         errorNormalizer(error)
-      : (normalizeError(error) as unknown as E),
+      : (unknownToError(error) as unknown as E),
     );
   }
 }
@@ -228,12 +229,33 @@ export async function asyncResultify<T, E extends Error = Error>(
     return err(
       errorNormalizer ?
         errorNormalizer(error)
-      : (normalizeError(error) as unknown as E),
+      : (unknownToError(error) as unknown as E),
     );
   }
 }
 
-export function normalizeError(error: unknown): Error {
+/**
+ * Converts an unknown error value into an Error object.
+ *
+ * @param error - The unknown value to convert to an Error
+ * @returns An Error object
+ *
+ * @example
+ * try {
+ *   // some code that might throw
+ * } catch (err) {
+ *   const error = unknownToError(err); // Guaranteed to be Error instance
+ * }
+ *
+ * The function handles different error types:
+ * - Returns the error directly if it's already an Error instance
+ * - Converts strings into Error objects using the string as the message
+ * - For objects, tries to extract a message property or stringifies the object
+ * - For other values, stringifies them or uses 'unknown' as fallback
+ *
+ * The original error value is preserved as the `cause` property of the returned Error.
+ */
+export function unknownToError(error: unknown): Error {
   if (error instanceof Error) return error;
 
   if (typeof error === 'string') {
@@ -252,12 +274,9 @@ export function normalizeError(error: unknown): Error {
   return new Error(safeJsonStringify(error) ?? 'unknown', { cause: error });
 }
 
-export function safeJsonStringify(value: unknown) {
-  try {
-    return JSON.stringify(value);
-  } catch (_) {
-    return null;
-  }
+/** @deprecated use unknownToError instead */
+export function normalizeError(error: unknown): Error {
+  return unknownToError(error);
 }
 
 export type TypedResult<T, E extends ResultValidErrors = Error> = {
