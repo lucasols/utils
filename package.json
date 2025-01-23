@@ -134,6 +134,11 @@
       "types": "./dist/runShellCmd.d.ts",
       "require": "./dist/runShellCmd.cjs"
     },
+    "./safeJson": {
+      "import": "./dist/safeJson.js",
+      "types": "./dist/safeJson.d.ts",
+      "require": "./dist/safeJson.cjs"
+    },
     "./shallowEqual": {
       "import": "./dist/shallowEqual.js",
       "types": "./dist/shallowEqual.d.ts",
@@ -261,6 +266,9 @@
       ],
       "runShellCmd": [
         "./dist/runShellCmd.d.ts"
+      ],
+      "safeJson": [
+        "./dist/safeJson.d.ts"
       ],
       "shallowEqual": [
         "./dist/shallowEqual.d.ts"
