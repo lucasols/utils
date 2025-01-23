@@ -1,5 +1,5 @@
 import { isObject } from './assertions';
-import { safeJsonStringify } from './safeJson';
+import { safeJsonStringify as internalSafeJsonStringify } from './safeJson';
 
 type Ok<T> = {
   ok: true;
@@ -266,18 +266,23 @@ export function unknownToError(error: unknown): Error {
     return new Error(
       'message' in error && error.message && typeof error.message === 'string' ?
         error.message
-      : (safeJsonStringify(error) ?? 'unknown'),
+      : (internalSafeJsonStringify(error) ?? 'unknown'),
       { cause: error },
     );
   }
 
-  return new Error(safeJsonStringify(error) ?? 'unknown', { cause: error });
+  return new Error(internalSafeJsonStringify(error) ?? 'unknown', {
+    cause: error,
+  });
 }
 
-/** @deprecated use unknownToError instead */
+/** @deprecated use unknownToError instead, this will be removed in the next major version */
 export function normalizeError(error: unknown): Error {
   return unknownToError(error);
 }
+
+/** @deprecated use safeJsonStringify from `@ls-stack/utils/safeJson` instead, this will be removed in the next major version */
+export const safeJsonStringify = internalSafeJsonStringify;
 
 export type TypedResult<T, E extends ResultValidErrors = Error> = {
   ok: (value: T) => OkResult<T, E, T>;
