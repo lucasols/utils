@@ -40,3 +40,24 @@ export function narrowStringToUnion<const T extends string>(
 
   return undefined;
 }
+
+/**
+ * Type helper to check if a type is a subtype of another type.
+ *
+ * @template BaseType - The base type to check against
+ * @template SubType - The type that should extend BaseType
+ * @returns {unknown} Returns undefined, only used for type checking
+ */
+export function isSubTypeOf<BaseType, SubType extends BaseType>(): unknown {
+  return undefined as SubType as unknown;
+}
+
+/**
+ * Type helper to narrow a string to a key of an object.
+ */
+export function isObjKey<T extends Record<string, unknown>>(
+  key: unknown,
+  obj: T,
+): key is keyof T {
+  return typeof key === 'string' && key in obj;
+}
