@@ -57,13 +57,3 @@ export function looseGetObjectProperty<T extends Record<string, unknown>>(
 ): T[keyof T] | undefined {
   return obj[key as keyof T];
 }
-
-const test = {
-  a: 1,
-  b: '2',
-  c: {
-    d: '3',
-  },
-};
-
-looseGetObjectProperty(test, 'a');
