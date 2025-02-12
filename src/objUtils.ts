@@ -50,3 +50,20 @@ export function omit<T extends Record<string, unknown>, K extends keyof T>(
 
   return result;
 }
+
+export function looseGetObjectProperty<T extends Record<string, unknown>>(
+  obj: T,
+  key: string,
+): T[keyof T] | undefined {
+  return obj[key as keyof T];
+}
+
+const test = {
+  a: 1,
+  b: '2',
+  c: {
+    d: '3',
+  },
+};
+
+looseGetObjectProperty(test, 'a');
