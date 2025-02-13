@@ -23,7 +23,7 @@ type Options = {
    */
   maxItemAge?: number;
   /**
-   * The maximum number of items to check for expiration in a single call.
+   * The throttle for checking expired items in milliseconds.
    * @default 10_000
    */
   expirationThrottle?: number;
