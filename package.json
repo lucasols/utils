@@ -44,6 +44,11 @@
       "types": "./dist/assertions.d.ts",
       "require": "./dist/assertions.cjs"
     },
+    "./cache": {
+      "import": "./dist/cache.js",
+      "types": "./dist/cache.d.ts",
+      "require": "./dist/cache.cjs"
+    },
     "./castValues": {
       "import": "./dist/castValues.js",
       "types": "./dist/castValues.d.ts",
@@ -222,6 +227,9 @@
       ],
       "assertions": [
         "./dist/assertions.d.ts"
+      ],
+      "cache": [
+        "./dist/cache.d.ts"
       ],
       "castValues": [
         "./dist/castValues.d.ts"
