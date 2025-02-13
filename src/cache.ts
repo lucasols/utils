@@ -1,3 +1,5 @@
+import { isPromise } from './assertions';
+
 export function cachedGetter<T>(getter: () => T): {
   value: T;
 } {
@@ -20,9 +22,18 @@ type Options = {
    * The maximum age of items in the cache in seconds.
    */
   maxItemAge?: number;
+  /**
+   * The maximum number of items to check for expiration in a single call.
+   * @default 10_000
+   */
+  expirationThrottle?: number;
 };
 
-export function createCache({ maxCacheSize = 1000, maxItemAge }: Options = {}) {
+export function createCache({
+  maxCacheSize = 1000,
+  maxItemAge,
+  expirationThrottle = 10_000,
+}: Options = {}) {
   const cache = new Map<
     string,
     {
@@ -31,61 +42,86 @@ export function createCache({ maxCacheSize = 1000, maxItemAge }: Options = {}) {
     }
   >();
 
-  function trimCache() {
-    const now = Date.now();
+  // Debounce variables for expiration checks only
+  let lastExpirationCheck = 0;
 
-    // Remove expired items if maxItemAge is set
-    if (maxItemAge !== undefined) {
-      const maxAgeMs = maxItemAge * 1000;
-      for (const [key, item] of cache.entries()) {
-        if (now - item.timestamp > maxAgeMs) {
+  function checkExpiredItems() {
+    const now = Date.now();
+    if (!maxItemAge || now - lastExpirationCheck < expirationThrottle) return;
+    lastExpirationCheck = now;
+
+    const maxAgeMs = maxItemAge * 1000;
+    for (const [key, item] of cache.entries()) {
+      if (now - item.timestamp > maxAgeMs) {
+        cache.delete(key);
+      }
+    }
+  }
+
+  function trimToSize() {
+    const currentSize = cache.size;
+    if (currentSize > maxCacheSize) {
+      const keysToRemove = currentSize - maxCacheSize;
+      const iterator = cache.keys();
+      for (let i = 0; i < keysToRemove; i++) {
+        const { value: key } = iterator.next();
+        if (key) {
           cache.delete(key);
         }
       }
     }
-
-    // Handle max size limit
-    const cacheSize = cache.size;
-    if (cacheSize > maxCacheSize) {
-      const keys = Array.from(cache.keys());
-      for (let i = 0; i < cacheSize - maxCacheSize; i++) {
-        cache.delete(keys[i]!);
-      }
-    }
   }
 
-  function isExpired(timestamp: number): boolean {
-    if (maxItemAge === undefined) return false;
-    return Date.now() - timestamp > maxItemAge * 1000;
+  function isExpired(timestamp: number, now: number): boolean {
+    return maxItemAge !== undefined && now - timestamp > maxItemAge * 1000;
   }
 
-  function getOrInsert<T>(cacheKey: string, val: () => T | Promise<T>): T {
-    const cached = cache.get(cacheKey);
-    if (!cached || isExpired(cached.timestamp)) {
-      cache.set(cacheKey, {
-        value: val(),
-        timestamp: Date.now(),
-      });
-      trimCache();
+  function getOrInsert<T>(cacheKey: string, val: () => T): T {
+    const now = Date.now();
+    const entry = cache.get(cacheKey);
+
+    if (!entry || isExpired(entry.timestamp, now)) {
+      const value = val();
+      cache.set(cacheKey, { value, timestamp: now });
+      trimToSize();
+      checkExpiredItems();
+      return value;
     }
 
-    return cache.get(cacheKey)!.value as T;
+    return entry.value as T;
   }
 
   async function getOrInsertAsync<T>(
     cacheKey: string,
     val: () => Promise<T>,
   ): Promise<T> {
-    const cached = cache.get(cacheKey);
-    if (!cached || isExpired(cached.timestamp)) {
-      cache.set(cacheKey, {
-        value: await val(),
-        timestamp: Date.now(),
-      });
-      trimCache();
+    const entry = cache.get(cacheKey);
+
+    if (entry && isPromise(entry.value)) {
+      return entry.value as Promise<T>;
     }
 
-    return cache.get(cacheKey)!.value as T;
+    const now = Date.now();
+
+    if (entry && !isExpired(entry.timestamp, now)) {
+      return entry.value as T;
+    }
+
+    const promise = val()
+      .then((result) => {
+        cache.set(cacheKey, { value: result, timestamp: Date.now() });
+        return result;
+      })
+      .catch((error) => {
+        cache.delete(cacheKey);
+        throw error;
+      });
+
+    cache.set(cacheKey, { value: promise, timestamp: now });
+    trimToSize();
+    checkExpiredItems();
+
+    return promise;
   }
 
   return {

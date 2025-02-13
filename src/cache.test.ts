@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { cachedGetter, createCache } from './cache';
+import { sleep } from './sleep';
 
 describe('cachedGetter', () => {
   test('should only call getter once', () => {
@@ -172,4 +173,97 @@ describe('createCache', () => {
 
     vi.useRealTimers();
   });
+
+  test.concurrent('should cache concurrent async calls', async () => {
+    const cache = createCache();
+    const asyncMockFn = vi.fn(async () => {
+      await sleep(20);
+      return { foo: 'bar' };
+    });
+
+    const result1 = await cache.getOrInsertAsync('key1', asyncMockFn);
+    const result2 = await cache.getOrInsertAsync('key1', asyncMockFn);
+
+    expect(result1).toEqual(result2);
+    expect(result1).toEqual({ foo: 'bar' });
+    expect(asyncMockFn).toHaveBeenCalledTimes(1);
+  });
+
+  test.concurrent('should remove cache entry on async failure', async () => {
+    const cache = createCache();
+    const error = new Error('Failed request');
+    const failingMock = vi
+      .fn()
+      .mockRejectedValueOnce(error)
+      .mockResolvedValueOnce('success');
+
+    // First call should fail
+    await expect(cache.getOrInsertAsync('key1', failingMock)).rejects.toThrow(
+      error,
+    );
+    // Cache should be cleared on error
+    expect(cache['~cache'].has('key1')).toBe(false);
+
+    // Second call should retry and succeed
+    const result = await cache.getOrInsertAsync('key1', failingMock);
+    expect(result).toBe('success');
+    expect(failingMock).toHaveBeenCalledTimes(2);
+  });
+
+  test.concurrent(
+    'should handle concurrent async requests before resolution',
+    async () => {
+      const cache = createCache();
+      const resolvers: Array<(value: string) => void> = [];
+      const asyncMock = vi.fn(
+        () =>
+          new Promise<string>((resolve) => {
+            resolvers.push(resolve);
+          }),
+      );
+
+      const promise1 = cache.getOrInsertAsync('key1', asyncMock);
+      const promise2 = cache.getOrInsertAsync('key1', asyncMock);
+
+      // Resolve the pending promise
+      resolvers[0]!('result');
+      const [result1, result2] = await Promise.all([promise1, promise2]);
+
+      expect(result1).toBe('result');
+      expect(result2).toBe('result');
+      expect(asyncMock).toHaveBeenCalledTimes(1);
+      expect(cache['~cache'].get('key1')?.value).toBe('result');
+    },
+  );
+
+  test.concurrent(
+    'should create new promise when expired entry exists',
+    async () => {
+      const cache = createCache({ maxItemAge: 0.01 }); // 10ms expiration
+
+      // First call - store promise
+      const mockFn1 = vi.fn(async () => {
+        await sleep(10);
+        return 'first';
+      });
+      const promise1 = cache.getOrInsertAsync('key1', mockFn1);
+
+      // Wait for expiration plus debounce buffer
+      await sleep(30);
+
+      // Second call - should create new promise
+      const mockFn2 = vi.fn(async () => {
+        await sleep(10);
+        return 'second';
+      });
+      const promise2 = cache.getOrInsertAsync('key1', mockFn2);
+
+      const [result1, result2] = await Promise.all([promise1, promise2]);
+
+      expect(result1).toBe('first');
+      expect(result2).toBe('second');
+      expect(mockFn1).toHaveBeenCalledTimes(1);
+      expect(mockFn2).toHaveBeenCalledTimes(1);
+    },
+  );
 });
