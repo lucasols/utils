@@ -1,0 +1,6 @@
+---
+description: writing tests
+globs: 
+---
+- Always use vitest;
+- When writing tests prefer using `test` instead of `it`;
