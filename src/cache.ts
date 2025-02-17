@@ -24,28 +24,37 @@ type Options = {
   maxItemAge?: number;
   /**
    * The throttle for checking expired items in milliseconds.
-   * @default 10_000
+   * @default
+   * 10_000
    */
   expirationThrottle?: number;
 };
 
-export function createCache({
+export type Cache<T> = {
+  getOrInsert: (cacheKey: string, val: () => T) => T;
+  getOrInsertAsync: (cacheKey: string, val: () => Promise<T>) => Promise<T>;
+  clear: () => void;
+  get: (cacheKey: string) => T | undefined;
+  set: (cacheKey: string, value: T) => void;
+  cleanExpiredItems: () => void;
+  getAsync: (cacheKey: string) => Promise<T | undefined>;
+  setAsync: (cacheKey: string, value: () => Promise<T>) => void;
+  [' cache']: {
+    map: Map<string, { value: T | Promise<T>; timestamp: number }>;
+  };
+};
+
+export function createCache<T>({
   maxCacheSize = 1000,
   maxItemAge,
   expirationThrottle = 10_000,
-}: Options = {}) {
-  const cache = new Map<
-    string,
-    {
-      value: unknown;
-      timestamp: number;
-    }
-  >();
+}: Options = {}): Cache<T> {
+  const cache = new Map<string, { value: T | Promise<T>; timestamp: number }>();
 
   // Debounce variables for expiration checks only
   let lastExpirationCheck = 0;
 
-  function checkExpiredItems() {
+  function cleanExpiredItems() {
     const now = Date.now();
     if (!maxItemAge || now - lastExpirationCheck < expirationThrottle) return;
     lastExpirationCheck = now;
@@ -76,59 +85,103 @@ export function createCache({
     return maxItemAge !== undefined && now - timestamp > maxItemAge * 1000;
   }
 
-  function getOrInsert<T>(cacheKey: string, val: () => T): T {
-    const now = Date.now();
-    const entry = cache.get(cacheKey);
-
-    if (!entry || isExpired(entry.timestamp, now)) {
-      const value = val();
-      cache.set(cacheKey, { value, timestamp: now });
-      trimToSize();
-      checkExpiredItems();
-      return value;
-    }
-
-    return entry.value as T;
-  }
-
-  async function getOrInsertAsync<T>(
-    cacheKey: string,
-    val: () => Promise<T>,
-  ): Promise<T> {
-    const entry = cache.get(cacheKey);
-
-    if (entry && isPromise(entry.value)) {
-      return entry.value as Promise<T>;
-    }
-
-    const now = Date.now();
-
-    if (entry && !isExpired(entry.timestamp, now)) {
-      return entry.value as T;
-    }
-
-    const promise = val()
-      .then((result) => {
-        cache.set(cacheKey, { value: result, timestamp: Date.now() });
-        return result;
-      })
-      .catch((error) => {
-        cache.delete(cacheKey);
-        throw error;
-      });
-
-    cache.set(cacheKey, { value: promise, timestamp: now });
-    trimToSize();
-    checkExpiredItems();
-
-    return promise;
-  }
-
   return {
-    getOrInsert,
-    getOrInsertAsync,
-    clear: () => cache.clear(),
+    getOrInsert(cacheKey, val) {
+      const now = Date.now();
+      const entry = cache.get(cacheKey);
+
+      if (!entry || isExpired(entry.timestamp, now)) {
+        const value = val();
+        cache.set(cacheKey, { value, timestamp: now });
+        trimToSize();
+        cleanExpiredItems();
+        return value;
+      }
+
+      if (isPromise(entry.value)) {
+        throw new Error(
+          'Cache value is a promise, use getOrInsertAsync instead',
+        );
+      }
+
+      return entry.value;
+    },
+    async getOrInsertAsync(cacheKey, val) {
+      const entry = cache.get(cacheKey);
+
+      if (entry && isPromise(entry.value)) {
+        return entry.value;
+      }
+
+      const now = Date.now();
+
+      if (entry && !isExpired(entry.timestamp, now)) {
+        return entry.value;
+      }
+
+      const promise = val()
+        .then((result) => {
+          cache.set(cacheKey, { value: result, timestamp: Date.now() });
+          return result;
+        })
+        .catch((error) => {
+          cache.delete(cacheKey);
+          throw error;
+        });
+
+      cache.set(cacheKey, { value: promise, timestamp: now });
+      trimToSize();
+      cleanExpiredItems();
+
+      return promise;
+    },
+    clear() {
+      cache.clear();
+    },
+    get(cacheKey) {
+      const entry = cache.get(cacheKey);
+
+      if (!entry || isExpired(entry.timestamp, Date.now())) {
+        return undefined;
+      }
+
+      if (isPromise(entry.value)) {
+        throw new Error('Cache value is a promise, use getAsync instead');
+      }
+
+      return entry.value;
+    },
+    set(cacheKey, value) {
+      cache.set(cacheKey, { value, timestamp: Date.now() });
+      trimToSize();
+      cleanExpiredItems();
+    },
+    async getAsync(cacheKey) {
+      const entry = cache.get(cacheKey);
+
+      if (!entry || isExpired(entry.timestamp, Date.now())) {
+        return undefined;
+      }
+
+      return await entry.value;
+    },
+    setAsync(cacheKey, value) {
+      const promise = value()
+        .then((result) => {
+          cache.set(cacheKey, { value: result, timestamp: Date.now() });
+          return result;
+        })
+        .catch((error) => {
+          cache.delete(cacheKey);
+          throw error;
+        });
+
+      cache.set(cacheKey, { value: promise, timestamp: Date.now() });
+      trimToSize();
+      cleanExpiredItems();
+    },
+    cleanExpiredItems,
     /** @internal */
-    '~cache': cache,
+    ' cache': { map: cache },
   };
 }

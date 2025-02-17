@@ -44,7 +44,7 @@ describe('createCache', () => {
     cache.getOrInsert('key2', () => 'value2');
     cache.getOrInsert('key3', () => 'value3');
 
-    expect(cache['~cache']).toMatchInlineSnapshot(`
+    expect(cache[' cache'].map).toMatchInlineSnapshot(`
       Map {
         "key2" => {
           "timestamp": 1735689600000,
@@ -59,7 +59,7 @@ describe('createCache', () => {
 
     cache.getOrInsert('key4', () => 'value1');
 
-    expect(cache['~cache']).toMatchInlineSnapshot(`
+    expect(cache[' cache'].map).toMatchInlineSnapshot(`
       Map {
         "key3" => {
           "timestamp": 1735689600000,
@@ -83,7 +83,7 @@ describe('createCache', () => {
 
     cache.clear();
 
-    expect(cache['~cache']).toMatchInlineSnapshot(`Map {}`);
+    expect(cache[' cache'].map).toMatchInlineSnapshot(`Map {}`);
   });
 
   test('getOrInsertAsync', async () => {
@@ -103,7 +103,7 @@ describe('createCache', () => {
     expect(value).toEqual(cachedValue);
     expect(value).toEqual({ foo: 'bar' });
     expect(asyncMockFn).toHaveBeenCalledTimes(1);
-    expect(cache['~cache']).toMatchInlineSnapshot(`
+    expect(cache[' cache'].map).toMatchInlineSnapshot(`
       Map {
         "key1" => {
           "timestamp": 1735689600000,
@@ -166,10 +166,10 @@ describe('createCache', () => {
     // Adding a new item should trigger cache trimming
     cache.getOrInsert('key3', () => 'value3');
 
-    expect(cache['~cache'].size).toBe(1);
-    expect(cache['~cache'].get('key3')).toBeDefined();
-    expect(cache['~cache'].get('key1')).toBeUndefined();
-    expect(cache['~cache'].get('key2')).toBeUndefined();
+    expect(cache[' cache'].map.size).toBe(1);
+    expect(cache[' cache'].map.get('key3')).toBeDefined();
+    expect(cache[' cache'].map.get('key1')).toBeUndefined();
+    expect(cache[' cache'].map.get('key2')).toBeUndefined();
 
     vi.useRealTimers();
   });
@@ -202,7 +202,7 @@ describe('createCache', () => {
       error,
     );
     // Cache should be cleared on error
-    expect(cache['~cache'].has('key1')).toBe(false);
+    expect(cache[' cache'].map.has('key1')).toBe(false);
 
     // Second call should retry and succeed
     const result = await cache.getOrInsertAsync('key1', failingMock);
@@ -232,7 +232,7 @@ describe('createCache', () => {
       expect(result1).toBe('result');
       expect(result2).toBe('result');
       expect(asyncMock).toHaveBeenCalledTimes(1);
-      expect(cache['~cache'].get('key1')?.value).toBe('result');
+      expect(cache[' cache'].map.get('key1')?.value).toBe('result');
     },
   );
 
@@ -266,4 +266,105 @@ describe('createCache', () => {
       expect(mockFn2).toHaveBeenCalledTimes(1);
     },
   );
+
+  test('get and set should work with basic values', () => {
+    const cache = createCache<string>();
+
+    cache.set('key1', 'value1');
+    expect(cache.get('key1')).toBe('value1');
+
+    // Should return undefined for non-existent key
+    expect(cache.get('nonexistent')).toBeUndefined();
+  });
+
+  test('get should throw error when accessing promise value', () => {
+    const cache = createCache<string>();
+    const promise = Promise.resolve('value1');
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    cache.set('key1', promise as any); // Intentionally setting a promise
+
+    expect(() => cache.get('key1')).toThrow(
+      'Cache value is a promise, use getAsync instead',
+    );
+  });
+
+  test('get should respect maxItemAge', () => {
+    vi.useFakeTimers();
+    const cache = createCache<string>({ maxItemAge: 60 }); // 60 seconds
+
+    cache.set('key1', 'value1');
+    expect(cache.get('key1')).toBe('value1');
+
+    // Advance time by 61 seconds
+    vi.advanceTimersByTime(61 * 1000);
+
+    expect(cache.get('key1')).toBeUndefined();
+
+    vi.useRealTimers();
+  });
+
+  test.concurrent(
+    'getAsync and setAsync should work with promises',
+    async () => {
+      const cache = createCache<string>();
+      const getValue = vi.fn(() => Promise.resolve('asyncValue1'));
+
+      cache.setAsync('key1', getValue);
+
+      const value1 = await cache.getAsync('key1');
+      expect(value1).toBe('asyncValue1');
+      expect(getValue).toHaveBeenCalledTimes(1);
+
+      // Second get should return the same cached value
+      const value2 = await cache.getAsync('key1');
+      expect(value2).toBe('asyncValue1');
+      expect(getValue).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  test.concurrent(
+    'getAsync should return undefined for non-existent key',
+    async () => {
+      const cache = createCache<string>();
+
+      const value = await cache.getAsync('nonexistent');
+      expect(value).toBeUndefined();
+    },
+  );
+
+  test.concurrent('setAsync should handle rejected promises', async () => {
+    const cache = createCache<string>();
+    const error = new Error('Async error');
+    const getValue = vi.fn().mockRejectedValue(error);
+
+    cache.setAsync('key1', getValue);
+
+    await expect(cache.getAsync('key1')).rejects.toThrow(error);
+    expect(getValue).toHaveBeenCalledTimes(1);
+
+    // Cache entry should be removed after error
+    expect(cache[' cache'].map.has('key1')).toBe(false);
+  });
+
+  test.concurrent('setAsync should respect maxItemAge', async () => {
+    vi.useFakeTimers();
+    const cache = createCache<string>({ maxItemAge: 60 }); // 60 seconds
+    const getValue = vi.fn(() => Promise.resolve('asyncValue1'));
+
+    cache.setAsync('key1', getValue);
+
+    // Get the value immediately
+    const value1 = await cache.getAsync('key1');
+    expect(value1).toBe('asyncValue1');
+
+    // Advance time by 61 seconds
+    vi.advanceTimersByTime(61 * 1000);
+
+    // Should return undefined after expiration
+    const value2 = await cache.getAsync('key1');
+    expect(value2).toBeUndefined();
+
+    vi.useRealTimers();
+  });
 });
