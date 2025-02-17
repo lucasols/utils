@@ -94,6 +94,11 @@
       "types": "./dist/exhaustiveMatch.d.ts",
       "require": "./dist/exhaustiveMatch.cjs"
     },
+    "./getObjStableKey": {
+      "import": "./dist/getObjStableKey.js",
+      "types": "./dist/getObjStableKey.d.ts",
+      "require": "./dist/getObjStableKey.cjs"
+    },
     "./internalUtils": {
       "import": "./dist/internalUtils.js",
       "types": "./dist/internalUtils.d.ts",
@@ -262,6 +267,9 @@
       ],
       "exhaustiveMatch": [
         "./dist/exhaustiveMatch.d.ts"
+      ],
+      "getObjStableKey": [
+        "./dist/getObjStableKey.d.ts"
       ],
       "internalUtils": [
         "./dist/internalUtils.d.ts"
