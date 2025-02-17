@@ -78,7 +78,7 @@ export type Cache<T> = {
   getAsync: (cacheKey: string) => Promise<T | undefined>;
   setAsync: (
     cacheKey: string,
-    value: (utils: Utils<T>) => Promise<T | RejectValue<T>>,
+    value: (utils: Utils<T>) => Promise<T>,
   ) => Promise<T>;
   [' cache']: {
     map: Map<string, { value: T | Promise<T>; timestamp: number }>;

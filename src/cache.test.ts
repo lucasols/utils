@@ -344,12 +344,16 @@ describe('createCache', () => {
 
   test.concurrent('setAsync should handle rejected promises', async () => {
     const cache = createCache<string>();
-    const error = new Error('Async error');
-    const getValue = vi.fn().mockRejectedValue(error);
+    const getValue = vi.fn(async () => {
+      await sleep(1);
+      throw new Error('Async error');
+    });
 
-    cache.setAsync('key1', getValue);
+    cache.setAsync('key1', getValue).catch(() => {
+      // handle error
+    });
 
-    await expect(cache.getAsync('key1')).rejects.toThrow(error);
+    await expect(() => cache.getAsync('key1')).rejects.toThrow('Async error');
     expect(getValue).toHaveBeenCalledTimes(1);
 
     // Cache entry should be removed after error
