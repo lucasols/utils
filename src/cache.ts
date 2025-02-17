@@ -30,7 +30,7 @@ type Options = {
   expirationThrottle?: number;
 };
 
-class RejectValue<T> {
+export class RejectValue<T> {
   value: T;
 
   constructor(value: T) {
@@ -41,11 +41,15 @@ class RejectValue<T> {
 export type Cache<T> = {
   getOrInsert: (
     cacheKey: string,
-    val: (reject: (value: T) => RejectValue<T>) => T | RejectValue<T>,
+    val: (utils: {
+      reject: (value: T) => RejectValue<T>;
+    }) => T | RejectValue<T>,
   ) => T;
   getOrInsertAsync: (
     cacheKey: string,
-    val: (reject: (value: T) => RejectValue<T>) => Promise<T | RejectValue<T>>,
+    val: (utils: {
+      reject: (value: T) => RejectValue<T>;
+    }) => Promise<T | RejectValue<T>>,
   ) => Promise<T>;
   clear: () => void;
   get: (cacheKey: string) => T | undefined;
@@ -99,7 +103,9 @@ export function createCache<T>({
     return maxItemAge !== undefined && now - timestamp > maxItemAge * 1000;
   }
 
-  const getRejectedValue = (value: T): RejectValue<T> => new RejectValue(value);
+  const utils = {
+    reject: (value: T) => new RejectValue(value),
+  };
 
   return {
     getOrInsert(cacheKey, val) {
@@ -107,7 +113,7 @@ export function createCache<T>({
       const entry = cache.get(cacheKey);
 
       if (!entry || isExpired(entry.timestamp, now)) {
-        const value = val(getRejectedValue);
+        const value = val(utils);
 
         if (value instanceof RejectValue) {
           return value.value;
@@ -140,9 +146,15 @@ export function createCache<T>({
         return entry.value;
       }
 
-      const promise = val(getRejectedValue)
+      const promise = val(utils)
         .then((result) => {
           if (result instanceof RejectValue) {
+            const cacheValue = cache.get(cacheKey);
+
+            if (cacheValue?.value === promise) {
+              cache.delete(cacheKey);
+            }
+
             return result.value;
           }
 

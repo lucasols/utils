@@ -367,4 +367,56 @@ describe('createCache', () => {
 
     vi.useRealTimers();
   });
+
+  test('getOrInsert should reject caching when using reject callback', () => {
+    const cache = createCache<string>();
+    const getValueMock = vi.fn((value: string) => {
+      return value;
+    });
+
+    const value = cache.getOrInsert('key1', ({ reject }) => {
+      return reject(getValueMock('rejected-value'));
+    });
+    expect(value).toBe('rejected-value');
+    expect(getValueMock).toHaveBeenCalledTimes(1);
+    expect(cache.get('key1')).toBeUndefined();
+
+    // Subsequent call should call the mock again
+    const value2 = cache.getOrInsert('key1', ({ reject }) => {
+      return reject(getValueMock('rejected-value-2'));
+    });
+    expect(value2).toBe('rejected-value-2');
+    expect(getValueMock).toHaveBeenCalledTimes(2);
+
+    expect(cache[' cache'].map.size).toBe(0);
+  });
+
+  test.concurrent(
+    'getOrInsertAsync should reject caching when using reject callback',
+    async () => {
+      const cache = createCache<string>();
+      const getValueMock = vi.fn((value: string) => {
+        return Promise.resolve(value);
+      });
+
+      const value = await cache.getOrInsertAsync('key1', async ({ reject }) => {
+        return reject(await getValueMock('rejected-value'));
+      });
+
+      expect(value).toBe('rejected-value');
+      expect(getValueMock).toHaveBeenCalledTimes(1);
+
+      const value2 = await cache.getOrInsertAsync(
+        'key1',
+        async ({ reject }) => {
+          return reject(await getValueMock('rejected-value-2'));
+        },
+      );
+
+      expect(value2).toBe('rejected-value-2');
+      expect(getValueMock).toHaveBeenCalledTimes(2);
+
+      expect(cache[' cache'].map.size).toBe(0);
+    },
+  );
 });
