@@ -1,6 +1,10 @@
-import { describe, expect, test, vi } from 'vitest';
-import { cachedGetter, createCache } from './cache';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { cachedGetter, createCache, WithExpiration } from './cache';
 import { sleep } from './sleep';
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 describe('cachedGetter', () => {
   test('should only call getter once', () => {
@@ -47,10 +51,12 @@ describe('createCache', () => {
     expect(cache[' cache'].map).toMatchInlineSnapshot(`
       Map {
         "key2" => {
+          "expiration": undefined,
           "timestamp": 1735689600000,
           "value": "value2",
         },
         "key3" => {
+          "expiration": undefined,
           "timestamp": 1735689600000,
           "value": "value3",
         },
@@ -62,10 +68,12 @@ describe('createCache', () => {
     expect(cache[' cache'].map).toMatchInlineSnapshot(`
       Map {
         "key3" => {
+          "expiration": undefined,
           "timestamp": 1735689600000,
           "value": "value3",
         },
         "key4" => {
+          "expiration": undefined,
           "timestamp": 1735689600000,
           "value": "value1",
         },
@@ -106,6 +114,7 @@ describe('createCache', () => {
     expect(cache[' cache'].map).toMatchInlineSnapshot(`
       Map {
         "key1" => {
+          "expiration": undefined,
           "timestamp": 1735689600000,
           "value": {
             "foo": "bar",
@@ -122,7 +131,7 @@ describe('createCache', () => {
     const now = new Date('2025-01-01T00:00:00.000Z');
     vi.setSystemTime(now);
 
-    const cache = createCache({ maxItemAge: 60 }); // 60 seconds
+    const cache = createCache({ maxItemAge: { seconds: 60 } }); // 60 seconds
     const mockFn = vi.fn(() => 'value1');
 
     // First call
@@ -155,7 +164,7 @@ describe('createCache', () => {
     const now = new Date('2025-01-01T00:00:00.000Z');
     vi.setSystemTime(now);
 
-    const cache = createCache({ maxItemAge: 60 }); // 60 seconds
+    const cache = createCache({ maxItemAge: { seconds: 60 } }); // 60 seconds
 
     cache.getOrInsert('key1', () => 'value1');
     cache.getOrInsert('key2', () => 'value2');
@@ -239,7 +248,7 @@ describe('createCache', () => {
   test.concurrent(
     'should create new promise when expired entry exists',
     async () => {
-      const cache = createCache({ maxItemAge: 0.01 }); // 10ms expiration
+      const cache = createCache({ maxItemAge: { ms: 10 } }); // 10ms expiration
 
       // First call - store promise
       const mockFn1 = vi.fn(async () => {
@@ -291,7 +300,7 @@ describe('createCache', () => {
 
   test('get should respect maxItemAge', () => {
     vi.useFakeTimers();
-    const cache = createCache<string>({ maxItemAge: 60 }); // 60 seconds
+    const cache = createCache<string>({ maxItemAge: { seconds: 60 } }); // 60 seconds
 
     cache.set('key1', 'value1');
     expect(cache.get('key1')).toBe('value1');
@@ -348,8 +357,7 @@ describe('createCache', () => {
   });
 
   test.concurrent('setAsync should respect maxItemAge', async () => {
-    vi.useFakeTimers();
-    const cache = createCache<string>({ maxItemAge: 60 }); // 60 seconds
+    const cache = createCache<string>({ maxItemAge: { ms: 100 } }); // 100ms
     const getValue = vi.fn(() => Promise.resolve('asyncValue1'));
 
     cache.setAsync('key1', getValue);
@@ -358,14 +366,12 @@ describe('createCache', () => {
     const value1 = await cache.getAsync('key1');
     expect(value1).toBe('asyncValue1');
 
-    // Advance time by 61 seconds
-    vi.advanceTimersByTime(61 * 1000);
+    // Wait for expiration (110ms)
+    await sleep(110);
 
     // Should return undefined after expiration
     const value2 = await cache.getAsync('key1');
     expect(value2).toBeUndefined();
-
-    vi.useRealTimers();
   });
 
   test('getOrInsert should reject caching when using reject callback', () => {
@@ -419,4 +425,133 @@ describe('createCache', () => {
       expect(cache[' cache'].map.size).toBe(0);
     },
   );
+});
+
+describe('withExpiration', () => {
+  test('should store value with custom expiration time inferior to default', () => {
+    vi.useFakeTimers();
+    const now = new Date('2025-01-01T00:00:00.000Z');
+    vi.setSystemTime(now);
+
+    const cache = createCache<string>({ maxItemAge: { seconds: 60 } }); // 60 seconds default
+
+    const value = cache.getOrInsert('key1', ({ withExpiration }) => {
+      return withExpiration('value1', { seconds: 30 }); // 30 seconds expiration
+    });
+
+    expect(value).toBe('value1');
+
+    // Advance time by 29 seconds (not expired)
+    vi.advanceTimersByTime(29 * 1000);
+    expect(cache.get('key1')).toBe('value1');
+
+    // Advance time by 2 more seconds (expired)
+    vi.advanceTimersByTime(2 * 1000);
+    expect(cache.get('key1')).toBeUndefined();
+
+    vi.useRealTimers();
+  });
+
+  test('should work with duration object', () => {
+    vi.useFakeTimers();
+    const now = new Date('2025-01-01T00:00:00.000Z');
+    vi.setSystemTime(now);
+
+    const cache = createCache<string>({ maxItemAge: { seconds: 120 } }); // 120 seconds default
+
+    const value = cache.getOrInsert('key1', ({ withExpiration }) => {
+      return withExpiration('value1', { seconds: 60 }); // 60 seconds expiration
+    });
+
+    expect(value).toBe('value1');
+
+    // Advance time by 59 seconds (not expired)
+    vi.advanceTimersByTime(59 * 1000);
+    expect(cache.get('key1')).toBe('value1');
+
+    // Advance time by 2 more seconds (expired)
+    vi.advanceTimersByTime(2 * 1000);
+    expect(cache.get('key1')).toBeUndefined();
+
+    vi.useRealTimers();
+  });
+
+  test('should work with custom expiration time superior to default', () => {
+    vi.useFakeTimers();
+    const now = new Date('2025-01-01T00:00:00.000Z');
+    vi.setSystemTime(now);
+
+    const cache = createCache<string>({ maxItemAge: { seconds: 30 } }); // 30 seconds default
+
+    const value = cache.getOrInsert('key1', ({ withExpiration }) => {
+      return withExpiration('value1', { seconds: 60 }); // 60 seconds expiration
+    });
+
+    expect(value).toBe('value1');
+
+    // Advance time by 31 seconds (default expiration would trigger)
+    vi.advanceTimersByTime(31 * 1000);
+    expect(cache.get('key1')).toBe('value1'); // Still valid
+
+    // Advance time to 61 seconds (custom expiration triggers)
+    vi.advanceTimersByTime(30 * 1000);
+    expect(cache.get('key1')).toBeUndefined();
+
+    vi.useRealTimers();
+  });
+
+  test('works with cache.set and cache.get', () => {
+    vi.useFakeTimers();
+    const cache = createCache<string>({
+      maxItemAge: { ms: 100 },
+    });
+    cache.set('key1', new WithExpiration('value1', { seconds: 30 }));
+    expect(cache.get('key1')).toBe('value1');
+
+    vi.advanceTimersByTime(31 * 1000);
+    expect(cache.get('key1')).toBeUndefined();
+  });
+
+  test.concurrent('should work with async values', async () => {
+    const cache = createCache<string>({ maxItemAge: { ms: 100 } }); // 100ms
+
+    const value = await cache.getOrInsertAsync(
+      'key1',
+      async ({ withExpiration }) => {
+        await sleep(10);
+        return withExpiration('value1', { ms: 50 }); // 50ms expiration
+      },
+    );
+
+    expect(value).toBe('value1');
+
+    // Check before expiration (after 40ms)
+    await sleep(40);
+    const cachedValue = await cache.getAsync('key1');
+    expect(cachedValue).toBe('value1');
+
+    // Check after expiration (after additional 30ms)
+    await sleep(30);
+    const expiredValue = await cache.getAsync('key1');
+    expect(expiredValue).toBeUndefined();
+  });
+
+  test.concurrent('works with cache.setAsync and cache.getAsync', async () => {
+    const cache = createCache<string>({ maxItemAge: { ms: 100 } }); // 100ms
+
+    cache.setAsync('key1', async ({ withExpiration }) => {
+      await sleep(10);
+      return withExpiration('value1', { ms: 50 }); // 50ms expiration
+    });
+
+    // Check before expiration (after 40ms)
+    await sleep(40);
+    const cachedValue = await cache.getAsync('key1');
+    expect(cachedValue).toBe('value1');
+
+    // Check after expiration (after additional 30ms)
+    await sleep(30);
+    const expiredValue = await cache.getAsync('key1');
+    expect(expiredValue).toBeUndefined();
+  });
 });

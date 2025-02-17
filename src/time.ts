@@ -107,3 +107,21 @@ function msToDurationObj(
 export function getUnixSeconds() {
   return Math.floor(Date.now() / 1000);
 }
+
+export type DurationObj = {
+  ms?: number;
+  seconds?: number;
+  minutes?: number;
+  hours?: number;
+  days?: number;
+};
+
+export function durationObjToMs(durationObj: DurationObj) {
+  return (
+    (durationObj.hours ?? 0) * HOUR_AS_MS +
+    (durationObj.minutes ?? 0) * MINUTE_AS_MS +
+    (durationObj.seconds ?? 0) * 1000 +
+    (durationObj.ms ?? 0) +
+    (durationObj.days ?? 0) * DAY_AS_MS
+  );
+}

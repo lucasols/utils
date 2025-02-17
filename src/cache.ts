@@ -1,5 +1,5 @@
 import { isPromise } from './assertions';
-
+import { DurationObj, durationObjToMs } from './time';
 export function cachedGetter<T>(getter: () => T): {
   value: T;
 } {
@@ -19,9 +19,9 @@ type Options = {
    */
   maxCacheSize?: number;
   /**
-   * The maximum age of items in the cache in seconds.
+   * The maximum age of items in the cache.
    */
-  maxItemAge?: number;
+  maxItemAge?: DurationObj;
   /**
    * The throttle for checking expired items in milliseconds.
    * @default
@@ -38,25 +38,48 @@ export class RejectValue<T> {
   }
 }
 
+export class WithExpiration<T> {
+  value: T;
+  expiration: number;
+
+  /**
+   * @param value - The value to store in the cache.
+   * @param expiration - The expiration time of the value in seconds or a duration object.
+   */
+  constructor(value: T, expiration: DurationObj) {
+    this.value = value;
+    this.expiration = durationObjToMs(expiration);
+  }
+}
+
+type Utils<T> = {
+  reject: (value: T) => RejectValue<T>;
+  /**
+   * Create a new WithExpiration object with the given value and expiration time.
+   * @param value - The value to store in the cache.
+   * @param expiration - The expiration time of the value in seconds or a duration object.
+   */
+  withExpiration: (value: T, expiration: DurationObj) => WithExpiration<T>;
+};
+
 export type Cache<T> = {
   getOrInsert: (
     cacheKey: string,
-    val: (utils: {
-      reject: (value: T) => RejectValue<T>;
-    }) => T | RejectValue<T>,
+    val: (utils: Utils<T>) => T | RejectValue<T>,
   ) => T;
   getOrInsertAsync: (
     cacheKey: string,
-    val: (utils: {
-      reject: (value: T) => RejectValue<T>;
-    }) => Promise<T | RejectValue<T>>,
+    val: (utils: Utils<T>) => Promise<T | RejectValue<T>>,
   ) => Promise<T>;
   clear: () => void;
   get: (cacheKey: string) => T | undefined;
-  set: (cacheKey: string, value: T) => void;
+  set: (cacheKey: string, value: T | WithExpiration<T>) => void;
   cleanExpiredItems: () => void;
   getAsync: (cacheKey: string) => Promise<T | undefined>;
-  setAsync: (cacheKey: string, value: () => Promise<T>) => void;
+  setAsync: (
+    cacheKey: string,
+    value: (utils: Utils<T>) => Promise<T | RejectValue<T>>,
+  ) => Promise<T>;
   [' cache']: {
     map: Map<string, { value: T | Promise<T>; timestamp: number }>;
   };
@@ -67,19 +90,27 @@ export function createCache<T>({
   maxItemAge,
   expirationThrottle = 10_000,
 }: Options = {}): Cache<T> {
-  const cache = new Map<string, { value: T | Promise<T>; timestamp: number }>();
+  type CacheEntry = {
+    value: T | Promise<T>;
+    timestamp: number;
+    expiration: number | undefined;
+  };
+
+  const cache = new Map<string, CacheEntry>();
 
   // Debounce variables for expiration checks only
   let lastExpirationCheck = 0;
 
+  const defaultMaxItemAgeMs = maxItemAge && durationObjToMs(maxItemAge);
+
   function cleanExpiredItems() {
     const now = Date.now();
-    if (!maxItemAge || now - lastExpirationCheck < expirationThrottle) return;
+    if (!defaultMaxItemAgeMs || now - lastExpirationCheck < expirationThrottle)
+      return;
     lastExpirationCheck = now;
 
-    const maxAgeMs = maxItemAge * 1000;
     for (const [key, item] of cache.entries()) {
-      if (now - item.timestamp > maxAgeMs) {
+      if (isExpired(item, now)) {
         cache.delete(key);
       }
     }
@@ -99,12 +130,44 @@ export function createCache<T>({
     }
   }
 
-  function isExpired(timestamp: number, now: number): boolean {
-    return maxItemAge !== undefined && now - timestamp > maxItemAge * 1000;
+  function isExpired(
+    entry: { timestamp: number; expiration?: number },
+    now: number,
+  ): boolean {
+    const maxItemAgeMs = entry.expiration ?? defaultMaxItemAgeMs;
+
+    return !!maxItemAgeMs && now - entry.timestamp > maxItemAgeMs;
+  }
+
+  function unwrapValue(
+    value: T | WithExpiration<T>,
+    now: number,
+  ): {
+    value: T;
+    timestamp: number;
+    expiration: number | undefined;
+  } {
+    if (value instanceof WithExpiration) {
+      return {
+        value: value.value,
+        timestamp: now,
+        expiration:
+          value.expiration ?
+            typeof value.expiration === 'number' ?
+              value.expiration
+            : now + durationObjToMs(value.expiration)
+          : undefined,
+      };
+    }
+
+    return { value, timestamp: now, expiration: undefined };
   }
 
   const utils = {
     reject: (value: T) => new RejectValue(value),
+    withExpiration: (value: T, expiration: DurationObj) => {
+      return new WithExpiration(value, expiration);
+    },
   };
 
   return {
@@ -112,17 +175,19 @@ export function createCache<T>({
       const now = Date.now();
       const entry = cache.get(cacheKey);
 
-      if (!entry || isExpired(entry.timestamp, now)) {
+      if (!entry || isExpired(entry, now)) {
         const value = val(utils);
 
         if (value instanceof RejectValue) {
           return value.value;
         }
 
-        cache.set(cacheKey, { value, timestamp: now });
+        const unwrappedValue = unwrapValue(value, now);
+
+        cache.set(cacheKey, unwrappedValue);
         trimToSize();
         cleanExpiredItems();
-        return value;
+        return unwrappedValue.value;
       }
 
       if (isPromise(entry.value)) {
@@ -142,7 +207,7 @@ export function createCache<T>({
 
       const now = Date.now();
 
-      if (entry && !isExpired(entry.timestamp, now)) {
+      if (entry && !isExpired(entry, now)) {
         return entry.value;
       }
 
@@ -158,16 +223,21 @@ export function createCache<T>({
             return result.value;
           }
 
-          cache.set(cacheKey, { value: result, timestamp: Date.now() });
+          const unwrappedValue = unwrapValue(result, Date.now());
+          cache.set(cacheKey, unwrappedValue);
 
-          return result;
+          return unwrappedValue.value;
         })
         .catch((error) => {
           cache.delete(cacheKey);
           throw error;
         });
 
-      cache.set(cacheKey, { value: promise, timestamp: now });
+      cache.set(cacheKey, {
+        value: promise,
+        timestamp: now,
+        expiration: undefined,
+      });
       trimToSize();
       cleanExpiredItems();
 
@@ -179,7 +249,7 @@ export function createCache<T>({
     get(cacheKey) {
       const entry = cache.get(cacheKey);
 
-      if (!entry || isExpired(entry.timestamp, Date.now())) {
+      if (!entry || isExpired(entry, Date.now())) {
         return undefined;
       }
 
@@ -190,33 +260,50 @@ export function createCache<T>({
       return entry.value;
     },
     set(cacheKey, value) {
-      cache.set(cacheKey, { value, timestamp: Date.now() });
+      cache.set(cacheKey, unwrapValue(value, Date.now()));
       trimToSize();
       cleanExpiredItems();
     },
     async getAsync(cacheKey) {
       const entry = cache.get(cacheKey);
 
-      if (!entry || isExpired(entry.timestamp, Date.now())) {
+      if (!entry || isExpired(entry, Date.now())) {
         return undefined;
       }
 
-      return await entry.value;
+      return entry.value;
     },
-    setAsync(cacheKey, value) {
-      const promise = value()
+    async setAsync(cacheKey, value) {
+      const promise = value(utils)
         .then((result) => {
-          cache.set(cacheKey, { value: result, timestamp: Date.now() });
-          return result;
+          if (result instanceof RejectValue) {
+            const cacheValue = cache.get(cacheKey);
+
+            if (cacheValue?.value === promise) {
+              cache.delete(cacheKey);
+            }
+
+            return result.value;
+          }
+
+          const unwrappedValue = unwrapValue(result, Date.now());
+          cache.set(cacheKey, unwrappedValue);
+          return unwrappedValue.value;
         })
         .catch((error) => {
           cache.delete(cacheKey);
           throw error;
         });
 
-      cache.set(cacheKey, { value: promise, timestamp: Date.now() });
+      cache.set(cacheKey, {
+        value: promise,
+        timestamp: Date.now(),
+        expiration: undefined,
+      });
       trimToSize();
       cleanExpiredItems();
+
+      return promise;
     },
     cleanExpiredItems,
     /** @internal */
