@@ -559,3 +559,84 @@ describe('withExpiration', () => {
     expect(expiredValue).toBeUndefined();
   });
 });
+
+describe('options.rejectWhen', () => {
+  test('should not cache values that match rejection condition', () => {
+    const cache = createCache<number>();
+    const mockFn = vi.fn((n: number) => n);
+
+    // First call with value that should be rejected
+    const value1 = cache.getOrInsert('key1', () => mockFn(42), {
+      rejectWhen: (value) => value === 42,
+    });
+    expect(value1).toBe(42);
+    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(cache[' cache'].map.size).toBe(0);
+
+    // Second call should call the function again since value was rejected
+    const value2 = cache.getOrInsert('key1', () => mockFn(42), {
+      rejectWhen: (value) => value === 42,
+    });
+    expect(value2).toBe(42);
+    expect(mockFn).toHaveBeenCalledTimes(2);
+    expect(cache[' cache'].map.size).toBe(0);
+  });
+
+  test('should cache values that do not match rejection condition', () => {
+    const cache = createCache<number>();
+    const mockFn = vi.fn((n: number) => n);
+
+    // First call with value that should not be rejected
+    const value1 = cache.getOrInsert('key1', () => mockFn(41), {
+      rejectWhen: (value) => value === 42,
+    });
+    expect(value1).toBe(41);
+    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(cache[' cache'].map.size).toBe(1);
+
+    // Second call should use cached value
+    const value2 = cache.getOrInsert('key1', () => mockFn(41), {
+      rejectWhen: (value) => value === 42,
+    });
+    expect(value2).toBe(41);
+    expect(mockFn).toHaveBeenCalledTimes(1);
+  });
+
+  test.concurrent('should work with async values', async () => {
+    const cache = createCache<number>();
+    const mockFn = vi.fn(async (n: number) => {
+      await sleep(10);
+      return n;
+    });
+
+    // First call with value that should be rejected
+    const value1 = await cache.getOrInsertAsync(
+      'key1',
+      async () => await mockFn(42),
+      { rejectWhen: (value) => value === 42 },
+    );
+    expect(value1).toBe(42);
+    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(cache[' cache'].map.size).toBe(0);
+
+    // Second call should call the function again since value was rejected
+    const value2 = await cache.getOrInsertAsync(
+      'key1',
+      async () => await mockFn(41),
+      { rejectWhen: (value) => value === 42 },
+    );
+    expect(value2).toBe(41);
+    expect(mockFn).toHaveBeenCalledTimes(2);
+    expect(cache[' cache'].map.size).toBe(1);
+
+    // Third call should be cached
+    const value3 = await cache.getOrInsertAsync(
+      'key1',
+      async () => await mockFn(41),
+      { rejectWhen: (value) => value === 42 },
+    );
+    expect(value3).toBe(41);
+    expect(mockFn).toHaveBeenCalledTimes(2);
+    expect(cache[' cache'].map.size).toBe(1);
+  });
+});

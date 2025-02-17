@@ -62,14 +62,26 @@ type Utils<T> = {
   withExpiration: (value: T, expiration: DurationObj) => WithExpiration<T>;
 };
 
+type GetOptions<T> = {
+  /**
+   * A function that determines whether a value should be rejected from being cached.
+   * If the function returns true, the value will be returned but not cached.
+   * @param value The value to check
+   * @returns true if the value should be rejected, false otherwise
+   */
+  rejectWhen?: (value: T) => boolean;
+};
+
 export type Cache<T> = {
   getOrInsert: (
     cacheKey: string,
     val: (utils: Utils<T>) => T | RejectValue<T>,
+    options?: GetOptions<T>,
   ) => T;
   getOrInsertAsync: (
     cacheKey: string,
     val: (utils: Utils<T>) => Promise<T | RejectValue<T>>,
+    options?: GetOptions<T>,
   ) => Promise<T>;
   clear: () => void;
   get: (cacheKey: string) => T | undefined;
@@ -171,7 +183,7 @@ export function createCache<T>({
   };
 
   return {
-    getOrInsert(cacheKey, val) {
+    getOrInsert(cacheKey, val, options) {
       const now = Date.now();
       const entry = cache.get(cacheKey);
 
@@ -180,6 +192,10 @@ export function createCache<T>({
 
         if (value instanceof RejectValue) {
           return value.value;
+        }
+
+        if (options?.rejectWhen?.(value)) {
+          return value;
         }
 
         const unwrappedValue = unwrapValue(value, now);
@@ -198,7 +214,7 @@ export function createCache<T>({
 
       return entry.value;
     },
-    async getOrInsertAsync(cacheKey, val) {
+    async getOrInsertAsync(cacheKey, val, options) {
       const entry = cache.get(cacheKey);
 
       if (entry && isPromise(entry.value)) {
@@ -223,7 +239,16 @@ export function createCache<T>({
             return result.value;
           }
 
+          if (options?.rejectWhen?.(result)) {
+            const cacheValue = cache.get(cacheKey);
+            if (cacheValue?.value === promise) {
+              cache.delete(cacheKey);
+            }
+            return result;
+          }
+
           const unwrappedValue = unwrapValue(result, Date.now());
+
           cache.set(cacheKey, unwrappedValue);
 
           return unwrappedValue.value;
