@@ -1,8 +1,10 @@
 import { EnhancedMap } from './enhancedMap';
+import type { DurationObj } from './time';
+import { durationObjToMs } from './time';
 
 type Options = {
   maxCalls: number;
-  per: { ms?: number; seconds?: number; minutes?: number; hours?: number };
+  per: DurationObj;
   cleanupCheckSecsInterval?: number;
 };
 
@@ -20,17 +22,7 @@ export function createThrottleController({
   per,
   cleanupCheckSecsInterval = 60 * 30,
 }: Options): ThrottleController {
-  let msInterval = 0;
-
-  if (per.ms) {
-    msInterval = per.ms;
-  } else if (per.seconds) {
-    msInterval = per.seconds * 1000;
-  } else if (per.minutes) {
-    msInterval = per.minutes * 1000 * 60;
-  } else if (per.hours) {
-    msInterval = per.hours * 1000 * 60 * 60;
-  }
+  const msInterval = durationObjToMs(per);
 
   if (msInterval === 0) {
     throw new Error('Invalid interval');
