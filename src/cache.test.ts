@@ -384,7 +384,7 @@ describe('createCache', () => {
       return value;
     });
 
-    const value = cache.getOrInsert('key1', ({ reject }) => {
+    const value = cache.getOrInsert('key1', ({ skipCaching: reject }) => {
       return reject(getValueMock('rejected-value'));
     });
     expect(value).toBe('rejected-value');
@@ -392,7 +392,7 @@ describe('createCache', () => {
     expect(cache.get('key1')).toBeUndefined();
 
     // Subsequent call should call the mock again
-    const value2 = cache.getOrInsert('key1', ({ reject }) => {
+    const value2 = cache.getOrInsert('key1', ({ skipCaching: reject }) => {
       return reject(getValueMock('rejected-value-2'));
     });
     expect(value2).toBe('rejected-value-2');
@@ -409,16 +409,19 @@ describe('createCache', () => {
         return Promise.resolve(value);
       });
 
-      const value = await cache.getOrInsertAsync('key1', async ({ reject }) => {
-        return reject(await getValueMock('rejected-value'));
-      });
+      const value = await cache.getOrInsertAsync(
+        'key1',
+        async ({ skipCaching: reject }) => {
+          return reject(await getValueMock('rejected-value'));
+        },
+      );
 
       expect(value).toBe('rejected-value');
       expect(getValueMock).toHaveBeenCalledTimes(1);
 
       const value2 = await cache.getOrInsertAsync(
         'key1',
-        async ({ reject }) => {
+        async ({ skipCaching: reject }) => {
           return reject(await getValueMock('rejected-value-2'));
         },
       );
@@ -567,7 +570,7 @@ describe('options.rejectWhen', () => {
 
     // First call with value that should be rejected
     const value1 = cache.getOrInsert('key1', () => mockFn(42), {
-      rejectWhen: (value) => value === 42,
+      skipCachingWhen: (value) => value === 42,
     });
     expect(value1).toBe(42);
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -575,7 +578,7 @@ describe('options.rejectWhen', () => {
 
     // Second call should call the function again since value was rejected
     const value2 = cache.getOrInsert('key1', () => mockFn(42), {
-      rejectWhen: (value) => value === 42,
+      skipCachingWhen: (value) => value === 42,
     });
     expect(value2).toBe(42);
     expect(mockFn).toHaveBeenCalledTimes(2);
@@ -588,7 +591,7 @@ describe('options.rejectWhen', () => {
 
     // First call with value that should not be rejected
     const value1 = cache.getOrInsert('key1', () => mockFn(41), {
-      rejectWhen: (value) => value === 42,
+      skipCachingWhen: (value) => value === 42,
     });
     expect(value1).toBe(41);
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -596,7 +599,7 @@ describe('options.rejectWhen', () => {
 
     // Second call should use cached value
     const value2 = cache.getOrInsert('key1', () => mockFn(41), {
-      rejectWhen: (value) => value === 42,
+      skipCachingWhen: (value) => value === 42,
     });
     expect(value2).toBe(41);
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -613,7 +616,7 @@ describe('options.rejectWhen', () => {
     const value1 = await cache.getOrInsertAsync(
       'key1',
       async () => await mockFn(42),
-      { rejectWhen: (value) => value === 42 },
+      { skipCachingWhen: (value) => value === 42 },
     );
     expect(value1).toBe(42);
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -623,7 +626,7 @@ describe('options.rejectWhen', () => {
     const value2 = await cache.getOrInsertAsync(
       'key1',
       async () => await mockFn(41),
-      { rejectWhen: (value) => value === 42 },
+      { skipCachingWhen: (value) => value === 42 },
     );
     expect(value2).toBe(41);
     expect(mockFn).toHaveBeenCalledTimes(2);
@@ -633,7 +636,7 @@ describe('options.rejectWhen', () => {
     const value3 = await cache.getOrInsertAsync(
       'key1',
       async () => await mockFn(41),
-      { rejectWhen: (value) => value === 42 },
+      { skipCachingWhen: (value) => value === 42 },
     );
     expect(value3).toBe(41);
     expect(mockFn).toHaveBeenCalledTimes(2);

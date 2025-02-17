@@ -30,7 +30,7 @@ type Options = {
   expirationThrottle?: number;
 };
 
-export class RejectValue<T> {
+export class SkipCaching<T> {
   value: T;
 
   constructor(value: T) {
@@ -53,7 +53,7 @@ export class WithExpiration<T> {
 }
 
 type Utils<T> = {
-  reject: (value: T) => RejectValue<T>;
+  skipCaching: (value: T) => SkipCaching<T>;
   /**
    * Create a new WithExpiration object with the given value and expiration time.
    * @param value - The value to store in the cache.
@@ -69,18 +69,18 @@ type GetOptions<T> = {
    * @param value The value to check
    * @returns true if the value should be rejected, false otherwise
    */
-  rejectWhen?: (value: T) => boolean;
+  skipCachingWhen?: (value: T) => boolean;
 };
 
 export type Cache<T> = {
   getOrInsert: (
     cacheKey: string,
-    val: (utils: Utils<T>) => T | RejectValue<T>,
+    val: (utils: Utils<T>) => T | SkipCaching<T>,
     options?: GetOptions<T>,
   ) => T;
   getOrInsertAsync: (
     cacheKey: string,
-    val: (utils: Utils<T>) => Promise<T | RejectValue<T>>,
+    val: (utils: Utils<T>) => Promise<T | SkipCaching<T>>,
     options?: GetOptions<T>,
   ) => Promise<T>;
   clear: () => void;
@@ -176,7 +176,7 @@ export function createCache<T>({
   }
 
   const utils = {
-    reject: (value: T) => new RejectValue(value),
+    reject: (value: T) => new SkipCaching(value),
     withExpiration: (value: T, expiration: DurationObj) => {
       return new WithExpiration(value, expiration);
     },
@@ -190,11 +190,11 @@ export function createCache<T>({
       if (!entry || isExpired(entry, now)) {
         const value = val(utils);
 
-        if (value instanceof RejectValue) {
+        if (value instanceof SkipCaching) {
           return value.value;
         }
 
-        if (options?.rejectWhen?.(value)) {
+        if (options?.skipCachingWhen?.(value)) {
           return value;
         }
 
@@ -229,7 +229,7 @@ export function createCache<T>({
 
       const promise = val(utils)
         .then((result) => {
-          if (result instanceof RejectValue) {
+          if (result instanceof SkipCaching) {
             const cacheValue = cache.get(cacheKey);
 
             if (cacheValue?.value === promise) {
@@ -239,7 +239,7 @@ export function createCache<T>({
             return result.value;
           }
 
-          if (options?.rejectWhen?.(result)) {
+          if (options?.skipCachingWhen?.(result)) {
             const cacheValue = cache.get(cacheKey);
             if (cacheValue?.value === promise) {
               cache.delete(cacheKey);
@@ -301,7 +301,7 @@ export function createCache<T>({
     async setAsync(cacheKey, value) {
       const promise = value(utils)
         .then((result) => {
-          if (result instanceof RejectValue) {
+          if (result instanceof SkipCaching) {
             const cacheValue = cache.get(cacheKey);
 
             if (cacheValue?.value === promise) {
