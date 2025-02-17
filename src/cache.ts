@@ -176,7 +176,7 @@ export function createCache<T>({
   }
 
   const utils = {
-    reject: (value: T) => new SkipCaching(value),
+    skipCaching: (value: T) => new SkipCaching(value),
     withExpiration: (value: T, expiration: DurationObj) => {
       return new WithExpiration(value, expiration);
     },
