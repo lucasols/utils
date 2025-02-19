@@ -4,7 +4,7 @@ import { isObject } from './assertions';
  * Returns a stable key for the input value.
  *
  * @param input - The value to get a stable key for.
- * @param maxSortingDepth - The maximum depth to sort the input value.
+ * @param maxSortingDepth - The maximum depth to sort the input value. Default is 3.
  * @returns A stable key for the input value.
  */
 export function getValueStableKey(input: unknown, maxSortingDepth = 3): string {
