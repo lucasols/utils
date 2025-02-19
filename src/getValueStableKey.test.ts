@@ -101,28 +101,29 @@ test('avoid conflicting keys', () => {
 });
 
 test('max default depth sorting = 3', () => {
-  expect(
-    getValueStableKey({
-      object_type: 'test',
-      page: 1,
-      nested_type: 'onlyrefs',
-      filters: [
-        {
-          field: 'single_select',
-          type: 'string',
-          operator: 'Exatamente igual',
-          value: 'Option 1',
-          not_sort: {
-            z: 1,
-            a: 1,
-          },
+  const obj = {
+    object_type: 'test',
+    page: 1,
+    nested_type: 'onlyrefs',
+    filters: [
+      {
+        field: 'single_select',
+        type: 'string',
+        operator: 'Exatamente igual',
+        value: 'Option 1',
+        not_sort: {
+          z: 1,
+          a: 1,
         },
-      ],
-      size: 50,
-    }),
-  ).toMatchInlineSnapshot(
+      },
+    ],
+    size: 50,
+  };
+  expect(getValueStableKey(obj)).toMatchInlineSnapshot(
     `"{filters:[{field:"single_select",not_sort:{z:1,a:1},operator:"Exatamente igual",type:"string",value:"Option 1"}],nested_type:"onlyrefs",object_type:"test",page:1,size:50}"`,
   );
+
+  expect(getValueStableKey(obj, 3)).not.toBe(getValueStableKey(obj, 4));
 });
 
 test('number cache id is not equal to string cache id', () => {
