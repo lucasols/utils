@@ -42,6 +42,12 @@ test('nested objects in array are sorted', () => {
   ).toMatchInlineSnapshot(`"{a:[{c:3,d:4},{a:1,z:1},1]}"`);
 });
 
+test('array with undefined values', () => {
+  expect(getValueStableKey([1, undefined, null, 3])).toMatchInlineSnapshot(
+    `"[1,undefined,null,3]"`,
+  );
+});
+
 test('avoid conflicting keys', () => {
   function getKeysAreNotTheSame(a: any, b: any) {
     const aKey = getValueStableKey(a);
@@ -127,7 +133,9 @@ test('max default depth sorting = 3', () => {
 });
 
 test('with no sorting', () => {
-  expect(getValueStableKey({ z: 1, a: 1 }, 0)).toMatchInlineSnapshot(`"{z:1,a:1}"`);
+  expect(getValueStableKey({ z: 1, a: 1 }, 0)).toMatchInlineSnapshot(
+    `"{z:1,a:1}"`,
+  );
 });
 
 test('number cache id is not equal to string cache id', () => {
