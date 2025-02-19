@@ -4,15 +4,41 @@ import { isObject } from './assertions';
  * Returns a stable key for the input value.
  *
  * @param input - The value to get a stable key for.
- * @param maxDepth - The maximum depth to traverse the input value.
+ * @param maxSortingDepth - The maximum depth to sort the input value.
  * @returns A stable key for the input value.
  */
-export function getValueStableKey(input: unknown, maxDepth = 3): string {
+export function getValueStableKey(input: unknown, maxSortingDepth = 3): string {
   if (typeof input === 'string') return `"${input}`;
-
   if (!input || typeof input !== 'object') return `$${input}`;
+  return stringifyCompact(sortValues(input, maxSortingDepth, 0));
+}
 
-  return JSON.stringify(sortValues(input, maxDepth, 0));
+function stringifyCompact(input: unknown, refs = new WeakSet()): string {
+  if (input && typeof input === 'object') {
+    if (refs.has(input)) {
+      throw new Error('Circular reference detected');
+    }
+    refs.add(input);
+  }
+
+  let result: string;
+  if (Array.isArray(input)) {
+    result = `[${input.map((v) => stringifyCompact(v, refs)).join(',')}]`;
+  } else if (isObject(input)) {
+    const entries = Object.entries(input);
+    if (entries.length === 0) {
+      result = '{}';
+    } else {
+      result = `{${entries.map(([k, v]) => `${k}:${stringifyCompact(v, refs)}`).join(',')}}`;
+    }
+  } else {
+    result = JSON.stringify(input);
+  }
+
+  if (input && typeof input === 'object') {
+    refs.delete(input);
+  }
+  return result;
 }
 
 function sortValues(input: unknown, maxDepth: number, depth: number): any {

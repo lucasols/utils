@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { getValueStableKey } from './getValueStableKey';
 
 test('getCacheId ignore undefined obj values', () => {
@@ -9,8 +9,7 @@ test('getCacheId ignore undefined obj values', () => {
       c: 3,
       und: undefined,
     }),
-  ).toMatchInlineSnapshot(`"{"a":1,"c":3}"`);
-  // TODO: generate a shorter key format: a:1,c:3
+  ).toMatchInlineSnapshot(`"{a:1,c:3}"`);
 });
 
 test('nested objects are sorted', () => {
@@ -22,8 +21,7 @@ test('nested objects are sorted', () => {
       },
       a: 1,
     }),
-  ).toMatchInlineSnapshot(`"{"a":1,"b":{"c":3,"d":4}}"`);
-  // TODO: generate a shorter key format: a:1,b:{c:3,d:4}
+  ).toMatchInlineSnapshot(`"{a:1,b:{c:3,d:4}}"`);
 });
 
 test('nested objects in array are sorted', () => {
@@ -41,8 +39,7 @@ test('nested objects in array are sorted', () => {
         1,
       ],
     }),
-  ).toMatchInlineSnapshot(`"{"a":[{"c":3,"d":4},{"a":1,"z":1},1]}"`);
-  // TODO: generate a shorter key format: a:[[c:3,d:4],[a:1,z:1],1]
+  ).toMatchInlineSnapshot(`"{a:[{c:3,d:4},{a:1,z:1},1]}"`);
 });
 
 test('avoid conflicting keys', () => {
@@ -60,36 +57,45 @@ test('avoid conflicting keys', () => {
   expect(getKeysAreNotTheSame({ a: 1, b: 2 }, { a: '1,b:2' }))
     .toMatchInlineSnapshot(`
       {
-        "aKey": "{"a":1,"b":2}",
+        "aKey": "{a:1,b:2}",
         "areNotTheSame": true,
-        "bKey": "{"a":"1,b:2"}",
+        "bKey": "{a:"1,b:2"}",
       }
     `);
 
   expect(getKeysAreNotTheSame({ a: '"1', b: '2"' }, { a: '1,b:2' }))
     .toMatchInlineSnapshot(`
       {
-        "aKey": "{"a":"\\"1","b":"2\\""}",
+        "aKey": "{a:"\\"1",b:"2\\""}",
         "areNotTheSame": true,
-        "bKey": "{"a":"1,b:2"}",
+        "bKey": "{a:"1,b:2"}",
       }
     `);
 
   expect(getKeysAreNotTheSame({ a: '1', b: '2' }, { ['a:1,b']: '2' }))
     .toMatchInlineSnapshot(`
       {
-        "aKey": "{"a":"1","b":"2"}",
+        "aKey": "{a:"1",b:"2"}",
         "areNotTheSame": true,
-        "bKey": "{"a:1,b":"2"}",
+        "bKey": "{a:1,b:"2"}",
       }
     `);
 
   expect(getKeysAreNotTheSame({ a: 1, b: '2' }, { a: '1', b: '2' }))
     .toMatchInlineSnapshot(`
       {
-        "aKey": "{"a":1,"b":"2"}",
+        "aKey": "{a:1,b:"2"}",
         "areNotTheSame": true,
-        "bKey": "{"a":"1","b":"2"}",
+        "bKey": "{a:"1",b:"2"}",
+      }
+    `);
+
+  expect(getKeysAreNotTheSame({ a: '1', b: '2' }, { a: '1",b:"2' }))
+    .toMatchInlineSnapshot(`
+      {
+        "aKey": "{a:"1",b:"2"}",
+        "areNotTheSame": true,
+        "bKey": "{a:"1\\",b:\\"2"}",
       }
     `);
 });
@@ -115,7 +121,7 @@ test('max default depth sorting = 3', () => {
       size: 50,
     }),
   ).toMatchInlineSnapshot(
-    `"{"filters":[{"field":"single_select","not_sort":{"z":1,"a":1},"operator":"Exatamente igual","type":"string","value":"Option 1"}],"nested_type":"onlyrefs","object_type":"test","page":1,"size":50}"`,
+    `"{filters:[{field:"single_select",not_sort:{z:1,a:1},operator:"Exatamente igual",type:"string",value:"Option 1"}],nested_type:"onlyrefs",object_type:"test",page:1,size:50}"`,
   );
 });
 
@@ -139,7 +145,7 @@ test('objects with one key should not be sorted', () => {
         b: 1,
       },
     }),
-  ).toMatchInlineSnapshot(`"{"a":{"b":1}}"`);
+  ).toMatchInlineSnapshot(`"{a:{b:1}}"`);
 });
 
 test('empty objects', () => {
@@ -149,7 +155,7 @@ test('empty objects', () => {
         a: undefined,
       },
     }),
-  ).toMatchInlineSnapshot(`"{"a":{}}"`);
+  ).toMatchInlineSnapshot(`"{a:{}}"`);
 
   expect(
     getValueStableKey({
@@ -157,14 +163,14 @@ test('empty objects', () => {
         b: {},
       },
     }),
-  ).toMatchInlineSnapshot(`"{"a":{"b":{}}}"`);
+  ).toMatchInlineSnapshot(`"{a:{b:{}}}"`);
 
   expect(
     getValueStableKey({
       a: {},
       b: 1,
     }),
-  ).toMatchInlineSnapshot(`"{"a":{},"b":1}"`);
+  ).toMatchInlineSnapshot(`"{a:{},b:1}"`);
 });
 
 test('undefined values should not change the equivalent not undefined objs', () => {
@@ -187,7 +193,7 @@ test('undefined values in objects should not change the equivalent not undefined
       a: undefined,
       b: 1,
     }),
-  ).toMatchInlineSnapshot(`"{"b":1}"`);
+  ).toMatchInlineSnapshot(`"{b:1}"`);
 });
 
 test('getCacheId handles arrays', () => {
@@ -196,7 +202,7 @@ test('getCacheId handles arrays', () => {
 
 test('getCacheId handles nested arrays', () => {
   expect(getValueStableKey({ a: [1, 2, 3, [2, 1, 3]] })).toMatchInlineSnapshot(
-    `"{"a":[1,2,3,[2,1,3]]}"`,
+    `"{a:[1,2,3,[2,1,3]]}"`,
   );
 });
 
@@ -210,4 +216,125 @@ test('a subset of a value can be checked via includes', () => {
       c: subSetObj,
     }).includes(getValueStableKey(subSetObj)),
   ).toBeTruthy();
+});
+
+describe('circular references', () => {
+  test('throws on direct self-reference', () => {
+    const obj: any = { a: 1 };
+    obj.self = obj;
+
+    expect(() => getValueStableKey(obj)).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Circular reference detected]`,
+    );
+  });
+
+  test('throws on nested circular reference', () => {
+    const nested: any = { a: { b: { c: {} } } };
+    nested.a.b.c.circular = nested.a;
+
+    expect(() => getValueStableKey(nested)).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Circular reference detected]`,
+    );
+  });
+
+  test('throws on circular array reference', () => {
+    const array: any[] = [1, 2, 3];
+    array.push(array);
+
+    expect(() => getValueStableKey(array)).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Circular reference detected]`,
+    );
+  });
+
+  test('handles shared non-circular references', () => {
+    const sharedObj = { x: 1, y: 2 };
+    expect(
+      getValueStableKey({
+        a: sharedObj,
+        b: sharedObj,
+        c: { nested: sharedObj },
+      }),
+    ).toMatchInlineSnapshot(`"{a:{x:1,y:2},b:{x:1,y:2},c:{nested:{x:1,y:2}}}"`);
+  });
+
+  test('handles complex shared references', () => {
+    const complexShared = { name: 'test' };
+    const objWithShared = {
+      first: [{ ref: complexShared }, { other: 1 }],
+      second: { deep: { ref: complexShared } },
+      third: complexShared,
+    };
+    expect(getValueStableKey(objWithShared)).toMatchInlineSnapshot(
+      `"{first:[{ref:{name:"test"}},{other:1}],second:{deep:{ref:{name:"test"}}},third:{name:"test"}}"`,
+    );
+  });
+
+  test('throws on circular reference with shared refs', () => {
+    const circular: any = { name: 'test' };
+    const objWithCircular: any = {
+      first: circular,
+      second: { ref: circular },
+    };
+    circular.self = objWithCircular;
+    expect(() =>
+      getValueStableKey(objWithCircular),
+    ).toThrowErrorMatchingInlineSnapshot(
+      `[Error: Circular reference detected]`,
+    );
+  });
+});
+
+test('handles non-plain objects', () => {
+  const date = new Date('2024-01-01');
+  const regex = /test/;
+  const map = new Map([
+    ['a', 1],
+    ['b', 2],
+  ]);
+  const set = new Set([1, 2, 3]);
+
+  class Custom {
+    prop = 'value';
+    method() {
+      return 'test';
+    }
+  }
+  const customInstance = new Custom();
+
+  expect(getValueStableKey(date)).toMatchInlineSnapshot(`"{}"`);
+  expect(getValueStableKey(regex)).toMatchInlineSnapshot(`"{}"`);
+  expect(getValueStableKey(map)).toMatchInlineSnapshot(`"{}"`);
+  expect(getValueStableKey(set)).toMatchInlineSnapshot(`"{}"`);
+  expect(getValueStableKey(customInstance)).toMatchInlineSnapshot(
+    `"{prop:"value"}"`,
+  );
+});
+
+test('handles special primitives', () => {
+  const fn = () => 'test';
+
+  expect(getValueStableKey(fn)).toMatchInlineSnapshot(`"$() => "test""`);
+
+  // BigInt
+  expect(getValueStableKey(BigInt(123))).toMatchInlineSnapshot(`"$123"`);
+});
+
+test('key collision and delimiter handling', () => {
+  const obj1 = { 'a:b': 'value' };
+  const obj2 = { a: { b: 'value' } };
+
+  // These should produce different keys
+  expect(getValueStableKey(obj1)).not.toBe(getValueStableKey(obj2));
+
+  const obj3 = { 'a,b': 'value' };
+  const obj4 = { a: 'value', b: 'value' };
+
+  // These should produce different keys
+  expect(getValueStableKey(obj3)).not.toBe(getValueStableKey(obj4));
+
+  // Complex key with multiple delimiters
+  const complexKey = { 'a:b,c:d': { 'e:f': 'value' } };
+  expect(getValueStableKey(complexKey)).toMatchInlineSnapshot(
+    `"{a:b,c:d:{e:f:"value"}}"`,
+  );
 });
