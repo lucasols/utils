@@ -200,6 +200,7 @@ export const Result = {
   unknownToError: unknownToResultError,
   asyncUnwrap,
   asyncMap,
+  getOkErr,
 };
 
 /** transform a function in a result function */
@@ -287,14 +288,57 @@ export const safeJsonStringify = internalSafeJsonStringify;
 export type TypedResult<T, E extends ResultValidErrors = Error> = {
   ok: (value: T) => OkResult<T, E, T>;
   err: (error: E) => ErrResult<E, T>;
+  /**
+   * Use in combination with `typeof` to get the return type of the result
+   *
+   * @example
+   * const typedResult = createTypedResult<{ a: 'test' }>();
+   *
+   * function foo(): typeof typedResult.type {
+   *   return typedResult.ok({ a: 'test' });
+   * }
+   */
+  _type: Result<T, E>;
 };
 
+export type GetTypedResult<R extends Result<any, any>> = TypedResult<
+  R extends Result<infer T, any> ? T : never,
+  R extends Result<any, infer E> ? E : never
+>;
+
+const typedResult: TypedResult<any, any> = {
+  ok,
+  err,
+  get _type(): any {
+    throw new Error('usage as value is not allowed');
+  },
+};
+
+/** @deprecated use getOkErr instead, this may be removed in the next major version */
 export function createTypedResult<
   T,
   E extends ResultValidErrors = Error,
 >(): TypedResult<T, E> {
-  return {
-    ok,
-    err,
-  };
+  return typedResult;
+}
+
+function getOkErr<
+  F extends (...args: any[]) => Promise<Result<any, any>>,
+>(): TypedResult<
+  Awaited<ReturnType<F>> extends Result<infer T, any> ? T : never,
+  Awaited<ReturnType<F>> extends Result<any, infer E> ? E : never
+>;
+function getOkErr<
+  F extends (...args: any[]) => Result<any, any>,
+>(): TypedResult<
+  ReturnType<F> extends Result<infer T, any> ? T : never,
+  ReturnType<F> extends Result<any, infer E> ? E : never
+>;
+function getOkErr<R extends Result<any, any>>(): TypedResult<
+  R extends Result<infer T, any> ? T : never,
+  R extends Result<any, infer E> ? E : never
+>;
+function getOkErr<T, E extends ResultValidErrors = Error>(): TypedResult<T, E>;
+function getOkErr(): unknown {
+  return typedResult;
 }

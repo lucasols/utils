@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { invariant } from './assertions';
-import { Result, resultify } from './rsResult';
+import { Result, resultify, type GetTypedResult } from './rsResult';
 import { sleep } from './sleep';
 import { TestTypeIsEqual, typingTest } from './typingTestUtils';
 
@@ -261,4 +261,86 @@ typingTest.test('any err type should not allow wrong ok type', () => {
     // @ts-expect-error -- invalid return type
     return Result.ok(a.toString());
   }
+});
+
+describe('getOkErr', () => {
+  test('create from Ok Err pair', async () => {
+    const typedResult = Result.getOkErr<{ a: 'test' }>();
+
+    async function fetchData(ok: boolean): Promise<typeof typedResult._type> {
+      return Promise.resolve(
+        ok ?
+          typedResult.ok({ a: 'test' })
+        : typedResult.err(new Error('Error')),
+      );
+    }
+
+    const res = (await fetchData(true)).unwrap();
+    //     ^?
+
+    expect(res).toEqual({ a: 'test' });
+
+    expectType<TestTypeIsEqual<typeof res, { a: 'test' }>>();
+
+    const res2 = await fetchData(false);
+    //     ^?
+
+    expect(!res2.ok && res2.error.message).toEqual('Error');
+  });
+
+  test('create from sync function', () => {
+    function fetchData(isOk: boolean): Result<{ a: 'test' }, Error> {
+      const { ok, err } = Result.getOkErr<typeof fetchData>();
+
+      const _wrongOk = ok({
+        // @ts-expect-error -- invalid return type
+        a: 'tests',
+      });
+
+      const result = isOk ? ok({ a: 'test' }) : err(new Error('Error'));
+
+      return result;
+    }
+
+    const res = fetchData(true).unwrap();
+    //     ^?
+
+    expect(res).toEqual({ a: 'test' });
+
+    expectType<TestTypeIsEqual<typeof res, { a: 'test' }>>();
+
+    const res2 = fetchData(false);
+    //     ^?
+
+    expect(!res2.ok && res2.error.message).toEqual('Error');
+  });
+
+  test('create from async function', async () => {
+    async function fetchData(
+      isOk: boolean,
+    ): Promise<Result<{ a: 'test' }, Error>> {
+      const { ok, err } = Result.getOkErr<typeof fetchData>();
+
+      return Promise.resolve(
+        isOk ? ok({ a: 'test' }) : err(new Error('Error')),
+      );
+    }
+
+    expect((await fetchData(true)).ok).toEqual(true);
+
+    expect((await fetchData(false)).error).toBeTruthy();
+  });
+
+  typingTest.test('get typed result from result', () => {
+    type ResultType = Result<{ a: 'test' }, true>;
+
+    const _typedResult = Result.getOkErr<ResultType>();
+
+    type TypedResultType = GetTypedResult<ResultType>;
+
+    expectType<TestTypeIsEqual<typeof _typedResult._type, ResultType>>();
+    expectType<
+      TestTypeIsEqual<typeof _typedResult._type, TypedResultType['_type']>
+    >();
+  });
 });
