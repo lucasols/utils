@@ -1,7 +1,14 @@
 import { filterAndMap } from './arrayUtils';
 import { isObject } from './assertions';
 
-export function getObjStableKey(input: unknown, maxDepth = 3): string {
+/**
+ * Returns a stable key for the input value.
+ *
+ * @param input - The value to get a stable key for.
+ * @param maxDepth - The maximum depth to traverse the input value.
+ * @returns A stable key for the input value.
+ */
+export function getValueStableKey(input: unknown, maxDepth = 3): string {
   if (typeof input === 'string') return String(input);
 
   if (!input || typeof input !== 'object') return `#$${input}$#`;

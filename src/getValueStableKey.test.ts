@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
-import { getObjStableKey } from './getObjStableKey';
+import { getValueStableKey } from './getValueStableKey';
 
 test('getCacheId ignore undefined obj values', () => {
   expect(
-    getObjStableKey({
+    getValueStableKey({
       a: 1,
       b: undefined,
       c: 3,
@@ -14,7 +14,7 @@ test('getCacheId ignore undefined obj values', () => {
 
 test('nested objects are sorted', () => {
   expect(
-    getObjStableKey({
+    getValueStableKey({
       b: {
         d: 4,
         c: 3,
@@ -26,7 +26,7 @@ test('nested objects are sorted', () => {
 
 test('nested objects in array are sorted', () => {
   expect(
-    getObjStableKey({
+    getValueStableKey({
       a: [
         {
           d: 4,
@@ -44,7 +44,7 @@ test('nested objects in array are sorted', () => {
 
 test('max default depth sortin = 3', () => {
   expect(
-    getObjStableKey({
+    getValueStableKey({
       object_type: 'test',
       page: 1,
       nested_type: 'onlyrefs',
@@ -68,20 +68,20 @@ test('max default depth sortin = 3', () => {
 });
 
 test('number cache id is not equal to string cache id', () => {
-  expect(getObjStableKey(1) !== getObjStableKey('1')).toBeTruthy();
+  expect(getValueStableKey(1) !== getValueStableKey('1')).toBeTruthy();
 });
 
 test('primitive values are not serialized', () => {
-  expect(getObjStableKey('1')).toMatchInlineSnapshot(`"1"`);
-  expect(getObjStableKey(true)).toMatchInlineSnapshot(`"#$true$#"`);
-  expect(getObjStableKey(false)).toMatchInlineSnapshot(`"#$false$#"`);
-  expect(getObjStableKey(null)).toMatchInlineSnapshot(`"#$null$#"`);
-  expect(getObjStableKey(undefined)).toMatchInlineSnapshot(`"#$undefined$#"`);
+  expect(getValueStableKey('1')).toMatchInlineSnapshot(`"1"`);
+  expect(getValueStableKey(true)).toMatchInlineSnapshot(`"#$true$#"`);
+  expect(getValueStableKey(false)).toMatchInlineSnapshot(`"#$false$#"`);
+  expect(getValueStableKey(null)).toMatchInlineSnapshot(`"#$null$#"`);
+  expect(getValueStableKey(undefined)).toMatchInlineSnapshot(`"#$undefined$#"`);
 });
 
 test('objects with one key should not be sorted', () => {
   expect(
-    getObjStableKey({
+    getValueStableKey({
       a: {
         b: 1,
       },
@@ -91,7 +91,7 @@ test('objects with one key should not be sorted', () => {
 
 test('empty objects', () => {
   expect(
-    getObjStableKey({
+    getValueStableKey({
       a: {
         a: undefined,
       },
@@ -99,7 +99,7 @@ test('empty objects', () => {
   ).toMatchInlineSnapshot(`"{"a":{}}"`);
 
   expect(
-    getObjStableKey({
+    getValueStableKey({
       a: {
         b: {},
       },
@@ -107,7 +107,7 @@ test('empty objects', () => {
   ).toMatchInlineSnapshot(`"{"a":{"b":{}}}"`);
 
   expect(
-    getObjStableKey({
+    getValueStableKey({
       a: {},
       b: 1,
     }),
@@ -115,22 +115,22 @@ test('empty objects', () => {
 });
 
 test('undefined values should not change the equivalent not undefined objs', () => {
-  const a = getObjStableKey({ tableId: 'users' });
-  const b = getObjStableKey({ tableId: 'users', filters: undefined });
+  const a = getValueStableKey({ tableId: 'users' });
+  const b = getValueStableKey({ tableId: 'users', filters: undefined });
 
   expect(a === b).toBeTruthy();
 });
 
 test('undefined values in objects should not change the equivalent not undefined objs', () => {
   expect(
-    getObjStableKey({
+    getValueStableKey({
       a: undefined,
       b: undefined,
     }),
   ).toMatchInlineSnapshot(`"{}"`);
 
   expect(
-    getObjStableKey({
+    getValueStableKey({
       a: undefined,
       b: 1,
     }),
@@ -138,11 +138,11 @@ test('undefined values in objects should not change the equivalent not undefined
 });
 
 test('getCacheId handles arrays', () => {
-  expect(getObjStableKey([1, 2, 3])).toMatchInlineSnapshot(`"[1,2,3]"`);
+  expect(getValueStableKey([1, 2, 3])).toMatchInlineSnapshot(`"[1,2,3]"`);
 });
 
 test('getCacheId handles nested arrays', () => {
-  expect(getObjStableKey({ a: [1, 2, 3, [2, 1, 3]] })).toMatchInlineSnapshot(
+  expect(getValueStableKey({ a: [1, 2, 3, [2, 1, 3]] })).toMatchInlineSnapshot(
     `"{"a":[1,2,3,[2,1,3]]}"`,
   );
 });
@@ -151,10 +151,10 @@ test('a subset of a value can be checked via includes', () => {
   const subSetObj = { z: 0, a: 1, b: 2 };
 
   expect(
-    getObjStableKey({
+    getValueStableKey({
       a: 1,
       b: 2,
       c: subSetObj,
-    }).includes(getObjStableKey(subSetObj)),
+    }).includes(getValueStableKey(subSetObj)),
   ).toBeTruthy();
 });
