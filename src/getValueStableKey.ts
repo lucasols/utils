@@ -19,7 +19,8 @@ function stringifyCompact(
   depth: number,
   refs: WeakSet<any>,
 ): string {
-  if (input && typeof input === 'object') {
+  const isJsObj = input && typeof input === 'object';
+  if (isJsObj) {
     if (refs.has(input)) {
       throw new Error('Circular reference detected');
     }
@@ -61,7 +62,7 @@ function stringifyCompact(
     result = JSON.stringify(input);
   }
 
-  if (input && typeof input === 'object') {
+  if (isJsObj) {
     refs.delete(input);
   }
   return result;
