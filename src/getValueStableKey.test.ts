@@ -9,7 +9,8 @@ test('getCacheId ignore undefined obj values', () => {
       c: 3,
       und: undefined,
     }),
-  ).toMatchInlineSnapshot('"[{"a":1},{"c":3}]"');
+  ).toMatchInlineSnapshot(`"{"a":1,"c":3}"`);
+  // TODO: generate a shorter key format: a:1,c:3
 });
 
 test('nested objects are sorted', () => {
@@ -21,7 +22,8 @@ test('nested objects are sorted', () => {
       },
       a: 1,
     }),
-  ).toMatchInlineSnapshot(`"[{"a":1},{"b":[{"c":3},{"d":4}]}]"`);
+  ).toMatchInlineSnapshot(`"{"a":1,"b":{"c":3,"d":4}}"`);
+  // TODO: generate a shorter key format: a:1,b:{c:3,d:4}
 });
 
 test('nested objects in array are sorted', () => {
@@ -39,10 +41,60 @@ test('nested objects in array are sorted', () => {
         1,
       ],
     }),
-  ).toMatchInlineSnapshot(`"{"a":[[{"c":3},{"d":4}],[{"a":1},{"z":1}],1]}"`);
+  ).toMatchInlineSnapshot(`"{"a":[{"c":3,"d":4},{"a":1,"z":1},1]}"`);
+  // TODO: generate a shorter key format: a:[[c:3,d:4],[a:1,z:1],1]
 });
 
-test('max default depth sortin = 3', () => {
+test('avoid conflicting keys', () => {
+  function getKeysAreNotTheSame(a: any, b: any) {
+    const aKey = getValueStableKey(a);
+    const bKey = getValueStableKey(b);
+
+    return {
+      aKey,
+      bKey,
+      areNotTheSame: aKey !== bKey,
+    };
+  }
+
+  expect(getKeysAreNotTheSame({ a: 1, b: 2 }, { a: '1,b:2' }))
+    .toMatchInlineSnapshot(`
+      {
+        "aKey": "{"a":1,"b":2}",
+        "areNotTheSame": true,
+        "bKey": "{"a":"1,b:2"}",
+      }
+    `);
+
+  expect(getKeysAreNotTheSame({ a: '"1', b: '2"' }, { a: '1,b:2' }))
+    .toMatchInlineSnapshot(`
+      {
+        "aKey": "{"a":"\\"1","b":"2\\""}",
+        "areNotTheSame": true,
+        "bKey": "{"a":"1,b:2"}",
+      }
+    `);
+
+  expect(getKeysAreNotTheSame({ a: '1', b: '2' }, { ['a:1,b']: '2' }))
+    .toMatchInlineSnapshot(`
+      {
+        "aKey": "{"a":"1","b":"2"}",
+        "areNotTheSame": true,
+        "bKey": "{"a:1,b":"2"}",
+      }
+    `);
+
+  expect(getKeysAreNotTheSame({ a: 1, b: '2' }, { a: '1', b: '2' }))
+    .toMatchInlineSnapshot(`
+      {
+        "aKey": "{"a":1,"b":"2"}",
+        "areNotTheSame": true,
+        "bKey": "{"a":"1","b":"2"}",
+      }
+    `);
+});
+
+test('max default depth sorting = 3', () => {
   expect(
     getValueStableKey({
       object_type: 'test',
@@ -63,7 +115,7 @@ test('max default depth sortin = 3', () => {
       size: 50,
     }),
   ).toMatchInlineSnapshot(
-    `"[{"filters":[[{"field":"single_select"},{"not_sort":{"z":1,"a":1}},{"operator":"Exatamente igual"},{"type":"string"},{"value":"Option 1"}]]},{"nested_type":"onlyrefs"},{"object_type":"test"},{"page":1},{"size":50}]"`,
+    `"{"filters":[{"field":"single_select","not_sort":{"z":1,"a":1},"operator":"Exatamente igual","type":"string","value":"Option 1"}],"nested_type":"onlyrefs","object_type":"test","page":1,"size":50}"`,
   );
 });
 
@@ -72,11 +124,12 @@ test('number cache id is not equal to string cache id', () => {
 });
 
 test('primitive values are not serialized', () => {
-  expect(getValueStableKey('1')).toMatchInlineSnapshot(`"1"`);
-  expect(getValueStableKey(true)).toMatchInlineSnapshot(`"#$true$#"`);
-  expect(getValueStableKey(false)).toMatchInlineSnapshot(`"#$false$#"`);
-  expect(getValueStableKey(null)).toMatchInlineSnapshot(`"#$null$#"`);
-  expect(getValueStableKey(undefined)).toMatchInlineSnapshot(`"#$undefined$#"`);
+  expect(getValueStableKey(1)).toMatchInlineSnapshot(`"$1"`);
+  expect(getValueStableKey('1')).toMatchInlineSnapshot(`""1"`);
+  expect(getValueStableKey(true)).toMatchInlineSnapshot(`"$true"`);
+  expect(getValueStableKey(false)).toMatchInlineSnapshot(`"$false"`);
+  expect(getValueStableKey(null)).toMatchInlineSnapshot(`"$null"`);
+  expect(getValueStableKey(undefined)).toMatchInlineSnapshot(`"$undefined"`);
 });
 
 test('objects with one key should not be sorted', () => {
@@ -111,7 +164,7 @@ test('empty objects', () => {
       a: {},
       b: 1,
     }),
-  ).toMatchInlineSnapshot(`"[{"a":{}},{"b":1}]"`);
+  ).toMatchInlineSnapshot(`"{"a":{},"b":1}"`);
 });
 
 test('undefined values should not change the equivalent not undefined objs', () => {

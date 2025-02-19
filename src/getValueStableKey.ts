@@ -1,4 +1,3 @@
-import { filterAndMap } from './arrayUtils';
 import { isObject } from './assertions';
 
 /**
@@ -9,9 +8,9 @@ import { isObject } from './assertions';
  * @returns A stable key for the input value.
  */
 export function getValueStableKey(input: unknown, maxDepth = 3): string {
-  if (typeof input === 'string') return String(input);
+  if (typeof input === 'string') return `"${input}`;
 
-  if (!input || typeof input !== 'object') return `#$${input}$#`;
+  if (!input || typeof input !== 'object') return `$${input}`;
 
   return JSON.stringify(sortValues(input, maxDepth, 0));
 }
@@ -48,17 +47,17 @@ function orderedProps(
     return { [keys[0]!]: mapValue(value) };
   }
 
-  const mappedValues = filterAndMap(keys.sort(), (k) => {
+  const sortedKeys = keys.sort();
+
+  const sortedObj: Record<string, unknown> = {};
+
+  for (const k of sortedKeys) {
     const value = obj[k];
 
-    if (value === undefined) return false;
+    if (value === undefined) continue;
 
-    return { [k]: mapValue(value) };
-  });
+    sortedObj[k] = mapValue(value);
+  }
 
-  if (mappedValues.length === 0) return emptyObject;
-
-  if (mappedValues.length === 1) return mappedValues[0];
-
-  return mappedValues;
+  return sortedObj;
 }
