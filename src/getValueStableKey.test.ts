@@ -126,6 +126,10 @@ test('max default depth sorting = 3', () => {
   expect(getValueStableKey(obj, 3)).not.toBe(getValueStableKey(obj, 4));
 });
 
+test('with no sorting', () => {
+  expect(getValueStableKey({ z: 1, a: 1 }, 0)).toMatchInlineSnapshot(`"{z:1,a:1}"`);
+});
+
 test('number cache id is not equal to string cache id', () => {
   expect(getValueStableKey(1) !== getValueStableKey('1')).toBeTruthy();
 });
