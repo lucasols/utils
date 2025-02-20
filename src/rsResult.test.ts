@@ -358,6 +358,13 @@ typingTest.test('Usage without explicit return type', () => {
 
   const result = foo(true);
 
+  if (result.ok) {
+    expectType<TestTypeIsEqual<typeof result.value, string>>();
+    expectType<TestTypeIsEqual<typeof result.error, false>>();
+  } else {
+    expectType<TestTypeIsEqual<typeof result.error, Error>>();
+  }
+
   // result methods are not available
   // @ts-expect-error -- unwrap is not available
   result.unwrap();
