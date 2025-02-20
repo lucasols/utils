@@ -72,7 +72,9 @@ test('result.unwrap()', () => {
   );
 
   expect(() => {
-    Result.err(['string']).unwrap();
+    const errResult: Result<any, [string]> = Result.err(['string']);
+
+    errResult.unwrap();
   }).toThrowErrorMatchingInlineSnapshot(`[Error: ["string"]]`);
 });
 

@@ -5,7 +5,9 @@ type Ok<T> = {
   ok: true;
   error: false;
   value: T;
-};
+} & AnyResultMethods;
+
+type AnyResultMethods = Record<ResultMethodsKeys, never>;
 
 type ResultValidErrors = Error | Record<string, unknown> | unknown[] | true;
 
@@ -13,7 +15,7 @@ type Err<E extends ResultValidErrors> = {
   ok: false;
   error: E;
   errorResult: () => Result<any, E>;
-};
+} & AnyResultMethods;
 
 type ResultMethods<T, E extends ResultValidErrors> = {
   /** Returns the value if the result is Ok, otherwise returns null */
@@ -53,9 +55,13 @@ type ResultMethods<T, E extends ResultValidErrors> = {
  *   // result.error is an Error
  * }
  */
-export type Result<T, E extends ResultValidErrors = Error> =
-  | OkResult<T, E, T>
-  | ErrResult<E, T>;
+export type Result<T, E extends ResultValidErrors = Error> = (
+  | Omit<OkResult<T>, ResultMethodsKeys>
+  | Omit<ErrResult<E>, ResultMethodsKeys>
+) &
+  ResultMethods<T, E>;
+
+type ResultMethodsKeys = keyof ResultMethods<any, any>;
 
 function okUnwrapOr<T>(this: Ok<T>) {
   return this.value;
@@ -100,16 +106,12 @@ function returnResult(this: Result<any, any>) {
   return this;
 }
 
-type OkResult<T, E extends ResultValidErrors, M = any> = Ok<T> &
-  ResultMethods<M, E>;
+type OkResult<T> = Ok<T>;
 
-function ok(): OkResult<void, any>;
-function ok<T>(value: T): OkResult<T, any>;
-function ok(value: any = undefined): OkResult<any, any> {
-  return {
-    ok: true,
-    error: false,
-    value,
+function ok(): OkResult<void>;
+function ok<T>(value: T): OkResult<T>;
+function ok(value: any = undefined): OkResult<any> {
+  const methods: ResultMethods<any, any> = {
     unwrapOrNull: okUnwrapOr,
     unwrapOr: okUnwrapOr,
     unwrap: okUnwrapOr,
@@ -117,20 +119,21 @@ function ok(value: any = undefined): OkResult<any, any> {
     mapErr: returnResult,
     mapOkAndErr,
   };
+
+  return {
+    ok: true,
+    error: false,
+    value,
+    ...(methods as AnyResultMethods),
+  };
 }
 
-type ErrResult<E extends ResultValidErrors, T = any> = Err<E> &
-  ResultMethods<T, E>;
+type ErrResult<E extends ResultValidErrors> = Err<E>;
 
 function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
-  return {
-    ok: false,
-    error,
+  const methods: ResultMethods<any, any> = {
     unwrapOrNull: () => null,
     unwrapOr: (defaultValue) => defaultValue,
-    errorResult() {
-      return err(error);
-    },
     unwrap: (() => {
       if (error instanceof Error) {
         throw error;
@@ -141,6 +144,15 @@ function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
     mapOk: returnResult,
     mapErr: errMap,
     mapOkAndErr,
+  };
+
+  return {
+    ok: false,
+    error,
+    errorResult() {
+      return err(error);
+    },
+    ...(methods as AnyResultMethods),
   };
 }
 
@@ -286,8 +298,8 @@ export function normalizeError(error: unknown): Error {
 export const safeJsonStringify = internalSafeJsonStringify;
 
 export type TypedResult<T, E extends ResultValidErrors = Error> = {
-  ok: (value: T) => OkResult<T, E, T>;
-  err: (error: E) => ErrResult<E, T>;
+  ok: (value: T) => OkResult<T>;
+  err: (error: E) => ErrResult<E>;
   /**
    * Use in combination with `typeof` to get the return type of the result
    *

@@ -12,6 +12,17 @@ function describe(title: string, func: () => any) {
   func();
 }
 
+/**
+ * Helper function for type testing that ensures a type extends `true`.
+ * Used in combination with `TestTypeIsEqual` to verify type equality at compile time.
+ *
+ * @example
+ * expectType<TestTypeIsEqual<string, string>>(); // OK
+ * expectType<TestTypeIsEqual<string, number>>(); // Type error
+ *
+ * @template T Type that must extend `true`
+ * @returns An empty object cast to type T
+ */
 function expectType<T extends true>() {
   return {} as T;
 }

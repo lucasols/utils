@@ -10,3 +10,10 @@ export type ObjKeysWithValuesOfType<
 > = {
   [K in keyof Obj]: Obj[K] extends ValueType ? K : never;
 }[keyof Obj];
+
+export type IsAny<T> =
+  unknown extends T ?
+    [keyof T] extends [never] ?
+      false
+    : true
+  : false;
