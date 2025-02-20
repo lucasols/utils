@@ -56,8 +56,8 @@ type ResultMethods<T, E extends ResultValidErrors> = {
  * }
  */
 export type Result<T, E extends ResultValidErrors = Error> = (
-  | Omit<OkResult<T>, ResultMethodsKeys>
-  | Omit<ErrResult<E>, ResultMethodsKeys>
+  | Omit<Ok<T>, ResultMethodsKeys>
+  | Omit<Err<E>, ResultMethodsKeys>
 ) &
   ResultMethods<T, E>;
 
@@ -106,11 +106,9 @@ function returnResult(this: Result<any, any>) {
   return this;
 }
 
-type OkResult<T> = Ok<T>;
-
-function ok(): OkResult<void>;
-function ok<T>(value: T): OkResult<T>;
-function ok(value: any = undefined): OkResult<any> {
+function ok(): Ok<void>;
+function ok<T>(value: T): Ok<T>;
+function ok(value: any = undefined): Ok<any> {
   const methods: ResultMethods<any, any> = {
     unwrapOrNull: okUnwrapOr,
     unwrapOr: okUnwrapOr,
@@ -128,9 +126,7 @@ function ok(value: any = undefined): OkResult<any> {
   };
 }
 
-type ErrResult<E extends ResultValidErrors> = Err<E>;
-
-function err<E extends ResultValidErrors>(error: E): ErrResult<E> {
+function err<E extends ResultValidErrors>(error: E): Err<E> {
   const methods: ResultMethods<any, any> = {
     unwrapOrNull: () => null,
     unwrapOr: (defaultValue) => defaultValue,
@@ -298,8 +294,8 @@ export function normalizeError(error: unknown): Error {
 export const safeJsonStringify = internalSafeJsonStringify;
 
 export type TypedResult<T, E extends ResultValidErrors = Error> = {
-  ok: (value: T) => OkResult<T>;
-  err: (error: E) => ErrResult<E>;
+  ok: (value: T) => Ok<T>;
+  err: (error: E) => Err<E>;
   /**
    * Use in combination with `typeof` to get the return type of the result
    *
