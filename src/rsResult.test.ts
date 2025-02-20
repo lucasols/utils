@@ -346,3 +346,22 @@ describe('getOkErr', () => {
     >();
   });
 });
+
+typingTest.test('Usage without explicit return type', () => {
+  function foo(isOk: boolean) {
+    if (isOk) {
+      return Result.ok('test');
+    }
+
+    return Result.err(new Error('Error'));
+  }
+
+  const result = foo(true);
+
+  // result methods are not available
+  // @ts-expect-error -- unwrap is not available
+  result.unwrap();
+
+  // @ts-expect-error -- mapOk is not available
+  result.mapOk((value) => value);
+});
