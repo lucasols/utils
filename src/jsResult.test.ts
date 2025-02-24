@@ -123,17 +123,29 @@ test('resultify should handle async functions', async () => {
 });
 
 test('resultify should handle external promises', async () => {
-  async function fetchData(): Promise<number> {
+  async function fetchData(throwError?: boolean): Promise<number> {
+    if (throwError) {
+      throw new Error('Error');
+    }
+
     return Promise.resolve(42);
   }
 
-  const result = await resultify(fetchData);
+  const result = await resultify(fetchData());
 
   expectType<TestTypeIsEqual<typeof result, Result<number, Error>>>();
 
   expect(result.ok).toBe(true);
   invariant(result.ok);
   expect(result.value).toBe(42);
+
+  const result2 = await resultify(fetchData(true));
+
+  expect(result2.ok).toBe(false);
+  invariant(!result2.ok);
+  expect(result2.error).toMatchObject({
+    message: 'Error',
+  });
 });
 
 test('resultify should handle async functions with custom error normalizer', async () => {
