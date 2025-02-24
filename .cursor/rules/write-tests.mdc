@@ -1,6 +1,7 @@
 ---
-description: writing tests
+description: use these rules whenever are tests involved, or code changes that may affect existing tests
 globs: 
+alwaysApply: false
 ---
 
 - Tests should be in `src/` with the same name of the file and the .test.ts extension

@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { invariant } from './assertions';
+import { Result, resultify } from './jsResult';
 import { omit } from './objUtils';
 import { parallelAsyncCalls } from './parallelAsyncCalls';
-import { Result, asyncResultify } from './rsResult';
 import { sleep } from './sleep';
 import { TestTypeIsEqual, typingTest } from './typingTestUtils';
 
@@ -12,19 +12,18 @@ function asyncResultFn<T extends string | Error | number | boolean>(
   value: T,
   duration: number = 10,
 ) {
-  return asyncResultify(() =>
-    sleep(duration).then(() => {
-      if (value instanceof Error) {
-        throw value;
-      }
+  return resultify(async () => {
+    await sleep(duration);
+    if (value instanceof Error) {
+      throw value;
+    }
 
-      if (typeof value === 'string' && value.startsWith('error: ')) {
-        throw new Error(value.slice(7));
-      }
+    if (typeof value === 'string' && value.startsWith('error: ')) {
+      throw new Error(value.slice(7));
+    }
 
-      return value;
-    }),
-  );
+    return value;
+  });
 }
 
 test('runAllSettled with success and metadata', async () => {
@@ -123,7 +122,7 @@ test('start delay', async () => {
     .add({
       metadata: 1,
       fn: () =>
-        asyncResultify(() => {
+        resultify(async () => {
           startOrder.push(1);
           return sleep(5);
         }),
@@ -131,7 +130,7 @@ test('start delay', async () => {
     .add({
       metadata: 2,
       fn: () =>
-        asyncResultify(() => {
+        resultify(async () => {
           startOrder.push(2);
           return sleep(5);
         }),
@@ -139,7 +138,7 @@ test('start delay', async () => {
     .add({
       metadata: 3,
       fn: () =>
-        asyncResultify(() => {
+        resultify(async () => {
           thirdStartTime = Date.now() - beforeStartTime;
           startOrder.push(3);
           return sleep(5);

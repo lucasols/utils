@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { invariant } from './assertions';
-import { Result, resultify, type GetTypedResult } from './rsResult';
+import { Result, resultify, type GetTypedResult } from './jsResult';
 import { sleep } from './sleep';
 import { TestTypeIsEqual, typingTest } from './typingTestUtils';
 
@@ -81,15 +81,73 @@ test('result.unwrap()', () => {
 test('resultify should return a normalized error', () => {
   const errorToThrow = new Error('Cannot divide by zero');
 
-  const result = resultify(() => {
+  const result = resultify((): number => {
     throw errorToThrow;
   });
+
+  expectType<TestTypeIsEqual<typeof result, Result<number, Error>>>();
 
   invariant(!result.ok);
 
   expect(result.error).toMatchInlineSnapshot(`[Error: Cannot divide by zero]`);
 
   expect(result.error.stack).toEqual(errorToThrow.stack);
+});
+
+test('resultify should handle async functions', async () => {
+  // Test successful case
+  const successResult = await resultify(async () => {
+    await sleep(10);
+    return 42;
+  });
+
+  expectType<TestTypeIsEqual<typeof successResult, Result<number, Error>>>();
+
+  expect(successResult.ok).toBe(true);
+  invariant(successResult.ok);
+  expect(successResult.value).toBe(42);
+
+  // Test error case
+  const errorToThrow = new Error('Async error');
+  const errorResult = await resultify(async () => {
+    await sleep(10);
+    throw errorToThrow;
+  });
+
+  expect(errorResult.ok).toBe(false);
+  invariant(!errorResult.ok);
+  expect(errorResult.error).toMatchObject({
+    message: 'Async error',
+  });
+  expect(errorResult.error.stack).toEqual(errorToThrow.stack);
+});
+
+test('resultify should handle external promises', async () => {
+  async function fetchData(): Promise<number> {
+    return Promise.resolve(42);
+  }
+
+  const result = await resultify(fetchData);
+
+  expectType<TestTypeIsEqual<typeof result, Result<number, Error>>>();
+
+  expect(result.ok).toBe(true);
+  invariant(result.ok);
+  expect(result.value).toBe(42);
+});
+
+test('resultify should handle async functions with custom error normalizer', async () => {
+  const errorResult = await resultify(
+    async () => {
+      await sleep(10);
+      throw 'Custom error';
+    },
+    (err) => [`Normalized: ${err}`],
+  );
+
+  expect(errorResult.ok).toBe(false);
+  invariant(!errorResult.ok);
+  expect(errorResult.error).toEqual(['Normalized: Custom error']);
 });
 
 test('Result.ok() should return a void result', () => {

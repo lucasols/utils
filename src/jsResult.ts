@@ -1,4 +1,4 @@
-import { isObject } from './assertions';
+import { isFunction, isObject, isPromise } from './assertions';
 import { safeJsonStringify as internalSafeJsonStringify } from './safeJson';
 
 type Ok<T> = {
@@ -211,34 +211,57 @@ export const Result = {
   getOkErr,
 };
 
-/** transform a function in a result function */
 export function resultify<T, E extends ResultValidErrors = Error>(
-  fn: () => T,
+  fn: () => T extends Promise<any> ? never : T,
   errorNormalizer?: (err: unknown) => E,
-): Result<T, E> {
-  try {
-    return ok(fn());
-  } catch (error) {
-    return err(
-      errorNormalizer ?
-        errorNormalizer(error)
-      : (unknownToError(error) as unknown as E),
-    );
-  }
-}
-
-/** transform a async function in a result function */
-export async function asyncResultify<T, E extends Error = Error>(
+): Result<T, E>;
+export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => Promise<T>,
   errorNormalizer?: (err: unknown) => E,
-): Promise<Result<Awaited<T>, E>> {
+): Promise<Result<Awaited<T>, E>>;
+export function resultify<T, E extends ResultValidErrors = Error>(
+  fn: Promise<T>,
+  errorNormalizer?: (err: unknown) => E,
+): Promise<Result<T, E>>;
+export function resultify(
+  fn: (() => unknown) | Promise<unknown>,
+  errorNormalizer?: (err: unknown) => ResultValidErrors,
+):
+  | Result<unknown, ResultValidErrors>
+  | Promise<Result<unknown, ResultValidErrors>> {
+  if (!isFunction(fn)) {
+    return fn
+      .then((value) => ok(value))
+      .catch((error) =>
+        err(
+          errorNormalizer ?
+            errorNormalizer(error)
+          : (unknownToError(error) as unknown as ResultValidErrors),
+        ),
+      );
+  }
+
   try {
-    return ok(await fn());
+    const result = fn();
+
+    if (isPromise(result)) {
+      return result
+        .then((value) => ok(value))
+        .catch((error) =>
+          err(
+            errorNormalizer ?
+              errorNormalizer(error)
+            : (unknownToError(error) as unknown as ResultValidErrors),
+          ),
+        );
+    }
+
+    return ok(result);
   } catch (error) {
     return err(
       errorNormalizer ?
         errorNormalizer(error)
-      : (unknownToError(error) as unknown as E),
+      : (unknownToError(error) as unknown as ResultValidErrors),
     );
   }
 }
@@ -285,14 +308,6 @@ export function unknownToError(error: unknown): Error {
   });
 }
 
-/** @deprecated use unknownToError instead, this will be removed in the next major version */
-export function normalizeError(error: unknown): Error {
-  return unknownToError(error);
-}
-
-/** @deprecated use safeJsonStringify from `@ls-stack/utils/safeJson` instead, this will be removed in the next major version */
-export const safeJsonStringify = internalSafeJsonStringify;
-
 export type TypedResult<T, E extends ResultValidErrors = Error> = {
   ok: (value: T) => Ok<T>;
   err: (error: E) => Err<E>;
@@ -321,14 +336,6 @@ const typedResult: TypedResult<any, any> = {
     throw new Error('usage as value is not allowed');
   },
 };
-
-/** @deprecated use getOkErr instead, this may be removed in the next major version */
-export function createTypedResult<
-  T,
-  E extends ResultValidErrors = Error,
->(): TypedResult<T, E> {
-  return typedResult;
-}
 
 function getOkErr<
   F extends (...args: any[]) => Promise<Result<any, any>>,
