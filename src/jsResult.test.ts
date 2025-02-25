@@ -442,3 +442,131 @@ typingTest.test('Usage without explicit return type', () => {
   // @ts-expect-error -- mapOk is not available
   result.mapOk((value) => value);
 });
+
+describe('Result.ifOk() and Result.ifErr()', () => {
+  test('ifOk for successful result', () => {
+    const successDivision = divide(10, 2);
+    let value = 0;
+
+    successDivision.ifOk((result) => {
+      value = result;
+    });
+
+    expectType<
+      TestTypeIsEqual<typeof successDivision, Result<number, Error>>
+    >();
+
+    expect(value).toEqual(5);
+    expect(successDivision.ok).toBe(true);
+    expect(successDivision.ok && successDivision.value).toEqual(5);
+  });
+
+  test('ifOk with method chaining for successful result', () => {
+    const successDivision = divide(10, 2);
+    let okCalled = false;
+    let errCalled = false;
+
+    const result = successDivision
+      .ifOk((result) => {
+        okCalled = true;
+        expect(result).toEqual(5);
+      })
+      .ifErr(() => {
+        errCalled = true;
+      });
+
+    expectType<TestTypeIsEqual<typeof result, Result<number, Error>>>();
+
+    expect(okCalled).toBe(true);
+    expect(errCalled).toBe(false);
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.value).toEqual(5);
+  });
+
+  test('ifErr for failed result', () => {
+    const failedDivision = divide(10, 0);
+    let errorMessage = '';
+
+    failedDivision.ifErr((error) => {
+      errorMessage = error.message;
+    });
+
+    expectType<TestTypeIsEqual<typeof failedDivision, Result<number, Error>>>();
+
+    expect(errorMessage).toEqual('Cannot divide by zero');
+    expect(failedDivision.ok).toBe(false);
+    expect(!failedDivision.ok && failedDivision.error instanceof Error).toBe(
+      true,
+    );
+    expect(!failedDivision.ok && failedDivision.error.message).toEqual(
+      'Cannot divide by zero',
+    );
+  });
+
+  test('ifErr with method chaining for failed result', () => {
+    const failedDivision = divide(10, 0);
+    let okCalled = false;
+    let errCalled = false;
+
+    const result = failedDivision
+      .ifErr((error) => {
+        errCalled = true;
+        expect(error.message).toEqual('Cannot divide by zero');
+      })
+      .ifOk(() => {
+        okCalled = true;
+      });
+
+    expectType<TestTypeIsEqual<typeof result, Result<number, Error>>>();
+
+    expect(okCalled).toBe(false);
+    expect(errCalled).toBe(true);
+    expect(result.ok).toBe(false);
+    expect(!result.ok && result.error instanceof Error).toBe(true);
+    expect(!result.ok && result.error.message).toEqual('Cannot divide by zero');
+  });
+
+  test('reversed chain order works correctly', () => {
+    const successDivision = divide(10, 2);
+    let okCalled = false;
+    let errCalled = false;
+
+    const result = successDivision
+      .ifErr(() => {
+        errCalled = true;
+      })
+      .ifOk((value) => {
+        okCalled = true;
+        expect(value).toEqual(5);
+      });
+
+    expect(okCalled).toBe(true);
+    expect(errCalled).toBe(false);
+
+    expectType<TestTypeIsEqual<typeof result, Result<number, Error>>>();
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.value).toEqual(5);
+
+    const failedDivision = divide(10, 0);
+    okCalled = false;
+    errCalled = false;
+
+    const failedResult = failedDivision
+      .ifOk(() => {
+        okCalled = true;
+      })
+      .ifErr((error) => {
+        errCalled = true;
+        expect(error.message).toEqual('Cannot divide by zero');
+      });
+
+    expectType<TestTypeIsEqual<typeof failedResult, Result<number, Error>>>();
+    expect(okCalled).toBe(false);
+    expect(errCalled).toBe(true);
+    expect(failedResult.ok).toBe(false);
+    expect(!failedResult.ok && failedResult.error instanceof Error).toBe(true);
+    expect(!failedResult.ok && failedResult.error.message).toEqual(
+      'Cannot divide by zero',
+    );
+  });
+});

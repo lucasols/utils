@@ -1,10 +1,10 @@
 ---
 description: use these rules whenever are tests involved, or code changes that may affect existing tests
-globs: 
+globs: src/**/*
 alwaysApply: false
 ---
 
-- Tests should be in `src/` with the same name of the file and the .test.ts extension
+- Tests should be in `src/` with the same name of the file and the .test.ts extension, eg.: foo.ts has the test foo.test.ts
 - Use vitest `test` instead of `it`
 - If i ask you to adjust the code implementation and not only the tests:
   - Run the written tests with `pnpm test ...` to check if the tests pass

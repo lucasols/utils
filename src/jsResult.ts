@@ -31,6 +31,8 @@ type ResultMethods<T, E extends ResultValidErrors> = {
     ok: (value: T) => NewValue;
     err: (error: E) => NewError;
   }) => Result<NewValue, NewError>;
+  ifOk: (fn: (value: T) => void) => Result<T, E>;
+  ifErr: (fn: (error: E) => void) => Result<T, E>;
 };
 
 /**
@@ -106,9 +108,29 @@ function returnResult(this: Result<any, any>) {
   return this;
 }
 
-function ok(): Ok<void>;
-function ok<T>(value: T): Ok<T>;
-function ok(value: any = undefined): Ok<any> {
+function okOnOk<T, E extends ResultValidErrors>(
+  this: Result<T, E>,
+  fn: (value: T) => void,
+): Result<T, E> {
+  if (this.ok) {
+    fn(this.value);
+  }
+  return this;
+}
+
+function errOnErr<T, E extends ResultValidErrors>(
+  this: Result<T, E>,
+  fn: (error: E) => void,
+): Result<T, E> {
+  if (!this.ok) {
+    fn(this.error);
+  }
+  return this;
+}
+
+export function ok(): Ok<void>;
+export function ok<T>(value: T): Ok<T>;
+export function ok(value: any = undefined): Ok<any> {
   const methods: ResultMethods<any, any> = {
     unwrapOrNull: okUnwrapOr,
     unwrapOr: okUnwrapOr,
@@ -116,6 +138,8 @@ function ok(value: any = undefined): Ok<any> {
     mapOk: okMap,
     mapErr: returnResult,
     mapOkAndErr,
+    ifOk: okOnOk,
+    ifErr: returnResult,
   };
 
   return {
@@ -126,7 +150,7 @@ function ok(value: any = undefined): Ok<any> {
   };
 }
 
-function err<E extends ResultValidErrors>(error: E): Err<E> {
+export function err<E extends ResultValidErrors>(error: E): Err<E> {
   const methods: ResultMethods<any, any> = {
     unwrapOrNull: () => null,
     unwrapOr: (defaultValue) => defaultValue,
@@ -140,6 +164,8 @@ function err<E extends ResultValidErrors>(error: E): Err<E> {
     mapOk: returnResult,
     mapErr: errMap,
     mapOkAndErr,
+    ifOk: returnResult,
+    ifErr: errOnErr,
   };
 
   return {
