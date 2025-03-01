@@ -9,7 +9,11 @@ type Ok<T> = {
 
 type AnyResultMethods = Record<ResultMethodsKeys, never>;
 
-type ResultValidErrors = Error | Record<string, unknown> | unknown[] | true;
+export type ResultValidErrors =
+  | Error
+  | Record<string, unknown>
+  | unknown[]
+  | true;
 
 type Err<E extends ResultValidErrors> = {
   ok: false;

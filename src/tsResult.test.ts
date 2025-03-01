@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { invariant } from './assertions';
-import { Result, resultify, type GetTypedResult } from './jsResult';
 import { sleep } from './sleep';
+import { Result, resultify, type GetTypedResult } from './tsResult';
 import { TestTypeIsEqual, typingTest } from './typingTestUtils';
 
 const { expectType } = typingTest;

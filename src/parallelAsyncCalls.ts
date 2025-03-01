@@ -1,6 +1,6 @@
 import { invariant, isObject } from './assertions';
-import { Result, unknownToError } from './jsResult';
 import { sleep } from './sleep';
+import { Result, unknownToError } from './tsResult';
 
 type ValidMetadata = string | number | boolean | Record<string, unknown>;
 

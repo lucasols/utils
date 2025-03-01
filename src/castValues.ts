@@ -12,12 +12,19 @@ export function castToString(value: unknown): string | null {
 }
 
 export function castToNumber(value: unknown): number | null {
-  return isNumeric(value) ? Number(value) : null;
+  return isFiniteNumeric(value) ? Number(value) : null;
 }
 
-function isNumeric(num: unknown) {
-  const str = String(num);
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  return !isNaN(str as any) && !isNaN(parseFloat(str));
+function isFiniteNumeric(num: unknown) {
+  switch (typeof num) {
+    case 'number':
+      return num - num === 0;
+    case 'string':
+      // eslint-disable-next-line no-implicit-coercion
+      return num.trim() !== '' && Number.isFinite(+num);
+    case 'bigint':
+      return Number.isFinite(Number(num));
+    default:
+      return false;
+  }
 }
