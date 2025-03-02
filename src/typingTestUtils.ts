@@ -27,8 +27,27 @@ function expectType<T extends true>() {
   return {} as T;
 }
 
+/**
+ * Helper function for type testing that compares two types and expects a specific result.
+ * This function allows for more explicit type equality assertions with a descriptive result.
+ *
+ * @template X First type to compare
+ * @template Y Second type to compare
+ * @param result Expected comparison result: 'equal' if types are equal, 'notEqual' if they differ
+ *
+ * @example
+ * expectTypesAre<string, string>('equal'); // OK
+ * expectTypesAre<string, number>('notEqual'); // OK
+ * expectTypesAre<string, string>('notEqual'); // Type error
+ */
+function expectTypesAre<X, Y>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  result: TestTypeIsEqual<X, Y> extends true ? 'equal' : 'notEqual',
+) {}
+
 export const typingTest = {
   test,
   describe,
   expectType,
+  expectTypesAre,
 };

@@ -43,3 +43,24 @@ export function exhaustiveMatch<T extends string>(value: T) {
     withObject,
   };
 }
+
+export function exhaustiveMatchObjUnion<
+  T extends Record<string, unknown>,
+  D extends keyof T,
+  K extends T[D] & string,
+>(obj: T, key: D) {
+  type Pattern<R> = {
+    [P in K]: ((props: Extract<T, Record<D, P>>) => R) | '_never';
+  };
+
+  function withLazy<R>(pattern: Pattern<R>): R {
+    const result = pattern[obj[key] as K];
+
+    if (typeof result === 'function')
+      return result(obj as Extract<T, Record<D, K>>);
+
+    throw new Error(`Exhaustive match failed: no match for ${obj[key]}`);
+  }
+
+  return { with: withLazy };
+}
