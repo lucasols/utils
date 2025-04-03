@@ -8,10 +8,10 @@ type StrictNonUndefined<T, N = unknown> =
 
 export function notUndefined<T>(
   value: T,
-  message = undefErrMsg,
+  errorMsg = undefErrMsg,
 ): StrictNonUndefined<T> {
   if (value === undefined) {
-    throw new Error(message);
+    throw new Error(errorMsg);
   }
 
   return value as any;
@@ -24,10 +24,10 @@ type StrictNonNullable<T, N = unknown> =
 
 export function notNullish<T>(
   value: T,
-  message = nullishErrMsg,
+  errorMsg = nullishErrMsg,
 ): StrictNonNullable<T> {
   if (value === undefined || value === null) {
-    throw new Error(message);
+    throw new Error(errorMsg);
   }
 
   return value as any;
