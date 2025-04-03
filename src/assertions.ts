@@ -6,9 +6,12 @@ type NotUndefined<T> = T extends undefined ? never : T;
 type StrictNonUndefined<T, N = unknown> =
   undefined extends T ? NotUndefined<T> : N;
 
-export function notUndefined<T>(value: T): StrictNonUndefined<T> {
+export function notUndefined<T>(
+  value: T,
+  message = undefErrMsg,
+): StrictNonUndefined<T> {
   if (value === undefined) {
-    throw new Error(undefErrMsg);
+    throw new Error(message);
   }
 
   return value as any;
@@ -19,9 +22,12 @@ type StrictNonNullable<T, N = unknown> =
   : null extends T ? NonNullable<T>
   : N;
 
-export function notNullish<T>(value: T): StrictNonNullable<T> {
+export function notNullish<T>(
+  value: T,
+  message = nullishErrMsg,
+): StrictNonNullable<T> {
   if (value === undefined || value === null) {
-    throw new Error(nullishErrMsg);
+    throw new Error(message);
   }
 
   return value as any;
@@ -72,7 +78,7 @@ export function isFunction(value: unknown): value is (...args: any[]) => any {
 }
 
 export function isPromise(value: unknown): value is Promise<unknown> {
-  return isObject(value) && 'then' in value;
+  return isObject(value) && 'then' in value && isFunction(value.then);
 }
 
 export function isPlainObject(value: any): value is Record<string, unknown> {
