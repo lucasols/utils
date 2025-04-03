@@ -94,10 +94,10 @@
       "types": "./dist/exhaustiveMatch.d.ts",
       "require": "./dist/exhaustiveMatch.cjs"
     },
-    "./getObjStableKey": {
-      "import": "./dist/getObjStableKey.js",
-      "types": "./dist/getObjStableKey.d.ts",
-      "require": "./dist/getObjStableKey.cjs"
+    "./getValueStableKey": {
+      "import": "./dist/getValueStableKey.js",
+      "types": "./dist/getValueStableKey.d.ts",
+      "require": "./dist/getValueStableKey.cjs"
     },
     "./internalUtils": {
       "import": "./dist/internalUtils.js",
@@ -144,11 +144,6 @@
       "types": "./dist/retryOnError.d.ts",
       "require": "./dist/retryOnError.cjs"
     },
-    "./rsResult": {
-      "import": "./dist/rsResult.js",
-      "types": "./dist/rsResult.d.ts",
-      "require": "./dist/rsResult.cjs"
-    },
     "./runShellCmd": {
       "import": "./dist/runShellCmd.js",
       "types": "./dist/runShellCmd.d.ts",
@@ -183,6 +178,11 @@
       "import": "./dist/time.js",
       "types": "./dist/time.d.ts",
       "require": "./dist/time.cjs"
+    },
+    "./tsResult": {
+      "import": "./dist/tsResult.js",
+      "types": "./dist/tsResult.d.ts",
+      "require": "./dist/tsResult.cjs"
     },
     "./typingFnUtils": {
       "import": "./dist/typingFnUtils.js",
@@ -268,8 +268,8 @@
       "exhaustiveMatch": [
         "./dist/exhaustiveMatch.d.ts"
       ],
-      "getObjStableKey": [
-        "./dist/getObjStableKey.d.ts"
+      "getValueStableKey": [
+        "./dist/getValueStableKey.d.ts"
       ],
       "internalUtils": [
         "./dist/internalUtils.d.ts"
@@ -298,9 +298,6 @@
       "retryOnError": [
         "./dist/retryOnError.d.ts"
       ],
-      "rsResult": [
-        "./dist/rsResult.d.ts"
-      ],
       "runShellCmd": [
         "./dist/runShellCmd.d.ts"
       ],
@@ -321,6 +318,9 @@
       ],
       "time": [
         "./dist/time.d.ts"
+      ],
+      "tsResult": [
+        "./dist/tsResult.d.ts"
       ],
       "typingFnUtils": [
         "./dist/typingFnUtils.d.ts"
