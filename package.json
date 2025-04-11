@@ -99,11 +99,6 @@
       "types": "./dist/getValueStableKey.d.ts",
       "require": "./dist/getValueStableKey.cjs"
     },
-    "./internalUtils": {
-      "import": "./dist/internalUtils.js",
-      "types": "./dist/internalUtils.d.ts",
-      "require": "./dist/internalUtils.cjs"
-    },
     "./interpolate": {
       "import": "./dist/interpolate.js",
       "types": "./dist/interpolate.d.ts",
@@ -113,11 +108,6 @@
       "import": "./dist/levenshtein.js",
       "types": "./dist/levenshtein.d.ts",
       "require": "./dist/levenshtein.cjs"
-    },
-    "./main": {
-      "import": "./dist/main.js",
-      "types": "./dist/main.d.ts",
-      "require": "./dist/main.cjs"
     },
     "./mathUtils": {
       "import": "./dist/mathUtils.js",
@@ -271,17 +261,11 @@
       "getValueStableKey": [
         "./dist/getValueStableKey.d.ts"
       ],
-      "internalUtils": [
-        "./dist/internalUtils.d.ts"
-      ],
       "interpolate": [
         "./dist/interpolate.d.ts"
       ],
       "levenshtein": [
         "./dist/levenshtein.d.ts"
-      ],
-      "main": [
-        "./dist/main.d.ts"
       ],
       "mathUtils": [
         "./dist/mathUtils.d.ts"
