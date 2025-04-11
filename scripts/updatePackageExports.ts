@@ -39,6 +39,10 @@ const newTypesVersions: Record<'*', Record<string, string[]>> = {
 let dtsBundle = '';
 
 for (const exportedUtil of exportedUtils) {
+  if (exportedUtil === 'main' || exportedUtil === 'internalUtils') {
+    continue;
+  }
+
   newExportsField[`./${exportedUtil}`] = {
     import: `./dist/${exportedUtil}.js`,
     types: `./dist/${exportedUtil}.d.ts`,
