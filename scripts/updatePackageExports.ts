@@ -47,6 +47,7 @@ const newTypesVersions: Record<'*', Record<string, string[]>> = {
 };
 
 let dtsBundle = '';
+let ctsBundle = '';
 
 for (const exportedUtil of exportedUtils) {
   if (exportedUtil === 'main' || exportedUtil === 'internalUtils') {
@@ -67,10 +68,11 @@ for (const exportedUtil of exportedUtils) {
   newTypesVersions['*'][exportedUtil] = [`./dist/${exportedUtil}.d.ts`];
 
   dtsBundle += `///<reference path="${exportedUtil}.d.ts" />\n`;
+  ctsBundle += `///<reference path="${exportedUtil}.d.cts" />\n`;
 }
 
 writeFileSync('./dist/main.d.ts', dtsBundle);
-writeFileSync('./dist/main.d.cts', dtsBundle);
+writeFileSync('./dist/main.d.cts', ctsBundle);
 
 if (
   !deepEqual(packageJson.exports, newExportsField) ||
