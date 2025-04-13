@@ -30,10 +30,6 @@ const newExportsField: Record<
   },
 };
 
-const newTypesVersions: Record<'*', Record<string, string[]>> = {
-  '*': {},
-};
-
 for (const exportedUtil of exportedUtils) {
   if (exportedUtil === 'main' || exportedUtil === 'internalUtils') {
     continue;
@@ -43,16 +39,10 @@ for (const exportedUtil of exportedUtils) {
     import: `./dist/${exportedUtil}.js`,
     require: `./dist/${exportedUtil}.cjs`,
   };
-
-  newTypesVersions['*'][exportedUtil] = [`./dist/${exportedUtil}.d.ts`];
 }
 
-if (
-  !deepEqual(packageJson.exports, newExportsField) ||
-  !deepEqual(packageJson.typesVersions, newTypesVersions)
-) {
+if (!deepEqual(packageJson.exports, newExportsField)) {
   packageJson.exports = newExportsField;
-  packageJson.typesVersions = newTypesVersions;
 
   writeFileSync('./package.json', `${JSON.stringify(packageJson, null, 2)}\n`);
 
