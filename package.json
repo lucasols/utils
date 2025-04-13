@@ -19,15 +19,15 @@
     "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts"
   },
   "files": [
-    "dist"
+    "lib"
   ],
   "repository": "github:lucasols/utils",
   "author": "Lucas Santos",
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/main.cjs",
-  "module": "./dist/main.js",
-  "types": "./dist/main.d.ts",
+  "main": "./lib/main.cjs",
+  "module": "./lib/main.js",
+  "types": "./lib/main.d.ts",
   "exports": {
     ".": {
       "import": "./dist/main.js",

@@ -25,8 +25,8 @@ const newExportsField: Record<
   }
 > = {
   '.': {
-    import: './dist/main.js',
-    require: './dist/main.cjs',
+    import: './lib/main.js',
+    require: './lib/main.cjs',
   },
 };
 
@@ -36,8 +36,8 @@ for (const exportedUtil of exportedUtils) {
   }
 
   newExportsField[`./${exportedUtil}`] = {
-    import: `./dist/${exportedUtil}.js`,
-    require: `./dist/${exportedUtil}.cjs`,
+    import: `./lib/${exportedUtil}.js`,
+    require: `./lib/${exportedUtil}.cjs`,
   };
 }
 
