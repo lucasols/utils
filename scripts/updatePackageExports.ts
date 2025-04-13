@@ -20,15 +20,25 @@ for (const srcFile of srcFiles) {
 const newExportsField: Record<
   string,
   {
-    import: string;
-    types: string;
-    require: string;
+    import: {
+      import: string;
+      types: string;
+    };
+    require: {
+      import: string;
+      types: string;
+    };
   }
 > = {
   '.': {
-    import: './dist/main.js',
-    types: './dist/main.d.ts',
-    require: './dist/main.cjs',
+    import: {
+      import: './dist/main.js',
+      types: './dist/main.d.ts',
+    },
+    require: {
+      import: './dist/main.cjs',
+      types: './dist/main.d.cts',
+    },
   },
 };
 
@@ -44,9 +54,14 @@ for (const exportedUtil of exportedUtils) {
   }
 
   newExportsField[`./${exportedUtil}`] = {
-    import: `./dist/${exportedUtil}.js`,
-    types: `./dist/${exportedUtil}.d.ts`,
-    require: `./dist/${exportedUtil}.cjs`,
+    import: {
+      import: `./dist/${exportedUtil}.js`,
+      types: `./dist/${exportedUtil}.d.ts`,
+    },
+    require: {
+      import: `./dist/${exportedUtil}.cjs`,
+      types: `./dist/${exportedUtil}.d.cts`,
+    },
   };
 
   newTypesVersions['*'][exportedUtil] = [`./dist/${exportedUtil}.d.ts`];
@@ -55,6 +70,7 @@ for (const exportedUtil of exportedUtils) {
 }
 
 writeFileSync('./dist/main.d.ts', dtsBundle);
+writeFileSync('./dist/main.d.cts', dtsBundle);
 
 if (
   !deepEqual(packageJson.exports, newExportsField) ||
