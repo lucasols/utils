@@ -25,6 +25,7 @@
   "author": "Lucas Santos",
   "type": "module",
   "sideEffects": false,
+  "main": "./dist/main.cjs",
   "module": "./dist/main.js",
   "exports": {
     ".": {
