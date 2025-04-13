@@ -17,3 +17,12 @@ export type IsAny<T> =
       false
     : true
   : false;
+
+export type Prettify<T extends Record<string, unknown>> = {
+  [P in keyof T]: T[P];
+} & {};
+
+export type DeepPrettify<T> = {
+  [K in keyof T]: T[K] extends Record<string, unknown> ? DeepPrettify<T[K]>
+  : T[K];
+} & {};
