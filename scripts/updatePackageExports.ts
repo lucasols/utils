@@ -20,25 +20,13 @@ for (const srcFile of srcFiles) {
 const newExportsField: Record<
   string,
   {
-    import: {
-      import: string;
-      types: string;
-    };
-    require: {
-      import: string;
-      types: string;
-    };
+    import: string;
+    require: string;
   }
 > = {
   '.': {
-    import: {
-      import: './dist/main.js',
-      types: './dist/main.d.ts',
-    },
-    require: {
-      import: './dist/main.cjs',
-      types: './dist/main.d.cts',
-    },
+    import: './dist/main.js',
+    require: './dist/main.cjs',
   },
 };
 
@@ -46,33 +34,18 @@ const newTypesVersions: Record<'*', Record<string, string[]>> = {
   '*': {},
 };
 
-let dtsBundle = '';
-let ctsBundle = '';
-
 for (const exportedUtil of exportedUtils) {
   if (exportedUtil === 'main' || exportedUtil === 'internalUtils') {
     continue;
   }
 
   newExportsField[`./${exportedUtil}`] = {
-    import: {
-      import: `./dist/${exportedUtil}.js`,
-      types: `./dist/${exportedUtil}.d.ts`,
-    },
-    require: {
-      import: `./dist/${exportedUtil}.cjs`,
-      types: `./dist/${exportedUtil}.d.cts`,
-    },
+    import: `./dist/${exportedUtil}.js`,
+    require: `./dist/${exportedUtil}.cjs`,
   };
 
   newTypesVersions['*'][exportedUtil] = [`./dist/${exportedUtil}.d.ts`];
-
-  dtsBundle += `///<reference path="${exportedUtil}.d.ts" />\n`;
-  ctsBundle += `///<reference path="${exportedUtil}.d.cts" />\n`;
 }
-
-writeFileSync('./dist/main.d.ts', dtsBundle);
-writeFileSync('./dist/main.d.cts', ctsBundle);
 
 if (
   !deepEqual(packageJson.exports, newExportsField) ||
