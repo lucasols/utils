@@ -121,6 +121,10 @@
       "import": "./lib/safeJson.js",
       "require": "./lib/safeJson.cjs"
     },
+    "./saferTyping": {
+      "import": "./lib/saferTyping.js",
+      "require": "./lib/saferTyping.cjs"
+    },
     "./shallowEqual": {
       "import": "./lib/shallowEqual.js",
       "require": "./lib/shallowEqual.cjs"
