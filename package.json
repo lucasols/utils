@@ -27,6 +27,7 @@
   "sideEffects": false,
   "main": "./dist/main.cjs",
   "module": "./dist/main.js",
+  "types": "./dist/main.d.ts",
   "exports": {
     ".": {
       "import": "./dist/main.js",
