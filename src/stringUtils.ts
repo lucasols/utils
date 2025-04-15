@@ -8,7 +8,7 @@ type Arg = string | false | undefined | null;
  * joinStrings('a', false, 'c') // 'ac'
  * joinStrings('a', addBString ? 'b' : null, 'c') // 'ac' if addBString is false, 'abc' if addBString is true
  */
-export function joinStrings(...args: (Arg | Arg[])[]) {
+export function concatStrings(...args: (Arg | Arg[])[]) {
   const strings: string[] = [];
 
   for (let i = 0; i < args.length; i++) {
@@ -17,7 +17,7 @@ export function joinStrings(...args: (Arg | Arg[])[]) {
     if (!arg) continue;
 
     if (Array.isArray(arg)) {
-      strings.push(joinStrings(...arg));
+      strings.push(concatStrings(...arg));
       continue;
     }
 
@@ -26,6 +26,11 @@ export function joinStrings(...args: (Arg | Arg[])[]) {
 
   return strings.join('');
 }
+
+/**
+ * @deprecated Use {@link concatStrings} instead
+ */
+export const joinStrings = concatStrings;
 
 export function formatNum(num: number) {
   return num.toLocaleString('en-US', {
