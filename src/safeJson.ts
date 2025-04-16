@@ -8,7 +8,7 @@ export function safeJsonStringify(value: unknown) {
 }
 
 /** JSON.parse can throw if the value is not valid JSON, this function catches those errors and returns undefined */
-export function safeJsonParse(value: string) {
+export function safeJsonParse(value: string): unknown {
   try {
     return JSON.parse(value);
   } catch (_) {
