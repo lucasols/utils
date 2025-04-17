@@ -13,6 +13,7 @@ export type ResultValidErrors =
   | Error
   | Record<string, unknown>
   | unknown[]
+  | readonly unknown[]
   | true;
 
 type Err<E extends ResultValidErrors> = {

@@ -570,3 +570,19 @@ describe('Result.ifOk() and Result.ifErr()', () => {
     );
   });
 });
+
+test('Allow readonly error types', () => {
+  function _foo(error: readonly string[]): Result<number, readonly string[]> {
+    return Result.err(error);
+  }
+
+  type ReadonlyRecord = {
+    readonly [key: string]: unknown;
+  };
+
+  function _bar(error: ReadonlyRecord): Result<number, ReadonlyRecord> {
+    return Result.err(error);
+  }
+
+  expect(1).toEqual(1);
+});
