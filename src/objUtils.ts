@@ -57,3 +57,17 @@ export function looseGetObjectProperty<T extends Record<string, unknown>>(
 ): T[keyof T] | undefined {
   return obj[key as keyof T];
 }
+
+export function rejectObjUndefinedValues<T extends Record<string, unknown>>(
+  obj: T,
+): T {
+  const result: T = {} as T;
+
+  for (const key in obj) {
+    if (obj[key] !== undefined) {
+      result[key] = obj[key];
+    }
+  }
+
+  return result;
+}

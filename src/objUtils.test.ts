@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { looseGetObjectProperty } from './objUtils';
+import { looseGetObjectProperty, rejectObjUndefinedValues } from './objUtils';
 import { typingTest, type TestTypeIsEqual } from './typingTestUtils';
 
 describe('looseGetObjectProperty', () => {
@@ -17,4 +17,12 @@ describe('looseGetObjectProperty', () => {
 
     expect(result).toBe(1);
   });
+});
+
+test('rejectObjUndefinedValues', () => {
+  const obj = { a: 1, b: undefined, c: { d: '3' } };
+
+  const result = rejectObjUndefinedValues(obj);
+
+  expect(result).toEqual({ a: 1, c: { d: '3' } });
 });

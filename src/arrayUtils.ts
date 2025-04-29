@@ -158,3 +158,7 @@ export function findBeforeIndex<T>(
 
   return undefined;
 }
+
+export function rejectArrayUndefinedValues<T extends unknown[]>(array: T): T {
+  return array.filter((item) => item !== undefined) as T;
+}

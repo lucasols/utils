@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { findAfterIndex, findBeforeIndex } from './arrayUtils';
+import {
+  findAfterIndex,
+  findBeforeIndex,
+  rejectArrayUndefinedValues,
+} from './arrayUtils';
 
 describe('findAfterIndex', () => {
   test('not throws', () => {
@@ -21,4 +25,12 @@ describe('findBeforeIndex', () => {
     expect(findBeforeIndex([1, 2, 3], -20, () => true)).toEqual(undefined);
     expect(findBeforeIndex([1, 2, 3], 20, () => true)).toEqual(3);
   });
+});
+
+test('rejectArrayUndefinedValues', () => {
+  const array = [1, undefined, 3];
+
+  const result = rejectArrayUndefinedValues(array);
+
+  expect(result).toEqual([1, 3]);
 });
