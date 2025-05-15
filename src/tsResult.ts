@@ -19,7 +19,8 @@ export type ResultValidErrors =
 type Err<E extends ResultValidErrors> = {
   ok: false;
   error: E;
-  errorResult: () => Result<any, E>;
+  /** Returns a new Err result with the same error */
+  errorResult: () => Err<E>;
 } & AnyResultMethods;
 
 type ResultMethods<T, E extends ResultValidErrors> = {
@@ -27,16 +28,22 @@ type ResultMethods<T, E extends ResultValidErrors> = {
   unwrapOrNull: () => T | null;
   /** Returns the value if the result is Ok, otherwise returns the provided default value */
   unwrapOr: <R extends T>(defaultValue: R) => T | R;
+  /** Returns the value if the result is Ok, otherwise throws the error */
   unwrap: () => T;
+  /** Maps the value if the result is Ok */
   mapOk: <NewValue>(mapFn: (value: T) => NewValue) => Result<NewValue, E>;
+  /** Maps the error if the result is Err */
   mapErr: <NewError extends ResultValidErrors>(
     mapFn: (error: E) => NewError,
   ) => Result<T, NewError>;
+  /** Maps the value and error if the result is Ok or Err */
   mapOkAndErr: <NewValue, NewError extends ResultValidErrors>(mapFns: {
     ok: (value: T) => NewValue;
     err: (error: E) => NewError;
   }) => Result<NewValue, NewError>;
+  /** Calls a function if the result is Ok */
   ifOk: (fn: (value: T) => void) => Result<T, E>;
+  /** Calls a function if the result is Err */
   ifErr: (fn: (error: E) => void) => Result<T, E>;
 };
 
@@ -133,7 +140,16 @@ function errOnErr<T, E extends ResultValidErrors>(
   return this;
 }
 
+/**
+ * Creates a void Ok result
+ */
 export function ok(): Ok<void>;
+/**
+ * Creates an Ok result
+ *
+ * @param value - The value to wrap in the Ok result
+ * @returns A new Ok result
+ */
 export function ok<T>(value: T): Ok<T>;
 export function ok(value: any = undefined): Ok<any> {
   const methods: ResultMethods<any, any> = {
@@ -155,6 +171,12 @@ export function ok(value: any = undefined): Ok<any> {
   };
 }
 
+/**
+ * Creates an Err result
+ *
+ * @param error - The error to wrap in the Err result
+ * @returns A new Err result
+ */
 export function err<E extends ResultValidErrors>(error: E): Err<E> {
   const methods: ResultMethods<any, any> = {
     unwrapOrNull: () => null,
@@ -242,14 +264,23 @@ export const Result = {
   getOkErr,
 };
 
+/**
+ * Converts a function response into a Result<T, E>
+ */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => T extends Promise<any> ? never : T,
   errorNormalizer?: (err: unknown) => E,
 ): Result<T, E>;
+/**
+ * Converts a promise response into a Result<T, E>
+ */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => Promise<T>,
   errorNormalizer?: (err: unknown) => E,
 ): Promise<Result<Awaited<T>, E>>;
+/**
+ * Converts a promise response into a Result<T, E>
+ */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: Promise<T>,
   errorNormalizer?: (err: unknown) => E,

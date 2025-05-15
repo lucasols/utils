@@ -78,6 +78,33 @@ test('result.unwrap()', () => {
   }).toThrowErrorMatchingInlineSnapshot(`[Error: ["string"]]`);
 });
 
+test('result.unwrapOrNull()', () => {
+  expect(divide(10, 2).unwrapOrNull()).toEqual(5);
+  expect(divide(10, 0).unwrapOrNull()).toEqual(null);
+});
+
+test('result.unwrapOr()', () => {
+  expect(divide(10, 2).unwrapOr(0)).toEqual(5);
+  expect(divide(10, 0).unwrapOr(0)).toEqual(0);
+});
+
+test('result.errorResult()', () => {
+  function divide10By(b: number) {
+    const result = divide(10, b);
+
+    if (!result.ok) return result.errorResult();
+
+    return result;
+  }
+
+  const errResult = divide10By(0);
+
+  expect(errResult.ok).toBe(false);
+  expect(errResult.error).toMatchInlineSnapshot(
+    `[Error: Cannot divide by zero]`,
+  );
+});
+
 test('resultify should return a normalized error', () => {
   const errorToThrow = new Error('Cannot divide by zero');
 
@@ -568,6 +595,23 @@ describe('Result.ifOk() and Result.ifErr()', () => {
     expect(!failedResult.ok && failedResult.error.message).toEqual(
       'Cannot divide by zero',
     );
+  });
+
+  test('ifErr with unwrap', () => {
+    const failedDivision = divide(10, 0);
+
+    let error: Error | undefined;
+
+    expect(() => {
+      failedDivision
+        .ifErr((e) => {
+          error = e;
+        })
+        .unwrap();
+    }).toThrowErrorMatchingInlineSnapshot(`[Error: Cannot divide by zero]`);
+
+    expect(error).toBeDefined();
+    expect(error?.message).toEqual('Cannot divide by zero');
   });
 });
 
