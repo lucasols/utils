@@ -190,5 +190,8 @@
     "typescript-eslint": "^8.21.0",
     "vite": "^6.0.11",
     "vitest": "^3.0.4"
+  },
+  "dependencies": {
+    "t-result": "^0.2.1"
   }
 }

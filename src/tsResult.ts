@@ -9,6 +9,7 @@ type Ok<T> = {
 
 type AnyResultMethods = Record<ResultMethodsKeys, never>;
 
+/** @deprecated Use `t-result` library instead. */
 export type ResultValidErrors =
   | Error
   | Record<string, unknown>
@@ -19,56 +20,35 @@ export type ResultValidErrors =
 type Err<E extends ResultValidErrors> = {
   ok: false;
   error: E;
-  /** Returns a new Err result with the same error */
+  /** @deprecated Use `t-result` library instead. */
   errorResult: () => Err<E>;
 } & AnyResultMethods;
 
 type ResultMethods<T, E extends ResultValidErrors> = {
-  /** Returns the value if the result is Ok, otherwise returns null */
+  /** @deprecated Use `t-result` library instead. */
   unwrapOrNull: () => T | null;
-  /** Returns the value if the result is Ok, otherwise returns the provided default value */
+  /** @deprecated Use `t-result` library instead. */
   unwrapOr: <R extends T>(defaultValue: R) => T | R;
-  /** Returns the value if the result is Ok, otherwise throws the error */
+  /** @deprecated Use `t-result` library instead. */
   unwrap: () => T;
-  /** Maps the value if the result is Ok */
+  /** @deprecated Use `t-result` library instead. */
   mapOk: <NewValue>(mapFn: (value: T) => NewValue) => Result<NewValue, E>;
-  /** Maps the error if the result is Err */
+  /** @deprecated Use `t-result` library instead. */
   mapErr: <NewError extends ResultValidErrors>(
     mapFn: (error: E) => NewError,
   ) => Result<T, NewError>;
-  /** Maps the value and error if the result is Ok or Err */
+  /** @deprecated Use `t-result` library instead. */
   mapOkAndErr: <NewValue, NewError extends ResultValidErrors>(mapFns: {
     ok: (value: T) => NewValue;
     err: (error: E) => NewError;
   }) => Result<NewValue, NewError>;
-  /** Calls a function if the result is Ok */
+  /** @deprecated Use `t-result` library instead. */
   ifOk: (fn: (value: T) => void) => Result<T, E>;
-  /** Calls a function if the result is Err */
+  /** @deprecated Use `t-result` library instead. */
   ifErr: (fn: (error: E) => void) => Result<T, E>;
 };
 
-/**
- * Util for implementing something similar to Result<T, E> in Rust, for better error handling.
- *
- * Usage:
- *
- * @example
- * function doSomething(): Result<string, Error> {
- *  if (something) {
- *    return ok('success');
- *  }
- *
- *  return err(new Error('something went wrong'));
- * }
- *
- * const result = doSomething();
- *
- * if (result.ok) {
- *   // result.value is a string
- * } else {
- *   // result.error is an Error
- * }
- */
+/** @deprecated Use `t-result` library instead. */
 export type Result<T, E extends ResultValidErrors = Error> = (
   | Omit<Ok<T>, ResultMethodsKeys>
   | Omit<Err<E>, ResultMethodsKeys>
@@ -140,17 +120,11 @@ function errOnErr<T, E extends ResultValidErrors>(
   return this;
 }
 
-/**
- * Creates a void Ok result
- */
+/** @deprecated Use `t-result` library instead. */
 export function ok(): Ok<void>;
-/**
- * Creates an Ok result
- *
- * @param value - The value to wrap in the Ok result
- * @returns A new Ok result
- */
+/** @deprecated Use `t-result` library instead. */
 export function ok<T>(value: T): Ok<T>;
+/** @deprecated Use `t-result` library instead. */
 export function ok(value: any = undefined): Ok<any> {
   const methods: ResultMethods<any, any> = {
     unwrapOrNull: okUnwrapOr,
@@ -171,12 +145,7 @@ export function ok(value: any = undefined): Ok<any> {
   };
 }
 
-/**
- * Creates an Err result
- *
- * @param error - The error to wrap in the Err result
- * @returns A new Err result
- */
+/** @deprecated Use `t-result` library instead. */
 export function err<E extends ResultValidErrors>(error: E): Err<E> {
   const methods: ResultMethods<any, any> = {
     unwrapOrNull: () => null,
@@ -255,6 +224,7 @@ function asyncMap<T, E extends ResultValidErrors>(
   };
 }
 
+/** @deprecated Use `t-result` library instead. */
 export const Result = {
   ok,
   err,
@@ -264,23 +234,17 @@ export const Result = {
   getOkErr,
 };
 
-/**
- * Converts a function response into a Result<T, E>
- */
+/** @deprecated Use `t-result` library instead. */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => T extends Promise<any> ? never : T,
   errorNormalizer?: (err: unknown) => E,
 ): Result<T, E>;
-/**
- * Converts a promise response into a Result<T, E>
- */
+/** @deprecated Use `t-result` library instead. */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => Promise<T>,
   errorNormalizer?: (err: unknown) => E,
 ): Promise<Result<Awaited<T>, E>>;
-/**
- * Converts a promise response into a Result<T, E>
- */
+/** @deprecated Use `t-result` library instead. */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: Promise<T>,
   errorNormalizer?: (err: unknown) => E,
@@ -328,27 +292,7 @@ export function resultify(
   }
 }
 
-/**
- * Converts an unknown error value into an Error object.
- *
- * @param error - The unknown value to convert to an Error
- * @returns An Error object
- *
- * @example
- * try {
- *   // some code that might throw
- * } catch (err) {
- *   const error = unknownToError(err); // Guaranteed to be Error instance
- * }
- *
- * The function handles different error types:
- * - Returns the error directly if it's already an Error instance
- * - Converts strings into Error objects using the string as the message
- * - For objects, tries to extract a message property or stringifies the object
- * - For other values, stringifies them or uses 'unknown' as fallback
- *
- * The original error value is preserved as the `cause` property of the returned Error.
- */
+/** @deprecated Use `t-result` library instead. */
 export function unknownToError(error: unknown): Error {
   if (error instanceof Error) return error;
 
@@ -370,22 +314,17 @@ export function unknownToError(error: unknown): Error {
   });
 }
 
+/** @deprecated Use `t-result` library instead. */
 export type TypedResult<T, E extends ResultValidErrors = Error> = {
+  /** @deprecated Use `t-result` library instead. */
   ok: (value: T) => Ok<T>;
+  /** @deprecated Use `t-result` library instead. */
   err: (error: E) => Err<E>;
-  /**
-   * Use in combination with `typeof` to get the return type of the result
-   *
-   * @example
-   * const typedResult = createTypedResult<{ a: 'test' }>();
-   *
-   * function foo(): typeof typedResult.type {
-   *   return typedResult.ok({ a: 'test' });
-   * }
-   */
+  /** @deprecated Use `t-result` library instead. */
   _type: Result<T, E>;
 };
 
+/** @deprecated Use `t-result` library instead. */
 export type GetTypedResult<R extends Result<any, any>> = TypedResult<
   R extends Result<infer T, any> ? T : never,
   R extends Result<any, infer E> ? E : never

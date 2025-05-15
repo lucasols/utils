@@ -1,9 +1,9 @@
+import { Result, resultify } from 't-result';
 import { describe, expect, test } from 'vitest';
 import { invariant } from './assertions';
 import { omit } from './objUtils';
 import { parallelAsyncCalls } from './parallelAsyncCalls';
 import { sleep } from './sleep';
-import { Result, resultify } from './tsResult';
 import { TestTypeIsEqual, typingTest } from './typingTestUtils';
 
 const { expectType } = typingTest;

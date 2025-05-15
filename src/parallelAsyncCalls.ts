@@ -1,6 +1,6 @@
+import { Result, unknownToError } from 't-result';
 import { invariant, isObject } from './assertions';
 import { sleep } from './sleep';
-import { Result, unknownToError } from './tsResult';
 
 type ValidMetadata = string | number | boolean | Record<string, unknown>;
 

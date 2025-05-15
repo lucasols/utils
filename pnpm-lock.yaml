@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      t-result:
+        specifier: ^0.2.0
+        version: 0.2.0
     devDependencies:
       '@ls-stack/extended-lint':
         specifier: ^0.20.1
@@ -40,7 +44,7 @@ importers:
         version: 56.0.1(eslint@9.18.0)
       eslint-plugin-vitest:
         specifier: ^0.5.4
-        version: 0.5.4(@typescript-eslint/eslint-plugin@8.21.0(@typescript-eslint/parser@8.21.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3)(vitest@3.0.4)
+        version: 0.5.4(@typescript-eslint/eslint-plugin@8.21.0(@typescript-eslint/parser@8.21.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3)(vitest@3.0.4(@types/node@22.10.9)(@vitest/ui@3.0.4))
       mitata:
         specifier: ^1.0.32
         version: 1.0.32
@@ -1594,6 +1598,10 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  t-result@0.2.0:
+    resolution: {integrity: sha512-g/Bp3vZ/EmPvcKU+8NaAQSXGy+CmvUdXZt0PLXP/4g1FyNZV0qhY9yBe7Js0pK32wEAuQRR5XNCKG6PYe09VBQ==}
+    engines: {node: '>=23.0.0'}
+
   thenify-all@1.6.0:
     resolution: {integrity: sha512-RNxQH/qI8/t3thXJDwcstUO4zeqo64+Uy/+sNVRBx4Xn2OX+OZ9oP+iJnNFqplFra2ZUVeKCSa2oVWi3T4uVmA==}
     engines: {node: '>=0.8'}
@@ -2629,7 +2637,7 @@ snapshots:
       semver: 7.6.3
       strip-indent: 3.0.0
 
-  eslint-plugin-vitest@0.5.4(@typescript-eslint/eslint-plugin@8.21.0(@typescript-eslint/parser@8.21.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3)(vitest@3.0.4):
+  eslint-plugin-vitest@0.5.4(@typescript-eslint/eslint-plugin@8.21.0(@typescript-eslint/parser@8.21.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3)(vitest@3.0.4(@types/node@22.10.9)(@vitest/ui@3.0.4)):
     dependencies:
       '@typescript-eslint/utils': 7.7.1(eslint@9.18.0)(typescript@5.7.3)
       eslint: 9.18.0
@@ -3212,6 +3220,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  t-result@0.2.0: {}
 
   thenify-all@1.6.0:
     dependencies:
