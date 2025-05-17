@@ -1,13 +1,15 @@
 // fork of https://github.com/dmnd/dedent
 
+type InterpolateValue = string | number | boolean;
+
 export function dedent(
   strings: TemplateStringsArray,
-  ...values: string[]
+  ...values: InterpolateValue[]
 ): string;
 export function dedent(strings: string): string;
 export function dedent(
   strings: TemplateStringsArray | string,
-  ...values: string[]
+  ...values: InterpolateValue[]
 ) {
   // $FlowFixMe: Flow doesn't undestand .raw
   const raw = typeof strings === 'string' ? [strings] : strings.raw;
