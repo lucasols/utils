@@ -162,3 +162,40 @@ export function findBeforeIndex<T>(
 export function rejectArrayUndefinedValues<T extends unknown[]>(array: T): T {
   return array.filter((item) => item !== undefined) as T;
 }
+
+export function hasDuplicates<T>(
+  array: T[],
+  getKey: (item: T) => unknown = (item) => item,
+): boolean {
+  const seen = new Set();
+
+  for (const item of array) {
+    const key = getKey(item);
+    if (seen.has(key)) {
+      return true;
+    }
+    seen.add(key);
+  }
+
+  return false;
+}
+
+export function rejectDuplicates<T>(
+  array: T[],
+  getKey: (item: T) => unknown = (item) => item,
+): T[] {
+  const seen = new Set();
+  const result: T[] = [];
+
+  for (const item of array) {
+    const key = getKey(item);
+    if (seen.has(key)) {
+      continue;
+    }
+
+    seen.add(key);
+    result.push(item);
+  }
+
+  return result;
+}

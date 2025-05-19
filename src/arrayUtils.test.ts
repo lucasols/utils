@@ -2,7 +2,9 @@ import { describe, expect, test } from 'vitest';
 import {
   findAfterIndex,
   findBeforeIndex,
+  hasDuplicates,
   rejectArrayUndefinedValues,
+  rejectDuplicates,
 } from './arrayUtils';
 
 describe('findAfterIndex', () => {
@@ -33,4 +35,24 @@ test('rejectArrayUndefinedValues', () => {
   const result = rejectArrayUndefinedValues(array);
 
   expect(result).toEqual([1, 3]);
+});
+
+test('rejectDuplicates', () => {
+  const array = [1, 2, 2, 3];
+  const result = rejectDuplicates(array);
+  expect(result).toEqual([1, 2, 3]);
+
+  const array2 = [1, 2, 3];
+  const result2 = rejectDuplicates(array2);
+  expect(result2).toEqual([1, 2, 3]);
+});
+
+test('hasDuplicates', () => {
+  const array = [1, 2, 2, 3];
+  const result = hasDuplicates(array);
+  expect(result).toEqual(true);
+
+  const array2 = [1, 2, 3];
+  const result2 = hasDuplicates(array2);
+  expect(result2).toEqual(false);
 });
