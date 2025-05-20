@@ -4,6 +4,7 @@ import {
   findBeforeIndex,
   rejectArrayUndefinedValues,
   rejectDuplicates,
+  truncateArray,
 } from './arrayUtils';
 
 describe('findAfterIndex', () => {
@@ -87,5 +88,59 @@ describe('rejectDuplicates', () => {
       { id: 1, name: 'Alice' },
       { id: 2, name: 'Bob' },
     ]);
+  });
+});
+
+describe('truncateArray', () => {
+  test('should return the same array if maxLength is greater than array length', () => {
+    const array = [1, 2, 3];
+    expect(truncateArray(array, 5)).toEqual([1, 2, 3]);
+  });
+
+  test('should truncate the array to maxLength', () => {
+    const array = [1, 2, 3, 4, 5];
+    expect(truncateArray(array, 3)).toEqual([1, 2, 3]);
+  });
+
+  test('should append the given value if array is truncated', () => {
+    const array = [1, 2, 3, 4, 5];
+    expect(truncateArray(array, 3, 99)).toEqual([1, 2, 3, 99]);
+  });
+
+  test('should append the result of the function if array is truncated', () => {
+    const array = [1, 2, 3, 4, 5];
+    const appendFn = (count: number) => count * 10;
+    expect(truncateArray(array, 3, appendFn)).toEqual([1, 2, 3, 20]);
+  });
+
+  test('should not append if array is not truncated', () => {
+    const array = [1, 2, 3];
+    expect(truncateArray(array, 3, 99)).toEqual([1, 2, 3]);
+    expect(truncateArray(array, 5, 99)).toEqual([1, 2, 3]);
+  });
+
+  test('should return an empty array if input is empty', () => {
+    const array: number[] = [];
+    expect(truncateArray(array, 3, 99)).toEqual([]);
+  });
+
+  test('should handle maxLength of 0', () => {
+    const array = [1, 2, 3];
+    expect(truncateArray(array, 0)).toEqual([]);
+    expect(truncateArray(array, 0, 99)).toEqual([99]);
+    expect(truncateArray(array, 0, (count) => count * 100)).toEqual([300]);
+  });
+
+  test('should not return a new array instance when not truncating', () => {
+    const array = [1, 2, 3];
+    const result = truncateArray(array, 5);
+    expect(result === array).toBe(true);
+  });
+
+  test('should return a new array instance when truncating', () => {
+    const array = [1, 2, 3, 4, 5];
+    const result = truncateArray(array, 3);
+    expect(result).toEqual([1, 2, 3]);
+    expect(result).not.toBe(array);
   });
 });

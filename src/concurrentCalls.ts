@@ -343,7 +343,7 @@ class ConcurrentCallsWithMetadata<
           `${failedProcessing.length}/${total} calls failed: ${truncateArray(
             failedProcessing.map((f) => truncateString(f.error.message, 20)),
             5,
-            '...',
+            (count) => `+${count} more`,
           ).join('; ')}`,
         )
       : null;
