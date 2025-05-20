@@ -208,6 +208,8 @@ class ParallelAsyncResultCalls<
  *
  * @template R - The type of the result value.
  * @template M - The type of the call metadata.
+ *
+ * @deprecated Use concurrentAsyncCalls instead.
  */
 export function parallelAsyncCalls<
   M extends ValidMetadata | undefined = undefined,
