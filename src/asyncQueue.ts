@@ -21,8 +21,13 @@ type AddOptions<I> = {
   id?: I;
 };
 
+type RunCtx<I> = {
+  signal?: AbortSignal;
+  id?: I;
+};
+
 type Task<T, E extends ResultValidErrors, I> = {
-  run: (ctx: { signal?: AbortSignal }) => Promise<Result<T, E>>;
+  run: (ctx: RunCtx<I>) => Promise<Result<T, E>>;
   resolve: (value: Result<T, E | Error>) => void;
   reject: (reason?: Result<T, E>) => void;
   signal: AbortSignal | undefined;
@@ -30,7 +35,7 @@ type Task<T, E extends ResultValidErrors, I> = {
   timeout: number | undefined;
 };
 
-class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
+class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
   #queue: Array<Task<T, E, I>> = [];
   #pending = 0;
   #size = 0;
@@ -63,9 +68,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
 
   add(
     fn:
-      | ((ctx: {
-          signal?: AbortSignal;
-        }) => Promise<Result<T, E>> | Result<T, E>)
+      | ((ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>)
       | Promise<Result<T, E>>,
     options?: AddOptions<I>,
   ): Promise<Result<T, E | Error>> {
@@ -93,10 +96,10 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   }
 
   resultifyAdd(
-    fn: ((ctx: { signal?: AbortSignal }) => Promise<T> | T) | Promise<T>,
+    fn: ((ctx: RunCtx<I>) => Promise<T> | T) | Promise<T>,
     options?: AddOptions<I>,
   ): Promise<Result<T, E | Error>> {
-    const cb: (ctx: { signal?: AbortSignal }) => Promise<T> = async (ctx) => {
+    const cb: (ctx: RunCtx<I>) => Promise<T> = async (ctx) => {
       if (isPromise(fn)) {
         return await fn;
       }
@@ -155,7 +158,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
 
     try {
       // Original task execution
-      const taskRunPromise = task.run({ signal });
+      const taskRunPromise = task.run({ signal, id: task.id });
 
       this.events.emit('start', { id: task.id });
 
@@ -264,14 +267,16 @@ class AsyncQueueWithId<
   }
 
   add(
-    fn: (() => Promise<Result<T, E>> | Result<T, E>) | Promise<Result<T, E>>,
+    fn:
+      | ((ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>)
+      | Promise<Result<T, E>>,
     options?: AddOptionsWithId<I>,
   ): Promise<Result<T, E | Error>> {
     return super.add(fn, options);
   }
 
   resultifyAdd(
-    fn: (() => Promise<T> | T) | Promise<T>,
+    fn: ((ctx: RunCtx<I>) => Promise<T> | T) | Promise<T>,
     options?: AddOptionsWithId<I>,
   ): Promise<Result<T, E | Error>> {
     return super.resultifyAdd(fn, options);
