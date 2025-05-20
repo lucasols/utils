@@ -204,17 +204,14 @@ class ConcurrentCallsWithMetadata<
   }
 
   resultifyAdd(
-    ...items: { fn: (() => R) | (() => Promise<R>) | Promise<R>; metadata: M }[]
+    ...items: { fn: (() => R) | (() => Promise<R>); metadata: M }[]
   ): this {
     const processedItems = items.map(({ fn, metadata }) => {
-      const cb: Action<R, E> =
-        isPromise(fn) ?
-          resultify(fn)
-        : () =>
-            resultify(async () => {
-              const result = await fn();
-              return result;
-            });
+      const cb: Action<R, E> = () =>
+        resultify(async () => {
+          const result = await fn();
+          return result;
+        });
 
       return {
         fn: cb,

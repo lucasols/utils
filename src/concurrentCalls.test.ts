@@ -467,7 +467,7 @@ describe('concurrentCallsWithMetadata', () => {
   describe('resultifyAdd', () => {
     test('resultifyAdd with Promise resolving + runAll', async () => {
       const result = await concurrentCallsWithMetadata<{ id: number }, string>()
-        .resultifyAdd({ fn: Promise.resolve('ok'), metadata: { id: 1 } })
+        .resultifyAdd({ fn: () => Promise.resolve('ok'), metadata: { id: 1 } })
         .runAll();
 
       expectType<
@@ -486,7 +486,7 @@ describe('concurrentCallsWithMetadata', () => {
     test('resultifyAdd with Promise rejecting + runAll', async () => {
       const error = new Error('promise rejected meta');
       const result = await concurrentCallsWithMetadata<{ id: number }, string>()
-        .resultifyAdd({ fn: Promise.reject(error), metadata: { id: 2 } })
+        .resultifyAdd({ fn: () => Promise.reject(error), metadata: { id: 2 } })
         .runAll();
 
       expectType<
@@ -561,8 +561,14 @@ describe('concurrentCallsWithMetadata', () => {
 
       const result = await concurrentCallsWithMetadata<Meta, Val, Err>()
         .resultifyAdd(
-          { fn: Promise.resolve('ok promise'), metadata: { callId: 'p1' } },
-          { fn: Promise.reject(errorPromise), metadata: { callId: 'p2' } },
+          {
+            fn: () => Promise.resolve('ok promise'),
+            metadata: { callId: 'p1' },
+          },
+          {
+            fn: () => Promise.reject(errorPromise),
+            metadata: { callId: 'p2' },
+          },
           { fn: () => 'ok sync', metadata: { callId: 's1' } },
           {
             fn: () => {

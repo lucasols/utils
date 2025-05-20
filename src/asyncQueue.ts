@@ -96,16 +96,16 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
   }
 
   resultifyAdd(
-    fn: ((ctx: RunCtx<I>) => Promise<T> | T) | Promise<T>,
+    fn: (ctx: RunCtx<I>) => Promise<T> | T,
     options?: AddOptions<I>,
   ): Promise<Result<T, E | Error>> {
-    const cb: (ctx: RunCtx<I>) => Promise<T> = async (ctx) => {
-      if (isPromise(fn)) {
-        return await fn;
-      }
-      return fn(ctx);
-    };
-    return this.add((ctx) => resultify(cb(ctx)), options);
+    return this.add(
+      (ctx) =>
+        resultify(async () => {
+          return fn(ctx);
+        }),
+      options,
+    );
   }
 
   async #processQueue(): Promise<void> {
