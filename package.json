@@ -41,6 +41,10 @@
       "import": "./lib/assertions.js",
       "require": "./lib/assertions.cjs"
     },
+    "./asyncQueue": {
+      "import": "./lib/asyncQueue.js",
+      "require": "./lib/asyncQueue.cjs"
+    },
     "./cache": {
       "import": "./lib/cache.js",
       "require": "./lib/cache.cjs"
@@ -48,6 +52,10 @@
     "./castValues": {
       "import": "./lib/castValues.js",
       "require": "./lib/castValues.cjs"
+    },
+    "./concurrentCalls": {
+      "import": "./lib/concurrentCalls.js",
+      "require": "./lib/concurrentCalls.cjs"
     },
     "./consoleFmt": {
       "import": "./lib/consoleFmt.js",
