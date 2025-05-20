@@ -204,14 +204,17 @@ class ConcurrentCallsWithMetadata<
   }
 
   resultifyAdd(
-    ...items: { fn: (() => R) | (() => Promise<R>); metadata: M }[]
+    ...items: { fn: (() => R) | (() => Promise<R>) | Promise<R>; metadata: M }[]
   ): this {
     const processedItems = items.map(({ fn, metadata }) => {
-      const cb: Action<R, E> = () =>
-        resultify(async () => {
-          const result = await fn();
-          return result;
-        });
+      const cb: Action<R, E> =
+        isPromise(fn) ?
+          resultify(fn)
+        : () =>
+            resultify(async () => {
+              const result = await fn();
+              return result;
+            });
 
       return {
         fn: cb,
@@ -340,7 +343,7 @@ class ConcurrentCallsWithMetadata<
           `${failedProcessing.length}/${total} calls failed: ${truncateArray(
             failedProcessing.map((f) => truncateString(f.error.message, 20)),
             5,
-            (count) => `+${count} more`,
+            '...',
           ).join('; ')}`,
         )
       : null;
