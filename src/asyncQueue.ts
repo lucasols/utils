@@ -15,6 +15,12 @@ type AsyncQueueOptions = {
   timeout?: number;
 };
 
+type AddOptions<I> = {
+  signal?: AbortSignal;
+  timeout?: number;
+  id?: I;
+};
+
 type Task<T, E extends ResultValidErrors, I> = {
   run: (ctx: { signal?: AbortSignal }) => Promise<Result<T, E>>;
   resolve: (value: Result<T, E | Error>) => void;
@@ -61,11 +67,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
           signal?: AbortSignal;
         }) => Promise<Result<T, E>> | Result<T, E>)
       | Promise<Result<T, E>>,
-    options?: {
-      signal?: AbortSignal;
-      id?: I;
-      timeout?: number;
-    },
+    options?: AddOptions<I>,
   ): Promise<Result<T, E | Error>> {
     const deferred = defer<Result<T, E | Error>>();
 
@@ -92,7 +94,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
 
   resultifyAdd(
     fn: ((ctx: { signal?: AbortSignal }) => Promise<T> | T) | Promise<T>,
-    options?: { signal?: AbortSignal; id?: I },
+    options?: AddOptions<I>,
   ): Promise<Result<T, E | Error>> {
     const cb: (ctx: { signal?: AbortSignal }) => Promise<T> = async (ctx) => {
       if (isPromise(fn)) {
@@ -250,6 +252,8 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   }
 }
 
+type AddOptionsWithId<I> = Omit<AddOptions<I>, 'id'> & { id: I };
+
 class AsyncQueueWithId<
   T,
   I,
@@ -261,14 +265,14 @@ class AsyncQueueWithId<
 
   add(
     fn: (() => Promise<Result<T, E>> | Result<T, E>) | Promise<Result<T, E>>,
-    options?: { signal?: AbortSignal; id: I },
+    options?: AddOptionsWithId<I>,
   ): Promise<Result<T, E | Error>> {
     return super.add(fn, options);
   }
 
   resultifyAdd(
     fn: (() => Promise<T> | T) | Promise<T>,
-    options?: { signal?: AbortSignal; id: I },
+    options?: AddOptionsWithId<I>,
   ): Promise<Result<T, E | Error>> {
     return super.resultifyAdd(fn, options);
   }
