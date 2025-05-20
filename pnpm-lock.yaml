@@ -8,9 +8,12 @@ importers:
 
   .:
     dependencies:
+      evtmitter:
+        specifier: ^0.3.3
+        version: 0.3.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       t-result:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.0
     devDependencies:
       '@ls-stack/extended-lint':
         specifier: ^0.20.1
@@ -59,7 +62,7 @@ importers:
         version: 2.3.0
       tsup:
         specifier: ^8.3.5
-        version: 8.3.5(postcss@8.4.49)(typescript@5.7.3)
+        version: 8.3.5(postcss@8.5.3)(typescript@5.7.3)
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -1025,6 +1028,13 @@ packages:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
 
+  evtmitter@0.3.3:
+    resolution: {integrity: sha512-McEl41bI+g5gEU/vQQ7eJfTzdKtCeYGwrvow+ktEp47m9/OVVQyJy9E5lKhsMIZws9uURsXi4nyc8ZmL7dX7uQ==}
+    engines: {node: '>=14.6.0'}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+
   expect-type@1.1.0:
     resolution: {integrity: sha512-bFi65yM+xZgk+u/KRIpekdSYkTB5W1pEf0Lt8Q8Msh7b+eQ7LXVtIB1Bkm4fvclDEL1b2CZkMhv2mOeF8tMdkA==}
     engines: {node: '>=12.0.0'}
@@ -1249,6 +1259,10 @@ packages:
   lodash.sortby@4.7.0:
     resolution: {integrity: sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==}
 
+  loose-envify@1.4.0:
+    resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
+    hasBin: true
+
   loupe@3.1.2:
     resolution: {integrity: sha512-23I4pFZHmAemUnz8WZXbYRSKYj801VDaNv9ETuMh7IrMc7VuVVSo+Z9iLE3ni30+U48iDWfi30d3twAXBYmnCg==}
 
@@ -1300,6 +1314,11 @@ packages:
 
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
+
+  nanoid@3.3.11:
+    resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
 
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
@@ -1424,6 +1443,10 @@ packages:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
     engines: {node: ^10 || ^12 || >=14}
 
+  postcss@8.5.3:
+    resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
+    engines: {node: ^10 || ^12 || >=14}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -1449,6 +1472,15 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
+  react-dom@18.3.1:
+    resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
+    peerDependencies:
+      react: ^18.3.1
+
+  react@18.3.1:
+    resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
+    engines: {node: '>=0.10.0'}
 
   read-pkg-up@7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
@@ -1493,6 +1525,9 @@ packages:
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
+
+  scheduler@0.23.2:
+    resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
 
   semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
@@ -1598,8 +1633,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  t-result@0.2.0:
-    resolution: {integrity: sha512-g/Bp3vZ/EmPvcKU+8NaAQSXGy+CmvUdXZt0PLXP/4g1FyNZV0qhY9yBe7Js0pK32wEAuQRR5XNCKG6PYe09VBQ==}
+  t-result@0.3.0:
+    resolution: {integrity: sha512-i8+5uNuxj9xV1SGBM10mRVc8zPmFYwqLoBpuHWtM16uelDy6Iox0lM2Ns+ZN76GGwYUF1bz5fKMOlqeiM6qVCQ==}
     engines: {node: '>=23.0.0'}
 
   thenify-all@1.6.0:
@@ -2718,6 +2753,11 @@ snapshots:
 
   esutils@2.0.3: {}
 
+  evtmitter@0.3.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   expect-type@1.1.0: {}
 
   fast-deep-equal@3.1.3: {}
@@ -2909,6 +2949,10 @@ snapshots:
 
   lodash.sortby@4.7.0: {}
 
+  loose-envify@1.4.0:
+    dependencies:
+      js-tokens: 4.0.0
+
   loupe@3.1.2: {}
 
   lru-cache@10.4.3: {}
@@ -2953,6 +2997,9 @@ snapshots:
       any-promise: 1.3.0
       object-assign: 4.1.1
       thenify-all: 1.6.0
+
+  nanoid@3.3.11:
+    optional: true
 
   nanoid@3.3.7: {}
 
@@ -3038,17 +3085,24 @@ snapshots:
 
   pluralize@8.0.0: {}
 
-  postcss-load-config@6.0.1(postcss@8.4.49):
+  postcss-load-config@6.0.1(postcss@8.5.3):
     dependencies:
       lilconfig: 3.1.2
     optionalDependencies:
-      postcss: 8.4.49
+      postcss: 8.5.3
 
   postcss@8.4.49:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  postcss@8.5.3:
+    dependencies:
+      nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+    optional: true
 
   prelude-ls@1.2.1: {}
 
@@ -3062,6 +3116,16 @@ snapshots:
   punycode@2.1.1: {}
 
   queue-microtask@1.2.3: {}
+
+  react-dom@18.3.1(react@18.3.1):
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.3.1
+      scheduler: 0.23.2
+
+  react@18.3.1:
+    dependencies:
+      loose-envify: 1.4.0
 
   read-pkg-up@7.0.1:
     dependencies:
@@ -3124,6 +3188,10 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
+
+  scheduler@0.23.2:
+    dependencies:
+      loose-envify: 1.4.0
 
   semver@5.7.2: {}
 
@@ -3221,7 +3289,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  t-result@0.2.0: {}
+  t-result@0.3.0: {}
 
   thenify-all@1.6.0:
     dependencies:
@@ -3274,7 +3342,7 @@ snapshots:
     dependencies:
       esbuild: 0.15.18
 
-  tsup@8.3.5(postcss@8.4.49)(typescript@5.7.3):
+  tsup@8.3.5(postcss@8.5.3)(typescript@5.7.3):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.24.2)
       cac: 6.7.14
@@ -3284,7 +3352,7 @@ snapshots:
       esbuild: 0.24.2
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(postcss@8.4.49)
+      postcss-load-config: 6.0.1(postcss@8.5.3)
       resolve-from: 5.0.0
       rollup: 4.29.1
       source-map: 0.8.0-beta.0
@@ -3293,7 +3361,7 @@ snapshots:
       tinyglobby: 0.2.10
       tree-kill: 1.2.2
     optionalDependencies:
-      postcss: 8.4.49
+      postcss: 8.5.3
       typescript: 5.7.3
     transitivePeerDependencies:
       - jiti

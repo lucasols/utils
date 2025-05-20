@@ -192,6 +192,7 @@
     "vitest": "^3.0.4"
   },
   "dependencies": {
-    "t-result": "^0.2.1"
+    "evtmitter": "^0.3.3",
+    "t-result": "^0.3.0"
   }
 }
