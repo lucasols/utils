@@ -1,6 +1,8 @@
 import { Result, resultify, unknownToError } from 't-result';
+import { truncateArray } from './arrayUtils';
 import { invariant, isPromise } from './assertions';
 import { sleep } from './sleep';
+import { truncateString } from './stringUtils';
 
 type ValidMetadata = string | number | boolean | Record<string, unknown>;
 
@@ -338,7 +340,11 @@ class ConcurrentCallsWithMetadata<
       failedProcessing.length > 0 ?
         new AggregateError(
           failedProcessing.map((f) => f.error),
-          'One or more calls failed',
+          `${failedProcessing.length}/${total} calls failed: ${truncateArray(
+            failedProcessing.map((f) => truncateString(f.error.message, 20)),
+            5,
+            '...',
+          ).join('; ')}`,
         )
       : null;
 

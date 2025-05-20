@@ -1,3 +1,5 @@
+import { isFunction } from './assertions';
+
 /**
  * allow to filter and map with better typing ergonomics
  *
@@ -195,6 +197,25 @@ export function rejectDuplicates<T>(
 
     seen.add(key);
     result.push(item);
+  }
+
+  return result;
+}
+
+export function truncateArray<T>(
+  array: T[],
+  maxLength: number,
+  appendIfTruncated?: T | ((truncatedCount: number) => T),
+): T[] {
+  const truncate = array.length > maxLength;
+  const result = truncate ? [...array.slice(0, maxLength)] : array;
+
+  if (truncate && appendIfTruncated) {
+    if (isFunction(appendIfTruncated)) {
+      return [...result, appendIfTruncated(array.length - maxLength)];
+    }
+
+    return [...result, appendIfTruncated];
   }
 
   return result;
