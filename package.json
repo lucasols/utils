@@ -10,7 +10,7 @@
     "tsc": "tsc -p tsconfig.prod.json",
     "tsc:watch": "tsc -p tsconfig.prod.json --watch",
     "eslint": "CI=true eslint src/ scripts/ --color --max-warnings=0",
-    "build": "pnpm test && pnpm lint && pnpm build:no-test && pnpm run docs && pnpm build:update-exports",
+    "build": "pnpm test && pnpm lint && pnpm build:no-test && pnpm run docs && pnpm run docs:commit && pnpm build:update-exports",
     "build:no-test": "tsup",
     "build:update-exports": "tsm --no-warnings scripts/updatePackageExports.ts",
     "build-test": "tsup --config tsup.test.config.ts",
