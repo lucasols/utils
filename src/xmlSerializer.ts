@@ -1,5 +1,20 @@
 import { filterAndMap } from './arrayUtils';
 
+// Cache compiled regex at module level for better performance
+const XML_TAG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9._-]*$/;
+const XML_PREFIX_REGEX = /^xml/i;
+
+// Escape characters map for single-pass replacement
+const XML_ESCAPE_MAP: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+const XML_ESCAPE_REGEX = /[&<>"']/g;
+
 export type XMLNode = {
   name: string;
   attributes?: Record<string, string | number | boolean | null | undefined>;
@@ -122,20 +137,10 @@ function getIndentString(indent: string | number, level: number): string {
 
 function isValidXmlTagName(name: string): boolean {
   if (!name) return false;
-  // Cannot start with "xml" (case-insensitive)
-  if (/^xml/i.test(name)) return false;
-  // Must start with a letter or underscore
-  // Subsequent characters can be letters, numbers, hyphens, underscores, or periods.
-  // Cannot contain spaces.
-  const tagNameRegex = /^[a-zA-Z_][a-zA-Z0-9._-]*$/;
-  return tagNameRegex.test(name);
+  if (XML_PREFIX_REGEX.test(name)) return false;
+  return XML_TAG_NAME_REGEX.test(name);
 }
 
 function escapeXml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+  return text.replace(XML_ESCAPE_REGEX, (char) => XML_ESCAPE_MAP[char]!);
 }
