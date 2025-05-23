@@ -172,6 +172,10 @@
       "import": "./lib/typingUtils.js",
       "require": "./lib/typingUtils.cjs"
     },
+    "./xmlSerializer": {
+      "import": "./lib/xmlSerializer.js",
+      "require": "./lib/xmlSerializer.cjs"
+    },
     "./yamlStringify": {
       "import": "./lib/yamlStringify.js",
       "require": "./lib/yamlStringify.cjs"
