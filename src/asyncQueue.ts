@@ -33,7 +33,6 @@ type Task<T, E extends ResultValidErrors, I> = {
   reject: (reason?: Result<T, E>) => void;
   signal: AbortSignal | undefined;
   meta: I;
-  id: number;
   timeout: number | undefined;
 };
 
@@ -46,13 +45,12 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   #failed: number = 0;
   #idleResolvers: Array<() => void> = [];
   events = evtmitter<{
-    error: { id: I; error: E | Error };
-    complete: { id: I; value: T };
-    start: { id: I };
+    error: { meta: I; error: E | Error };
+    complete: { meta: I; value: T };
+    start: { meta: I };
   }>();
   #signal?: AbortSignal;
   #taskTimeout?: number;
-  #taskId = 0;
 
   constructor({
     concurrency = 1,
@@ -85,8 +83,6 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
 
     const taskTimeout = this.#taskTimeout ?? options?.timeout;
 
-    const id = this.#taskId++;
-
     const task: Task<T, E, I> = {
       run: async (ctx) => {
         return fn(ctx);
@@ -96,7 +92,6 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
       signal: options?.signal,
       meta: options?.meta as I,
       timeout: taskTimeout,
-      id,
     };
     this.#enqueue(task);
     this.#processQueue();
@@ -190,7 +185,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
       // Original task execution
       const taskRunPromise = task.run({ signal, meta: task.meta });
 
-      this.events.emit('start', { id: task.meta });
+      this.events.emit('start', { meta: task.meta });
 
       // Race the task execution against its abortion signal
       const result = await Promise.race([taskRunPromise, signalAbortPromise]);
@@ -202,19 +197,22 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
         if (result.error) {
           this.#failed++;
           this.events.emit('error', {
-            id: task.meta,
+            meta: task.meta,
             error: result.error as E,
           });
         } else {
           this.#completed++;
-          this.events.emit('complete', { id: task.meta, value: result.value });
+          this.events.emit('complete', {
+            meta: task.meta,
+            value: result.value,
+          });
         }
       } else {
         const error = new Error('Response not a Result');
         task.resolve(Result.err(error));
         this.#failed++;
         this.events.emit('error', {
-          id: task.meta,
+          meta: task.meta,
           error,
         });
       }
@@ -223,7 +221,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
 
       this.#failed++;
       this.events.emit('error', {
-        id: task.meta,
+        meta: task.meta,
         error: unknownToError(error),
       });
     } finally {
