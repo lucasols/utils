@@ -18,7 +18,7 @@
 function createAsyncQueue<T, E>(options?): AsyncQueue<T, E>;
 ```
 
-Defined in: [src/asyncQueue.ts:296](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L296)
+Defined in: [src/asyncQueue.ts:316](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L316)
 
 #### Type Parameters
 
@@ -42,13 +42,13 @@ Defined in: [src/asyncQueue.ts:296](https://github.com/lucasols/utils/blob/main/
 
 ***
 
-### createAsyncQueueWithId()
+### createAsyncQueueWithMeta()
 
 ```ts
-function createAsyncQueueWithId<T, I, E>(options?): AsyncQueueWithId<T, I, E>;
+function createAsyncQueueWithMeta<T, I, E>(options?): AsyncQueueWithMeta<T, I, E>;
 ```
 
-Defined in: [src/asyncQueue.ts:302](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L302)
+Defined in: [src/asyncQueue.ts:322](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L322)
 
 #### Type Parameters
 
@@ -72,4 +72,4 @@ Defined in: [src/asyncQueue.ts:302](https://github.com/lucasols/utils/blob/main/
 
 #### Returns
 
-[`AsyncQueueWithId`](-internal-.md#asyncqueuewithid)\<`T`, `I`, `E`\>
+[`AsyncQueueWithMeta`](-internal-.md#asyncqueuewithmeta)\<`T`, `I`, `E`\>

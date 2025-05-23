@@ -14,7 +14,7 @@
 function createLoggerStore(__namedParameters): object;
 ```
 
-Defined in: [src/testUtils.ts:7](https://github.com/lucasols/utils/blob/main/src/testUtils.ts#L7)
+Defined in: [src/testUtils.ts:8](https://github.com/lucasols/utils/blob/main/src/testUtils.ts#L8)
 
 #### Parameters
 
@@ -246,7 +246,7 @@ get snapshotFromLast(): string;
 function getResultFn<T>(fnGetter, wrapper?): T;
 ```
 
-Defined in: [src/testUtils.ts:273](https://github.com/lucasols/utils/blob/main/src/testUtils.ts#L273)
+Defined in: [src/testUtils.ts:274](https://github.com/lucasols/utils/blob/main/src/testUtils.ts#L274)
 
 #### Type Parameters
 
@@ -267,3 +267,49 @@ Defined in: [src/testUtils.ts:273](https://github.com/lucasols/utils/blob/main/s
 #### Returns
 
 `T`
+
+***
+
+### waitController()
+
+```ts
+function waitController(): object;
+```
+
+Defined in: [src/testUtils.ts:291](https://github.com/lucasols/utils/blob/main/src/testUtils.ts#L291)
+
+#### Returns
+
+`object`
+
+##### stopWaiting()
+
+```ts
+stopWaiting: () => void;
+```
+
+###### Returns
+
+`void`
+
+##### stopWaitingAfter()
+
+```ts
+stopWaitingAfter: (ms) => void;
+```
+
+###### Parameters
+
+###### ms
+
+`number`
+
+###### Returns
+
+`void`
+
+##### wait
+
+```ts
+wait: Promise<void>;
+```
