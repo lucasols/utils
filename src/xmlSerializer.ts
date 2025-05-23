@@ -43,9 +43,8 @@ function serializeWithLevel(
   // Validate tag name
   if (validateTagName) {
     if (!isValidXmlTagName(name)) {
-      const message = `Invalid XML tag name: "${name}"`;
       if (validateTagName === 'throw') {
-        throw new Error(message);
+        throw new Error(`Invalid XML tag name: "${name}"`);
       }
       // If 'reject', return empty string or handle as per desired 'reject' behavior.
       // For now, let's return an empty string, effectively rejecting the node.
