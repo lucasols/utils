@@ -32,6 +32,7 @@
 - [runShellCmd](runShellCmd/README.md)
 - [safeJson](safeJson.md)
 - [saferTyping](saferTyping.md)
+- [serializeXML](serializeXML.md)
 - [shallowEqual](shallowEqual.md)
 - [sleep](sleep.md)
 - [stringUtils](stringUtils/README.md)
@@ -41,5 +42,4 @@
 - [typingFnUtils](typingFnUtils.md)
 - [typingTestUtils](typingTestUtils.md)
 - [typingUtils](typingUtils.md)
-- [xmlSerializer](xmlSerializer.md)
 - [yamlStringify](yamlStringify.md)
