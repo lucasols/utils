@@ -70,19 +70,17 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
     this.#size++;
   }
 
-  add(
+  async add(
     fn:
       | ((ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>)
       | Promise<Result<T, E>>,
     options?: AddOptions<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     if (this.#signal?.aborted) {
-      return Promise.resolve(
-        Result.err(
-          this.#signal.reason instanceof Error ?
-            this.#signal.reason
-          : new DOMException('Queue aborted', 'AbortError'),
-        ),
+      return Result.err(
+        this.#signal.reason instanceof Error ?
+          this.#signal.reason
+        : new DOMException('Queue aborted', 'AbortError'),
       );
     }
 
@@ -109,22 +107,16 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
     this.#enqueue(task);
     this.#processQueue();
 
-    const onComplete = options?.onComplete;
-    const onError = options?.onError;
+    const r = await deferred.promise;
 
-    if (onComplete || onError) {
-      return deferred.promise.then((r) => {
-        if (onComplete) {
-          r.onOk(onComplete);
-        }
-        if (onError) {
-          r.onErr(onError);
-        }
-        return r;
-      });
+    if (options?.onComplete) {
+      r.onOk(options.onComplete);
+    }
+    if (options?.onError) {
+      r.onErr(options.onError);
     }
 
-    return deferred.promise;
+    return r;
   }
 
   resultifyAdd(
