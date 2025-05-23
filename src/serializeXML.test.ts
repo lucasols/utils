@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { serializeXML, type XMLNode } from './xmlSerializer';
+import { serializeXML, type XMLNode } from './serializeXML';
 
 test('serializes self-closing tag without children', () => {
   const node: XMLNode = {
