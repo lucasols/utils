@@ -37,7 +37,7 @@ type Task<T, E extends ResultValidErrors, I> = {
   timeout: number | undefined;
 };
 
-class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
+class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   #queue: Array<Task<T, E, I>> = [];
   #pending = 0;
   #size = 0;
