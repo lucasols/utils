@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { serialize, type XMLNode } from './xmlSerializer';
+import { serializeXML, type XMLNode } from './xmlSerializer';
 
 test('serializes self-closing tag without children', () => {
   const node: XMLNode = {
@@ -7,7 +7,7 @@ test('serializes self-closing tag without children', () => {
     attributes: { type: 'text', value: 'hello' },
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe('<input type="text" value="hello" />');
 });
 
@@ -16,7 +16,7 @@ test('serializes self-closing tag without attributes', () => {
     name: 'br',
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe('<br />');
 });
 
@@ -26,7 +26,7 @@ test('serializes element with text content', () => {
     children: 'Hello World',
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe('<p>Hello World</p>');
 });
 
@@ -37,7 +37,7 @@ test('serializes element with text content and attributes', () => {
     children: 'Hello World',
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe('<p class="text" id="content">Hello World</p>');
 });
 
@@ -47,7 +47,7 @@ test('serializes empty element', () => {
     children: [],
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe('<div></div>');
 });
 
@@ -66,7 +66,7 @@ test('serializes nested elements', () => {
     ],
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe('<div><h1>Title</h1><p>Content</p></div>');
 });
 
@@ -85,7 +85,7 @@ test('serializes with indentation', () => {
     ],
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<div>
   <h1>Title</h1>
   <p>Content</p>
@@ -103,7 +103,7 @@ test('serializes with string indentation', () => {
     ],
   };
 
-  const result = serialize(node, { indent: '\t' });
+  const result = serializeXML(node, { indent: '\t' });
   expect(result).toBe(`<div>
 \t<p>Content</p>
 </div>`);
@@ -115,7 +115,7 @@ test('handles multiline text with indentation', () => {
     children: 'Line 1\nLine 2\n  Line 3',
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<pre>
   Line 1
   Line 2
@@ -129,7 +129,7 @@ test('handles multiline text without indentation', () => {
     children: 'Line 1\nLine 2\n  Line 3',
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe('<pre>Line 1\nLine 2\n  Line 3</pre>');
 });
 
@@ -139,7 +139,7 @@ test('escapes XML characters in text content', () => {
     children: 'Text with <tags> & "quotes" and \'apostrophes\'',
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe(
     '<p>Text with &lt;tags&gt; &amp; &quot;quotes&quot; and &#39;apostrophes&#39;</p>',
   );
@@ -154,7 +154,7 @@ test('escapes XML characters in attributes', () => {
     },
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe(
     '<div title="Text with &lt;tags&gt; &amp; &quot;quotes&quot;" data-value="Single &#39;quotes&#39;" />',
   );
@@ -171,7 +171,7 @@ test('filters out null and undefined attributes', () => {
     },
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe('<div id="test" title="Keep this" />');
 });
 
@@ -185,7 +185,7 @@ test('converts non-string attribute values to strings', () => {
     },
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe('<input value="42" checked="true" disabled="false" />');
 });
 
@@ -207,7 +207,7 @@ test('filters out falsy children', () => {
     ],
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<div>
   <p>Valid</p>
   <span>Also valid</span>
@@ -236,7 +236,7 @@ test('handles deeply nested elements with indentation', () => {
     ],
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<html>
   <body>
     <div class="container">
@@ -252,7 +252,7 @@ test('handles empty multiline text properly', () => {
     children: 'Line 1\n\nLine 3',
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<pre>
   Line 1
 
@@ -282,7 +282,7 @@ test('handles mixed content types', () => {
     ],
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<article id="main">
   <h1>Article Title</h1>
   <p>
@@ -299,7 +299,7 @@ test('disables text escaping globally', () => {
     children: 'Raw <strong>HTML</strong> & content',
   };
 
-  const result = serialize(node, { escapeText: false });
+  const result = serializeXML(node, { escapeText: false });
   expect(result).toBe('<div>Raw <strong>HTML</strong> & content</div>');
 });
 
@@ -312,7 +312,7 @@ test('disables attribute escaping globally', () => {
     },
   };
 
-  const result = serialize(node);
+  const result = serializeXML(node);
   expect(result).toBe(
     '<div title="Raw &lt;content&gt; &amp; &quot;quotes&quot;" data-html="&lt;span&gt;test&lt;/span&gt;" />',
   );
@@ -325,7 +325,7 @@ test('disables both text and attribute escaping globally', () => {
     children: 'Raw <strong>HTML</strong> & content',
   };
 
-  const result = serialize(node, {
+  const result = serializeXML(node, {
     escapeText: false,
   });
   expect(result).toBe(
@@ -349,7 +349,7 @@ test('disables text escaping per node', () => {
     ],
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<article>
   <p>This &lt;em&gt;should&lt;/em&gt; be escaped</p>
   <div>This <strong>should NOT</strong> be escaped</div>
@@ -371,7 +371,7 @@ test('disables attribute escaping per node', () => {
     ],
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<div>
   <span title="This &lt;should&gt; be escaped" />
   <span title="This &lt;should NOT&gt; be escaped" />
@@ -396,7 +396,7 @@ test('per-node escaping options override global options', () => {
     ],
   };
 
-  const result = serialize(node, {
+  const result = serializeXML(node, {
     indent: 2,
     escapeText: false,
   });
@@ -413,7 +413,7 @@ test('handles multiline text without escaping', () => {
     children: 'Line 1 with <tags>\nLine 2 with & symbols\n  Line 3 indented',
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<pre>
   Line 1 with <tags>
   Line 2 with & symbols
@@ -452,7 +452,7 @@ test('mixed escaping in nested structure', () => {
     ],
   };
 
-  const result = serialize(node, { indent: 2 });
+  const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<html>
   <head>
     <style>body { color: red; } /* <comment> */</style>
@@ -462,4 +462,136 @@ test('mixed escaping in nested structure', () => {
     <script>if (x < 5) { console.log("test"); }</script>
   </body>
 </html>`);
+});
+
+test('no escapeText and indent', () => {
+  const html = `<html>
+  <head>
+    <title>Hello</title>
+  </head>
+</html>
+`;
+
+  const result = serializeXML(
+    {
+      name: 'html',
+      children: [
+        {
+          name: 'body',
+          children: html,
+        },
+      ],
+    },
+    { indent: 2, escapeText: false },
+  );
+
+  expect(result).toMatchInlineSnapshot(`
+    "<html>
+      <body>
+        <html>
+          <head>
+            <title>Hello</title>
+          </head>
+        </html>
+
+      </body>
+    </html>"
+  `);
+});
+
+test('validateTagName: throws for invalid tag name by default', () => {
+  const node: XMLNode = {
+    name: '123invalid',
+  };
+  expect(() => serializeXML(node)).toThrow(
+    'Invalid XML tag name: "123invalid"',
+  );
+});
+
+test('validateTagName: throws for invalid tag name when set to "throw"', () => {
+  const node: XMLNode = {
+    name: 'invalid-tag!',
+  };
+  expect(() => serializeXML(node, { validateTagName: 'throw' })).toThrow(
+    'Invalid XML tag name: "invalid-tag!"',
+  );
+});
+
+test('validateTagName: rejects invalid tag name when set to "reject"', () => {
+  const node: XMLNode = {
+    name: 'invalid tag',
+  };
+  const result = serializeXML(node, { validateTagName: 'reject' });
+  expect(result).toBe('');
+});
+
+test('validateTagName: serializes normally when set to false for invalid tag name', () => {
+  const node: XMLNode = {
+    name: 'xmlstartswiththis',
+    attributes: { id: 'test' },
+  };
+  const result = serializeXML(node, { validateTagName: false });
+  expect(result).toBe('<xmlstartswiththis id="test" />');
+});
+
+test('validateTagName: throws for tag name starting with "xml" (case-insensitive)', () => {
+  const node1: XMLNode = { name: 'xmlOkay' };
+  const node2: XMLNode = { name: 'XmLNotOkay' };
+  const node3: XMLNode = { name: 'XMlFine' };
+
+  expect(() => serializeXML(node1, { validateTagName: 'throw' })).toThrow(
+    'Invalid XML tag name: "xmlOkay"',
+  );
+  expect(() => serializeXML(node2, { validateTagName: 'throw' })).toThrow(
+    'Invalid XML tag name: "XmLNotOkay"',
+  );
+  expect(() => serializeXML(node3, { validateTagName: 'throw' })).toThrow(
+    'Invalid XML tag name: "XMlFine"',
+  );
+});
+
+test('validateTagName: valid tag names pass validation', () => {
+  const node1: XMLNode = { name: 'validTag' };
+  const node2: XMLNode = { name: 'valid-tag_1.23' };
+  const node3: XMLNode = { name: '_underscoreStart' };
+
+  expect(serializeXML(node1, { validateTagName: 'throw' })).toBe(
+    '<validTag />',
+  );
+  expect(serializeXML(node2, { validateTagName: 'throw' })).toBe(
+    '<valid-tag_1.23 />',
+  );
+  expect(serializeXML(node3, { validateTagName: 'throw' })).toBe(
+    '<_underscoreStart />',
+  );
+});
+
+test('validateTagName: reject works with children', () => {
+  const node: XMLNode = {
+    name: 'parent',
+    children: [
+      { name: 'child1' },
+      { name: 'invalid child' },
+      { name: 'child2' },
+    ],
+  };
+  const result = serializeXML(node, { validateTagName: 'reject', indent: 2 });
+  expect(result).toBe(`<parent>
+  <child1 />
+  <child2 />
+</parent>`);
+});
+
+test('validateTagName: default (throw) works with children and stops serialization', () => {
+  const node: XMLNode = {
+    name: 'parent',
+    children: [
+      { name: 'child1' },
+      { name: 'invalid child' },
+      { name: 'child2' },
+    ],
+  };
+  expect(() => serializeXML(node, { indent: 2 })).toThrow(
+    'Invalid XML tag name: "invalid child"',
+  );
 });

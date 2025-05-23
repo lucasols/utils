@@ -10,9 +10,13 @@ export type XMLNode = {
 export type SerializeOptions = {
   indent?: number | string;
   escapeText?: boolean;
+  validateTagName?: 'throw' | 'reject' | false;
 };
 
-export function serialize(node: XMLNode, options?: SerializeOptions): string {
+export function serializeXML(
+  node: XMLNode,
+  options?: SerializeOptions,
+): string {
   return serializeWithLevel(node, options, 0);
 }
 
@@ -22,7 +26,11 @@ function serializeWithLevel(
   level: number,
 ): string {
   const { name, attributes = {}, children, escapeText: nodeEscapeText } = node;
-  const { indent, escapeText: globalEscapeText = true } = options;
+  const {
+    indent,
+    escapeText: globalEscapeText = true,
+    validateTagName = 'throw',
+  } = options;
 
   // Per-node options override global options
   const shouldEscapeText =
@@ -31,6 +39,19 @@ function serializeWithLevel(
   // Calculate indentation
   const indentStr = indent ? getIndentString(indent, level) : '';
   const newline = indent ? '\n' : '';
+
+  // Validate tag name
+  if (validateTagName) {
+    if (!isValidXmlTagName(name)) {
+      const message = `Invalid XML tag name: "${name}"`;
+      if (validateTagName === 'throw') {
+        throw new Error(message);
+      }
+      // If 'reject', return empty string or handle as per desired 'reject' behavior.
+      // For now, let's return an empty string, effectively rejecting the node.
+      return '';
+    }
+  }
 
   // Build attributes string
   const attributesStr = filterAndMap(
@@ -77,10 +98,18 @@ function serializeWithLevel(
     return `${indentStr}<${name}${attributesPart}></${name}>`;
   }
 
-  const childrenStr = filterAndMap(
-    children,
-    (child) => !!child && serializeWithLevel(child, options, level + 1),
-  ).join(newline);
+  const serializedChildren = filterAndMap(children, (child) => {
+    if (!child) return false;
+    const serializedChild = serializeWithLevel(child, options, level + 1);
+    return serializedChild || false; // Filter out empty strings from rejected children
+  });
+
+  if (serializedChildren.length === 0) {
+    // All children were falsy or rejected
+    return `${indentStr}<${name}${attributesPart}></${name}>`;
+  }
+
+  const childrenStr = serializedChildren.join(newline);
 
   return `${indentStr}<${name}${attributesPart}>${newline}${childrenStr}${newline}${indentStr}</${name}>`;
 }
@@ -90,6 +119,17 @@ function getIndentString(indent: string | number, level: number): string {
     return indent.repeat(level);
   }
   return ' '.repeat(indent * level);
+}
+
+function isValidXmlTagName(name: string): boolean {
+  if (!name) return false;
+  // Cannot start with "xml" (case-insensitive)
+  if (/^xml/i.test(name)) return false;
+  // Must start with a letter or underscore
+  // Subsequent characters can be letters, numbers, hyphens, underscores, or periods.
+  // Cannot contain spaces.
+  const tagNameRegex = /^[a-zA-Z_][a-zA-Z0-9._-]*$/;
+  return tagNameRegex.test(name);
 }
 
 function escapeXml(text: string): string {
