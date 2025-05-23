@@ -15,15 +15,17 @@ type AsyncQueueOptions = {
   timeout?: number;
 };
 
-type AddOptions<I> = {
+type AddOptions<I, T, E extends ResultValidErrors> = {
   signal?: AbortSignal;
   timeout?: number;
-  id?: I;
+  meta?: I;
+  onComplete?: (value: T) => void;
+  onError?: (error: E | Error) => void;
 };
 
 type RunCtx<I> = {
   signal?: AbortSignal;
-  id?: I;
+  meta?: I;
 };
 
 type Task<T, E extends ResultValidErrors, I> = {
@@ -31,7 +33,8 @@ type Task<T, E extends ResultValidErrors, I> = {
   resolve: (value: Result<T, E | Error>) => void;
   reject: (reason?: Result<T, E>) => void;
   signal: AbortSignal | undefined;
-  id: I;
+  meta: I;
+  id: number;
   timeout: number | undefined;
 };
 
@@ -50,6 +53,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
   }>();
   #signal?: AbortSignal;
   #taskTimeout?: number;
+  #taskId = 0;
 
   constructor({
     concurrency = 1,
@@ -70,11 +74,23 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
     fn:
       | ((ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>)
       | Promise<Result<T, E>>,
-    options?: AddOptions<I>,
+    options?: AddOptions<I, T, E>,
   ): Promise<Result<T, E | Error>> {
+    if (this.#signal?.aborted) {
+      return Promise.resolve(
+        Result.err(
+          this.#signal.reason instanceof Error ?
+            this.#signal.reason
+          : new DOMException('Queue aborted', 'AbortError'),
+        ),
+      );
+    }
+
     const deferred = defer<Result<T, E | Error>>();
 
     const taskTimeout = this.#taskTimeout ?? options?.timeout;
+
+    const id = this.#taskId++;
 
     const task: Task<T, E, I> = {
       run: async (ctx) => {
@@ -86,18 +102,34 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
       resolve: deferred.resolve,
       reject: deferred.reject,
       signal: options?.signal,
-      id: options?.id as I,
+      meta: options?.meta as I,
       timeout: taskTimeout,
+      id,
     };
     this.#enqueue(task);
     this.#processQueue();
+
+    const onComplete = options?.onComplete;
+    const onError = options?.onError;
+
+    if (onComplete || onError) {
+      return deferred.promise.then((r) => {
+        if (onComplete) {
+          r.onOk(onComplete);
+        }
+        if (onError) {
+          r.onErr(onError);
+        }
+        return r;
+      });
+    }
 
     return deferred.promise;
   }
 
   resultifyAdd(
     fn: ((ctx: RunCtx<I>) => Promise<T> | T) | Promise<T>,
-    options?: AddOptions<I>,
+    options?: AddOptions<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     return this.add(
       (ctx) =>
@@ -112,6 +144,11 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
   }
 
   async #processQueue(): Promise<void> {
+    if (this.#signal?.aborted) {
+      this.clear();
+      return;
+    }
+
     if (this.#pending >= this.#concurrency || this.#queue.length === 0) {
       return;
     }
@@ -147,7 +184,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
         const error =
           signal.reason instanceof Error ?
             signal.reason
-          : new DOMException('Aborted', 'AbortError');
+          : new DOMException('This operation was aborted', 'AbortError');
 
         throw error;
       }
@@ -158,7 +195,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
           const error =
             signal.reason instanceof Error ?
               signal.reason
-            : new DOMException('Aborted', 'AbortError');
+            : new DOMException('This operation was aborted', 'AbortError');
           abortListener = () => {
             reject(error);
           };
@@ -168,9 +205,9 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
       });
 
       // Original task execution
-      const taskRunPromise = task.run({ signal, id: task.id });
+      const taskRunPromise = task.run({ signal, meta: task.meta });
 
-      this.events.emit('start', { id: task.id });
+      this.events.emit('start', { id: task.meta });
 
       // Race the task execution against its abortion signal
       const result = await Promise.race([taskRunPromise, signalAbortPromise]);
@@ -181,17 +218,20 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
         task.resolve(result as Result<T, E | Error>);
         if (result.error) {
           this.#failed++;
-          this.events.emit('error', { id: task.id, error: result.error as E });
+          this.events.emit('error', {
+            id: task.meta,
+            error: result.error as E,
+          });
         } else {
           this.#completed++;
-          this.events.emit('complete', { id: task.id, value: result.value });
+          this.events.emit('complete', { id: task.meta, value: result.value });
         }
       } else {
         const error = new Error('Response not a Result');
         task.resolve(Result.err(error));
         this.#failed++;
         this.events.emit('error', {
-          id: task.id,
+          id: task.meta,
           error,
         });
       }
@@ -199,7 +239,10 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
       task.resolve(Result.err(error));
 
       this.#failed++;
-      this.events.emit('error', { id: task.id, error: unknownToError(error) });
+      this.events.emit('error', {
+        id: task.meta,
+        error: unknownToError(error),
+      });
     } finally {
       // Clean up the abort listener if it was added
       if (signal && abortListener) {
@@ -233,14 +276,9 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
     });
   }
 
-  clear({ resetCounters = true }: { resetCounters?: boolean } = {}) {
+  clear() {
     this.#queue = [];
     this.#size = 0;
-
-    if (resetCounters) {
-      this.#completed = 0;
-      this.#failed = 0;
-    }
 
     // If no tasks were pending, and queue is now clear, it's idle.
     if (this.#pending === 0) {
@@ -265,9 +303,12 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
   }
 }
 
-type AddOptionsWithId<I> = Omit<AddOptions<I>, 'id'> & { id: I };
+type AddOptionsWithId<I, T, E extends ResultValidErrors> = Omit<
+  AddOptions<I, T, E>,
+  'meta'
+> & { meta: I };
 
-class AsyncQueueWithId<
+class AsyncQueueWithMeta<
   T,
   I,
   E extends ResultValidErrors = Error,
@@ -280,14 +321,14 @@ class AsyncQueueWithId<
     fn:
       | ((ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>)
       | Promise<Result<T, E>>,
-    options?: AddOptionsWithId<I>,
+    options?: AddOptionsWithId<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     return super.add(fn, options);
   }
 
   resultifyAdd(
     fn: ((ctx: RunCtx<I>) => Promise<T> | T) | Promise<T>,
-    options?: AddOptionsWithId<I>,
+    options?: AddOptionsWithId<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     return super.resultifyAdd(fn, options);
   }
@@ -299,10 +340,10 @@ export function createAsyncQueue<T, E extends ResultValidErrors = Error>(
   return new AsyncQueue<T, E>(options);
 }
 
-export function createAsyncQueueWithId<
+export function createAsyncQueueWithMeta<
   T,
   I,
   E extends ResultValidErrors = Error,
->(options?: AsyncQueueOptions): AsyncQueueWithId<T, I, E> {
-  return new AsyncQueueWithId<T, I, E>(options);
+>(options?: AsyncQueueOptions): AsyncQueueWithMeta<T, I, E> {
+  return new AsyncQueueWithMeta<T, I, E>(options);
 }

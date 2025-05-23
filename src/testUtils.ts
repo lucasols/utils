@@ -3,6 +3,7 @@ import { isObject } from './assertions';
 import { deepEqual } from './deepEqual';
 import { clampMin } from './mathUtils';
 import { omit, pick } from './objUtils';
+import { defer } from './promiseUtils';
 
 export function createLoggerStore({
   filterKeys: defaultFilterKeys,
@@ -285,4 +286,24 @@ export function getResultFn<T extends (...args: any[]) => any>(
       return fn(...args);
     }
   }) as T;
+}
+
+export function waitController(): {
+  wait: Promise<void>;
+  stopWaiting: () => void;
+  stopWaitingAfter: (ms: number) => void;
+} {
+  const { promise, resolve } = defer();
+
+  return {
+    wait: promise,
+    stopWaiting: () => {
+      resolve();
+    },
+    stopWaitingAfter: (ms: number) => {
+      setTimeout(() => {
+        resolve();
+      }, ms);
+    },
+  };
 }

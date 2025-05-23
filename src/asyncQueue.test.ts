@@ -2,10 +2,15 @@
 import { randomInt } from 'crypto';
 import { Result, resultify } from 't-result';
 import { assert, expect, test, vi } from 'vitest';
-import { createAsyncQueue, createAsyncQueueWithId } from './asyncQueue';
+import { createAsyncQueue, createAsyncQueueWithMeta } from './asyncQueue';
 import { sleep } from './sleep';
+import { waitController } from './testUtils';
 
 const fixture = Symbol('fixture');
+
+function sleepOk<V>(ms: number, value: V) {
+  return sleep(ms).then(() => Result.ok(value));
+}
 
 test('addResultify should add a task and resolve with the result', async () => {
   const queue = createAsyncQueue();
@@ -46,7 +51,7 @@ test.concurrent(
     const input = [[10, 300] as const, [20, 200] as const, [30, 100] as const];
 
     const start = Date.now();
-    const queue = createAsyncQueueWithId<number, number, Error>({
+    const queue = createAsyncQueueWithMeta<number, number, Error>({
       concurrency: 1,
     });
 
@@ -59,7 +64,7 @@ test.concurrent(
                 await sleep(ms);
                 return Result.ok(value);
               },
-              { id: value },
+              { meta: value },
             ),
           ),
         ),
@@ -78,7 +83,7 @@ test.concurrent(
     const input = [[10, 300] as const, [20, 200] as const, [30, 100] as const];
 
     const start = Date.now();
-    const queue = createAsyncQueueWithId<number, number, Error>({
+    const queue = createAsyncQueueWithMeta<number, number, Error>({
       concurrency: 1,
     });
 
@@ -91,7 +96,7 @@ test.concurrent(
                 await sleep(ms);
                 return value;
               },
-              { id: value },
+              { meta: value },
             ),
           ),
         ),
@@ -167,6 +172,41 @@ test.concurrent('clear should remove all queued tasks', () => {
   expect(queue.size).toBe(0);
 });
 
+test.concurrent('adding tasks after clear should work', async () => {
+  const queue = createAsyncQueue({ concurrency: 2 });
+
+  queue.add(resultify(async () => sleep(100)));
+  queue.add(resultify(async () => sleep(100)));
+  queue.add(resultify(async () => sleep(100)));
+  queue.add(resultify(async () => sleep(100)));
+  queue.add(resultify(async () => sleep(100)));
+  queue.add(resultify(async () => sleep(100)));
+  expect(queue.size).toBe(4);
+  expect(queue.pending).toBe(2);
+  queue.clear();
+  expect(queue.size).toBe(0);
+
+  await queue.onIdle();
+
+  let completed = 0;
+
+  queue.add(() => sleepOk(5, 'ok'), {
+    onComplete: () => {
+      completed++;
+    },
+  });
+
+  expect(queue.size).toBe(0);
+  expect(queue.pending).toBe(1);
+
+  await queue.onIdle();
+
+  expect(queue.size).toBe(0);
+  expect(queue.pending).toBe(0);
+
+  expect(completed).toBe(1);
+});
+
 test.concurrent('queue timeout', async () => {
   const result: string[] = [];
   const queue = createAsyncQueue({
@@ -208,8 +248,8 @@ test.concurrent('queue timeout', async () => {
   expect(queue.completed).toBe(3);
   expect(queue.failed).toBe(2);
   expect(errors).toEqual([
-    new DOMException('Aborted', 'AbortError'),
-    new DOMException('Aborted', 'AbortError'),
+    new DOMException('This operation was aborted', 'AbortError'),
+    new DOMException('This operation was aborted', 'AbortError'),
   ]);
 });
 
@@ -407,11 +447,6 @@ test.concurrent('queue signal', async () => {
     return Result.ok('ok');
   });
 
-  queue.add(async () => {
-    await sleep(100);
-    return Result.ok('ok');
-  });
-
   setTimeout(() => {
     controller.abort();
   }, 110);
@@ -420,7 +455,7 @@ test.concurrent('queue signal', async () => {
 
   expect(queue.pending).toBe(0);
   expect(queue.completed).toBe(1);
-  expect(queue.failed).toBe(2);
+  expect(queue.failed).toBe(1);
   expect(queue.size).toBe(0);
 });
 
@@ -509,4 +544,63 @@ test('task should not execute when signal is already aborted', async () => {
   assert(result.error);
   expect(result.error).toBeInstanceOf(DOMException);
   expect(taskExecuted).toBe(false);
+});
+
+test.concurrent('queue should be cleared when signal is aborted', async () => {
+  const controller = new AbortController();
+  const queue = createAsyncQueue<number>({
+    concurrency: 1,
+    signal: controller.signal,
+  });
+
+  const completed: number[] = [];
+  const errors: Error[] = [];
+
+  queue.events.on('error', (e) => {
+    errors.push(e.error);
+  });
+
+  queue.events.on('complete', (e) => {
+    completed.push(e.value);
+  });
+
+  const waitAbort = waitController();
+
+  queue.add(async () => {
+    await sleep(50);
+
+    setTimeout(() => {
+      controller.abort();
+
+      waitAbort.stopWaitingAfter(1);
+    }, 1);
+
+    return Result.ok(1);
+  });
+  queue.add(() => sleepOk(50, 2));
+  queue.add(() => sleepOk(50, 3));
+
+  expect(queue.size).toBe(2);
+  expect(queue.pending).toBe(1);
+
+  await waitAbort.wait;
+
+  // should be cleared at this point
+  expect(queue.size).toBe(0);
+  expect(queue.pending).toBe(0);
+
+  await queue.onIdle();
+
+  expect(completed).toEqual([1]);
+  expect(errors).toMatchInlineSnapshot(`
+    [
+      [AbortError: This operation was aborted],
+    ]
+  `);
+
+  const result = await queue.add(() => sleepOk(100, 1));
+
+  expect(result.error).toMatchInlineSnapshot(
+    `[AbortError: This operation was aborted]`,
+  );
 });
