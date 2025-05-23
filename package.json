@@ -18,7 +18,8 @@
     "test:console-fmt": "tsm --no-warnings scripts/testConsoleFmt.ts",
     "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts",
     "docs": "typedoc",
-    "docs:watch": "typedoc --watch"
+    "docs:watch": "typedoc --watch",
+    "docs:commit": "git add docs && git diff --cached --quiet docs || git commit -m 'docs: update docs'"
   },
   "files": [
     "lib"
