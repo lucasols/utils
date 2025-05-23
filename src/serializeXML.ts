@@ -87,11 +87,6 @@ function serializeWithLevel(
     return '';
   }
 
-  // Handle regular nodes (type undefined or 'node')
-  if (node.type !== 'node') {
-    return '';
-  }
-
   const { name, attributes = {}, children, escapeText: nodeEscapeText } = node;
 
   // Per-node options override global options
