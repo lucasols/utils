@@ -15,23 +15,47 @@ const XML_ESCAPE_MAP: Record<string, string> = {
 
 const XML_ESCAPE_REGEX = /[&<>"']/g;
 
-export type XMLNode = {
-  name: string;
-  attributes?: Record<string, string | number | boolean | null | undefined>;
-  children?: (XMLNode | null | undefined | false)[] | string;
-  escapeText?: boolean;
-};
+export type XMLNode =
+  | {
+      type?: 'node';
+      name: string;
+      attributes?: Record<string, string | number | boolean | null | undefined>;
+      children?: (XMLNode | null | undefined | false)[] | string;
+      escapeText?: boolean;
+    }
+  | {
+      type: 'comment';
+      content: string;
+      escapeText?: boolean;
+    }
+  | {
+      type: 'emptyLine';
+    };
 
 export type SerializeOptions = {
   indent?: number | string;
   escapeText?: boolean;
-  validateTagName?: 'throw' | 'reject' | false;
+  validateTagName?: boolean;
+  invalidNodes?: 'throw' | 'reject';
 };
 
 export function serializeXML(
-  node: XMLNode,
+  node: XMLNode | XMLNode[],
   options?: SerializeOptions,
 ): string {
+  if (Array.isArray(node)) {
+    const EMPTY_LINE_MARKER = '\x00EMPTY_LINE\x00';
+    return node
+      .map((n) => {
+        if (n.type === 'emptyLine') {
+          return EMPTY_LINE_MARKER;
+        }
+        return serializeWithLevel(n, options, 0);
+      })
+      .filter(Boolean)
+      .join(options?.indent ? '\n' : '')
+      .replace(new RegExp(EMPTY_LINE_MARKER, 'g'), '');
+  }
   return serializeWithLevel(node, options, 0);
 }
 
@@ -40,31 +64,47 @@ function serializeWithLevel(
   options: SerializeOptions = {},
   level: number,
 ): string {
-  const { name, attributes = {}, children, escapeText: nodeEscapeText } = node;
   const {
     indent,
     escapeText: globalEscapeText = true,
-    validateTagName = 'throw',
+    validateTagName = true,
+    invalidNodes = 'throw',
   } = options;
-
-  // Per-node options override global options
-  const shouldEscapeText =
-    nodeEscapeText !== undefined ? nodeEscapeText : globalEscapeText;
 
   // Calculate indentation
   const indentStr = indent ? getIndentString(indent, level) : '';
   const newline = indent ? '\n' : '';
 
+  // Handle different node types
+  if (node.type === 'comment') {
+    const shouldEscapeText =
+      node.escapeText !== undefined ? node.escapeText : globalEscapeText;
+    const content = shouldEscapeText ? escapeXml(node.content) : node.content;
+    return `${indentStr}<!-- ${content} -->`;
+  }
+
+  if (node.type === 'emptyLine') {
+    return '';
+  }
+
+  // Handle regular nodes (type undefined or 'node')
+  if (node.type !== 'node') {
+    return '';
+  }
+
+  const { name, attributes = {}, children, escapeText: nodeEscapeText } = node;
+
+  // Per-node options override global options
+  const shouldEscapeText =
+    nodeEscapeText !== undefined ? nodeEscapeText : globalEscapeText;
+
   // Validate tag name
-  if (validateTagName) {
-    if (!isValidXmlTagName(name)) {
-      if (validateTagName === 'throw') {
-        throw new Error(`Invalid XML tag name: "${name}"`);
-      }
-      // If 'reject', return empty string or handle as per desired 'reject' behavior.
-      // For now, let's return an empty string, effectively rejecting the node.
-      return '';
+  if (validateTagName && !isValidXmlTagName(name)) {
+    if (invalidNodes === 'throw') {
+      throw new Error(`Invalid XML tag name: "${name}"`);
     }
+    // If 'reject', return empty string
+    return '';
   }
 
   // Build attributes string
@@ -115,11 +155,10 @@ function serializeWithLevel(
   const serializedChildren = filterAndMap(children, (child) => {
     if (!child) return false;
     const serializedChild = serializeWithLevel(child, options, level + 1);
-    return serializedChild || false; // Filter out empty strings from rejected children
+    return serializedChild || false;
   });
 
   if (serializedChildren.length === 0) {
-    // All children were falsy or rejected
     return `${indentStr}<${name}${attributesPart}></${name}>`;
   }
 

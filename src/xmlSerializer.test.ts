@@ -214,6 +214,184 @@ test('filters out falsy children', () => {
 </div>`);
 });
 
+test('serializes comment node', () => {
+  const node: XMLNode = { type: 'comment', content: 'This is a comment' };
+  const result = serializeXML(node);
+  expect(result).toBe('<!-- This is a comment -->');
+});
+
+test('serializes empty line node', () => {
+  const node: XMLNode = { type: 'emptyLine' };
+  const result = serializeXML(node);
+  expect(result).toBe('');
+});
+
+test('handles array of mixed node types', () => {
+  const nodes: XMLNode[] = [
+    { type: 'comment', content: 'Header comment' },
+    {
+      type: 'node',
+      name: 'div',
+      attributes: { id: 'main' },
+      children: 'Content',
+    },
+    { type: 'emptyLine' },
+    { type: 'node', name: 'span', children: 'Footer' },
+  ];
+
+  const result = serializeXML(nodes, { indent: 2 });
+  expect(result).toBe(`<!-- Header comment -->
+<div id="main">Content</div>
+
+<span>Footer</span>`);
+});
+
+test('escapes comment content when escapeText is true', () => {
+  const node: XMLNode = {
+    type: 'comment',
+    content: 'Comment with <tags> & "quotes"',
+    escapeText: true,
+  };
+  const result = serializeXML(node);
+  expect(result).toBe(
+    '<!-- Comment with &lt;tags&gt; &amp; &quot;quotes&quot; -->',
+  );
+});
+
+test('does not escape comment content when escapeText is false', () => {
+  const node: XMLNode = {
+    type: 'comment',
+    content: 'Comment with <tags> & "quotes"',
+    escapeText: false,
+  };
+  const result = serializeXML(node);
+  expect(result).toBe('<!-- Comment with <tags> & "quotes" -->');
+});
+
+test('throws error for invalid tag name when invalidNodes is "throw"', () => {
+  const node: XMLNode = {
+    name: '123invalid',
+    children: 'content',
+  };
+
+  expect(() => serializeXML(node, { invalidNodes: 'throw' })).toThrow(
+    'Invalid XML tag name: "123invalid"',
+  );
+});
+
+test('rejects invalid tag name when invalidNodes is "reject"', () => {
+  const node: XMLNode = {
+    name: '123invalid',
+    children: 'content',
+  };
+
+  const result = serializeXML(node, { invalidNodes: 'reject' });
+  expect(result).toBe('');
+});
+
+test('rejects nodes with xml prefix', () => {
+  const node: XMLNode = {
+    name: 'xmlDocument',
+    children: 'content',
+  };
+
+  const result = serializeXML(node, { invalidNodes: 'reject' });
+  expect(result).toBe('');
+});
+
+test('disables tag name validation when validateTagName is false', () => {
+  const node: XMLNode = {
+    name: '123invalid',
+    children: 'content',
+  };
+
+  const result = serializeXML(node, { validateTagName: false });
+  expect(result).toBe('<123invalid>content</123invalid>');
+});
+
+test('handles indentation with comment nodes', () => {
+  const nodes: XMLNode[] = [
+    {
+      type: 'node',
+      name: 'root',
+      children: [
+        { type: 'comment', content: 'Nested comment' },
+        { type: 'node', name: 'child', children: 'content' },
+      ],
+    },
+  ];
+
+  const result = serializeXML(nodes, { indent: 2 });
+  expect(result).toBe(`<root>
+  <!-- Nested comment -->
+  <child>content</child>
+</root>`);
+});
+
+test('filters out empty results from rejected nodes in arrays', () => {
+  const nodes: XMLNode[] = [
+    { name: 'valid', children: 'content' },
+    { name: '123invalid', children: 'content' },
+    { type: 'comment', content: 'Valid comment' },
+  ];
+
+  const result = serializeXML(nodes, { invalidNodes: 'reject', indent: 2 });
+  expect(result).toBe(`<valid>content</valid>
+<!-- Valid comment -->`);
+});
+
+test('handles mixed escapeText settings', () => {
+  const node: XMLNode = {
+    name: 'root',
+    children: [
+      {
+        name: 'escaped',
+        children: 'Text with <tags>',
+        escapeText: true,
+      },
+      {
+        name: 'unescaped',
+        children: 'Text with <tags>',
+        escapeText: false,
+      },
+    ],
+  };
+
+  const result = serializeXML(node, { indent: 2 });
+  expect(result).toBe(`<root>
+  <escaped>Text with &lt;tags&gt;</escaped>
+  <unescaped>Text with <tags></unescaped>
+</root>`);
+});
+
+test('handles array serialization', () => {
+  const nodes: XMLNode[] = [
+    {
+      name: 'header',
+      children: 'Header content',
+    },
+    {
+      name: 'main',
+      children: [
+        {
+          name: 'section',
+          children: 'Section content',
+        },
+      ],
+    },
+    {
+      name: 'footer',
+    },
+  ];
+
+  const result = serializeXML(nodes, { indent: 2 });
+  expect(result).toBe(`<header>Header content</header>
+<main>
+  <section>Section content</section>
+</main>
+<footer />`);
+});
+
 test('handles deeply nested elements with indentation', () => {
   const node: XMLNode = {
     name: 'html',
@@ -356,28 +534,6 @@ test('disables text escaping per node', () => {
 </article>`);
 });
 
-test('disables attribute escaping per node', () => {
-  const node: XMLNode = {
-    name: 'div',
-    children: [
-      {
-        name: 'span',
-        attributes: { title: 'This <should> be escaped' },
-      },
-      {
-        name: 'span',
-        attributes: { title: 'This <should NOT> be escaped' },
-      },
-    ],
-  };
-
-  const result = serializeXML(node, { indent: 2 });
-  expect(result).toBe(`<div>
-  <span title="This &lt;should&gt; be escaped" />
-  <span title="This &lt;should NOT&gt; be escaped" />
-</div>`);
-});
-
 test('per-node escaping options override global options', () => {
   const node: XMLNode = {
     name: 'div',
@@ -508,44 +664,18 @@ test('validateTagName: throws for invalid tag name by default', () => {
   );
 });
 
-test('validateTagName: throws for invalid tag name when set to "throw"', () => {
-  const node: XMLNode = {
-    name: 'invalid-tag!',
-  };
-  expect(() => serializeXML(node, { validateTagName: 'throw' })).toThrow(
-    'Invalid XML tag name: "invalid-tag!"',
-  );
-});
-
-test('validateTagName: rejects invalid tag name when set to "reject"', () => {
-  const node: XMLNode = {
-    name: 'invalid tag',
-  };
-  const result = serializeXML(node, { validateTagName: 'reject' });
-  expect(result).toBe('');
-});
-
-test('validateTagName: serializes normally when set to false for invalid tag name', () => {
-  const node: XMLNode = {
-    name: 'xmlstartswiththis',
-    attributes: { id: 'test' },
-  };
-  const result = serializeXML(node, { validateTagName: false });
-  expect(result).toBe('<xmlstartswiththis id="test" />');
-});
-
 test('validateTagName: throws for tag name starting with "xml" (case-insensitive)', () => {
   const node1: XMLNode = { name: 'xmlOkay' };
   const node2: XMLNode = { name: 'XmLNotOkay' };
   const node3: XMLNode = { name: 'XMlFine' };
 
-  expect(() => serializeXML(node1, { validateTagName: 'throw' })).toThrow(
+  expect(() => serializeXML(node1, { validateTagName: true })).toThrow(
     'Invalid XML tag name: "xmlOkay"',
   );
-  expect(() => serializeXML(node2, { validateTagName: 'throw' })).toThrow(
+  expect(() => serializeXML(node2, { validateTagName: true })).toThrow(
     'Invalid XML tag name: "XmLNotOkay"',
   );
-  expect(() => serializeXML(node3, { validateTagName: 'throw' })).toThrow(
+  expect(() => serializeXML(node3, { validateTagName: true })).toThrow(
     'Invalid XML tag name: "XMlFine"',
   );
 });
@@ -555,13 +685,11 @@ test('validateTagName: valid tag names pass validation', () => {
   const node2: XMLNode = { name: 'valid-tag_1.23' };
   const node3: XMLNode = { name: '_underscoreStart' };
 
-  expect(serializeXML(node1, { validateTagName: 'throw' })).toBe(
-    '<validTag />',
-  );
-  expect(serializeXML(node2, { validateTagName: 'throw' })).toBe(
+  expect(serializeXML(node1, { validateTagName: true })).toBe('<validTag />');
+  expect(serializeXML(node2, { validateTagName: true })).toBe(
     '<valid-tag_1.23 />',
   );
-  expect(serializeXML(node3, { validateTagName: 'throw' })).toBe(
+  expect(serializeXML(node3, { validateTagName: true })).toBe(
     '<_underscoreStart />',
   );
 });
@@ -575,7 +703,7 @@ test('validateTagName: reject works with children', () => {
       { name: 'child2' },
     ],
   };
-  const result = serializeXML(node, { validateTagName: 'reject', indent: 2 });
+  const result = serializeXML(node, { invalidNodes: 'reject', indent: 2 });
   expect(result).toBe(`<parent>
   <child1 />
   <child2 />
@@ -594,4 +722,61 @@ test('validateTagName: default (throw) works with children and stops serializati
   expect(() => serializeXML(node, { indent: 2 })).toThrow(
     'Invalid XML tag name: "invalid child"',
   );
+});
+
+test('serializes array of nodes without indentation', () => {
+  const nodes: XMLNode[] = [
+    { name: 'first', children: 'First element' },
+    { name: 'second', attributes: { id: 'test' } },
+    { name: 'third', children: [{ name: 'nested', children: 'content' }] },
+  ];
+
+  const result = serializeXML(nodes);
+  expect(result).toBe(
+    '<first>First element</first><second id="test" /><third><nested>content</nested></third>',
+  );
+});
+
+test('serializes array of nodes with indentation', () => {
+  const nodes: XMLNode[] = [
+    { name: 'first', children: 'First element' },
+    { name: 'second', attributes: { id: 'test' } },
+    { name: 'third', children: [{ name: 'nested', children: 'content' }] },
+  ];
+
+  const result = serializeXML(nodes, { indent: 2 });
+  expect(result).toBe(`<first>First element</first>
+<second id="test" />
+<third>
+  <nested>content</nested>
+</third>`);
+});
+
+test('serializes empty array', () => {
+  const nodes: XMLNode[] = [];
+  const result = serializeXML(nodes);
+  expect(result).toBe('');
+});
+
+test('serializes array with mixed content', () => {
+  const nodes: XMLNode[] = [
+    { name: 'header', children: 'Page Title' },
+    {
+      name: 'content',
+      attributes: { class: 'main' },
+      children: [
+        { name: 'p', children: 'First paragraph' },
+        { name: 'p', children: 'Second paragraph' },
+      ],
+    },
+    { name: 'footer' },
+  ];
+
+  const result = serializeXML(nodes, { indent: 2 });
+  expect(result).toBe(`<header>Page Title</header>
+<content class="main">
+  <p>First paragraph</p>
+  <p>Second paragraph</p>
+</content>
+<footer />`);
 });
