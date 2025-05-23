@@ -215,7 +215,7 @@ test('filters out falsy children', () => {
 });
 
 test('serializes comment node', () => {
-  const node: XMLNode = { type: 'comment', content: 'This is a comment' };
+  const node: XMLNode = { type: 'comment', children: 'This is a comment' };
   const result = serializeXML(node);
   expect(result).toBe('<!-- This is a comment -->');
 });
@@ -228,7 +228,7 @@ test('serializes empty line node', () => {
 
 test('handles array of mixed node types', () => {
   const nodes: XMLNode[] = [
-    { type: 'comment', content: 'Header comment' },
+    { type: 'comment', children: 'Header comment' },
     {
       type: 'node',
       name: 'div',
@@ -249,7 +249,7 @@ test('handles array of mixed node types', () => {
 test('escapes comment content when escapeText is true', () => {
   const node: XMLNode = {
     type: 'comment',
-    content: 'Comment with <tags> & "quotes"',
+    children: 'Comment with <tags> & "quotes"',
     escapeText: true,
   };
   const result = serializeXML(node);
@@ -261,7 +261,7 @@ test('escapes comment content when escapeText is true', () => {
 test('does not escape comment content when escapeText is false', () => {
   const node: XMLNode = {
     type: 'comment',
-    content: 'Comment with <tags> & "quotes"',
+    children: 'Comment with <tags> & "quotes"',
     escapeText: false,
   };
   const result = serializeXML(node);
@@ -315,7 +315,7 @@ test('handles indentation with comment nodes', () => {
       type: 'node',
       name: 'root',
       children: [
-        { type: 'comment', content: 'Nested comment' },
+        { type: 'comment', children: 'Nested comment' },
         { type: 'node', name: 'child', children: 'content' },
       ],
     },
@@ -332,7 +332,7 @@ test('filters out empty results from rejected nodes in arrays', () => {
   const nodes: XMLNode[] = [
     { name: 'valid', children: 'content' },
     { name: '123invalid', children: 'content' },
-    { type: 'comment', content: 'Valid comment' },
+    { type: 'comment', children: 'Valid comment' },
   ];
 
   const result = serializeXML(nodes, { invalidNodes: 'reject', indent: 2 });
