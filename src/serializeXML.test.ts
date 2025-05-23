@@ -4,7 +4,7 @@ import { serializeXML, type XMLNode } from './serializeXML';
 test('serializes self-closing tag without children', () => {
   const node: XMLNode = {
     name: 'input',
-    attributes: { type: 'text', value: 'hello' },
+    attrs: { type: 'text', value: 'hello' },
   };
 
   const result = serializeXML(node);
@@ -33,7 +33,7 @@ test('serializes element with text content', () => {
 test('serializes element with text content and attributes', () => {
   const node: XMLNode = {
     name: 'p',
-    attributes: { class: 'text', id: 'content' },
+    attrs: { class: 'text', id: 'content' },
     children: 'Hello World',
   };
 
@@ -148,7 +148,7 @@ test('escapes XML characters in text content', () => {
 test('escapes XML characters in attributes', () => {
   const node: XMLNode = {
     name: 'div',
-    attributes: {
+    attrs: {
       title: 'Text with <tags> & "quotes"',
       'data-value': "Single 'quotes'",
     },
@@ -163,7 +163,7 @@ test('escapes XML characters in attributes', () => {
 test('filters out null and undefined attributes', () => {
   const node: XMLNode = {
     name: 'div',
-    attributes: {
+    attrs: {
       id: 'test',
       class: null,
       'data-value': undefined,
@@ -178,7 +178,7 @@ test('filters out null and undefined attributes', () => {
 test('converts non-string attribute values to strings', () => {
   const node: XMLNode = {
     name: 'input',
-    attributes: {
+    attrs: {
       value: 42,
       checked: true,
       disabled: false,
@@ -232,7 +232,7 @@ test('handles array of mixed node types', () => {
     {
       type: 'node',
       name: 'div',
-      attributes: { id: 'main' },
+      attrs: { id: 'main' },
       children: 'Content',
     },
     { type: 'emptyLine' },
@@ -401,7 +401,7 @@ test('handles deeply nested elements with indentation', () => {
         children: [
           {
             name: 'div',
-            attributes: { class: 'container' },
+            attrs: { class: 'container' },
             children: [
               {
                 name: 'h1',
@@ -441,7 +441,7 @@ test('handles empty multiline text properly', () => {
 test('handles mixed content types', () => {
   const node: XMLNode = {
     name: 'article',
-    attributes: { id: 'main' },
+    attrs: { id: 'main' },
     children: [
       {
         name: 'h1',
@@ -484,7 +484,7 @@ test('disables text escaping globally', () => {
 test('disables attribute escaping globally', () => {
   const node: XMLNode = {
     name: 'div',
-    attributes: {
+    attrs: {
       title: 'Raw <content> & "quotes"',
       'data-html': '<span>test</span>',
     },
@@ -499,7 +499,7 @@ test('disables attribute escaping globally', () => {
 test('disables both text and attribute escaping globally', () => {
   const node: XMLNode = {
     name: 'div',
-    attributes: { title: 'Raw <title> & content' },
+    attrs: { title: 'Raw <title> & content' },
     children: 'Raw <strong>HTML</strong> & content',
   };
 
@@ -540,13 +540,13 @@ test('per-node escaping options override global options', () => {
     children: [
       {
         name: 'p',
-        attributes: { title: 'Global disabled' },
+        attrs: { title: 'Global disabled' },
         children: 'Global disabled',
       },
       {
         name: 'p',
         escapeText: true,
-        attributes: { title: 'Node enabled <override>' },
+        attrs: { title: 'Node enabled <override>' },
         children: 'Node enabled <override>',
       },
     ],
@@ -727,7 +727,7 @@ test('validateTagName: default (throw) works with children and stops serializati
 test('serializes array of nodes without indentation', () => {
   const nodes: XMLNode[] = [
     { name: 'first', children: 'First element' },
-    { name: 'second', attributes: { id: 'test' } },
+    { name: 'second', attrs: { id: 'test' } },
     { name: 'third', children: [{ name: 'nested', children: 'content' }] },
   ];
 
@@ -740,7 +740,7 @@ test('serializes array of nodes without indentation', () => {
 test('serializes array of nodes with indentation', () => {
   const nodes: XMLNode[] = [
     { name: 'first', children: 'First element' },
-    { name: 'second', attributes: { id: 'test' } },
+    { name: 'second', attrs: { id: 'test' } },
     { name: 'third', children: [{ name: 'nested', children: 'content' }] },
   ];
 
@@ -763,7 +763,7 @@ test('serializes array with mixed content', () => {
     { name: 'header', children: 'Page Title' },
     {
       name: 'content',
-      attributes: { class: 'main' },
+      attrs: { class: 'main' },
       children: [
         { name: 'p', children: 'First paragraph' },
         { name: 'p', children: 'Second paragraph' },

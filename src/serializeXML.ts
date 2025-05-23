@@ -19,7 +19,7 @@ export type XMLNode =
   | {
       type?: 'node';
       name: string;
-      attributes?: Record<string, string | number | boolean | null | undefined>;
+      attrs?: Record<string, string | number | boolean | null | undefined>;
       children?: (XMLNode | null | undefined | false)[] | string;
       escapeText?: boolean;
     }
@@ -87,7 +87,12 @@ function serializeWithLevel(
     return '';
   }
 
-  const { name, attributes = {}, children, escapeText: nodeEscapeText } = node;
+  const {
+    name,
+    attrs: attributes = {},
+    children,
+    escapeText: nodeEscapeText,
+  } = node;
 
   // Per-node options override global options
   const shouldEscapeText =
