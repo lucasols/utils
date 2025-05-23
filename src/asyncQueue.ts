@@ -6,7 +6,6 @@ import {
   unknownToError,
   type ResultValidErrors,
 } from 't-result';
-import { isPromise } from './assertions';
 import { defer } from './promiseUtils';
 
 type AsyncQueueOptions = {
@@ -71,9 +70,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
   }
 
   async add(
-    fn:
-      | ((ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>)
-      | Promise<Result<T, E>>,
+    fn: (ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>,
     options?: AddOptions<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     if (this.#signal?.aborted) {
@@ -92,10 +89,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
 
     const task: Task<T, E, I> = {
       run: async (ctx) => {
-        if (isPromise(fn)) {
-          return fn;
-        }
-        return await fn(ctx);
+        return fn(ctx);
       },
       resolve: deferred.resolve,
       reject: deferred.reject,
@@ -120,15 +114,12 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
   }
 
   resultifyAdd(
-    fn: ((ctx: RunCtx<I>) => Promise<T> | T) | Promise<T>,
+    fn: (ctx: RunCtx<I>) => Promise<T> | T,
     options?: AddOptions<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     return this.add(
       (ctx) =>
         resultify(async () => {
-          if (isPromise(fn)) {
-            return await fn;
-          }
           return fn(ctx);
         }),
       options,
@@ -310,16 +301,14 @@ class AsyncQueueWithMeta<
   }
 
   add(
-    fn:
-      | ((ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>)
-      | Promise<Result<T, E>>,
+    fn: (ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>,
     options?: AddOptionsWithId<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     return super.add(fn, options);
   }
 
   resultifyAdd(
-    fn: ((ctx: RunCtx<I>) => Promise<T> | T) | Promise<T>,
+    fn: (ctx: RunCtx<I>) => Promise<T> | T,
     options?: AddOptionsWithId<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     return super.resultifyAdd(fn, options);

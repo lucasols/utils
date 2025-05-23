@@ -8,8 +8,9 @@ import { waitController } from './testUtils';
 
 const fixture = Symbol('fixture');
 
-function sleepOk<V>(ms: number, value: V) {
-  return sleep(ms).then(() => Result.ok(value));
+async function sleepOk<V>(ms: number, value: V) {
+  await sleep(ms);
+  return Result.ok(value);
 }
 
 test('addResultify should add a task and resolve with the result', async () => {
@@ -141,9 +142,9 @@ test.concurrent('onIdle should resolve when all tasks are done', async () => {
   expect(queue.size).toBe(0);
   expect(queue.pending).toBe(0);
 
-  queue.add(resultify(async () => sleep(100)));
-  queue.add(resultify(async () => sleep(100)));
-  queue.add(resultify(async () => sleep(100)));
+  queue.add(() => sleepOk(100, 'ok'));
+  queue.add(() => sleepOk(100, 'ok'));
+  queue.add(() => sleepOk(100, 'ok'));
   expect(queue.size).toBe(1);
   expect(queue.pending).toBe(2);
   await queue.onIdle();
@@ -160,12 +161,12 @@ test('onIdle should resolve immediately if no tasks are pending', async () => {
 
 test.concurrent('clear should remove all queued tasks', () => {
   const queue = createAsyncQueue({ concurrency: 2 });
-  queue.add(resultify(async () => sleep(20_000)));
-  queue.add(resultify(async () => sleep(20_000)));
-  queue.add(resultify(async () => sleep(20_000)));
-  queue.add(resultify(async () => sleep(20_000)));
-  queue.add(resultify(async () => sleep(20_000)));
-  queue.add(resultify(async () => sleep(20_000)));
+  queue.add(() => sleepOk(20_000, 'ok'));
+  queue.add(() => sleepOk(20_000, 'ok'));
+  queue.add(() => sleepOk(20_000, 'ok'));
+  queue.add(() => sleepOk(20_000, 'ok'));
+  queue.add(() => sleepOk(20_000, 'ok'));
+  queue.add(() => sleepOk(20_000, 'ok'));
   expect(queue.size).toBe(4);
   expect(queue.pending).toBe(2);
   queue.clear();
@@ -175,12 +176,12 @@ test.concurrent('clear should remove all queued tasks', () => {
 test.concurrent('adding tasks after clear should work', async () => {
   const queue = createAsyncQueue({ concurrency: 2 });
 
-  queue.add(resultify(async () => sleep(100)));
-  queue.add(resultify(async () => sleep(100)));
-  queue.add(resultify(async () => sleep(100)));
-  queue.add(resultify(async () => sleep(100)));
-  queue.add(resultify(async () => sleep(100)));
-  queue.add(resultify(async () => sleep(100)));
+  queue.add(() => sleepOk(100, 'ok'));
+  queue.add(() => sleepOk(100, 'ok'));
+  queue.add(() => sleepOk(100, 'ok'));
+  queue.add(() => sleepOk(100, 'ok'));
+  queue.add(() => sleepOk(100, 'ok'));
+  queue.add(() => sleepOk(100, 'ok'));
   expect(queue.size).toBe(4);
   expect(queue.pending).toBe(2);
   queue.clear();
@@ -385,10 +386,10 @@ test('add should return Result.err if signal is already aborted (promise task)',
   controller.abort();
 
   const result = await queue.add(
-    resultify(async () => {
+    async () => {
       await sleep(10);
-      return 'ok';
-    }),
+      return Result.ok('ok');
+    },
     { signal: controller.signal },
   );
 
