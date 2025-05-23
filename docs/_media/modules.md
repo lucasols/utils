@@ -41,4 +41,5 @@
 - [typingFnUtils](typingFnUtils.md)
 - [typingTestUtils](typingTestUtils.md)
 - [typingUtils](typingUtils.md)
+- [xmlSerializer](xmlSerializer.md)
 - [yamlStringify](yamlStringify.md)
