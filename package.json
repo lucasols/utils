@@ -10,13 +10,15 @@
     "tsc": "tsc -p tsconfig.prod.json",
     "tsc:watch": "tsc -p tsconfig.prod.json --watch",
     "eslint": "CI=true eslint src/ scripts/ --color --max-warnings=0",
-    "build": "pnpm test && pnpm lint && pnpm build:no-test && pnpm build:update-exports",
+    "build": "pnpm test && pnpm lint && pnpm build:no-test && pnpm docs && pnpm build:update-exports",
     "build:no-test": "tsup",
     "build:update-exports": "tsm --no-warnings scripts/updatePackageExports.ts",
     "build-test": "tsup --config tsup.test.config.ts",
     "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build",
     "test:console-fmt": "tsm --no-warnings scripts/testConsoleFmt.ts",
-    "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts"
+    "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch"
   },
   "files": [
     "lib"
@@ -194,6 +196,9 @@
     "prettier-plugin-organize-imports": "^4.1.0",
     "tsm": "^2.3.0",
     "tsup": "^8.3.5",
+    "typedoc": "^0.28.4",
+    "typedoc-plugin-markdown": "^4.6.3",
+    "typedoc-plugin-missing-exports": "^4.0.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.21.0",
     "vite": "^6.0.11",

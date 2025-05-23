@@ -295,7 +295,7 @@ class AsyncQueueWithId<
 
 export function createAsyncQueue<T, E extends ResultValidErrors = Error>(
   options?: AsyncQueueOptions,
-) {
+): AsyncQueue<T, E> {
   return new AsyncQueue<T, E>(options);
 }
 
@@ -303,6 +303,6 @@ export function createAsyncQueueWithId<
   T,
   I,
   E extends ResultValidErrors = Error,
->(options?: AsyncQueueOptions) {
+>(options?: AsyncQueueOptions): AsyncQueueWithId<T, I, E> {
   return new AsyncQueueWithId<T, I, E>(options);
 }

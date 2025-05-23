@@ -1,3 +1,7 @@
+**@ls-stack/utils**
+
+***
+
 # @ls-stack/utils
 
 Generic TypeScript utilities for modern JavaScript/TypeScript projects.
@@ -38,7 +42,7 @@ This package includes a wide range of utilities for:
 
 ## Documentation
 
-Comprehensive API documentation is available in the [`docs/`](docs/) folder. Start with the [modules overview](docs/modules.md) to explore all available utilities.
+Comprehensive API documentation is available in the [`docs/`](docs/) folder. Start with the [modules overview](_media/modules.md) to explore all available utilities.
 
 ### Generating Documentation
 
