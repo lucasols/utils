@@ -57,7 +57,7 @@ Defined in: [src/serializeXML.ts:38](https://github.com/lucasols/utils/blob/main
 ```ts
 type XMLNode = 
   | {
-  attributes?: Record<string, string | number | boolean | null | undefined>;
+  attrs?: Record<string, string | number | boolean | null | undefined>;
   children?: (XMLNode | null | undefined | false)[] | string;
   escapeText?: boolean;
   name: string;
