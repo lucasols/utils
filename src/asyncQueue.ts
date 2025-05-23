@@ -140,26 +140,33 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
 
     // Listener needs to be defined here to be removable in finally
     let abortListener: (() => void) | undefined;
-    // Promise that rejects if the signal is aborted
-    const signalAbortPromise = new Promise((_, reject) => {
-      if (signal) {
+
+    try {
+      // Check if signal is already aborted before setting up anything
+      if (signal?.aborted) {
         const error =
           signal.reason instanceof Error ?
             signal.reason
           : new DOMException('Aborted', 'AbortError');
-        if (signal.aborted) {
-          reject(error);
-          return;
-        }
-        abortListener = () => {
-          reject(error);
-        };
-        signal.addEventListener('abort', abortListener, { once: true });
-      }
-      // If no signal, this promise never settles, Promise.race will wait for the other promise.
-    });
 
-    try {
+        throw error;
+      }
+
+      // Promise that rejects if the signal is aborted
+      const signalAbortPromise = new Promise((_, reject) => {
+        if (signal) {
+          const error =
+            signal.reason instanceof Error ?
+              signal.reason
+            : new DOMException('Aborted', 'AbortError');
+          abortListener = () => {
+            reject(error);
+          };
+          signal.addEventListener('abort', abortListener, { once: true });
+        }
+        // If no signal, this promise never settles, Promise.race will wait for the other promise.
+      });
+
       // Original task execution
       const taskRunPromise = task.run({ signal, id: task.id });
 
@@ -185,7 +192,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = undefined> {
         this.#failed++;
         this.events.emit('error', {
           id: task.id,
-          error: unknownToError(error),
+          error,
         });
       }
     } catch (error: any) {

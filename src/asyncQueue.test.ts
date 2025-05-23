@@ -488,3 +488,25 @@ test.concurrent('queue signal with infinite concurrency', async () => {
   expect(queue.failed).toBe(1);
   expect(queue.size).toBe(0);
 });
+
+test('task should not execute when signal is already aborted', async () => {
+  const queue = createAsyncQueue();
+  const controller = new AbortController();
+
+  // Abort before adding the task
+  controller.abort();
+
+  let taskExecuted = false;
+
+  const result = await queue.add(
+    async () => {
+      taskExecuted = true; // This should NOT be reached
+      return Result.ok('should not execute');
+    },
+    { signal: controller.signal },
+  );
+
+  assert(result.error);
+  expect(result.error).toBeInstanceOf(DOMException);
+  expect(taskExecuted).toBe(false);
+});
