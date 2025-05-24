@@ -38,7 +38,7 @@ Defined in: [src/asyncQueue.ts:39](https://github.com/lucasols/utils/blob/main/s
 new AsyncQueue<T, E, I>(__namedParameters): AsyncQueue<T, E, I>;
 ```
 
-Defined in: [src/asyncQueue.ts:55](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L55)
+Defined in: [src/asyncQueue.ts:57](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L57)
 
 ###### Parameters
 
@@ -51,6 +51,26 @@ Defined in: [src/asyncQueue.ts:55](https://github.com/lucasols/utils/blob/main/s
 [`AsyncQueue`](#asyncqueue)\<`T`, `E`, `I`\>
 
 #### Properties
+
+##### completions
+
+```ts
+completions: object[] = [];
+```
+
+Defined in: [src/asyncQueue.ts:55](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L55)
+
+###### meta
+
+```ts
+meta: I;
+```
+
+###### value
+
+```ts
+value: T;
+```
 
 ##### events
 
@@ -72,6 +92,26 @@ events: Emitter<{
 
 Defined in: [src/asyncQueue.ts:47](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L47)
 
+##### failures
+
+```ts
+failures: object[] = [];
+```
+
+Defined in: [src/asyncQueue.ts:54](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L54)
+
+###### error
+
+```ts
+error: Error | E;
+```
+
+###### meta
+
+```ts
+meta: I;
+```
+
 #### Accessors
 
 ##### completed
@@ -82,7 +122,7 @@ Defined in: [src/asyncQueue.ts:47](https://github.com/lucasols/utils/blob/main/s
 get completed(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L270)
+Defined in: [src/asyncQueue.ts:280](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L280)
 
 ###### Returns
 
@@ -96,7 +136,7 @@ Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/
 get failed(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:274](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L274)
+Defined in: [src/asyncQueue.ts:284](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L284)
 
 ###### Returns
 
@@ -110,7 +150,7 @@ Defined in: [src/asyncQueue.ts:274](https://github.com/lucasols/utils/blob/main/
 get pending(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:278](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L278)
+Defined in: [src/asyncQueue.ts:288](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L288)
 
 ###### Returns
 
@@ -124,7 +164,7 @@ Defined in: [src/asyncQueue.ts:278](https://github.com/lucasols/utils/blob/main/
 get size(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:282](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L282)
+Defined in: [src/asyncQueue.ts:292](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L292)
 
 ###### Returns
 
@@ -138,7 +178,7 @@ Defined in: [src/asyncQueue.ts:282](https://github.com/lucasols/utils/blob/main/
 add(fn, options?): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [src/asyncQueue.ts:70](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L70)
+Defined in: [src/asyncQueue.ts:80](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L80)
 
 ###### Parameters
 
@@ -160,7 +200,7 @@ Defined in: [src/asyncQueue.ts:70](https://github.com/lucasols/utils/blob/main/s
 clear(): void;
 ```
 
-Defined in: [src/asyncQueue.ts:260](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L260)
+Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L270)
 
 ###### Returns
 
@@ -172,7 +212,7 @@ Defined in: [src/asyncQueue.ts:260](https://github.com/lucasols/utils/blob/main/
 onIdle(): Promise<void>;
 ```
 
-Defined in: [src/asyncQueue.ts:251](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L251)
+Defined in: [src/asyncQueue.ts:261](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L261)
 
 ###### Returns
 
@@ -184,7 +224,7 @@ Defined in: [src/asyncQueue.ts:251](https://github.com/lucasols/utils/blob/main/
 resultifyAdd(fn, options?): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [src/asyncQueue.ts:111](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L111)
+Defined in: [src/asyncQueue.ts:121](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L121)
 
 ###### Parameters
 
@@ -204,7 +244,7 @@ Defined in: [src/asyncQueue.ts:111](https://github.com/lucasols/utils/blob/main/
 
 ### AsyncQueueWithMeta\<T, I, E\>
 
-Defined in: [src/asyncQueue.ts:292](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L292)
+Defined in: [src/asyncQueue.ts:302](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L302)
 
 #### Extends
 
@@ -232,7 +272,7 @@ Defined in: [src/asyncQueue.ts:292](https://github.com/lucasols/utils/blob/main/
 new AsyncQueueWithMeta<T, I, E>(options?): AsyncQueueWithMeta<T, I, E>;
 ```
 
-Defined in: [src/asyncQueue.ts:297](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L297)
+Defined in: [src/asyncQueue.ts:307](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L307)
 
 ###### Parameters
 
@@ -249,6 +289,30 @@ Defined in: [src/asyncQueue.ts:297](https://github.com/lucasols/utils/blob/main/
 [`AsyncQueue`](#asyncqueue).[`constructor`](#constructor)
 
 #### Properties
+
+##### completions
+
+```ts
+completions: object[] = [];
+```
+
+Defined in: [src/asyncQueue.ts:55](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L55)
+
+###### meta
+
+```ts
+meta: I;
+```
+
+###### value
+
+```ts
+value: T;
+```
+
+###### Inherited from
+
+[`AsyncQueue`](#asyncqueue).[`completions`](#completions)
 
 ##### events
 
@@ -274,6 +338,30 @@ Defined in: [src/asyncQueue.ts:47](https://github.com/lucasols/utils/blob/main/s
 
 [`AsyncQueue`](#asyncqueue).[`events`](#events)
 
+##### failures
+
+```ts
+failures: object[] = [];
+```
+
+Defined in: [src/asyncQueue.ts:54](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L54)
+
+###### error
+
+```ts
+error: Error | E;
+```
+
+###### meta
+
+```ts
+meta: I;
+```
+
+###### Inherited from
+
+[`AsyncQueue`](#asyncqueue).[`failures`](#failures)
+
 #### Accessors
 
 ##### completed
@@ -284,7 +372,7 @@ Defined in: [src/asyncQueue.ts:47](https://github.com/lucasols/utils/blob/main/s
 get completed(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L270)
+Defined in: [src/asyncQueue.ts:280](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L280)
 
 ###### Returns
 
@@ -302,7 +390,7 @@ Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/
 get failed(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:274](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L274)
+Defined in: [src/asyncQueue.ts:284](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L284)
 
 ###### Returns
 
@@ -320,7 +408,7 @@ Defined in: [src/asyncQueue.ts:274](https://github.com/lucasols/utils/blob/main/
 get pending(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:278](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L278)
+Defined in: [src/asyncQueue.ts:288](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L288)
 
 ###### Returns
 
@@ -338,7 +426,7 @@ Defined in: [src/asyncQueue.ts:278](https://github.com/lucasols/utils/blob/main/
 get size(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:282](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L282)
+Defined in: [src/asyncQueue.ts:292](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L292)
 
 ###### Returns
 
@@ -356,7 +444,7 @@ Defined in: [src/asyncQueue.ts:282](https://github.com/lucasols/utils/blob/main/
 add(fn, options?): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [src/asyncQueue.ts:301](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L301)
+Defined in: [src/asyncQueue.ts:311](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L311)
 
 ###### Parameters
 
@@ -382,7 +470,7 @@ Defined in: [src/asyncQueue.ts:301](https://github.com/lucasols/utils/blob/main/
 clear(): void;
 ```
 
-Defined in: [src/asyncQueue.ts:260](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L260)
+Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L270)
 
 ###### Returns
 
@@ -398,7 +486,7 @@ Defined in: [src/asyncQueue.ts:260](https://github.com/lucasols/utils/blob/main/
 onIdle(): Promise<void>;
 ```
 
-Defined in: [src/asyncQueue.ts:251](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L251)
+Defined in: [src/asyncQueue.ts:261](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L261)
 
 ###### Returns
 
@@ -414,7 +502,7 @@ Defined in: [src/asyncQueue.ts:251](https://github.com/lucasols/utils/blob/main/
 resultifyAdd(fn, options?): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [src/asyncQueue.ts:308](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L308)
+Defined in: [src/asyncQueue.ts:318](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L318)
 
 ###### Parameters
 
@@ -528,7 +616,7 @@ Defined in: [src/asyncQueue.ts:19](https://github.com/lucasols/utils/blob/main/s
 type AddOptionsWithId<I, T, E> = Omit<AddOptions<I, T, E>, "meta"> & object;
 ```
 
-Defined in: [src/asyncQueue.ts:287](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L287)
+Defined in: [src/asyncQueue.ts:297](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L297)
 
 #### Type declaration
 
