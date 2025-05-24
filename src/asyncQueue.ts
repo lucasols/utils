@@ -51,6 +51,8 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   }>();
   #signal?: AbortSignal;
   #taskTimeout?: number;
+  failures: Array<{ meta: I; error: E | Error }> = [];
+  completions: Array<{ meta: I; value: T }> = [];
 
   constructor({
     concurrency = 1,
@@ -60,6 +62,14 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
     this.#concurrency = concurrency;
     this.#signal = signal;
     this.#taskTimeout = taskTimeout;
+
+    this.events.on('error', (e) => {
+      this.failures.push(e);
+    });
+
+    this.events.on('complete', (e) => {
+      this.completions.push(e);
+    });
   }
 
   #enqueue(task: Task<T, E, I>) {

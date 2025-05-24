@@ -23,6 +23,9 @@ test('addResultify should add a task and resolve with the result', async () => {
   const result = await promise;
   assert(result.ok);
   expect(result.value).toBe(fixture);
+
+  expect(queue.failures).toEqual([]);
+  expect(queue.completions).toEqual([{ value: fixture }]);
 });
 
 test.concurrent('addResultify should respect limited concurrency', async () => {
@@ -604,4 +607,37 @@ test.concurrent('queue should be cleared when signal is aborted', async () => {
   expect(result.error).toMatchInlineSnapshot(
     `[AbortError: This operation was aborted]`,
   );
+});
+
+test('task results are garbage collected', async () => {
+  let gcCalled: string | undefined;
+  const gc = new FinalizationRegistry<string>((value) => {
+    gcCalled = value;
+  });
+
+  async function run() {
+    const result = { value: 1 };
+    const queue = createAsyncQueue();
+
+    const taskResult = await queue.add(() => sleepOk(100, result));
+
+    assert(taskResult.ok);
+    expect(taskResult.value).toBe(result);
+
+    gc.register(result, 'garbage collected');
+
+    await queue.onIdle();
+
+    expect(queue.completions).toEqual([{ value: result }]);
+  }
+
+  await run();
+
+  assert(globalThis.gc);
+
+  globalThis.gc();
+
+  await sleep(100);
+
+  expect(gcCalled).toBe('garbage collected');
 });
