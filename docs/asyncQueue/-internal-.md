@@ -441,7 +441,7 @@ Defined in: [src/asyncQueue.ts:292](https://github.com/lucasols/utils/blob/main/
 ##### add()
 
 ```ts
-add(fn, options?): Promise<Result<T, Error | E>>;
+add(fn, options): Promise<Result<T, Error | E>>;
 ```
 
 Defined in: [src/asyncQueue.ts:311](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L311)
@@ -452,7 +452,7 @@ Defined in: [src/asyncQueue.ts:311](https://github.com/lucasols/utils/blob/main/
 
 (`ctx`) => `Result`\<`T`, `E`\> \| `Promise`\<`Result`\<`T`, `E`\>\>
 
-###### options?
+###### options
 
 [`AddOptionsWithId`](#addoptionswithid)\<`I`, `T`, `E`\>
 
