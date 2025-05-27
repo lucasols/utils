@@ -310,7 +310,7 @@ class AsyncQueueWithMeta<
 
   add(
     fn: (ctx: RunCtx<I>) => Promise<Result<T, E>> | Result<T, E>,
-    options?: AddOptionsWithId<I, T, E>,
+    options: AddOptionsWithId<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     return super.add(fn, options);
   }
