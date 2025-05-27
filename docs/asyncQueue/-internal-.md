@@ -499,7 +499,7 @@ Defined in: [src/asyncQueue.ts:261](https://github.com/lucasols/utils/blob/main/
 ##### resultifyAdd()
 
 ```ts
-resultifyAdd(fn, options?): Promise<Result<T, Error | E>>;
+resultifyAdd(fn, options): Promise<Result<T, Error | E>>;
 ```
 
 Defined in: [src/asyncQueue.ts:318](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L318)
@@ -510,7 +510,7 @@ Defined in: [src/asyncQueue.ts:318](https://github.com/lucasols/utils/blob/main/
 
 (`ctx`) => `T` \| `Promise`\<`T`\>
 
-###### options?
+###### options
 
 [`AddOptionsWithId`](#addoptionswithid)\<`I`, `T`, `E`\>
 
