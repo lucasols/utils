@@ -185,7 +185,9 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
               signal.reason
             : new DOMException('This operation was aborted', 'AbortError');
           abortListener = () => {
-            reject(error);
+            setTimeout(() => {
+              reject(error);
+            }, 0);
           };
           signal.addEventListener('abort', abortListener, { once: true });
         }

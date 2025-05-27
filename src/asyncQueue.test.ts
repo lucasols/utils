@@ -596,20 +596,16 @@ test.concurrent('queue should be cleared when signal is aborted', async () => {
   await queue.onIdle();
 
   expect(completed).toEqual([1]);
-  expect(errors).toMatchInlineSnapshot(`
-    [
-      [AbortError: This operation was aborted],
-    ]
-  `);
+  expect(errors).toEqual([
+    new DOMException('This operation was aborted', 'AbortError'),
+  ]);
 
   const result = await queue.add(() => sleepOk(100, 1));
 
-  expect(result.error).toMatchInlineSnapshot(
-    `[AbortError: This operation was aborted]`,
-  );
+  expect(result.error).toBeInstanceOf(DOMException);
 });
 
-test('task results are garbage collected', async () => {
+test.concurrent('task results are garbage collected', async () => {
   let gcCalled: string | undefined;
   const gc = new FinalizationRegistry<string>((value) => {
     gcCalled = value;
@@ -641,3 +637,26 @@ test('task results are garbage collected', async () => {
 
   expect(gcCalled).toBe('garbage collected');
 });
+
+test.concurrent(
+  'aborting and then returning a result should not throw an error',
+  async () => {
+    const queue = createAsyncQueue();
+    const controller = new AbortController();
+
+    queue.add(
+      async () => {
+        await sleep(10);
+
+        controller.abort();
+        return Result.ok('ok');
+      },
+      { signal: controller.signal },
+    );
+
+    await queue.onIdle();
+
+    expect(queue.completed).toBe(1);
+    expect(queue.failed).toBe(0);
+  },
+);
