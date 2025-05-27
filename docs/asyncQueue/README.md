@@ -18,7 +18,7 @@
 function createAsyncQueue<T, E>(options?): AsyncQueue<T, E>;
 ```
 
-Defined in: [src/asyncQueue.ts:326](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L326)
+Defined in: [src/asyncQueue.ts:328](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L328)
 
 #### Type Parameters
 
@@ -48,7 +48,7 @@ Defined in: [src/asyncQueue.ts:326](https://github.com/lucasols/utils/blob/main/
 function createAsyncQueueWithMeta<T, I, E>(options?): AsyncQueueWithMeta<T, I, E>;
 ```
 
-Defined in: [src/asyncQueue.ts:332](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L332)
+Defined in: [src/asyncQueue.ts:334](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L334)
 
 #### Type Parameters
 

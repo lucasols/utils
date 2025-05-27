@@ -122,7 +122,7 @@ meta: I;
 get completed(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:280](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L280)
+Defined in: [src/asyncQueue.ts:282](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L282)
 
 ###### Returns
 
@@ -136,7 +136,7 @@ Defined in: [src/asyncQueue.ts:280](https://github.com/lucasols/utils/blob/main/
 get failed(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:284](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L284)
+Defined in: [src/asyncQueue.ts:286](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L286)
 
 ###### Returns
 
@@ -150,7 +150,7 @@ Defined in: [src/asyncQueue.ts:284](https://github.com/lucasols/utils/blob/main/
 get pending(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:288](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L288)
+Defined in: [src/asyncQueue.ts:290](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L290)
 
 ###### Returns
 
@@ -164,7 +164,7 @@ Defined in: [src/asyncQueue.ts:288](https://github.com/lucasols/utils/blob/main/
 get size(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:292](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L292)
+Defined in: [src/asyncQueue.ts:294](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L294)
 
 ###### Returns
 
@@ -200,7 +200,7 @@ Defined in: [src/asyncQueue.ts:80](https://github.com/lucasols/utils/blob/main/s
 clear(): void;
 ```
 
-Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L270)
+Defined in: [src/asyncQueue.ts:272](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L272)
 
 ###### Returns
 
@@ -212,7 +212,7 @@ Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/
 onIdle(): Promise<void>;
 ```
 
-Defined in: [src/asyncQueue.ts:261](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L261)
+Defined in: [src/asyncQueue.ts:263](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L263)
 
 ###### Returns
 
@@ -244,7 +244,7 @@ Defined in: [src/asyncQueue.ts:121](https://github.com/lucasols/utils/blob/main/
 
 ### AsyncQueueWithMeta\<T, I, E\>
 
-Defined in: [src/asyncQueue.ts:302](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L302)
+Defined in: [src/asyncQueue.ts:304](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L304)
 
 #### Extends
 
@@ -272,7 +272,7 @@ Defined in: [src/asyncQueue.ts:302](https://github.com/lucasols/utils/blob/main/
 new AsyncQueueWithMeta<T, I, E>(options?): AsyncQueueWithMeta<T, I, E>;
 ```
 
-Defined in: [src/asyncQueue.ts:307](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L307)
+Defined in: [src/asyncQueue.ts:309](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L309)
 
 ###### Parameters
 
@@ -372,7 +372,7 @@ meta: I;
 get completed(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:280](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L280)
+Defined in: [src/asyncQueue.ts:282](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L282)
 
 ###### Returns
 
@@ -390,7 +390,7 @@ Defined in: [src/asyncQueue.ts:280](https://github.com/lucasols/utils/blob/main/
 get failed(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:284](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L284)
+Defined in: [src/asyncQueue.ts:286](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L286)
 
 ###### Returns
 
@@ -408,7 +408,7 @@ Defined in: [src/asyncQueue.ts:284](https://github.com/lucasols/utils/blob/main/
 get pending(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:288](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L288)
+Defined in: [src/asyncQueue.ts:290](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L290)
 
 ###### Returns
 
@@ -426,7 +426,7 @@ Defined in: [src/asyncQueue.ts:288](https://github.com/lucasols/utils/blob/main/
 get size(): number;
 ```
 
-Defined in: [src/asyncQueue.ts:292](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L292)
+Defined in: [src/asyncQueue.ts:294](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L294)
 
 ###### Returns
 
@@ -444,7 +444,7 @@ Defined in: [src/asyncQueue.ts:292](https://github.com/lucasols/utils/blob/main/
 add(fn, options): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [src/asyncQueue.ts:311](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L311)
+Defined in: [src/asyncQueue.ts:313](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L313)
 
 ###### Parameters
 
@@ -470,7 +470,7 @@ Defined in: [src/asyncQueue.ts:311](https://github.com/lucasols/utils/blob/main/
 clear(): void;
 ```
 
-Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L270)
+Defined in: [src/asyncQueue.ts:272](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L272)
 
 ###### Returns
 
@@ -486,7 +486,7 @@ Defined in: [src/asyncQueue.ts:270](https://github.com/lucasols/utils/blob/main/
 onIdle(): Promise<void>;
 ```
 
-Defined in: [src/asyncQueue.ts:261](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L261)
+Defined in: [src/asyncQueue.ts:263](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L263)
 
 ###### Returns
 
@@ -502,7 +502,7 @@ Defined in: [src/asyncQueue.ts:261](https://github.com/lucasols/utils/blob/main/
 resultifyAdd(fn, options): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [src/asyncQueue.ts:318](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L318)
+Defined in: [src/asyncQueue.ts:320](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L320)
 
 ###### Parameters
 
@@ -616,7 +616,7 @@ Defined in: [src/asyncQueue.ts:19](https://github.com/lucasols/utils/blob/main/s
 type AddOptionsWithId<I, T, E> = Omit<AddOptions<I, T, E>, "meta"> & object;
 ```
 
-Defined in: [src/asyncQueue.ts:297](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L297)
+Defined in: [src/asyncQueue.ts:299](https://github.com/lucasols/utils/blob/main/src/asyncQueue.ts#L299)
 
 #### Type declaration
 
