@@ -317,7 +317,7 @@ class AsyncQueueWithMeta<
 
   resultifyAdd(
     fn: (ctx: RunCtx<I>) => Promise<T> | T,
-    options?: AddOptionsWithId<I, T, E>,
+    options: AddOptionsWithId<I, T, E>,
   ): Promise<Result<T, E | Error>> {
     return super.resultifyAdd(fn, options);
   }
