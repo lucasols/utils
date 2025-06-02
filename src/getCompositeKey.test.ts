@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { getValueStableKey } from './getValueStableKey';
+import { getCompositeKey } from './getCompositeKey';
 
 test('getCacheId ignore undefined obj values', () => {
   expect(
-    getValueStableKey({
+    getCompositeKey({
       a: 1,
       b: undefined,
       c: 3,
@@ -14,7 +14,7 @@ test('getCacheId ignore undefined obj values', () => {
 
 test('nested objects are sorted', () => {
   expect(
-    getValueStableKey({
+    getCompositeKey({
       b: {
         d: 4,
         c: 3,
@@ -26,7 +26,7 @@ test('nested objects are sorted', () => {
 
 test('nested objects in array are sorted', () => {
   expect(
-    getValueStableKey({
+    getCompositeKey({
       a: [
         {
           d: 4,
@@ -43,15 +43,15 @@ test('nested objects in array are sorted', () => {
 });
 
 test('array with undefined values', () => {
-  expect(getValueStableKey([1, undefined, null, 3])).toMatchInlineSnapshot(
+  expect(getCompositeKey([1, undefined, null, 3])).toMatchInlineSnapshot(
     `"[1,undefined,null,3]"`,
   );
 });
 
 test('avoid conflicting keys', () => {
   function getKeysAreNotTheSame(a: any, b: any) {
-    const aKey = getValueStableKey(a);
-    const bKey = getValueStableKey(b);
+    const aKey = getCompositeKey(a);
+    const bKey = getCompositeKey(b);
 
     return {
       aKey,
@@ -125,35 +125,35 @@ test('max default depth sorting = 3', () => {
     ],
     size: 50,
   };
-  expect(getValueStableKey(obj)).toMatchInlineSnapshot(
+  expect(getCompositeKey(obj)).toMatchInlineSnapshot(
     `"{filters:[{field:"single_select",not_sort:{z:1,a:1},operator:"Exatamente igual",type:"string",value:"Option 1"}],nested_type:"onlyrefs",object_type:"test",page:1,size:50}"`,
   );
 
-  expect(getValueStableKey(obj, 3)).not.toBe(getValueStableKey(obj, 4));
+  expect(getCompositeKey(obj, 3)).not.toBe(getCompositeKey(obj, 4));
 });
 
 test('with no sorting', () => {
-  expect(getValueStableKey({ z: 1, a: 1 }, 0)).toMatchInlineSnapshot(
+  expect(getCompositeKey({ z: 1, a: 1 }, 0)).toMatchInlineSnapshot(
     `"{z:1,a:1}"`,
   );
 });
 
 test('number cache id is not equal to string cache id', () => {
-  expect(getValueStableKey(1) !== getValueStableKey('1')).toBeTruthy();
+  expect(getCompositeKey(1) !== getCompositeKey('1')).toBeTruthy();
 });
 
 test('primitive values are not serialized', () => {
-  expect(getValueStableKey(1)).toMatchInlineSnapshot(`"$1"`);
-  expect(getValueStableKey('1')).toMatchInlineSnapshot(`""1"`);
-  expect(getValueStableKey(true)).toMatchInlineSnapshot(`"$true"`);
-  expect(getValueStableKey(false)).toMatchInlineSnapshot(`"$false"`);
-  expect(getValueStableKey(null)).toMatchInlineSnapshot(`"$null"`);
-  expect(getValueStableKey(undefined)).toMatchInlineSnapshot(`"$undefined"`);
+  expect(getCompositeKey(1)).toMatchInlineSnapshot(`"$1"`);
+  expect(getCompositeKey('1')).toMatchInlineSnapshot(`""1"`);
+  expect(getCompositeKey(true)).toMatchInlineSnapshot(`"$true"`);
+  expect(getCompositeKey(false)).toMatchInlineSnapshot(`"$false"`);
+  expect(getCompositeKey(null)).toMatchInlineSnapshot(`"$null"`);
+  expect(getCompositeKey(undefined)).toMatchInlineSnapshot(`"$undefined"`);
 });
 
 test('objects with one key should not be sorted', () => {
   expect(
-    getValueStableKey({
+    getCompositeKey({
       a: {
         b: 1,
       },
@@ -163,7 +163,7 @@ test('objects with one key should not be sorted', () => {
 
 test('empty objects', () => {
   expect(
-    getValueStableKey({
+    getCompositeKey({
       a: {
         a: undefined,
       },
@@ -171,7 +171,7 @@ test('empty objects', () => {
   ).toMatchInlineSnapshot(`"{a:{}}"`);
 
   expect(
-    getValueStableKey({
+    getCompositeKey({
       a: {
         b: {},
       },
@@ -179,7 +179,7 @@ test('empty objects', () => {
   ).toMatchInlineSnapshot(`"{a:{b:{}}}"`);
 
   expect(
-    getValueStableKey({
+    getCompositeKey({
       a: {},
       b: 1,
     }),
@@ -187,22 +187,22 @@ test('empty objects', () => {
 });
 
 test('undefined values should not change the equivalent not undefined objs', () => {
-  const a = getValueStableKey({ tableId: 'users' });
-  const b = getValueStableKey({ tableId: 'users', filters: undefined });
+  const a = getCompositeKey({ tableId: 'users' });
+  const b = getCompositeKey({ tableId: 'users', filters: undefined });
 
   expect(a === b).toBeTruthy();
 });
 
 test('undefined values in objects should not change the equivalent not undefined objs', () => {
   expect(
-    getValueStableKey({
+    getCompositeKey({
       a: undefined,
       b: undefined,
     }),
   ).toMatchInlineSnapshot(`"{}"`);
 
   expect(
-    getValueStableKey({
+    getCompositeKey({
       a: undefined,
       b: 1,
     }),
@@ -210,11 +210,11 @@ test('undefined values in objects should not change the equivalent not undefined
 });
 
 test('getCacheId handles arrays', () => {
-  expect(getValueStableKey([1, 2, 3])).toMatchInlineSnapshot(`"[1,2,3]"`);
+  expect(getCompositeKey([1, 2, 3])).toMatchInlineSnapshot(`"[1,2,3]"`);
 });
 
 test('getCacheId handles nested arrays', () => {
-  expect(getValueStableKey({ a: [1, 2, 3, [2, 1, 3]] })).toMatchInlineSnapshot(
+  expect(getCompositeKey({ a: [1, 2, 3, [2, 1, 3]] })).toMatchInlineSnapshot(
     `"{a:[1,2,3,[2,1,3]]}"`,
   );
 });
@@ -223,11 +223,11 @@ test('a subset of a value can be checked via includes', () => {
   const subSetObj = { z: 0, a: 1, b: 2 };
 
   expect(
-    getValueStableKey({
+    getCompositeKey({
       a: 1,
       b: 2,
       c: subSetObj,
-    }).includes(getValueStableKey(subSetObj)),
+    }).includes(getCompositeKey(subSetObj)),
   ).toBeTruthy();
 });
 
@@ -236,7 +236,7 @@ describe('circular references', () => {
     const obj: any = { a: 1 };
     obj.self = obj;
 
-    expect(() => getValueStableKey(obj)).toThrowErrorMatchingInlineSnapshot(
+    expect(() => getCompositeKey(obj)).toThrowErrorMatchingInlineSnapshot(
       `[Error: Circular reference detected]`,
     );
   });
@@ -245,7 +245,7 @@ describe('circular references', () => {
     const nested: any = { a: { b: { c: {} } } };
     nested.a.b.c.circular = nested.a;
 
-    expect(() => getValueStableKey(nested)).toThrowErrorMatchingInlineSnapshot(
+    expect(() => getCompositeKey(nested)).toThrowErrorMatchingInlineSnapshot(
       `[Error: Circular reference detected]`,
     );
   });
@@ -254,7 +254,7 @@ describe('circular references', () => {
     const array: any[] = [1, 2, 3];
     array.push(array);
 
-    expect(() => getValueStableKey(array)).toThrowErrorMatchingInlineSnapshot(
+    expect(() => getCompositeKey(array)).toThrowErrorMatchingInlineSnapshot(
       `[Error: Circular reference detected]`,
     );
   });
@@ -262,7 +262,7 @@ describe('circular references', () => {
   test('handles shared non-circular references', () => {
     const sharedObj = { x: 1, y: 2 };
     expect(
-      getValueStableKey({
+      getCompositeKey({
         a: sharedObj,
         b: sharedObj,
         c: { nested: sharedObj },
@@ -277,7 +277,7 @@ describe('circular references', () => {
       second: { deep: { ref: complexShared } },
       third: complexShared,
     };
-    expect(getValueStableKey(objWithShared)).toMatchInlineSnapshot(
+    expect(getCompositeKey(objWithShared)).toMatchInlineSnapshot(
       `"{first:[{ref:{name:"test"}},{other:1}],second:{deep:{ref:{name:"test"}}},third:{name:"test"}}"`,
     );
   });
@@ -290,7 +290,7 @@ describe('circular references', () => {
     };
     circular.self = objWithCircular;
     expect(() =>
-      getValueStableKey(objWithCircular),
+      getCompositeKey(objWithCircular),
     ).toThrowErrorMatchingInlineSnapshot(
       `[Error: Circular reference detected]`,
     );
@@ -314,11 +314,11 @@ test('handles non-plain objects', () => {
   }
   const customInstance = new Custom();
 
-  expect(getValueStableKey(date)).toMatchInlineSnapshot(`"{}"`);
-  expect(getValueStableKey(regex)).toMatchInlineSnapshot(`"{}"`);
-  expect(getValueStableKey(map)).toMatchInlineSnapshot(`"{}"`);
-  expect(getValueStableKey(set)).toMatchInlineSnapshot(`"{}"`);
-  expect(getValueStableKey(customInstance)).toMatchInlineSnapshot(
+  expect(getCompositeKey(date)).toMatchInlineSnapshot(`"{}"`);
+  expect(getCompositeKey(regex)).toMatchInlineSnapshot(`"{}"`);
+  expect(getCompositeKey(map)).toMatchInlineSnapshot(`"{}"`);
+  expect(getCompositeKey(set)).toMatchInlineSnapshot(`"{}"`);
+  expect(getCompositeKey(customInstance)).toMatchInlineSnapshot(
     `"{prop:"value"}"`,
   );
 });
@@ -326,10 +326,10 @@ test('handles non-plain objects', () => {
 test('handles special primitives', () => {
   const fn = () => 'test';
 
-  expect(getValueStableKey(fn)).toMatchInlineSnapshot(`"$() => "test""`);
+  expect(getCompositeKey(fn)).toMatchInlineSnapshot(`"$() => "test""`);
 
   // BigInt
-  expect(getValueStableKey(BigInt(123))).toMatchInlineSnapshot(`"$123"`);
+  expect(getCompositeKey(BigInt(123))).toMatchInlineSnapshot(`"$123"`);
 });
 
 test('key collision and delimiter handling', () => {
@@ -337,17 +337,17 @@ test('key collision and delimiter handling', () => {
   const obj2 = { a: { b: 'value' } };
 
   // These should produce different keys
-  expect(getValueStableKey(obj1)).not.toBe(getValueStableKey(obj2));
+  expect(getCompositeKey(obj1)).not.toBe(getCompositeKey(obj2));
 
   const obj3 = { 'a,b': 'value' };
   const obj4 = { a: 'value', b: 'value' };
 
   // These should produce different keys
-  expect(getValueStableKey(obj3)).not.toBe(getValueStableKey(obj4));
+  expect(getCompositeKey(obj3)).not.toBe(getCompositeKey(obj4));
 
   // Complex key with multiple delimiters
   const complexKey = { 'a:b,c:d': { 'e:f': 'value' } };
-  expect(getValueStableKey(complexKey)).toMatchInlineSnapshot(
+  expect(getCompositeKey(complexKey)).toMatchInlineSnapshot(
     `"{a:b,c:d:{e:f:"value"}}"`,
   );
 });
