@@ -1,3 +1,4 @@
+/** @deprecated use typedObjectEntries from @ls-stack/utils/typingFnUtils instead */
 export function objectTypedEntries<T extends Record<string, unknown>>(obj: T) {
   return Object.entries(obj) as [Extract<keyof T, string>, T[keyof T]][];
 }
