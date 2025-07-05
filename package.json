@@ -92,6 +92,10 @@
       "import": "./lib/exhaustiveMatch.js",
       "require": "./lib/exhaustiveMatch.cjs"
     },
+    "./getCompositeKey": {
+      "import": "./lib/getCompositeKey.js",
+      "require": "./lib/getCompositeKey.cjs"
+    },
     "./getValueStableKey": {
       "import": "./lib/getValueStableKey.js",
       "require": "./lib/getValueStableKey.cjs"
