@@ -14,7 +14,7 @@
 type __FIX_THIS_TYPING__ = any;
 ```
 
-Defined in: [src/saferTyping.ts:41](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L41)
+Defined in: [src/saferTyping.ts:48](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L48)
 
 ***
 
@@ -28,6 +28,51 @@ Defined in: [src/saferTyping.ts:4](https://github.com/lucasols/utils/blob/main/s
 
 Use this only when you have 100% of certainty that this will not break the types
 
+***
+
+### \_\_LEGIT\_ANY\_FUNCTION\_\_()
+
+```ts
+type __LEGIT_ANY_FUNCTION__ = (...params) => __LEGIT_ANY__;
+```
+
+Defined in: [src/saferTyping.ts:8](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L8)
+
+#### Parameters
+
+##### params
+
+...`any`
+
+#### Returns
+
+[`__LEGIT_ANY__`](#__legit_any__)
+
+***
+
+### AnyNonPrimitiveValue
+
+```ts
+type AnyNonPrimitiveValue = object;
+```
+
+Defined in: [src/saferTyping.ts:56](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L56)
+
+Any type that is not a primitive (number, string, boolean, null, undefined, symbol, bigint, ...)
+Equivalent to `object` type
+
+***
+
+### EmptyObject
+
+```ts
+type EmptyObject = Record<string, never>;
+```
+
+Defined in: [src/saferTyping.ts:13](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L13)
+
+An empty object type, equivalent to `{}` but with safer typing
+
 ## Functions
 
 ### \_\_FIX\_THIS\_CASTING\_\_()
@@ -36,7 +81,7 @@ Use this only when you have 100% of certainty that this will not break the types
 function __FIX_THIS_CASTING__<T>(value): T;
 ```
 
-Defined in: [src/saferTyping.ts:37](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L37)
+Defined in: [src/saferTyping.ts:44](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L44)
 
 #### Type Parameters
 
@@ -62,7 +107,7 @@ Defined in: [src/saferTyping.ts:37](https://github.com/lucasols/utils/blob/main/
 function __FIX_THIS_TYPING__(value): any;
 ```
 
-Defined in: [src/saferTyping.ts:41](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L41)
+Defined in: [src/saferTyping.ts:48](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L48)
 
 #### Parameters
 
@@ -82,7 +127,7 @@ Defined in: [src/saferTyping.ts:41](https://github.com/lucasols/utils/blob/main/
 function __LEGIT_ANY_CAST__<V>(value): any;
 ```
 
-Defined in: [src/saferTyping.ts:13](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L13)
+Defined in: [src/saferTyping.ts:20](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L20)
 
 Cast a value to `any` type. Use this when you have legit usage of `any` casting.
 
@@ -112,7 +157,7 @@ Cast a value to `any` type. Use this when you have legit usage of `any` casting.
 function __LEGIT_CAST__<T, V>(value): T;
 ```
 
-Defined in: [src/saferTyping.ts:23](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L23)
+Defined in: [src/saferTyping.ts:30](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L30)
 
 Cast a value to a specific type T. Use this when you have legit usage of type assertion.
 
@@ -148,7 +193,7 @@ The type to cast to
 function __REFINE_CAST__<T>(value): <R>() => R;
 ```
 
-Defined in: [src/saferTyping.ts:33](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L33)
+Defined in: [src/saferTyping.ts:40](https://github.com/lucasols/utils/blob/main/src/saferTyping.ts#L40)
 
 Refine a value to a specific type T. Use this when you have legit usage of type assertion.
 

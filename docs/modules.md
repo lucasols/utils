@@ -20,6 +20,7 @@
 - [deepEqual](deepEqual.md)
 - [enhancedMap](enhancedMap.md)
 - [exhaustiveMatch](exhaustiveMatch/README.md)
+- [getCompositeKey](getCompositeKey.md)
 - [getValueStableKey](getValueStableKey.md)
 - [interpolate](interpolate/README.md)
 - [levenshtein](levenshtein.md)
