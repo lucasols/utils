@@ -11,6 +11,12 @@ import {
   notUndefined,
 } from './assertions';
 
+class CustomError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
 describe('notUndefined', () => {
   test('should return the value when not undefined', () => {
     expect(notUndefined(5)).toBe(5);
@@ -26,6 +32,9 @@ describe('notUndefined', () => {
     expect(() => notUndefined(undefined, 'custom message')).toThrow(
       'custom message',
     );
+    expect(() =>
+      notUndefined(undefined, () => new CustomError('custom message')),
+    ).toThrow(new CustomError('custom message'));
   });
 });
 
@@ -41,6 +50,9 @@ describe('notNullish', () => {
     expect(() => notNullish(undefined, 'custom message')).toThrow(
       'custom message',
     );
+    expect(() =>
+      notNullish(null, () => new CustomError('custom message')),
+    ).toThrow(new CustomError('custom message'));
   });
 
   test('should throw error when null', () => {
@@ -63,6 +75,9 @@ describe('assertIsNotNullish', () => {
     expect(() => assertIsNotNullish(undefined, 'custom message')).toThrow(
       'custom message',
     );
+    expect(() =>
+      assertIsNotNullish(undefined, () => new CustomError('custom message')),
+    ).toThrow(new CustomError('custom message'));
   });
 
   test('should throw error when null', () => {
@@ -90,6 +105,9 @@ describe('assertIsNotUndefined', () => {
     expect(() => assertIsNotUndefined(undefined, 'custom message')).toThrow(
       'custom message',
     );
+    expect(() =>
+      assertIsNotUndefined(undefined, () => new CustomError('custom message')),
+    ).toThrow(new CustomError('custom message'));
   });
 });
 
@@ -108,6 +126,9 @@ describe('invariant', () => {
     expect(() => invariant(false, 'custom message')).toThrow(
       'Invariant violation: custom message',
     );
+    expect(() =>
+      invariant(false, () => new CustomError('custom message')),
+    ).toThrow(new CustomError('custom message'));
   });
 });
 

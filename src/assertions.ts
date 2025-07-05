@@ -8,10 +8,10 @@ type StrictNonUndefined<T, N = unknown> =
 
 export function notUndefined<T>(
   value: T,
-  errorMsg = undefErrMsg,
+  error: string | (() => Error) = undefErrMsg,
 ): StrictNonUndefined<T> {
   if (value === undefined) {
-    throw new Error(errorMsg);
+    throw typeof error === 'function' ? error() : new Error(error);
   }
 
   return value as any;
@@ -24,10 +24,10 @@ type StrictNonNullable<T, N = unknown> =
 
 export function notNullish<T>(
   value: T,
-  errorMsg = nullishErrMsg,
+  error: string | (() => Error) = nullishErrMsg,
 ): StrictNonNullable<T> {
   if (value === undefined || value === null) {
-    throw new Error(errorMsg);
+    throw typeof error === 'function' ? error() : new Error(error);
   }
 
   return value as any;
@@ -35,29 +35,29 @@ export function notNullish<T>(
 
 export function assertIsNotNullish<T>(
   value: T,
-  errorMsg = nullishErrMsg,
+  error: string | (() => Error) = nullishErrMsg,
 ): asserts value is StrictNonNullable<T, never> {
   if (value === undefined || value === null) {
-    throw new Error(errorMsg);
+    throw typeof error === 'function' ? error() : new Error(error);
   }
 }
 
 export function assertIsNotUndefined<T>(
   value: T,
-  errorMsg = undefErrMsg,
+  error: string | (() => Error) = undefErrMsg,
 ): asserts value is StrictNonUndefined<T, never> {
   if (value === undefined) {
-    throw new Error(errorMsg);
+    throw typeof error === 'function' ? error() : new Error(error);
   }
 }
 
 /** Use this function to assert that a certain condition is always true. */
 export function invariant(
   condition: any,
-  errorMsg = 'Invariant violation',
+  error: string | (() => Error) = 'Invariant violation',
 ): asserts condition {
   if (!condition) {
-    throw new Error(`Invariant violation: ${errorMsg}`);
+    throw typeof error === 'function' ? error() : new Error(error);
   }
 }
 
