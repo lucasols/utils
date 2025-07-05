@@ -5,6 +5,13 @@ export type __LEGIT_ANY__ = any;
 
 export type __FIX_THIS_TYPING__ = any;
 
+export type __LEGIT_ANY_FUNCTION__ = (...params: any) => __LEGIT_ANY__;
+
+/**
+ * An empty object type, equivalent to `{}` but with safer typing
+ */
+export type EmptyObject = Record<string, never>;
+
 /**
  * Cast a value to `any` type. Use this when you have legit usage of `any` casting.
  *
@@ -41,3 +48,9 @@ export function __FIX_THIS_CASTING__<T>(value: unknown): T {
 export function __FIX_THIS_TYPING__(value: unknown): __LEGIT_ANY__ {
   return value;
 }
+
+/**
+ * Any type that is not a primitive (number, string, boolean, null, undefined, symbol, bigint, ...)
+ * Equivalent to `object` type
+ */
+export type AnyNonPrimitiveValue = object;
