@@ -273,7 +273,9 @@ class ConcurrentCallsWithMetadata<
 
   async runAllSettled({ delayStart }: RunProps = {}): Promise<{
     allFailed: boolean;
+    /** @deprecated Use failures property instead */
     failed: FailedCall<M, E>[];
+    failures: FailedCall<M, E>[];
     succeeded: SucceededCall<R, M>[];
     total: number;
     results: SettledResultWithMetadata<R, M, E>[];
@@ -289,6 +291,7 @@ class ConcurrentCallsWithMetadata<
       return {
         succeeded: [],
         failed: [],
+        failures: [],
         results: [],
         allFailed: false,
         total: 0,
@@ -351,6 +354,7 @@ class ConcurrentCallsWithMetadata<
     return {
       succeeded: succeededProcessing,
       failed: failedProcessing,
+      failures: failedProcessing,
       results: resultsProcessing,
       allFailed,
       total,
