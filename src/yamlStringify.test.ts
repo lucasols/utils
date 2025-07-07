@@ -749,6 +749,113 @@ describe('max depth', () => {
   });
 });
 
+describe('string quote handling', () => {
+  test('strings with single quotes only', () => {
+    expect(
+      getSnapshot({
+        text: "let's go",
+        message: "can't stop",
+        greeting: "it's working",
+      }),
+    ).toMatchInlineSnapshot(`
+      "
+      text: "let's go"
+      message: "can't stop"
+      greeting: "it's working"
+      "
+    `);
+  });
+
+  test('strings with double quotes only', () => {
+    expect(
+      getSnapshot({
+        text: 'he said "hello"',
+        message: 'the "best" option',
+        greeting: 'she replied "thanks"',
+      }),
+    ).toMatchInlineSnapshot(`
+      "
+      text: 'he said "hello"'
+      message: 'the "best" option'
+      greeting: 'she replied "thanks"'
+      "
+    `);
+  });
+
+  test('strings with both single and double quotes', () => {
+    expect(
+      getSnapshot({
+        text: `he said "let's go"`,
+        message: `can't use "best" here`,
+        greeting: `it's "working" fine`,
+      }),
+    ).toMatchInlineSnapshot(`
+      "
+      text: "he said \\"let's go\\""
+      message: "can't use \\"best\\" here"
+      greeting: "it's \\"working\\" fine"
+      "
+    `);
+  });
+
+  test('strings with no quotes', () => {
+    expect(
+      getSnapshot({
+        text: 'hello world',
+        message: 'no quotes here',
+        greeting: 'working fine',
+      }),
+    ).toMatchInlineSnapshot(`
+      "
+      text: 'hello world'
+      message: 'no quotes here'
+      greeting: 'working fine'
+      "
+    `);
+  });
+
+  test('mixed quote scenarios in arrays', () => {
+    expect(
+      getSnapshot([
+        'simple text',
+        "let's go",
+        'he said "hello"',
+        `it's "working" fine`,
+      ]),
+    ).toMatchInlineSnapshot(`
+      "
+      ['simple text', "let's go", 'he said "hello"', "it's \\"working\\" fine"]
+      "
+    `);
+  });
+
+  test('quote handling in nested structures', () => {
+    expect(
+      getSnapshot({
+        level1: {
+          singleQuote: "can't stop",
+          doubleQuote: 'he said "hello"',
+          bothQuotes: `it's "working" fine`,
+          array: [
+            'simple',
+            "let's go",
+            'she said "thanks"',
+            `can't use "best" option`,
+          ],
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      "
+      level1:
+        singleQuote: "can't stop"
+        doubleQuote: 'he said "hello"'
+        bothQuotes: "it's \\"working\\" fine"
+        array: ['simple', "let's go", 'she said "thanks"', "can't use \\"best\\" option"]
+      "
+    `);
+  });
+});
+
 describe('add obj spaces', () => {
   test('default: beforeAndAfter', () => {
     expect(getSnapshot({ a: 1, obj: { a: 1 }, b: 2 })).toMatchInlineSnapshot(`

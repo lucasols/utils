@@ -226,8 +226,12 @@ function stringifyValue(
         }
       }
     } else {
-      if (value.includes("'")) {
+      if (value.includes("'") && !value.includes('"')) {
         result += `"${value}"`;
+      } else if (value.includes('"') && !value.includes("'")) {
+        result += `'${value}'`;
+      } else if (value.includes("'") && value.includes('"')) {
+        result += `"${value.replace(/"/g, '\\"')}"`;
       } else {
         result += `'${value}'`;
       }
