@@ -168,6 +168,10 @@
       "import": "./lib/tsResult.js",
       "require": "./lib/tsResult.cjs"
     },
+    "./typeGuards": {
+      "import": "./lib/typeGuards.js",
+      "require": "./lib/typeGuards.cjs"
+    },
     "./typingFnUtils": {
       "import": "./lib/typingFnUtils.js",
       "require": "./lib/typingFnUtils.cjs"
