@@ -414,6 +414,7 @@ describe('concurrentCallsWithMetadata', () => {
               }
           )[];
           aggregatedError: AggregateError | null;
+          failures: { metadata: { id: string }; error: Error }[];
         }
       >
     >();
@@ -593,6 +594,7 @@ describe('concurrentCallsWithMetadata', () => {
               | { ok: false; error: Err; metadata: Meta }
             )[];
             aggregatedError: AggregateError | null;
+            failures: { error: Err; metadata: Meta }[];
           }
         >
       >();
