@@ -72,16 +72,16 @@ type UnionDiff<T, U> =
   [T] extends [U] ?
     [U] extends [T] ?
       null
-    : { onRightHasExtra: Exclude<U, T> }
-  : [U] extends [T] ? { onRightHasMissing: Exclude<T, U> }
-  : { onRightHasExtra: Exclude<U, T>; onRightHasMissing: Exclude<T, U> };
+    : { onRightHasExtraErr: Exclude<U, T> }
+  : [U] extends [T] ? { onRightHasMissingErr: Exclude<T, U> }
+  : { onRightHasExtraErr: Exclude<U, T>; onRightHasMissingErr: Exclude<T, U> };
 
 /**
  * Type helper to compare two union types and determine their relationship.
  *
  * @template T - The first union type (left side)
  * @template U - The second union type (right side)
- * @param _diff - null if unions are identical, or an object describing the difference
+ * @param _diff - null if unions are identical, or an object describing the errors
  * @returns void - This function is only used for type checking
  */
 export function unionsAreTheSame<T, U>(_diff: UnionDiff<T, U>): void {}
