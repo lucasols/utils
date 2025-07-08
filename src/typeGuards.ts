@@ -124,3 +124,38 @@ export function isPlainObject(value: any): value is Record<string, unknown> {
     Function.toString.call(Ctor) === objectCtorString
   );
 }
+
+export type NonEmptyArray<T> = [T, ...T[]];
+
+export function isNonEmptyArray<T>(
+  value: T[] | readonly T[],
+): value is NonEmptyArray<T> {
+  return value.length > 0;
+}
+
+export function arrayHasAtLeastXItems<T>(
+  array: T[],
+  minLength: 1,
+): array is [T, ...T[]];
+export function arrayHasAtLeastXItems<T>(
+  array: T[],
+  minLength: 2,
+): array is [T, T, ...T[]];
+export function arrayHasAtLeastXItems<T>(
+  array: T[],
+  minLength: 3,
+): array is [T, T, T, ...T[]];
+export function arrayHasAtLeastXItems<T>(
+  array: T[],
+  minLength: 4,
+): array is [T, T, T, T, ...T[]];
+export function arrayHasAtLeastXItems<T>(
+  array: T[],
+  minLength: 5,
+): array is [T, T, T, T, T, ...T[]];
+export function arrayHasAtLeastXItems(
+  array: unknown[],
+  minLength: number,
+): boolean {
+  return array.length >= minLength;
+}
