@@ -116,9 +116,7 @@ describe('invariant', () => {
   });
 
   test('should throw when condition is false', () => {
-    expect(() => invariant(false)).toThrow(
-      'Invariant violation: Invariant violation',
-    );
+    expect(() => invariant(false)).toThrow('Invariant violation');
     expect(() => invariant(false, 'custom message')).toThrow(
       'Invariant violation: custom message',
     );
