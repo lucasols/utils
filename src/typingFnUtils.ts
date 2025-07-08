@@ -48,9 +48,15 @@ export function narrowStringToUnion<const T extends string>(
  * @template SubType - The type that should extend BaseType
  * @returns {unknown} Returns undefined, only used for type checking
  */
-export function isSubTypeOf<BaseType, SubType extends BaseType>(): unknown {
+export function typeOnRightExtendsLeftType<
+  BaseType,
+  SubType extends BaseType,
+>(): unknown {
   return undefined as SubType as unknown;
 }
+
+/** @deprecated use typeOnRightExtendsLeftType instead */
+export const isSubTypeOf = typeOnRightExtendsLeftType;
 
 /**
  * Type helper to narrow a string to a key of an object.
@@ -61,3 +67,21 @@ export function isObjKey<T extends Record<string, unknown>>(
 ): key is keyof T {
   return typeof key === 'string' && key in obj;
 }
+
+type UnionDiff<T, U> =
+  [T] extends [U] ?
+    [U] extends [T] ?
+      null
+    : { onRightHasExtra: Exclude<U, T> }
+  : [U] extends [T] ? { onRightHasMissing: Exclude<T, U> }
+  : { onRightHasExtra: Exclude<U, T>; onRightHasMissing: Exclude<T, U> };
+
+/**
+ * Type helper to compare two union types and determine their relationship.
+ *
+ * @template T - The first union type (left side)
+ * @template U - The second union type (right side)
+ * @param _diff - null if unions are identical, or an object describing the difference
+ * @returns void - This function is only used for type checking
+ */
+export function unionsAreTheSame<T, U>(_diff: UnionDiff<T, U>): void {}
