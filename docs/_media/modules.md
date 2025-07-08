@@ -41,7 +41,7 @@
 - [time](time.md)
 - [tsResult](tsResult/README.md)
 - [typeGuards](typeGuards.md)
-- [typingFnUtils](typingFnUtils.md)
+- [typingFnUtils](typingFnUtils/README.md)
 - [typingTestUtils](typingTestUtils.md)
 - [typingUtils](typingUtils.md)
 - [yamlStringify](yamlStringify.md)

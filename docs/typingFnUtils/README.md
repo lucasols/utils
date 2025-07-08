@@ -1,10 +1,50 @@
-[**@ls-stack/utils**](README.md)
+[**@ls-stack/utils**](../README.md)
 
 ***
 
-[@ls-stack/utils](modules.md) / typingFnUtils
+[@ls-stack/utils](../modules.md) / typingFnUtils
 
 # typingFnUtils
+
+## Modules
+
+- [\<internal\>](-internal-.md)
+
+## Variables
+
+### ~~isSubTypeOf()~~
+
+```ts
+const isSubTypeOf: <BaseType, SubType>() => unknown = typeOnRightExtendsLeftType;
+```
+
+Defined in: [src/typingFnUtils.ts:59](https://github.com/lucasols/utils/blob/main/src/typingFnUtils.ts#L59)
+
+Type helper to check if a type is a subtype of another type.
+
+#### Type Parameters
+
+##### BaseType
+
+`BaseType`
+
+The base type to check against
+
+##### SubType
+
+`SubType`
+
+The type that should extend BaseType
+
+#### Returns
+
+`unknown`
+
+Returns undefined, only used for type checking
+
+#### Deprecated
+
+use typeOnRightExtendsLeftType instead
 
 ## Functions
 
@@ -30,7 +70,7 @@ Defined in: [src/typingFnUtils.ts:3](https://github.com/lucasols/utils/blob/main
 
 #### Returns
 
-[`NonPartial`](typingUtils.md#nonpartial)\<`T`\>
+[`NonPartial`](../typingUtils.md#nonpartial)\<`T`\>
 
 ***
 
@@ -68,7 +108,7 @@ a safe way to cast types, use to substitute the `as Type`
 function isObjKey<T>(key, obj): key is keyof T;
 ```
 
-Defined in: [src/typingFnUtils.ts:58](https://github.com/lucasols/utils/blob/main/src/typingFnUtils.ts#L58)
+Defined in: [src/typingFnUtils.ts:64](https://github.com/lucasols/utils/blob/main/src/typingFnUtils.ts#L64)
 
 Type helper to narrow a string to a key of an object.
 
@@ -91,38 +131,6 @@ Type helper to narrow a string to a key of an object.
 #### Returns
 
 `key is keyof T`
-
-***
-
-### isSubTypeOf()
-
-```ts
-function isSubTypeOf<BaseType, SubType>(): unknown;
-```
-
-Defined in: [src/typingFnUtils.ts:51](https://github.com/lucasols/utils/blob/main/src/typingFnUtils.ts#L51)
-
-Type helper to check if a type is a subtype of another type.
-
-#### Type Parameters
-
-##### BaseType
-
-`BaseType`
-
-The base type to check against
-
-##### SubType
-
-`SubType`
-
-The type that should extend BaseType
-
-#### Returns
-
-`unknown`
-
-Returns undefined, only used for type checking
 
 ***
 
@@ -211,3 +219,75 @@ a wrapper to Object.keys with a better typing inference
 #### Returns
 
 keyof `T`[]
+
+***
+
+### typeOnRightExtendsLeftType()
+
+```ts
+function typeOnRightExtendsLeftType<BaseType, SubType>(): unknown;
+```
+
+Defined in: [src/typingFnUtils.ts:51](https://github.com/lucasols/utils/blob/main/src/typingFnUtils.ts#L51)
+
+Type helper to check if a type is a subtype of another type.
+
+#### Type Parameters
+
+##### BaseType
+
+`BaseType`
+
+The base type to check against
+
+##### SubType
+
+`SubType`
+
+The type that should extend BaseType
+
+#### Returns
+
+`unknown`
+
+Returns undefined, only used for type checking
+
+***
+
+### unionsAreTheSame()
+
+```ts
+function unionsAreTheSame<T, U>(_diff): void;
+```
+
+Defined in: [src/typingFnUtils.ts:87](https://github.com/lucasols/utils/blob/main/src/typingFnUtils.ts#L87)
+
+Type helper to compare two union types and determine their relationship.
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+The first union type (left side)
+
+##### U
+
+`U`
+
+The second union type (right side)
+
+#### Parameters
+
+##### \_diff
+
+[`UnionDiff`](-internal-.md#uniondiff)\<`T`, `U`\>
+
+null if unions are identical, or an object describing the difference
+
+#### Returns
+
+`void`
+
+void - This function is only used for type checking
