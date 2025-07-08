@@ -182,7 +182,9 @@ export function invariant(
   error: string | (() => Error) = 'Invariant violation',
 ): asserts condition {
   if (!condition) {
-    throw typeof error === 'function' ? error() : new Error(error);
+    throw typeof error === 'function' ? error() : (
+        new Error(`Invariant violation: ${error}`)
+      );
   }
 }
 
