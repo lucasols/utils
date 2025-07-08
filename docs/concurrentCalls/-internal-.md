@@ -215,6 +215,7 @@ runAllSettled(__namedParameters): Promise<{
   aggregatedError: null | AggregateError;
   allFailed: boolean;
   failed: FailedCall<M, E>[];
+  failures: FailedCall<M, E>[];
   results: SettledResultWithMetadata<R, M, E>[];
   succeeded: SucceededCall<R, M>[];
   total: number;
@@ -235,6 +236,7 @@ Defined in: [src/concurrentCalls.ts:274](https://github.com/lucasols/utils/blob/
   `aggregatedError`: `null` \| `AggregateError`;
   `allFailed`: `boolean`;
   `failed`: [`FailedCall`](#failedcall)\<`M`, `E`\>[];
+  `failures`: [`FailedCall`](#failedcall)\<`M`, `E`\>[];
   `results`: [`SettledResultWithMetadata`](#settledresultwithmetadata)\<`R`, `M`, `E`\>[];
   `succeeded`: [`SucceededCall`](#succeededcall)\<`R`, `M`\>[];
   `total`: `number`;

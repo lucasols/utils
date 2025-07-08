@@ -48,7 +48,7 @@ The type of the error.
 function concurrentCallsWithMetadata<M, R, E>(): ConcurrentCallsWithMetadata<M, R, E>;
 ```
 
-Defined in: [src/concurrentCalls.ts:369](https://github.com/lucasols/utils/blob/main/src/concurrentCalls.ts#L369)
+Defined in: [src/concurrentCalls.ts:373](https://github.com/lucasols/utils/blob/main/src/concurrentCalls.ts#L373)
 
 Executes multiple asynchronous calls concurrently and collects the results in a easier to use format.
 

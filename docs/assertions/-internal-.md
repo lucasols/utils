@@ -14,7 +14,7 @@
 type NotUndefined<T> = T extends undefined ? never : T;
 ```
 
-Defined in: [src/assertions.ts:4](https://github.com/lucasols/utils/blob/main/src/assertions.ts#L4)
+Defined in: [src/assertions.ts:11](https://github.com/lucasols/utils/blob/main/src/assertions.ts#L11)
 
 #### Type Parameters
 
@@ -30,7 +30,7 @@ Defined in: [src/assertions.ts:4](https://github.com/lucasols/utils/blob/main/sr
 type StrictNonNullable<T, N> = undefined extends T ? NonNullable<T> : null extends T ? NonNullable<T> : N;
 ```
 
-Defined in: [src/assertions.ts:20](https://github.com/lucasols/utils/blob/main/src/assertions.ts#L20)
+Defined in: [src/assertions.ts:50](https://github.com/lucasols/utils/blob/main/src/assertions.ts#L50)
 
 #### Type Parameters
 
@@ -50,7 +50,7 @@ Defined in: [src/assertions.ts:20](https://github.com/lucasols/utils/blob/main/s
 type StrictNonUndefined<T, N> = undefined extends T ? NotUndefined<T> : N;
 ```
 
-Defined in: [src/assertions.ts:6](https://github.com/lucasols/utils/blob/main/src/assertions.ts#L6)
+Defined in: [src/assertions.ts:13](https://github.com/lucasols/utils/blob/main/src/assertions.ts#L13)
 
 #### Type Parameters
 
