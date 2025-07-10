@@ -14,7 +14,7 @@
 function looseGetObjectProperty<T>(obj, key): undefined | T[keyof T];
 ```
 
-Defined in: [src/objUtils.ts:55](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L55)
+Defined in: [src/objUtils.ts:50](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L50)
 
 #### Type Parameters
 
@@ -44,7 +44,7 @@ Defined in: [src/objUtils.ts:55](https://github.com/lucasols/utils/blob/main/src
 function mapArrayToObject<T, K, O>(array, mapper): Record<K, O>;
 ```
 
-Defined in: [src/objUtils.ts:23](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L23)
+Defined in: [src/objUtils.ts:18](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L18)
 
 #### Type Parameters
 
@@ -82,7 +82,7 @@ Defined in: [src/objUtils.ts:23](https://github.com/lucasols/utils/blob/main/src
 function mapObjectToObject<I, K, O>(obj, mapper): Record<K, O>;
 ```
 
-Defined in: [src/objUtils.ts:30](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L30)
+Defined in: [src/objUtils.ts:25](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L25)
 
 #### Type Parameters
 
@@ -150,7 +150,7 @@ use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
 function omit<T, K>(obj, keys): Omit<T, K>;
 ```
 
-Defined in: [src/objUtils.ts:40](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L40)
+Defined in: [src/objUtils.ts:35](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L35)
 
 #### Type Parameters
 
@@ -181,10 +181,7 @@ Defined in: [src/objUtils.ts:40](https://github.com/lucasols/utils/blob/main/src
 ### pick()
 
 ```ts
-function pick<T, K>(
-   obj, 
-   keys, 
-rename?): Record<string, unknown>;
+function pick<T, K>(obj, keys): Pick<T, K>;
 ```
 
 Defined in: [src/objUtils.ts:6](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L6)
@@ -193,7 +190,7 @@ Defined in: [src/objUtils.ts:6](https://github.com/lucasols/utils/blob/main/src/
 
 ##### T
 
-`T`
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 ##### K
 
@@ -203,19 +200,15 @@ Defined in: [src/objUtils.ts:6](https://github.com/lucasols/utils/blob/main/src/
 
 ##### obj
 
-`undefined` | `T`
+`T`
 
 ##### keys
 
 `K`[]
 
-##### rename?
-
-`Partial`\<`Record`\<`K`, `string`\>\>
-
 #### Returns
 
-`Record`\<`string`, `unknown`\>
+`Pick`\<`T`, `K`\>
 
 ***
 
@@ -225,7 +218,7 @@ Defined in: [src/objUtils.ts:6](https://github.com/lucasols/utils/blob/main/src/
 function rejectObjUndefinedValues<T>(obj): T;
 ```
 
-Defined in: [src/objUtils.ts:62](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L62)
+Defined in: [src/objUtils.ts:57](https://github.com/lucasols/utils/blob/main/src/objUtils.ts#L57)
 
 #### Type Parameters
 

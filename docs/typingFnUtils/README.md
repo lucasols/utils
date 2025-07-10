@@ -284,7 +284,7 @@ The second union type (right side)
 
 [`UnionDiff`](-internal-.md#uniondiff)\<`T`, `U`\>
 
-null if unions are identical, or an object describing the difference
+null if unions are identical, or an object describing the errors
 
 #### Returns
 
