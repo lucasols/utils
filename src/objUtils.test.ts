@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { looseGetObjectProperty, rejectObjUndefinedValues } from './objUtils';
+import {
+  looseGetObjectProperty,
+  pick,
+  rejectObjUndefinedValues,
+} from './objUtils';
 import { typingTest, type TestTypeIsEqual } from './typingTestUtils';
 
 describe('looseGetObjectProperty', () => {
@@ -25,4 +29,18 @@ test('rejectObjUndefinedValues', () => {
   const result = rejectObjUndefinedValues(obj);
 
   expect(result).toEqual({ a: 1, c: { d: '3' } });
+});
+
+describe('pick', () => {
+  test('should return the picked properties', () => {
+    const obj = { a: 1, b: '2', c: { d: '3' } };
+
+    const result = pick(obj, ['a', 'c']);
+
+    typingTest.expectType<
+      TestTypeIsEqual<typeof result, { a: number; c: { d: string } }>
+    >();
+
+    expect(result).toEqual({ a: 1, c: { d: '3' } });
+  });
 });

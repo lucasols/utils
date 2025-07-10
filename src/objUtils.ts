@@ -3,19 +3,14 @@ export function objectTypedEntries<T extends Record<string, unknown>>(obj: T) {
   return Object.entries(obj) as [Extract<keyof T, string>, T[keyof T]][];
 }
 
-export function pick<T, K extends keyof T>(
-  obj: T | undefined,
+export function pick<T extends Record<string, unknown>, K extends keyof T>(
+  obj: T,
   keys: K[],
-  rename?: Partial<Record<K, string>>,
-): Record<string, unknown> {
+): Pick<T, K> {
   const result: any = {};
 
-  if (!obj) {
-    return result;
-  }
-
   for (const key of keys) {
-    result[rename?.[key] || key] = obj[key];
+    result[key] = obj[key];
   }
   return result;
 }
