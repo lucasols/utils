@@ -22,6 +22,7 @@
 - [exhaustiveMatch](exhaustiveMatch/README.md)
 - [getCompositeKey](getCompositeKey.md)
 - [getValueStableKey](getValueStableKey.md)
+- [hash](hash.md)
 - [interpolate](interpolate/README.md)
 - [levenshtein](levenshtein.md)
 - [main](main.md)
