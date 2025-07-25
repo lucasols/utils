@@ -70,7 +70,6 @@ function createDedent(options: DedentOptions): Dedent {
       const m = mindent; // appease TypeScript
       result = lines
         // https://github.com/typescript-eslint/typescript-eslint/issues/7140
-        // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
         .map((l) => (l[0] === ' ' || l[0] === '\t' ? l.slice(m) : l))
         .join('\n');
     }
