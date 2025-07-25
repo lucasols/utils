@@ -16,7 +16,7 @@
 - [conversions](conversions.md)
 - [createThrottleController](createThrottleController/README.md)
 - [debounce](debounce.md)
-- [dedent](dedent/README.md)
+- [dedent](dedent.md)
 - [deepEqual](deepEqual.md)
 - [enhancedMap](enhancedMap.md)
 - [exhaustiveMatch](exhaustiveMatch/README.md)
