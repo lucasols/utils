@@ -4,7 +4,7 @@
   "out": "docs",
   "plugin": ["typedoc-plugin-markdown", "typedoc-plugin-missing-exports"],
   "readme": "./README.md",
-  "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/node_modules/**", "src/runShellCmd.ts", "src/yamlStringify.ts"],
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/node_modules/**"],
   "excludePrivate": true,
   "excludeProtected": true,
   "excludeInternal": true,

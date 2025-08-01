@@ -22,23 +22,9 @@ import { deepEqual } from '@ls-stack/utils/deepEqual';
 import { debounce } from '@ls-stack/utils/debounce';
 ```
 
-## Available Utilities
-
-This package includes a wide range of utilities for:
-
-- **Array manipulation** (`arrayUtils`) - sorting, grouping, filtering
-- **Async operations** (`asyncQueue`, `parallelAsyncCalls`, `promiseUtils`) - queue management and promise utilities
-- **Type assertions** (`assertions`) - runtime type checking
-- **Caching** (`cache`) - efficient caching with TTL support
-- **Concurrency control** (`concurrentCalls`, `createThrottleController`) - rate limiting and throttling
-- **Object utilities** (`objUtils`) - deep operations on objects
-- **String utilities** (`stringUtils`) - string manipulation and formatting
-- **Math utilities** (`mathUtils`) - mathematical operations and calculations
-- **And many more...**
-
 ## Documentation
 
-Comprehensive API documentation is available in the [`docs/`](docs/) folder. Start with the [modules overview](docs/modules.md) to explore all available utilities.
+For a complete list of available utilities and their APIs, see the auto-generated documentation in the [`docs/`](docs/) folder. Start with the [modules overview](docs/modules.md) to explore all available utilities.
 
 ### Generating Documentation
 
