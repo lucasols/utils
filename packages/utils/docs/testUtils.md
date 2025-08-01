@@ -23,11 +23,11 @@ Defined in: [packages/utils/src/testUtils.ts:8](https://github.com/lucasols/util
 ###### arrays?
 
   \| `"length"`
+  \| `"all"`
+  \| `"firstAndLast"`
   \| \{
   `firstNItems`: `number`;
-\}
-  \| `"all"`
-  \| `"firstAndLast"` = `...`
+\} = `...`
 
 ###### changesOnly?
 
@@ -246,7 +246,7 @@ get snapshotFromLast(): string;
 function getResultFn<T>(fnGetter, wrapper?): T;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:274](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L274)
+Defined in: [packages/utils/src/testUtils.ts:275](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L275)
 
 #### Type Parameters
 
@@ -276,7 +276,7 @@ Defined in: [packages/utils/src/testUtils.ts:274](https://github.com/lucasols/ut
 function waitController(): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:291](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L291)
+Defined in: [packages/utils/src/testUtils.ts:290](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L290)
 
 #### Returns
 

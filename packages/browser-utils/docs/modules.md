@@ -6,5 +6,7 @@
 
 ## Modules
 
+- [blockWindowClose](blockWindowClose.md)
+- [domEvents](domEvents/README.md)
 - [main](main.md)
-- [yamlStringify](yamlStringify.md)
+- [window](window.md)

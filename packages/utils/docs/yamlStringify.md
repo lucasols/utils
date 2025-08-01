@@ -1,8 +1,8 @@
-[**@ls-stack/browser-utils**](README.md)
+[**@ls-stack/utils**](README.md)
 
 ***
 
-[@ls-stack/browser-utils](modules.md) / yamlStringify
+[@ls-stack/utils](modules.md) / yamlStringify
 
 # yamlStringify
 
@@ -14,7 +14,7 @@
 function yamlStringify(obj, __namedParameters): string;
 ```
 
-Defined in: [yamlStringify.ts:5](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/yamlStringify.ts#L5)
+Defined in: [packages/utils/src/yamlStringify.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/yamlStringify.ts#L5)
 
 #### Parameters
 

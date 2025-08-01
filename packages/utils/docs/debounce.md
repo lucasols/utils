@@ -169,7 +169,7 @@ Defined in: [packages/utils/src/debounce.ts:44](https://github.com/lucasols/util
 function isDebouncedFn<T>(fn): fn is T & { cancel: () => void; flush: () => undefined | ReturnType<T> };
 ```
 
-Defined in: [packages/utils/src/debounce.ts:177](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L177)
+Defined in: [packages/utils/src/debounce.ts:176](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L176)
 
 #### Type Parameters
 

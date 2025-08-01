@@ -28,7 +28,7 @@ bgColor: (color, text) => string;
 
 ###### color
 
-`"red"` | `"green"` | `"yellow"` | `"blue"` | `"magenta"` | `"cyan"` | `"white"` | `"black"` | `"gray"` | `"brightRed"` | `"brightGreen"` | `"brightYellow"` | `"brightBlue"` | `"brightMagenta"` | `"brightCyan"` | `"brightWhite"`
+`"green"` | `"red"` | `"blue"` | `"yellow"` | `"magenta"` | `"cyan"` | `"white"` | `"black"` | `"gray"` | `"brightRed"` | `"brightGreen"` | `"brightYellow"` | `"brightBlue"` | `"brightMagenta"` | `"brightCyan"` | `"brightWhite"`
 
 ###### text
 
@@ -64,7 +64,7 @@ color: (color, text) => string = consoleColors;
 
 ###### color
 
-`"red"` | `"green"` | `"yellow"` | `"blue"` | `"magenta"` | `"cyan"` | `"white"` | `"black"` | `"gray"` | `"brightRed"` | `"brightGreen"` | `"brightYellow"` | `"brightBlue"` | `"brightMagenta"` | `"brightCyan"` | `"brightWhite"`
+`"green"` | `"red"` | `"blue"` | `"yellow"` | `"magenta"` | `"cyan"` | `"white"` | `"black"` | `"gray"` | `"brightRed"` | `"brightGreen"` | `"brightYellow"` | `"brightBlue"` | `"brightMagenta"` | `"brightCyan"` | `"brightWhite"`
 
 ###### text
 
