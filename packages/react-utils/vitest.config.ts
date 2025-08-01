@@ -12,6 +12,6 @@ export default defineConfig({
         execArgv: ['--expose-gc'],
       },
     },
-    environment: 'jsdom',
+    environment: 'happy-dom',
   },
 });
