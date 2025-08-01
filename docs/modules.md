@@ -40,6 +40,7 @@
 - [stringUtils](stringUtils/README.md)
 - [testUtils](testUtils.md)
 - [time](time.md)
+- [timers](timers.md)
 - [tsResult](tsResult/README.md)
 - [typeGuards](typeGuards.md)
 - [typingFnUtils](typingFnUtils/README.md)
