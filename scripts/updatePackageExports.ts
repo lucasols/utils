@@ -4,22 +4,12 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
-export async function updatePackageExports(
-  options: {
-    packagePath?: string;
-    srcDir?: string;
-    libDir?: string;
-    mainFile?: string;
-    excludeFiles?: string[];
-  } = {},
-) {
-  const {
-    packagePath = './package.json',
-    srcDir = './src',
-    libDir = './lib',
-    mainFile = 'main',
-    excludeFiles = ['main', 'internalUtils'],
-  } = options;
+export async function updatePackageExports() {
+  const packagePath = './package.json';
+  const srcDir = './src';
+  const libDir = './lib';
+  const mainFile = 'main';
+  const excludeFiles = ['main', 'internalUtils'];
 
   const packageJson = JSON.parse(readFileSync(packagePath, 'utf-8'));
   const exportedUtils: string[] = [];
