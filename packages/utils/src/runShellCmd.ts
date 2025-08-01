@@ -23,7 +23,7 @@ type RunCmdOptions = {
  * ```
  * // Old (deprecated)
  * import { runCmd } from '@ls-stack/utils/runShellCmd';
- * 
+ *
  * // New (preferred)
  * import { runCmd } from '@ls-stack/node-utils/runShellCmd';
  * ```
@@ -114,7 +114,7 @@ export function runCmd(
  * ```
  * // Old (deprecated)
  * import { concurrentCmd } from '@ls-stack/utils/runShellCmd';
- * 
+ *
  * // New (preferred)
  * import { concurrentCmd } from '@ls-stack/node-utils/runShellCmd';
  * ```
@@ -152,7 +152,7 @@ export async function concurrentCmd(
  * ```
  * // Old (deprecated)
  * import { runCmdUnwrap } from '@ls-stack/utils/runShellCmd';
- * 
+ *
  * // New (preferred)
  * import { runCmdUnwrap } from '@ls-stack/node-utils/runShellCmd';
  * ```
@@ -174,7 +174,7 @@ export async function runCmdUnwrap(
  * ```
  * // Old (deprecated)
  * import { runCmdSilent } from '@ls-stack/utils/runShellCmd';
- * 
+ *
  * // New (preferred)
  * import { runCmdSilent } from '@ls-stack/node-utils/runShellCmd';
  * ```
@@ -188,7 +188,7 @@ export function runCmdSilent(command: string | string[]) {
  * ```
  * // Old (deprecated)
  * import { runCmdSilentUnwrap } from '@ls-stack/utils/runShellCmd';
- * 
+ *
  * // New (preferred)
  * import { runCmdSilentUnwrap } from '@ls-stack/node-utils/runShellCmd';
  * ```

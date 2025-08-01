@@ -14,23 +14,23 @@ function removeBlockWindowCloseCtx(ctx: string | number) {
 /**
  * Blocks the browser window from closing by setting up a beforeunload handler.
  * This is useful for protecting users from accidentally losing unsaved work.
- * 
+ *
  * The function supports multiple simultaneous blocks using contexts, and only removes
  * the beforeunload handler when all blocks are removed. It also includes development-time
  * warnings to help detect memory leaks from undisposed blocks.
- * 
+ *
  * **Important:** This should be used sparingly and only when necessary, as it can
  * negatively impact user experience. Always ensure blocks are properly disposed of.
- * 
+ *
  * @param ctx - Unique context identifier for this block. If not provided, an auto-increment ID is used
  * @param devTimeoutWarning - Time in milliseconds after which to show a development warning (default: 120,000ms / 2 minutes)
  * @returns An object with `unblock` method and `Symbol.dispose` for cleanup
- * 
+ *
  * @example
  * ```ts
  * // Basic usage - block window close during form editing
  * const blocker = blockWindowClose();
- * 
+ *
  * // Later, when form is saved or user cancels
  * blocker.unblock();
  * ```

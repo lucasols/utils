@@ -20,10 +20,10 @@ interface ThrottleSettings {
 /**
  * Creates a throttled function that only invokes the provided function at most once per every `wait` milliseconds.
  * The throttled function comes with a `cancel` method to cancel delayed invocations and a `flush` method to immediately invoke them.
- * 
+ *
  * Throttling is useful for rate-limiting events that fire frequently, like scroll or resize handlers.
  * Unlike debouncing, throttling guarantees the function is called at regular intervals.
- * 
+ *
  * @template T - The type of the function to throttle
  * @param func - The function to throttle
  * @param wait - The number of milliseconds to throttle invocations to
@@ -31,17 +31,17 @@ interface ThrottleSettings {
  * @param options.leading - Specify invoking on the leading edge of the timeout (default: true)
  * @param options.trailing - Specify invoking on the trailing edge of the timeout (default: true)
  * @returns Returns the new throttled function
- * 
+ *
  * @example
  * ```ts
  * const throttledSave = throttle(saveData, 1000);
- * 
+ *
  * // Will only call saveData at most once per second
  * throttledSave();
  * throttledSave();
  * throttledSave();
  * ```
- * 
+ *
  * @example
  * ```ts
  * // Only invoke on trailing edge
@@ -68,30 +68,30 @@ export function throttle<T extends __LEGIT_ANY_FUNCTION__>(
  * Creates a factory for throttled functions that caches throttled instances based on function arguments.
  * Each unique set of arguments gets its own throttled function instance, allowing for fine-grained
  * throttling control per argument combination.
- * 
+ *
  * This is useful when you want to throttle calls to the same function but with different parameters
  * independently. For example, throttling API calls per user ID or throttling UI updates per component.
- * 
+ *
  * @template T - The type of arguments the callback function accepts
  * @template R - The return type of the callback function
  * @param wait - The number of milliseconds to throttle invocations to
  * @param callback - The function to throttle
  * @param options - The throttle options (leading/trailing behavior)
  * @returns An object with a `call` method that accepts the callback arguments
- * 
+ *
  * @example
  * ```ts
  * const apiThrottle = createThrottledFunctionFactory(
  *   1000,
  *   (userId: string, action: string) => callAPI(userId, action)
  * );
- * 
+ *
  * // Each user gets their own throttled instance
  * apiThrottle.call('user1', 'update'); // Executes immediately
  * apiThrottle.call('user2', 'update'); // Executes immediately (different user)
  * apiThrottle.call('user1', 'update'); // Throttled (same user)
  * ```
- * 
+ *
  * @example
  * ```ts
  * // Throttle UI updates per component
@@ -114,9 +114,11 @@ export function createThrottledFunctionFactory<
   return {
     call: (...args) => {
       // Create a key that properly distinguishes between null and undefined
-      const key = args.map(arg => 
-        arg === undefined ? '__UNDEFINED__' : JSON.stringify(arg)
-      ).join(',');
+      const key = args
+        .map((arg) =>
+          arg === undefined ? '__UNDEFINED__' : JSON.stringify(arg),
+        )
+        .join(',');
 
       const cachedFunction = cache.getOrInsert(key, () =>
         throttle(callback, wait, options),

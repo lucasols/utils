@@ -70,7 +70,6 @@ export function debounce<T extends (...args: any[]) => void>(
 
     lastArgs = lastThis = undefined;
     lastInvokeTime = time;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     result = func.apply(thisArg, args as any);
     return result;
   }

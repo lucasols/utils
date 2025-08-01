@@ -27,7 +27,6 @@ function find(iter: any[], tar: any, maxDepth: number): any {
  * ```
  */
 
-// eslint-disable-next-line complexity
 export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
   let ctor, len, tmp;
   if (foo === bar) return true;

@@ -23,7 +23,6 @@ export function yamlStringify(
   return JSON.stringify(obj) || 'undefined';
 }
 
-// eslint-disable-next-line complexity
 function stringifyValue(
   value: unknown,
   indent: string,

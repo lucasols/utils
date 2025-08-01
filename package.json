@@ -8,6 +8,7 @@
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
     "build": "pnpm -r build",
+    "format": "pnpm -r format",
     "build:utils": "pnpm --filter @ls-stack/utils build",
     "build:node-utils": "pnpm --filter @ls-stack/node-utils build",
     "build:browser-utils": "pnpm --filter @ls-stack/browser-utils build",
@@ -23,7 +24,6 @@
   "engines": {
     "node": ">=20.0.0"
   },
-
   "devDependencies": {
     "@eslint/js": "catalog:",
     "@ls-stack/extended-lint": "catalog:",

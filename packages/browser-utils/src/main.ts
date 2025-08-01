@@ -4,6 +4,6 @@
  */
 export function deprecated() {
   throw new Error(
-    'This package does not export a main module. Import utilities directly instead: import { yamlStringify } from \'@ls-stack/browser-utils/yamlStringify\'',
+    "This package does not export a main module. Import utilities directly instead: import { yamlStringify } from '@ls-stack/browser-utils/yamlStringify'",
   );
 }

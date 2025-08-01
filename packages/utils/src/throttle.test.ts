@@ -3,7 +3,6 @@ import { throttle, createThrottledFunctionFactory } from './throttle';
 import { sleep } from './sleep';
 
 describe.concurrent('throttle', () => {
-
   it('should throttle function calls', async () => {
     const fn = vi.fn();
     const throttled = throttle(fn, 100);
@@ -59,7 +58,7 @@ describe.concurrent('throttle', () => {
 
     throttled();
     throttled();
-    
+
     expect(fn).toHaveBeenCalledTimes(1);
 
     await sleep(110);
@@ -72,7 +71,7 @@ describe.concurrent('throttle', () => {
 
     throttled();
     throttled();
-    
+
     expect(fn).toHaveBeenCalledTimes(1);
 
     await sleep(110);
@@ -85,7 +84,7 @@ describe.concurrent('throttle', () => {
 
     throttled();
     throttled();
-    
+
     expect(fn).not.toHaveBeenCalled();
 
     await sleep(110);
@@ -98,7 +97,7 @@ describe.concurrent('throttle', () => {
 
     throttled();
     throttled();
-    
+
     expect(fn).toHaveBeenCalledTimes(1); // Leading call
 
     await sleep(110);
@@ -127,12 +126,12 @@ describe.concurrent('throttle', () => {
 
     throttled();
     throttled();
-    
+
     expect(fn).toHaveBeenCalledTimes(1);
 
     throttled.cancel();
     await sleep(110);
-    
+
     expect(fn).toHaveBeenCalledTimes(1); // No trailing call after cancel
   });
 
@@ -142,7 +141,7 @@ describe.concurrent('throttle', () => {
 
     throttled('arg1');
     throttled('arg2');
-    
+
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn).toHaveBeenCalledWith('arg1');
 
@@ -168,7 +167,6 @@ describe.concurrent('throttle', () => {
 });
 
 describe.concurrent('createThrottledFunctionFactory', () => {
-
   it('should create throttled functions per unique argument set', () => {
     const callback = vi.fn((x: number) => x * 2);
     const factory = createThrottledFunctionFactory(100, callback);
@@ -205,7 +203,9 @@ describe.concurrent('createThrottledFunctionFactory', () => {
   });
 
   it('should work with multiple argument types', () => {
-    const callback = vi.fn((...args: (string | number | boolean)[]) => args.join('-'));
+    const callback = vi.fn((...args: (string | number | boolean)[]) =>
+      args.join('-'),
+    );
     const factory = createThrottledFunctionFactory(100, callback);
 
     const result = factory.call('test', 42, true);
@@ -228,7 +228,9 @@ describe.concurrent('createThrottledFunctionFactory', () => {
   });
 
   it('should cache functions based on JSON.stringify of arguments', () => {
-    const callback = vi.fn((...args: (string | number)[]) => args.reduce((a, b) => Number(a) + Number(b), 0));
+    const callback = vi.fn((...args: (string | number)[]) =>
+      args.reduce((a, b) => Number(a) + Number(b), 0),
+    );
     const factory = createThrottledFunctionFactory(100, callback);
 
     factory.call(1, 2, 3);
@@ -240,7 +242,9 @@ describe.concurrent('createThrottledFunctionFactory', () => {
 
   it('should respect throttle options', async () => {
     const callback = vi.fn((x: number) => x);
-    const factory = createThrottledFunctionFactory(100, callback, { leading: false });
+    const factory = createThrottledFunctionFactory(100, callback, {
+      leading: false,
+    });
 
     factory.call(1);
     expect(callback).not.toHaveBeenCalled();

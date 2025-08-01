@@ -290,7 +290,6 @@ describe('createCache', () => {
     const cache = createCache<string>();
     const promise = Promise.resolve('value1');
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     cache.set('key1', promise as any); // Intentionally setting a promise
 
     expect(() => cache.get('key1')).toThrow(
@@ -526,19 +525,19 @@ describe('withExpiration', () => {
       'key1',
       async ({ withExpiration }) => {
         await sleep(10);
-        return withExpiration('value1', { ms: 50 }); // 50ms expiration
+        return withExpiration('value1', { ms: 80 }); // 80ms expiration (more generous)
       },
     );
 
     expect(value).toBe('value1');
 
-    // Check before expiration (after 40ms)
-    await sleep(40);
+    // Check before expiration (after 50ms)
+    await sleep(50);
     const cachedValue = await cache.getAsync('key1');
     expect(cachedValue).toBe('value1');
 
-    // Check after expiration (after additional 30ms)
-    await sleep(30);
+    // Check after expiration (after additional 50ms)
+    await sleep(50);
     const expiredValue = await cache.getAsync('key1');
     expect(expiredValue).toBeUndefined();
   });

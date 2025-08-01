@@ -4,6 +4,6 @@
  */
 export function deprecated() {
   throw new Error(
-    'This package does not export a main module. Import utilities directly instead: import { runCmd } from \'@ls-stack/node-utils/runShellCmd\'',
+    "This package does not export a main module. Import utilities directly instead: import { runCmd } from '@ls-stack/node-utils/runShellCmd'",
   );
 }

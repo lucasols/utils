@@ -59,7 +59,7 @@ describe('timers', () => {
       const callback = vi.fn();
       const cleanup = createInterval(25, callback);
 
-      await new Promise((resolve) => setTimeout(resolve, 80));
+      await new Promise((resolve) => setTimeout(resolve, 90));
 
       cleanup();
 

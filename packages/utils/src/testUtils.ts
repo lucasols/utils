@@ -135,7 +135,6 @@ export function createLoggerStore({
 
     const propDivider = '⋅';
 
-    // eslint-disable-next-line complexity
     const snapShot = `\n${filterAndMap(rendersToUse, (render, i) => {
       if (render._lastSnapshotMark) {
         if (includeLastSnapshotEndMark) {

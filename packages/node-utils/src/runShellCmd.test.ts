@@ -9,7 +9,9 @@ describe('runShellCmd', () => {
 
   test('should run a simple command', async () => {
     const { runCmd } = await import('./runShellCmd');
-    const result = await runCmd('echo test', ['echo', 'hello world'], { silent: true });
+    const result = await runCmd('echo test', ['echo', 'hello world'], {
+      silent: true,
+    });
     expect(result.stdout.trim()).toBe('hello world');
     expect(result.error).toBe(false);
   });
