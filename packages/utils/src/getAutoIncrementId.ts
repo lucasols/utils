@@ -15,15 +15,6 @@ let id = 1;
  * const id2 = getAutoIncrementId(); // 2
  * const id3 = getAutoIncrementId(); // 3
  * ```
- * 
- * @example
- * ```ts
- * // Generate unique keys for React components
- * const items = data.map(item => ({
- *   ...item,
- *   key: `item-${getAutoIncrementId()}`
- * }));
- * ```
  */
 export function getAutoIncrementId(): number {
   return id++;
@@ -48,28 +39,6 @@ export function getAutoIncrementId(): number {
  * console.log(userIdGen()); // "user-2"
  * console.log(postIdGen()); // "post-1-draft"
  * console.log(postIdGen()); // "post-2-draft"
- * ```
- * 
- * @example
- * ```ts
- * // Generate unique CSS class names
- * const classNameGen = getLocalAutoIncrementIdGenerator({ 
- *   prefix: 'component-', 
- *   suffix: '-instance' 
- * });
- * 
- * const className = classNameGen(); // "component-1-instance"
- * ```
- * 
- * @example
- * ```ts
- * // Create multiple independent sequences
- * const errorIdGen = getLocalAutoIncrementIdGenerator({ prefix: 'ERR' });
- * const warningIdGen = getLocalAutoIncrementIdGenerator({ prefix: 'WARN' });
- * 
- * console.log(errorIdGen());   // "ERR1"
- * console.log(warningIdGen()); // "WARN1"
- * console.log(errorIdGen());   // "ERR2"
  * ```
  */
 export function getLocalAutoIncrementIdGenerator({

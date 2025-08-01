@@ -36,20 +36,6 @@ const debouncers: Record<string, number | undefined> = {};
  * searchUsers('ab');
  * searchUsers('abc'); // Only this one will continue
  * ```
- * 
- * @example
- * ```ts
- * // Debounce per user ID
- * async function saveUserData(userId: string, data: any) {
- *   const result = await awaitDebounce({ 
- *     callId: ['saveUser', userId], 
- *     debounce: 1000 
- *   });
- *   if (result === 'skip') return;
- *   
- *   await saveToAPI(userId, data);
- * }
- * ```
  */
 export async function awaitDebounce({
   callId: _callId,

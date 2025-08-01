@@ -22,29 +22,6 @@ import { throttle } from '@ls-stack/utils/throttle';
  * // Later, remove the listener
  * cleanup();
  * ```
- * 
- * @example
- * ```ts
- * // In a React component
- * useEffect(() => {
- *   const cleanup = onWindowFocus(() => {
- *     // Check for new notifications
- *     checkNotifications();
- *   });
- *   
- *   return cleanup;
- * }, []);
- * ```
- * 
- * @example
- * ```ts
- * // Resume a game when window is focused
- * const cleanup = onWindowFocus(() => {
- *   if (gameState.paused) {
- *     resumeGame();
- *   }
- * });
- * ```
  */
 export function onWindowFocus(handler: () => void): () => void {
   const throttledHandler = throttle(handler, 1000);
@@ -76,27 +53,6 @@ export function onWindowFocus(handler: () => void): () => void {
  * } else {
  *   showBrowserNotification();
  * }
- * ```
- * 
- * @example
- * ```ts
- * // Pause expensive operations when window is not focused
- * const processData = () => {
- *   if (!isWindowFocused()) {
- *     console.log('Window not focused, deferring processing');
- *     return;
- *   }
- *   
- *   // Continue with expensive operation
- *   performDataProcessing();
- * };
- * ```
- * 
- * @example
- * ```ts
- * // Adjust update frequency based on focus state
- * const updateInterval = isWindowFocused() ? 1000 : 30000; // 1s vs 30s
- * setInterval(updateData, updateInterval);
  * ```
  */
 export function isWindowFocused(): boolean {

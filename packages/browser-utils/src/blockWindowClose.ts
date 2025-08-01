@@ -34,35 +34,6 @@ function removeBlockWindowCloseCtx(ctx: string | number) {
  * // Later, when form is saved or user cancels
  * blocker.unblock();
  * ```
- * 
- * @example
- * ```ts
- * // Using with explicit context for multiple blockers
- * const formBlocker = blockWindowClose('form-edit');
- * const uploadBlocker = blockWindowClose('file-upload');
- * 
- * // Remove specific blockers
- * formBlocker.unblock();
- * uploadBlocker.unblock();
- * ```
- * 
- * @example
- * ```ts
- * // Using with explicit resource management (TC39 proposal)
- * using blocker = blockWindowClose('auto-save');
- * // Automatically disposed at end of scope
- * ```
- * 
- * @example
- * ```ts
- * // In a React component
- * useEffect(() => {
- *   if (hasUnsavedChanges) {
- *     const blocker = blockWindowClose('unsaved-changes');
- *     return () => blocker.unblock();
- *   }
- * }, [hasUnsavedChanges]);
- * ```
  */
 export function blockWindowClose(
   ctx: string | number = getAutoIncrementId(),
