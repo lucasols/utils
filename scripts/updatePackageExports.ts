@@ -1,24 +1,24 @@
-import { readFileSync, readdirSync, writeFileSync } from 'fs';
 import { exec } from 'child_process';
+import { readFileSync, readdirSync, writeFileSync } from 'fs';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
-export async function updatePackageExports(options: {
-  packagePath?: string;
-  srcDir?: string;
-  libDir?: string;
-  mainFile?: string;
-  excludeFiles?: string[];
-  gitCommit?: boolean;
-} = {}) {
+export async function updatePackageExports(
+  options: {
+    packagePath?: string;
+    srcDir?: string;
+    libDir?: string;
+    mainFile?: string;
+    excludeFiles?: string[];
+  } = {},
+) {
   const {
     packagePath = './package.json',
     srcDir = './src',
     libDir = './lib',
     mainFile = 'main',
     excludeFiles = ['main', 'internalUtils'],
-    gitCommit = true,
   } = options;
 
   const packageJson = JSON.parse(readFileSync(packagePath, 'utf-8'));
@@ -66,17 +66,15 @@ export async function updatePackageExports(options: {
 
     writeFileSync(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`);
 
-    if (gitCommit) {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        await execAsync('git add package.json');
-        
-        await new Promise(resolve => setTimeout(resolve, 500));
-        await execAsync('git commit -m "update package.json exports"');
-      } catch (error) {
-        // Ignore git errors (e.g., no changes to commit)
-        console.warn('Git commit failed:', error);
-      }
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await execAsync('git add package.json');
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await execAsync('git commit -m "update package.json exports"');
+    } catch (error) {
+      // Ignore git errors (e.g., no changes to commit)
+      console.warn('Git commit failed:', error);
     }
   }
 }
