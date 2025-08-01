@@ -144,3 +144,17 @@ The monorepo uses shared base configurations to maintain consistency:
 ### Special Notes
 
 - Some utilities like `tsResult` are deprecated in favor of external libraries (`t-result`)
+
+## Testing Best Practices
+
+- **Timing in Tests**: 
+  - Do not use `vi.useFakeTimers()`
+  - Instead, use `await sleep()` with small intervals when simulating time-based behaviors
+
+## Documentation Guidelines
+
+- **JSDoc Best Practices**:
+  - Do not add more than one example in JSDocs
+  - Do not add examples for simple or very intuitive functions
+
+```
