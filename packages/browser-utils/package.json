@@ -32,9 +32,17 @@
       "import": "./lib/main.js",
       "require": "./lib/main.cjs"
     },
-    "./yamlStringify": {
-      "import": "./lib/yamlStringify.js",
-      "require": "./lib/yamlStringify.cjs"
+    "./blockWindowClose": {
+      "import": "./lib/blockWindowClose.js",
+      "require": "./lib/blockWindowClose.cjs"
+    },
+    "./domEvents": {
+      "import": "./lib/domEvents.js",
+      "require": "./lib/domEvents.cjs"
+    },
+    "./window": {
+      "import": "./lib/window.js",
+      "require": "./lib/window.cjs"
     }
   },
   "engines": {
