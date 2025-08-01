@@ -172,6 +172,10 @@
       "import": "./lib/time.js",
       "require": "./lib/time.cjs"
     },
+    "./timers": {
+      "import": "./lib/timers.js",
+      "require": "./lib/timers.cjs"
+    },
     "./tsResult": {
       "import": "./lib/tsResult.js",
       "require": "./lib/tsResult.cjs"
