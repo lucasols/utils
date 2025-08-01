@@ -1,16 +1,10 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { throttle, createThrottledFunctionFactory } from './throttle';
+import { sleep } from './sleep';
 
-describe('throttle', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
+describe.concurrent('throttle', () => {
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it('should throttle function calls', () => {
+  it('should throttle function calls', async () => {
     const fn = vi.fn();
     const throttled = throttle(fn, 100);
 
@@ -20,7 +14,7 @@ describe('throttle', () => {
 
     expect(fn).toHaveBeenCalledTimes(1);
 
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     expect(fn).toHaveBeenCalledTimes(2);
   });
 
@@ -40,14 +34,14 @@ describe('throttle', () => {
     expect(result).toBe('result');
   });
 
-  it('should respect leading option when false', () => {
+  it('should respect leading option when false', async () => {
     const fn = vi.fn();
     const throttled = throttle(fn, 100, { leading: false });
 
     throttled();
     expect(fn).not.toHaveBeenCalled();
 
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
@@ -59,7 +53,7 @@ describe('throttle', () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  it('should respect trailing option when false', () => {
+  it('should respect trailing option when false', async () => {
     const fn = vi.fn();
     const throttled = throttle(fn, 100, { trailing: false });
 
@@ -68,11 +62,11 @@ describe('throttle', () => {
     
     expect(fn).toHaveBeenCalledTimes(1);
 
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     expect(fn).toHaveBeenCalledTimes(1); // No trailing call
   });
 
-  it('should respect trailing option when true (default)', () => {
+  it('should respect trailing option when true (default)', async () => {
     const fn = vi.fn();
     const throttled = throttle(fn, 100, { trailing: true });
 
@@ -81,11 +75,11 @@ describe('throttle', () => {
     
     expect(fn).toHaveBeenCalledTimes(1);
 
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     expect(fn).toHaveBeenCalledTimes(2); // Trailing call executed
   });
 
-  it('should work with both leading and trailing disabled', () => {
+  it('should work with both leading and trailing disabled', async () => {
     const fn = vi.fn();
     const throttled = throttle(fn, 100, { leading: false, trailing: false });
 
@@ -94,11 +88,11 @@ describe('throttle', () => {
     
     expect(fn).not.toHaveBeenCalled();
 
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     expect(fn).not.toHaveBeenCalled();
   });
 
-  it('should work with both leading and trailing enabled', () => {
+  it('should work with both leading and trailing enabled', async () => {
     const fn = vi.fn();
     const throttled = throttle(fn, 100, { leading: true, trailing: true });
 
@@ -107,27 +101,27 @@ describe('throttle', () => {
     
     expect(fn).toHaveBeenCalledTimes(1); // Leading call
 
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     expect(fn).toHaveBeenCalledTimes(2); // Trailing call
   });
 
-  it('should handle rapid successive calls correctly', () => {
+  it('should handle rapid successive calls correctly', async () => {
     const fn = vi.fn();
     const throttled = throttle(fn, 100);
 
     for (let i = 0; i < 10; i++) {
       throttled(i);
-      vi.advanceTimersByTime(10);
+      await sleep(5); // Much shorter intervals to stay well within throttle window
     }
 
     expect(fn).toHaveBeenCalledTimes(1); // Only leading call
 
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     expect(fn).toHaveBeenCalledTimes(2); // Trailing call with last argument
     expect(fn).toHaveBeenLastCalledWith(9);
   });
 
-  it('should cancel pending invocation', () => {
+  it('should cancel pending invocation', async () => {
     const fn = vi.fn();
     const throttled = throttle(fn, 100);
 
@@ -137,7 +131,7 @@ describe('throttle', () => {
     expect(fn).toHaveBeenCalledTimes(1);
 
     throttled.cancel();
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     
     expect(fn).toHaveBeenCalledTimes(1); // No trailing call after cancel
   });
@@ -173,14 +167,7 @@ describe('throttle', () => {
   });
 });
 
-describe('createThrottledFunctionFactory', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+describe.concurrent('createThrottledFunctionFactory', () => {
 
   it('should create throttled functions per unique argument set', () => {
     const callback = vi.fn((x: number) => x * 2);
@@ -195,7 +182,7 @@ describe('createThrottledFunctionFactory', () => {
     expect(callback).toHaveBeenCalledWith(2);
   });
 
-  it('should throttle calls with the same arguments', () => {
+  it('should throttle calls with the same arguments', async () => {
     const callback = vi.fn((x: number) => x * 2);
     const factory = createThrottledFunctionFactory(100, callback);
 
@@ -205,7 +192,7 @@ describe('createThrottledFunctionFactory', () => {
 
     expect(callback).toHaveBeenCalledTimes(1);
 
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     expect(callback).toHaveBeenCalledTimes(2); // Trailing call
   });
 
@@ -251,14 +238,14 @@ describe('createThrottledFunctionFactory', () => {
     expect(callback).toHaveBeenCalledTimes(2); // Two unique serialized forms
   });
 
-  it('should respect throttle options', () => {
+  it('should respect throttle options', async () => {
     const callback = vi.fn((x: number) => x);
     const factory = createThrottledFunctionFactory(100, callback, { leading: false });
 
     factory.call(1);
     expect(callback).not.toHaveBeenCalled();
 
-    vi.advanceTimersByTime(100);
+    await sleep(110);
     expect(callback).toHaveBeenCalledTimes(1);
   });
 });

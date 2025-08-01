@@ -113,7 +113,10 @@ export function createThrottledFunctionFactory<
 
   return {
     call: (...args) => {
-      const key = JSON.stringify(args);
+      // Create a key that properly distinguishes between null and undefined
+      const key = args.map(arg => 
+        arg === undefined ? '__UNDEFINED__' : JSON.stringify(arg)
+      ).join(',');
 
       const cachedFunction = cache.getOrInsert(key, () =>
         throttle(callback, wait, options),
