@@ -1,210 +1,29 @@
 {
-  "name": "@ls-stack/utils",
-  "description": "Typescript utils",
+  "name": "@ls-stack/utils-monorepo",
+  "private": true,
+  "description": "Monorepo for @ls-stack TypeScript utilities",
   "version": "3.18.0",
   "license": "MIT",
   "scripts": {
-    "test:ui": "vitest --ui",
-    "test": "vitest run",
-    "lint": "pnpm tsc && pnpm eslint",
-    "tsc": "tsc -p tsconfig.prod.json",
-    "tsc:watch": "tsc -p tsconfig.prod.json --watch",
-    "eslint": "CI=true eslint src/ scripts/ --color --max-warnings=0",
-    "build": "pnpm test && pnpm lint && pnpm build:no-test && pnpm run docs && pnpm run docs:commit && pnpm build:update-exports",
-    "build:no-test": "tsup",
-    "build:update-exports": "tsm --no-warnings scripts/updatePackageExports.ts",
-    "build-test": "tsup --config tsup.test.config.ts",
-    "pre-publish": "./scripts/check-if-is-sync.sh && pnpm build",
-    "test:console-fmt": "tsm --no-warnings scripts/testConsoleFmt.ts",
-    "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts",
-    "docs": "typedoc",
-    "docs:watch": "typedoc --watch",
-    "docs:commit": "git add docs && git diff --cached --quiet docs || git commit -m 'docs: update docs'"
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "build": "pnpm -r build",
+    "build:utils": "pnpm --filter @ls-stack/utils build",
+    "build:node-utils": "pnpm --filter @ls-stack/node-utils build",
+    "build:browser-utils": "pnpm --filter @ls-stack/browser-utils build",
+    "docs": "pnpm -r docs",
+    "docs:utils": "pnpm --filter @ls-stack/utils docs",
+    "docs:node-utils": "pnpm --filter @ls-stack/node-utils docs",
+    "docs:browser-utils": "pnpm --filter @ls-stack/browser-utils docs",
+    "docs:watch": "pnpm -r --parallel docs:watch"
   },
-  "files": [
-    "lib"
-  ],
   "repository": "github:lucasols/utils",
   "author": "Lucas Santos",
-  "type": "module",
-  "sideEffects": false,
-  "main": "./lib/main.cjs",
-  "module": "./lib/main.js",
-  "types": "./lib/main.d.ts",
-  "exports": {
-    ".": {
-      "import": "./lib/main.js",
-      "require": "./lib/main.cjs"
-    },
-    "./__snapshots__": {
-      "import": "./lib/__snapshots__.js",
-      "require": "./lib/__snapshots__.cjs"
-    },
-    "./arrayUtils": {
-      "import": "./lib/arrayUtils.js",
-      "require": "./lib/arrayUtils.cjs"
-    },
-    "./assertions": {
-      "import": "./lib/assertions.js",
-      "require": "./lib/assertions.cjs"
-    },
-    "./asyncQueue": {
-      "import": "./lib/asyncQueue.js",
-      "require": "./lib/asyncQueue.cjs"
-    },
-    "./cache": {
-      "import": "./lib/cache.js",
-      "require": "./lib/cache.cjs"
-    },
-    "./castValues": {
-      "import": "./lib/castValues.js",
-      "require": "./lib/castValues.cjs"
-    },
-    "./concurrentCalls": {
-      "import": "./lib/concurrentCalls.js",
-      "require": "./lib/concurrentCalls.cjs"
-    },
-    "./consoleFmt": {
-      "import": "./lib/consoleFmt.js",
-      "require": "./lib/consoleFmt.cjs"
-    },
-    "./conversions": {
-      "import": "./lib/conversions.js",
-      "require": "./lib/conversions.cjs"
-    },
-    "./createThrottleController": {
-      "import": "./lib/createThrottleController.js",
-      "require": "./lib/createThrottleController.cjs"
-    },
-    "./debounce": {
-      "import": "./lib/debounce.js",
-      "require": "./lib/debounce.cjs"
-    },
-    "./dedent": {
-      "import": "./lib/dedent.js",
-      "require": "./lib/dedent.cjs"
-    },
-    "./deepEqual": {
-      "import": "./lib/deepEqual.js",
-      "require": "./lib/deepEqual.cjs"
-    },
-    "./enhancedMap": {
-      "import": "./lib/enhancedMap.js",
-      "require": "./lib/enhancedMap.cjs"
-    },
-    "./exhaustiveMatch": {
-      "import": "./lib/exhaustiveMatch.js",
-      "require": "./lib/exhaustiveMatch.cjs"
-    },
-    "./getCompositeKey": {
-      "import": "./lib/getCompositeKey.js",
-      "require": "./lib/getCompositeKey.cjs"
-    },
-    "./getValueStableKey": {
-      "import": "./lib/getValueStableKey.js",
-      "require": "./lib/getValueStableKey.cjs"
-    },
-    "./hash": {
-      "import": "./lib/hash.js",
-      "require": "./lib/hash.cjs"
-    },
-    "./interpolate": {
-      "import": "./lib/interpolate.js",
-      "require": "./lib/interpolate.cjs"
-    },
-    "./levenshtein": {
-      "import": "./lib/levenshtein.js",
-      "require": "./lib/levenshtein.cjs"
-    },
-    "./mathUtils": {
-      "import": "./lib/mathUtils.js",
-      "require": "./lib/mathUtils.cjs"
-    },
-    "./objUtils": {
-      "import": "./lib/objUtils.js",
-      "require": "./lib/objUtils.cjs"
-    },
-    "./parallelAsyncCalls": {
-      "import": "./lib/parallelAsyncCalls.js",
-      "require": "./lib/parallelAsyncCalls.cjs"
-    },
-    "./promiseUtils": {
-      "import": "./lib/promiseUtils.js",
-      "require": "./lib/promiseUtils.cjs"
-    },
-    "./retryOnError": {
-      "import": "./lib/retryOnError.js",
-      "require": "./lib/retryOnError.cjs"
-    },
-    "./runShellCmd": {
-      "import": "./lib/runShellCmd.js",
-      "require": "./lib/runShellCmd.cjs"
-    },
-    "./safeJson": {
-      "import": "./lib/safeJson.js",
-      "require": "./lib/safeJson.cjs"
-    },
-    "./saferTyping": {
-      "import": "./lib/saferTyping.js",
-      "require": "./lib/saferTyping.cjs"
-    },
-    "./serializeXML": {
-      "import": "./lib/serializeXML.js",
-      "require": "./lib/serializeXML.cjs"
-    },
-    "./shallowEqual": {
-      "import": "./lib/shallowEqual.js",
-      "require": "./lib/shallowEqual.cjs"
-    },
-    "./sleep": {
-      "import": "./lib/sleep.js",
-      "require": "./lib/sleep.cjs"
-    },
-    "./stringUtils": {
-      "import": "./lib/stringUtils.js",
-      "require": "./lib/stringUtils.cjs"
-    },
-    "./testUtils": {
-      "import": "./lib/testUtils.js",
-      "require": "./lib/testUtils.cjs"
-    },
-    "./time": {
-      "import": "./lib/time.js",
-      "require": "./lib/time.cjs"
-    },
-    "./timers": {
-      "import": "./lib/timers.js",
-      "require": "./lib/timers.cjs"
-    },
-    "./tsResult": {
-      "import": "./lib/tsResult.js",
-      "require": "./lib/tsResult.cjs"
-    },
-    "./typeGuards": {
-      "import": "./lib/typeGuards.js",
-      "require": "./lib/typeGuards.cjs"
-    },
-    "./typingFnUtils": {
-      "import": "./lib/typingFnUtils.js",
-      "require": "./lib/typingFnUtils.cjs"
-    },
-    "./typingTestUtils": {
-      "import": "./lib/typingTestUtils.js",
-      "require": "./lib/typingTestUtils.cjs"
-    },
-    "./typingUtils": {
-      "import": "./lib/typingUtils.js",
-      "require": "./lib/typingUtils.cjs"
-    },
-    "./yamlStringify": {
-      "import": "./lib/yamlStringify.js",
-      "require": "./lib/yamlStringify.cjs"
-    }
-  },
   "engines": {
     "node": ">=20.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
     "@ls-stack/extended-lint": "^0.20.1",
     "@types/eslint": "^9.6.1",
     "@types/eslint__js": "^8.42.3",
@@ -228,9 +47,5 @@
     "typescript-eslint": "^8.21.0",
     "vite": "^6.0.11",
     "vitest": "^3.0.4"
-  },
-  "dependencies": {
-    "evtmitter": "^0.3.3",
-    "t-result": "^0.3.0"
   }
 }
