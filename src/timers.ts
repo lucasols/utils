@@ -79,7 +79,7 @@ export function createInterval(ms: number, callback: () => void): CleanupTimer {
  *
  * @example
  * ```typescript
- * const { call, clean } = createNoConcurrentTimeout(1000, () => {
+ * const { call, clean } = createDebouncedTimeout(1000, () => {
  *   console.log('Only the last call executes');
  * });
  *
@@ -91,7 +91,7 @@ export function createInterval(ms: number, callback: () => void): CleanupTimer {
  * clean();
  * ```
  */
-export function createNoConcurrentTimeout(
+export function createDebouncedTimeout(
   ms: number,
   callback: () => void,
 ): { call: () => void; clean: CleanupTimer } {
@@ -128,7 +128,7 @@ export function createNoConcurrentTimeout(
  *
  * @example
  * ```typescript
- * const cleanup = createConditionTimeout({
+ * const cleanup = createWaitUntil({
  *   condition: () => document.getElementById('myElement'),
  *   maxWaitMs: 5000,
  *   callback: (element) => {

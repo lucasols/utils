@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
+  createDebouncedTimeout,
   createInterval,
-  createNoConcurrentTimeout,
   createTimeout,
   createWaitUntil,
 } from './timers';
@@ -108,7 +108,7 @@ describe('timers', () => {
   describe('createNoConcurrentTimeout', () => {
     it('should execute callback only once when called multiple times', async () => {
       const callback = vi.fn();
-      const { call } = createNoConcurrentTimeout(50, callback);
+      const { call } = createDebouncedTimeout(50, callback);
 
       call();
       call();
@@ -121,7 +121,7 @@ describe('timers', () => {
 
     it('should cancel previous timeout when called again', async () => {
       const callback = vi.fn();
-      const { call } = createNoConcurrentTimeout(100, callback);
+      const { call } = createDebouncedTimeout(100, callback);
 
       call();
 
@@ -136,7 +136,7 @@ describe('timers', () => {
 
     it('should not execute callback if cleaned up', async () => {
       const callback = vi.fn();
-      const { call, clean } = createNoConcurrentTimeout(50, callback);
+      const { call, clean } = createDebouncedTimeout(50, callback);
 
       call();
       clean();
@@ -148,7 +148,7 @@ describe('timers', () => {
 
     it('should be safe to call clean multiple times', () => {
       const callback = vi.fn();
-      const { clean } = createNoConcurrentTimeout(50, callback);
+      const { clean } = createDebouncedTimeout(50, callback);
 
       expect(() => {
         clean();
@@ -159,7 +159,7 @@ describe('timers', () => {
 
     it('should handle calling call after clean', async () => {
       const callback = vi.fn();
-      const { call, clean } = createNoConcurrentTimeout(50, callback);
+      const { call, clean } = createDebouncedTimeout(50, callback);
 
       clean();
       call();
