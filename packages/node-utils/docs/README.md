@@ -26,17 +26,9 @@ Import specific utilities from their modules:
 import { runCmd, concurrentCmd } from '@ls-stack/node-utils/runShellCmd';
 ```
 
-## Available Utilities
+## Documentation
 
-### runShellCmd
-
-Shell command execution utilities with enhanced features:
-
-- **`runCmd`** - Execute shell commands with comprehensive options
-- **`concurrentCmd`** - Run commands concurrently with result tracking  
-- **`runCmdUnwrap`** - Execute commands and return stdout directly
-- **`runCmdSilent`** - Run commands silently without output
-- **`runCmdSilentUnwrap`** - Silent execution with stdout return
+For a complete list of available utilities and their APIs, see the auto-generated documentation in the [`docs/`](docs/) folder.
 
 ## Development
 
