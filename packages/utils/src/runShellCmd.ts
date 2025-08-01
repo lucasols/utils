@@ -1,64 +1,148 @@
-/**
- * @deprecated This utility has been moved to @ls-stack/node-utils.
- * Please update your imports:
- * ```
- * // Old (deprecated)
- * import { runCmd } from '@ls-stack/utils/runShellCmd';
- * 
- * // New (preferred)
- * import { runCmd } from '@ls-stack/node-utils/runShellCmd';
- * ```
- */
+/* eslint-disable no-console -- we need console here to print errors */
 
-/* eslint-disable no-console */
+type CmdResult = {
+  label: string | null;
+  out: string;
+  error: boolean;
+  stdout: string;
+  stderr: string;
+};
 
-let hasWarned = false;
+import { spawn } from 'child_process';
 
-function showDeprecationWarning() {
-  if (!hasWarned) {
-    hasWarned = true;
-    console.warn(
-      '⚠️  DEPRECATION WARNING: runShellCmd utilities have been moved to @ls-stack/node-utils.\n' +
-      '   Please update your imports:\n' +
-      '   - Old: import { runCmd } from \'@ls-stack/utils/runShellCmd\';\n' +
-      '   - New: import { runCmd } from \'@ls-stack/node-utils/runShellCmd\';\n' +
-      '   This backward compatibility will be removed in a future version.'
-    );
+type RunCmdOptions = {
+  mock?: CmdResult;
+  silent?: boolean | 'timeOnly';
+  cwd?: string;
+  throwOnError?: boolean;
+  noCiColorForce?: boolean;
+};
+
+export function runCmd(
+  label: string | null,
+  command: string | string[],
+  {
+    mock,
+    silent,
+    throwOnError,
+    cwd = process.cwd(),
+    noCiColorForce,
+  }: RunCmdOptions = {},
+): Promise<CmdResult> {
+  if (mock) return Promise.resolve(mock);
+
+  if (label && (!silent || silent === 'timeOnly')) {
+    console.log(`----${label}----`);
+    console.time('✅');
   }
+
+  return new Promise((resolve) => {
+    const [cmd = '', ...args] =
+      Array.isArray(command) ?
+        command.flatMap((item) =>
+          item.startsWith('$') ? item.replace('$', '').split(' ') : item,
+        )
+      : command.split(' ');
+    const child = spawn(cmd, args, {
+      cwd,
+      env: noCiColorForce ? undefined : { ...process.env, CLICOLOR_FORCE: '1' },
+    });
+
+    let stdout = '';
+    let stderr = '';
+    let out = '';
+
+    child.stdout.on('data', (data) => {
+      stdout += String(data);
+      out += String(data);
+
+      if (!silent) {
+        console.log(String(data));
+      }
+    });
+
+    child.stderr.on('data', (data) => {
+      stderr += String(data);
+      out += String(data);
+
+      if (!silent) {
+        console.log(String(data));
+      }
+    });
+
+    child.on('close', (code) => {
+      const hasError = code !== 0;
+
+      if (!silent || silent === 'timeOnly') {
+        if (!hasError) {
+          console.timeEnd('✅');
+        }
+
+        console.log('\n');
+      }
+
+      if (throwOnError && hasError) {
+        if (silent) {
+          if (label) {
+            console.log(`----${label}----`);
+          } else {
+            console.trace();
+          }
+          console.error(stderr);
+        }
+
+        process.exit(1);
+      }
+
+      resolve({ label, out, stderr, stdout, error: hasError });
+    });
+  });
 }
 
-export * from '@ls-stack/node-utils/runShellCmd';
+export async function concurrentCmd(
+  label: string,
+  cmd: string | string[],
+  onResult: (result: CmdResult) => void,
+) {
+  const start = Date.now();
 
-// Re-export with deprecation warning
-export { 
-  runCmd as _runCmd,
-  concurrentCmd as _concurrentCmd,
-  runCmdUnwrap as _runCmdUnwrap,
-  runCmdSilent as _runCmdSilent,
-  runCmdSilentUnwrap as _runCmdSilentUnwrap
-} from '@ls-stack/node-utils/runShellCmd';
+  const result = await runCmd(label, cmd, { silent: true });
 
-export const runCmd = (...args: Parameters<typeof import('@ls-stack/node-utils/runShellCmd').runCmd>) => {
-  showDeprecationWarning();
-  return import('@ls-stack/node-utils/runShellCmd').then(m => m.runCmd(...args));
-};
+  onResult(result);
 
-export const concurrentCmd = (...args: Parameters<typeof import('@ls-stack/node-utils/runShellCmd').concurrentCmd>) => {
-  showDeprecationWarning();
-  return import('@ls-stack/node-utils/runShellCmd').then(m => m.concurrentCmd(...args));
-};
+  const elapsedSeconds = (Date.now() - start) / 1000;
 
-export const runCmdUnwrap = (...args: Parameters<typeof import('@ls-stack/node-utils/runShellCmd').runCmdUnwrap>) => {
-  showDeprecationWarning();
-  return import('@ls-stack/node-utils/runShellCmd').then(m => m.runCmdUnwrap(...args));
-};
+  console.log(
+    `${result.error ? '🔴' : '✅'} ${result.label} (${elapsedSeconds.toFixed(
+      1,
+    )}s)`,
+  );
 
-export const runCmdSilent = (...args: Parameters<typeof import('@ls-stack/node-utils/runShellCmd').runCmdSilent>) => {
-  showDeprecationWarning();
-  return import('@ls-stack/node-utils/runShellCmd').then(m => m.runCmdSilent(...args));
-};
+  return () => {
+    if (result.error) {
+      console.log(`❌ ${result.label} errors:`);
+      console.log(result.out);
+      console.log('\n');
+    }
+  };
+}
 
-export const runCmdSilentUnwrap = (...args: Parameters<typeof import('@ls-stack/node-utils/runShellCmd').runCmdSilentUnwrap>) => {
-  showDeprecationWarning();
-  return import('@ls-stack/node-utils/runShellCmd').then(m => m.runCmdSilentUnwrap(...args));
-};
+export async function runCmdUnwrap(
+  label: string | null,
+  command: string | string[],
+  {
+    silent,
+  }: {
+    silent?: boolean | 'timeOnly';
+  } = {},
+) {
+  return (await runCmd(label, command, { silent, throwOnError: true })).stdout;
+}
+
+export function runCmdSilent(command: string | string[]) {
+  return runCmd(null, command, { silent: true });
+}
+
+export function runCmdSilentUnwrap(command: string | string[]) {
+  return runCmdUnwrap(null, command, { silent: true });
+}
