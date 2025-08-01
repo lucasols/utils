@@ -10,7 +10,7 @@ This is a monorepo containing three TypeScript utility packages:
 - **`@ls-stack/node-utils`** - Node.js-specific utilities (shell commands, file system operations)
 - **`@ls-stack/browser-utils`** - Browser-specific utilities (File API, DOM-related operations)
 
-The original `@ls-stack/utils` package now serves as a backward compatibility wrapper that re-exports utilities from the appropriate specialized packages with deprecation warnings.
+All packages are designed with a modular architecture where each utility is exported as a separate module to enable tree-shaking and selective imports.
 
 ## Commands
 
@@ -21,13 +21,13 @@ The original `@ls-stack/utils` package now serves as a backward compatibility wr
 - `pnpm build:deps` - Build only dependency packages (node-utils, browser-utils)
 
 ### Individual Package Commands
-- `pnpm test` - Run tests for root package (backward compatibility wrapper)
+- `pnpm test` - Run tests for utils package
 - `pnpm test:ui` - Run tests with Vitest UI
-- `pnpm lint` - Run TypeScript compiler and ESLint checks for root package
+- `pnpm lint` - Run TypeScript compiler and ESLint checks
 - `pnpm tsc` - Run TypeScript compiler only
 - `pnpm eslint` - Run ESLint only
-- `pnpm build` - Full build process for root package (includes building dependencies first)
-- `pnpm build:no-test` - Build root package without running tests
+- `pnpm build` - Full build process (includes building dependencies first)
+- `pnpm build:no-test` - Build without running tests
 
 ### Package-Specific Commands
 To run commands in specific packages:
@@ -87,7 +87,7 @@ Each package follows a flat module structure:
 
 ### Import Patterns
 
-#### Recommended (New Packages)
+#### Import Patterns
 ```typescript
 // Universal utilities (work in both browser and Node.js)
 import { createAsyncQueue } from '@ls-stack/utils/asyncQueue';
@@ -100,15 +100,6 @@ import { runCmd } from '@ls-stack/node-utils/runShellCmd';
 import { yamlStringify } from '@ls-stack/browser-utils/yamlStringify';
 ```
 
-#### Backward Compatibility (Deprecated)
-```typescript
-// These still work but show deprecation warnings
-import { runCmd } from '@ls-stack/utils/runShellCmd'; // ⚠️ Deprecated
-import { yamlStringify } from '@ls-stack/utils/yamlStringify'; // ⚠️ Deprecated
-
-// Universal utilities continue to work as before
-import { deepEqual } from '@ls-stack/utils/deepEqual'; // ✅ Still preferred
-```
 
 ### Utility Categories
 - **Array Operations**: `arrayUtils` - filtering, mapping, sorting with enhanced typing
@@ -125,37 +116,17 @@ import { deepEqual } from '@ls-stack/utils/deepEqual'; // ✅ Still preferred
 - Test-driven development with co-located tests
 - Consistent naming: camelCase for functions, PascalCase for types
 
-### Migration Guide
+### Shared Configurations
 
-#### For Node.js-specific utilities:
-```typescript
-// Before
-import { runCmd, concurrentCmd } from '@ls-stack/utils/runShellCmd';
+The monorepo uses shared base configurations to maintain consistency:
 
-// After  
-import { runCmd, concurrentCmd } from '@ls-stack/node-utils/runShellCmd';
-```
-
-#### For Browser-specific utilities:
-```typescript
-// Before
-import { yamlStringify } from '@ls-stack/utils/yamlStringify';
-
-// After
-import { yamlStringify } from '@ls-stack/browser-utils/yamlStringify';
-```
-
-#### Universal utilities (no change needed):
-```typescript
-// These imports remain the same
-import { deepEqual } from '@ls-stack/utils/deepEqual';
-import { createAsyncQueue } from '@ls-stack/utils/asyncQueue';
-// ... all other utilities
-```
+- **`eslint.config.base.ts`** - Shared ESLint configuration with TypeScript, Vitest, and extended-lint rules
+- **`tsup.config.base.ts`** - Shared build configuration for dual ESM/CJS output
+- **`tsconfig.base.json`** - Common TypeScript compiler options
+- **`scripts/updatePackageExports.ts`** - Automated package.json exports generation
 
 ### Special Notes
-- The root `@ls-stack/utils` package now serves as a backward compatibility wrapper
-- Deprecated imports show console warnings in development but continue to work
-- Some utilities like `tsResult` are deprecated in favor of external libraries
+- Some utilities like `tsResult` are deprecated in favor of external libraries (`t-result`)
 - The build process automatically commits documentation changes
 - ESLint rules are stricter in CI environment
+- All packages generate TypeScript declaration files for both ESM (`.d.ts`) and CJS (`.d.cts`)
