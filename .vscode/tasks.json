@@ -4,28 +4,121 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "run tests",
-      "type": "npm",
-      "script": "test:ui"
-    },
-    {
-      "label": "bump version and deploy",
+      "label": "test all packages",
       "type": "shell",
-      "command": "pnpm pre-publish && pnpm version ${input:version} && pnpm publish",
-      "problemMatcher": []
-    },
-    {
-      "label": "run lint",
-      "type": "npm",
-      "script": "lint",
+      "command": "pnpm test",
+      "group": "test",
       "presentation": {
         "clear": true
       }
     },
     {
-      "label": "tsc watch",
-      "type": "npm",
-      "script": "tsc:watch",
+      "label": "test with UI",
+      "type": "shell",
+      "command": "pnpm --filter @ls-stack/utils test:ui",
+      "group": "test",
+      "presentation": {
+        "clear": true
+      }
+    },
+    {
+      "label": "lint all packages",
+      "type": "shell",
+      "command": "pnpm lint",
+      "group": "build",
+      "presentation": {
+        "clear": true
+      }
+    },
+    {
+      "label": "build all packages",
+      "type": "shell",
+      "command": "pnpm build",
+      "group": "build",
+      "presentation": {
+        "clear": true
+      }
+    },
+    {
+      "label": "build-lint-test all",
+      "type": "shell",
+      "command": "pnpm build-lint-test-all",
+      "group": "build",
+      "presentation": {
+        "clear": true
+      }
+    },
+    {
+      "label": "build utils only",
+      "type": "shell",
+      "command": "pnpm build:utils",
+      "group": "build"
+    },
+    {
+      "label": "build node-utils only",
+      "type": "shell",
+      "command": "pnpm build:node-utils",
+      "group": "build"
+    },
+    {
+      "label": "build browser-utils only",
+      "type": "shell",
+      "command": "pnpm build:browser-utils",
+      "group": "build"
+    },
+    {
+      "label": "generate docs",
+      "type": "shell",
+      "command": "pnpm docs",
+      "group": "build"
+    },
+    {
+      "label": "format all packages",
+      "type": "shell",
+      "command": "pnpm format",
+      "group": "build"
+    },
+    {
+      "label": "bump version and publish utils",
+      "type": "shell",
+      "command": "pnpm --filter @ls-stack/utils pre-publish && pnpm --filter @ls-stack/utils version ${input:version} && pnpm --filter @ls-stack/utils publish",
+      "group": "build",
+      "presentation": {
+        "clear": true
+      }
+    },
+    {
+      "label": "bump version and publish node-utils",
+      "type": "shell",
+      "command": "pnpm --filter @ls-stack/node-utils build && pnpm --filter @ls-stack/node-utils version ${input:version} && pnpm --filter @ls-stack/node-utils publish",
+      "group": "build",
+      "presentation": {
+        "clear": true
+      }
+    },
+    {
+      "label": "bump version and publish browser-utils",
+      "type": "shell",
+      "command": "pnpm --filter @ls-stack/browser-utils build && pnpm --filter @ls-stack/browser-utils version ${input:version} && pnpm --filter @ls-stack/browser-utils publish",
+      "group": "build",
+      "presentation": {
+        "clear": true
+      }
+    },
+    {
+      "label": "bump version and publish react-utils",
+      "type": "shell",
+      "command": "pnpm --filter @ls-stack/react-utils build && pnpm --filter @ls-stack/react-utils version ${input:version} && pnpm --filter @ls-stack/react-utils publish",
+      "group": "build",
+      "presentation": {
+        "clear": true
+      }
+    },
+    {
+      "label": "bump version and publish selected package",
+      "type": "shell",
+      "command": "pnpm --filter ${input:packageName} build && pnpm --filter ${input:packageName} version ${input:version} && pnpm --filter ${input:packageName} publish",
+      "group": "build",
       "presentation": {
         "clear": true
       }
@@ -33,15 +126,21 @@
   ],
   "inputs": [
     {
-      "id": "fileName",
-      "type": "promptString",
-      "description": "Enter the file name"
+      "id": "packageName",
+      "type": "pickString",
+      "description": "Select package to work with",
+      "options": ["@ls-stack/utils", "@ls-stack/node-utils", "@ls-stack/browser-utils", "@ls-stack/react-utils"]
     },
     {
       "id": "version",
       "type": "pickString",
       "description": "Select version type",
-      "options": ["minor", "patch", "major"]
+      "options": ["patch", "minor", "major"]
+    },
+    {
+      "id": "fileName",
+      "type": "promptString",
+      "description": "Enter the file name"
     }
   ]
 }
