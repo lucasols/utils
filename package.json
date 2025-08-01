@@ -15,7 +15,8 @@
     "docs:utils": "pnpm --filter @ls-stack/utils docs",
     "docs:node-utils": "pnpm --filter @ls-stack/node-utils docs",
     "docs:browser-utils": "pnpm --filter @ls-stack/browser-utils docs",
-    "docs:watch": "pnpm -r --parallel docs:watch"
+    "docs:watch": "pnpm -r --parallel docs:watch",
+    "build-lint-test-all": "pnpm build && pnpm lint && pnpm test"
   },
   "repository": "github:lucasols/utils",
   "author": "Lucas Santos",
