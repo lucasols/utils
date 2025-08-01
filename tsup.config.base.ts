@@ -1,6 +1,6 @@
 import { defineConfig, type Options } from 'tsup';
 
-export function createTsupConfig(options: Partial<Options> = {}): Options {
+export function createTsupConfig(options: Partial<Options> = {}) {
   return defineConfig({
     entry: ['src/*.ts', '!src/*.test.ts'],
     clean: true,
