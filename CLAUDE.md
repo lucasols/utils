@@ -4,18 +4,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-`@ls-stack/utils` is a TypeScript utility library that provides a comprehensive set of helper functions for modern JavaScript/TypeScript projects. The library is designed with a modular architecture where each utility is exported as a separate module to enable tree-shaking and selective imports.
+This is a monorepo containing three TypeScript utility packages:
+
+- **`@ls-stack/utils`** - Universal utilities that work in both browser and Node.js environments
+- **`@ls-stack/node-utils`** - Node.js-specific utilities (shell commands, file system operations)
+- **`@ls-stack/browser-utils`** - Browser-specific utilities (File API, DOM-related operations)
+
+The original `@ls-stack/utils` package now serves as a backward compatibility wrapper that re-exports utilities from the appropriate specialized packages with deprecation warnings.
 
 ## Commands
 
-### Development
-- `pnpm test` - Run all tests using Vitest
+### Monorepo Commands
+- `pnpm test:all` - Run tests for all packages
+- `pnpm lint:all` - Run lint checks for all packages  
+- `pnpm build:all` - Build all packages
+- `pnpm build:deps` - Build only dependency packages (node-utils, browser-utils)
+
+### Individual Package Commands
+- `pnpm test` - Run tests for root package (backward compatibility wrapper)
 - `pnpm test:ui` - Run tests with Vitest UI
-- `pnpm lint` - Run TypeScript compiler and ESLint checks
+- `pnpm lint` - Run TypeScript compiler and ESLint checks for root package
 - `pnpm tsc` - Run TypeScript compiler only
 - `pnpm eslint` - Run ESLint only
-- `pnpm build` - Full build process (test, lint, build, docs, update exports)
-- `pnpm build:no-test` - Build without running tests
+- `pnpm build` - Full build process for root package (includes building dependencies first)
+- `pnpm build:no-test` - Build root package without running tests
+
+### Package-Specific Commands
+To run commands in specific packages:
+- `pnpm --filter @ls-stack/utils <command>` - Run command in utils package
+- `pnpm --filter @ls-stack/node-utils <command>` - Run command in node-utils package
+- `pnpm --filter @ls-stack/browser-utils <command>` - Run command in browser-utils package
 
 ### Documentation
 - `pnpm docs` - Generate TypeDoc documentation
@@ -31,11 +49,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
+### Monorepo Structure
+```
+packages/
+├── utils/           # Universal utilities (browser + Node.js)
+├── node-utils/      # Node.js-specific utilities
+└── browser-utils/   # Browser-specific utilities
+```
+
 ### Module Structure
-The library follows a flat module structure where each utility is a separate TypeScript file in the `src/` directory:
+Each package follows a flat module structure:
 - Each utility has its own `.ts` file (e.g., `arrayUtils.ts`, `asyncQueue.ts`)
 - Each utility has corresponding `.test.ts` file for tests
 - Tests are co-located with source files for better organization
+
+### Package Distribution
+- **`@ls-stack/utils`**: Contains 39 universal utilities that work in both environments
+- **`@ls-stack/node-utils`**: Contains `runShellCmd` utility for shell command execution
+- **`@ls-stack/browser-utils`**: Contains `yamlStringify` utility with File API support
 
 ### Build System
 - **Bundler**: Uses `tsup` for building ESM and CJS formats
@@ -55,14 +86,28 @@ The library follows a flat module structure where each utility is a separate Typ
 - **Linting**: Custom ESLint config with `@ls-stack/extended-lint`
 
 ### Import Patterns
-The library uses subpath exports for tree-shaking:
+
+#### Recommended (New Packages)
 ```typescript
-// Correct way to import utilities
+// Universal utilities (work in both browser and Node.js)
 import { createAsyncQueue } from '@ls-stack/utils/asyncQueue';
 import { deepEqual } from '@ls-stack/utils/deepEqual';
 
-// Avoid importing from main entry point
-import { createAsyncQueue } from '@ls-stack/utils'; // Less optimal
+// Node.js-specific utilities
+import { runCmd } from '@ls-stack/node-utils/runShellCmd';
+
+// Browser-specific utilities  
+import { yamlStringify } from '@ls-stack/browser-utils/yamlStringify';
+```
+
+#### Backward Compatibility (Deprecated)
+```typescript
+// These still work but show deprecation warnings
+import { runCmd } from '@ls-stack/utils/runShellCmd'; // ⚠️ Deprecated
+import { yamlStringify } from '@ls-stack/utils/yamlStringify'; // ⚠️ Deprecated
+
+// Universal utilities continue to work as before
+import { deepEqual } from '@ls-stack/utils/deepEqual'; // ✅ Still preferred
 ```
 
 ### Utility Categories
@@ -80,8 +125,37 @@ import { createAsyncQueue } from '@ls-stack/utils'; // Less optimal
 - Test-driven development with co-located tests
 - Consistent naming: camelCase for functions, PascalCase for types
 
+### Migration Guide
+
+#### For Node.js-specific utilities:
+```typescript
+// Before
+import { runCmd, concurrentCmd } from '@ls-stack/utils/runShellCmd';
+
+// After  
+import { runCmd, concurrentCmd } from '@ls-stack/node-utils/runShellCmd';
+```
+
+#### For Browser-specific utilities:
+```typescript
+// Before
+import { yamlStringify } from '@ls-stack/utils/yamlStringify';
+
+// After
+import { yamlStringify } from '@ls-stack/browser-utils/yamlStringify';
+```
+
+#### Universal utilities (no change needed):
+```typescript
+// These imports remain the same
+import { deepEqual } from '@ls-stack/utils/deepEqual';
+import { createAsyncQueue } from '@ls-stack/utils/asyncQueue';
+// ... all other utilities
+```
+
 ### Special Notes
-- The `main.ts` file only exports a placeholder error function
+- The root `@ls-stack/utils` package now serves as a backward compatibility wrapper
+- Deprecated imports show console warnings in development but continue to work
 - Some utilities like `tsResult` are deprecated in favor of external libraries
 - The build process automatically commits documentation changes
 - ESLint rules are stricter in CI environment

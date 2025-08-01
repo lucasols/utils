@@ -1,0 +1,20 @@
+{
+  "entryPoints": ["src"],
+  "entryPointStrategy": "expand",
+  "out": "docs",
+  "plugin": ["typedoc-plugin-markdown", "typedoc-plugin-missing-exports"],
+  "readme": "./README.md",
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/node_modules/**", "src/runShellCmd.ts", "src/yamlStringify.ts"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "hideBreadcrumbs": false,
+  "hidePageHeader": false,
+  "hidePageTitle": false,
+  "outputFileStrategy": "modules",
+  "gitRevision": "main",
+  "useCodeBlocks": true,
+  "theme": "default",
+  "tsconfig": "./tsconfig.docs.json"
+}

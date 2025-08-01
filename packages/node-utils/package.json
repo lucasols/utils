@@ -1,0 +1,67 @@
+{
+  "name": "@ls-stack/node-utils",
+  "description": "Node.js-specific TypeScript utilities",
+  "version": "3.18.0",
+  "license": "MIT",
+  "scripts": {
+    "test:ui": "vitest --ui",
+    "test": "vitest run",
+    "lint": "pnpm tsc && pnpm eslint",
+    "tsc": "tsc -p tsconfig.prod.json",
+    "tsc:watch": "tsc -p tsconfig.prod.json --watch",
+    "eslint": "CI=true eslint src/ --color --max-warnings=0",
+    "build": "pnpm test && pnpm lint && pnpm build:no-test && pnpm run docs && pnpm build:update-exports",
+    "build:no-test": "tsup",
+    "build:update-exports": "tsm --no-warnings scripts/updatePackageExports.ts",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch"
+  },
+  "files": [
+    "lib",
+    "docs"
+  ],
+  "repository": "github:lucasols/utils",
+  "author": "Lucas Santos",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./lib/main.cjs",
+  "module": "./lib/main.js",
+  "types": "./lib/main.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/main.js",
+      "require": "./lib/main.cjs"
+    },
+    "./runShellCmd": {
+      "import": "./lib/runShellCmd.js",
+      "require": "./lib/runShellCmd.cjs"
+    }
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@ls-stack/extended-lint": "^0.20.1",
+    "@types/eslint": "^9.6.1",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^22.10.9",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.21.0",
+    "@vitest/ui": "^3.0.4",
+    "eslint": "^9.18.0",
+    "eslint-plugin-unicorn": "^56.0.1",
+    "eslint-plugin-vitest": "^0.5.4",
+    "prettier": "3.4.2",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "tsm": "^2.3.0",
+    "tsup": "^8.3.5",
+    "typedoc": "^0.28.4",
+    "typedoc-plugin-markdown": "^4.6.3",
+    "typedoc-plugin-missing-exports": "^4.0.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.21.0",
+    "vite": "^6.0.11",
+    "vitest": "^3.0.4"
+  }
+}
