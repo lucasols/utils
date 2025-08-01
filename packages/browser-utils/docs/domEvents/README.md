@@ -1,6 +1,6 @@
 [**@ls-stack/browser-utils**](../README.md)
 
-***
+---
 
 [@ls-stack/browser-utils](../modules.md) / domEvents
 
@@ -16,9 +16,10 @@
 
 ```ts
 function createDocumentEvtListener<K>(
-   type, 
-   listener, 
-   options?): RemoveListenerFn;
+  type,
+  listener,
+  options?,
+): RemoveListenerFn;
 ```
 
 Defined in: [domEvents.ts:3](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/domEvents.ts#L3)
@@ -27,7 +28,7 @@ Defined in: [domEvents.ts:3](https://github.com/lucasols/utils/blob/main/package
 
 ##### K
 
-`K` *extends* keyof `DocumentEventMap`
+`K` _extends_ keyof `DocumentEventMap`
 
 #### Parameters
 
@@ -47,16 +48,17 @@ Defined in: [domEvents.ts:3](https://github.com/lucasols/utils/blob/main/package
 
 [`RemoveListenerFn`](-internal-.md#removelistenerfn)
 
-***
+---
 
 ### createElementEvtListener()
 
 ```ts
 function createElementEvtListener<K>(
-   element, 
-   type, 
-   listener, 
-   options?): RemoveListenerFn;
+  element,
+  type,
+  listener,
+  options?,
+): RemoveListenerFn;
 ```
 
 Defined in: [domEvents.ts:17](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/domEvents.ts#L17)
@@ -65,7 +67,7 @@ Defined in: [domEvents.ts:17](https://github.com/lucasols/utils/blob/main/packag
 
 ##### K
 
-`K` *extends* keyof `HTMLElementEventMap`
+`K` _extends_ keyof `HTMLElementEventMap`
 
 #### Parameters
 
@@ -89,15 +91,12 @@ Defined in: [domEvents.ts:17](https://github.com/lucasols/utils/blob/main/packag
 
 [`RemoveListenerFn`](-internal-.md#removelistenerfn)
 
-***
+---
 
 ### createWindowEvtListener()
 
 ```ts
-function createWindowEvtListener<K>(
-   type, 
-   listener, 
-   options?): RemoveListenerFn;
+function createWindowEvtListener<K>(type, listener, options?): RemoveListenerFn;
 ```
 
 Defined in: [domEvents.ts:32](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/domEvents.ts#L32)
@@ -106,7 +105,7 @@ Defined in: [domEvents.ts:32](https://github.com/lucasols/utils/blob/main/packag
 
 ##### K
 
-`K` *extends* keyof `WindowEventMap`
+`K` _extends_ keyof `WindowEventMap`
 
 #### Parameters
 
@@ -126,7 +125,7 @@ Defined in: [domEvents.ts:32](https://github.com/lucasols/utils/blob/main/packag
 
 [`RemoveListenerFn`](-internal-.md#removelistenerfn)
 
-***
+---
 
 ### onElementTransitionsEnd()
 

@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
-***
+---
 
 [@ls-stack/utils](modules.md) / serializeXML
 
@@ -50,27 +50,27 @@ optional validateTagName: boolean;
 
 Defined in: [packages/utils/src/serializeXML.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L38)
 
-***
+---
 
 ### XMLNode
 
 ```ts
-type XMLNode = 
+type XMLNode =
   | {
-  attrs?: Record<string, string | number | boolean | null | undefined>;
-  children?: (XMLNode | null | undefined | false)[] | string;
-  escapeText?: boolean;
-  name: string;
-  type?: "node";
-}
+      attrs?: Record<string, string | number | boolean | null | undefined>;
+      children?: (XMLNode | null | undefined | false)[] | string;
+      escapeText?: boolean;
+      name: string;
+      type?: 'node';
+    }
   | {
-  content: string;
-  escapeText?: boolean;
-  type: "comment";
-}
+      content: string;
+      escapeText?: boolean;
+      type: 'comment';
+    }
   | {
-  type: "emptyLine";
-};
+      type: 'emptyLine';
+    };
 ```
 
 Defined in: [packages/utils/src/serializeXML.ts:18](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L18)

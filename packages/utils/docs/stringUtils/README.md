@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / stringUtils
 
@@ -35,9 +35,9 @@ A util to create more legible conditional concatenated strings
 #### Example
 
 ```ts
-joinStrings('a', 'b', 'c') // 'abc'
-joinStrings('a', false, 'c') // 'ac'
-joinStrings('a', addBString ? 'b' : null, 'c') // 'ac' if addBString is false, 'abc' if addBString is true
+joinStrings('a', 'b', 'c'); // 'abc'
+joinStrings('a', false, 'c'); // 'ac'
+joinStrings('a', addBString ? 'b' : null, 'c'); // 'ac' if addBString is false, 'abc' if addBString is true
 ```
 
 #### Deprecated
@@ -69,12 +69,12 @@ A util to create more legible conditional concatenated strings
 #### Example
 
 ```ts
-joinStrings('a', 'b', 'c') // 'abc'
-joinStrings('a', false, 'c') // 'ac'
-joinStrings('a', addBString ? 'b' : null, 'c') // 'ac' if addBString is false, 'abc' if addBString is true
+joinStrings('a', 'b', 'c'); // 'abc'
+joinStrings('a', false, 'c'); // 'ac'
+joinStrings('a', addBString ? 'b' : null, 'c'); // 'ac' if addBString is false, 'abc' if addBString is true
 ```
 
-***
+---
 
 ### convertToSnakeCase()
 
@@ -94,7 +94,7 @@ Defined in: [packages/utils/src/stringUtils.ts:46](https://github.com/lucasols/u
 
 `string`
 
-***
+---
 
 ### formatNum()
 
@@ -114,7 +114,7 @@ Defined in: [packages/utils/src/stringUtils.ts:35](https://github.com/lucasols/u
 
 `string`
 
-***
+---
 
 ### isSnakeCase()
 
@@ -134,15 +134,12 @@ Defined in: [packages/utils/src/stringUtils.ts:42](https://github.com/lucasols/u
 
 `boolean`
 
-***
+---
 
 ### truncateString()
 
 ```ts
-function truncateString(
-   str, 
-   length, 
-   ellipsis): string;
+function truncateString(str, length, ellipsis): string;
 ```
 
 Defined in: [packages/utils/src/stringUtils.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L53)

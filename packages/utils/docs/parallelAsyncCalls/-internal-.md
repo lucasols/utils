@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / [parallelAsyncCalls](README.md) / \<internal\>
 
@@ -16,7 +16,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:39](https://github.com/luc
 
 ##### M
 
-`M` *extends* [`ValidMetadata`](#validmetadata) \| `undefined` = `undefined`
+`M` _extends_ [`ValidMetadata`](#validmetadata) \| `undefined` = `undefined`
 
 ##### R
 
@@ -60,7 +60,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:51](https://github.com/luc
 
 ###### call
 
-`M` *extends* `undefined` ? () => `Promise`\<`Result`\<`R`\>\> : `object`
+`M` _extends_ `undefined` ? () => `Promise`\<`Result`\<`R`\>\> : `object`
 
 ###### Returns
 
@@ -80,7 +80,7 @@ adds calls return tuples with inferred results
 
 ###### T
 
-`T` *extends* `M` *extends* `undefined` ? () => `Promise`\<`Result`\<`R`\>\> : `object`[]
+`T` _extends_ `M` _extends_ `undefined` ? () => `Promise`\<`Result`\<`R`\>\> : `object`[]
 
 ###### Parameters
 
@@ -95,7 +95,13 @@ adds calls return tuples with inferred results
 ###### runAll()
 
 ```ts
-runAll: (props?) => Promise<Result<{ [I in string | number | symbol]: TupleRunAllSuccess<T[I<I>]> }, TupleRunAllFailed<T[number]>>>;
+runAll: (props?) =>
+  Promise<
+    Result<
+      { [I in string | number | symbol]: TupleRunAllSuccess<T[I<I>]> },
+      TupleRunAllFailed<T[number]>
+    >
+  >;
 ```
 
 ###### Parameters
@@ -111,10 +117,11 @@ runAll: (props?) => Promise<Result<{ [I in string | number | symbol]: TupleRunAl
 ###### runAllSettled()
 
 ```ts
-runAllSettled: (props?) => Promise<{
-  allFailed: boolean;
-  results: { [I in string | number | symbol]: TupleRunAllSettled<T[I<I>]> };
-}>;
+runAllSettled: (props?) =>
+  Promise<{
+    allFailed: boolean;
+    results: { [I in string | number | symbol]: TupleRunAllSettled<T[I<I>]> };
+  }>;
 ```
 
 ###### Parameters
@@ -126,8 +133,8 @@ runAllSettled: (props?) => Promise<{
 ###### Returns
 
 `Promise`\<\{
-  `allFailed`: `boolean`;
-  `results`: \{ \[I in string \| number \| symbol\]: TupleRunAllSettled\<T\[I\<I\>\]\> \};
+`allFailed`: `boolean`;
+`results`: \{ \[I in string \| number \| symbol\]: TupleRunAllSettled\<T\[I\<I\>\]\> \};
 \}\>
 
 ##### runAll()
@@ -152,8 +159,8 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:151](https://github.com/lu
 ###### Returns
 
 `Promise`\<`Result`\<[`Succeeded`](#succeeded)\<`R`, `M`\>[], \{
-  `error`: `Error`;
-  `metadata`: `M`;
+`error`: `Error`;
+`metadata`: `M`;
 \}\>\>
 
 ##### runAllSettled()
@@ -178,10 +185,10 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:96](https://github.com/luc
 ###### Returns
 
 `Promise`\<\{
-  `allFailed`: `boolean`;
-  `failed`: [`Failed`](#failed)\<`M`\>[];
-  `results`: ([`Failed`](#failed)\<`M`\> \| [`Succeeded`](#succeeded)\<`R`, `M`\>)[];
-  `succeeded`: [`Succeeded`](#succeeded)\<`R`, `M`\>[];
+`allFailed`: `boolean`;
+`failed`: [`Failed`](#failed)\<`M`\>[];
+`results`: ([`Failed`](#failed)\<`M`\> \| [`Succeeded`](#succeeded)\<`R`, `M`\>)[];
+`succeeded`: [`Succeeded`](#succeeded)\<`R`, `M`\>[];
 \}\>
 
 ## Type Aliases
@@ -218,7 +225,7 @@ metadata: M;
 
 Defined in: [packages/utils/src/parallelAsyncCalls.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L31)
 
-***
+---
 
 ### RunProps
 
@@ -248,7 +255,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:27](https://github.com/luc
 
 `number`
 
-***
+---
 
 ### Succeeded\<R, M\>
 
@@ -286,12 +293,15 @@ value: R;
 
 Defined in: [packages/utils/src/parallelAsyncCalls.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L35)
 
-***
+---
 
 ### TupleRunAllFailed\<T\>
 
 ```ts
-type TupleRunAllFailed<T> = T extends () => Promise<Result<any>> ? object : T extends object ? object : never;
+type TupleRunAllFailed<T> =
+  T extends () => Promise<Result<any>> ? object
+  : T extends object ? object
+  : never;
 ```
 
 Defined in: [packages/utils/src/parallelAsyncCalls.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L13)
@@ -302,14 +312,16 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:13](https://github.com/luc
 
 `T`
 
-***
+---
 
 ### TupleRunAllSettled\<T\>
 
 ```ts
-type TupleRunAllSettled<T> = T extends () => Promise<Result<infer V>> ? 
-  | Succeeded<V, undefined>
-  | Failed<undefined> : T extends object ? Succeeded<V, M> | Failed<M> : never;
+type TupleRunAllSettled<T> =
+  T extends () => Promise<Result<infer V>> ?
+    Succeeded<V, undefined> | Failed<undefined>
+  : T extends object ? Succeeded<V, M> | Failed<M>
+  : never;
 ```
 
 Defined in: [packages/utils/src/parallelAsyncCalls.ts:19](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L19)
@@ -320,12 +332,15 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:19](https://github.com/luc
 
 `T`
 
-***
+---
 
 ### TupleRunAllSuccess\<T\>
 
 ```ts
-type TupleRunAllSuccess<T> = T extends () => Promise<Result<infer V>> ? Succeeded<V, undefined> : T extends object ? Succeeded<V, M> : never;
+type TupleRunAllSuccess<T> =
+  T extends () => Promise<Result<infer V>> ? Succeeded<V, undefined>
+  : T extends object ? Succeeded<V, M>
+  : never;
 ```
 
 Defined in: [packages/utils/src/parallelAsyncCalls.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L7)
@@ -336,7 +351,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:7](https://github.com/luca
 
 `T`
 
-***
+---
 
 ### ValidMetadata
 

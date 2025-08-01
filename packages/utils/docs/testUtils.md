@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
-***
+---
 
 [@ls-stack/utils](modules.md) / testUtils
 
@@ -22,11 +22,11 @@ Defined in: [packages/utils/src/testUtils.ts:8](https://github.com/lucasols/util
 
 ###### arrays?
 
-  \| `"length"`
-  \| `"all"`
-  \| `"firstAndLast"`
-  \| \{
-  `firstNItems`: `number`;
+\| `"length"`
+\| `"all"`
+\| `"firstAndLast"`
+\| \{
+`firstNItems`: `number`;
 \} = `...`
 
 ###### changesOnly?
@@ -105,11 +105,11 @@ getSnapshot: (__namedParameters) => string;
 
 ###### arrays?
 
-  \| `"length"`
-  \| `"all"`
-  \| `"firstAndLast"`
-  \| \{
-  `firstNItems`: `number`;
+\| `"length"`
+\| `"all"`
+\| `"firstAndLast"`
+\| \{
+`firstNItems`: `number`;
 \} = `defaultArrays`
 
 ###### changesOnly?
@@ -238,7 +238,7 @@ get snapshotFromLast(): string;
 
 `string`
 
-***
+---
 
 ### getResultFn()
 
@@ -252,7 +252,7 @@ Defined in: [packages/utils/src/testUtils.ts:275](https://github.com/lucasols/ut
 
 ##### T
 
-`T` *extends* (...`args`) => `any`
+`T` _extends_ (...`args`) => `any`
 
 #### Parameters
 
@@ -268,7 +268,7 @@ Defined in: [packages/utils/src/testUtils.ts:275](https://github.com/lucasols/ut
 
 `T`
 
-***
+---
 
 ### waitController()
 

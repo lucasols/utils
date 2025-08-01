@@ -1,6 +1,6 @@
 [**@ls-stack/browser-utils**](README.md)
 
-***
+---
 
 # @ls-stack/browser-utils
 

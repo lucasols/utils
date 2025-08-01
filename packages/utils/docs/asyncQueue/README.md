@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / asyncQueue
 
@@ -28,7 +28,7 @@ Defined in: [packages/utils/src/asyncQueue.ts:328](https://github.com/lucasols/u
 
 ##### E
 
-`E` *extends* `ResultValidErrors` = `Error`
+`E` _extends_ `ResultValidErrors` = `Error`
 
 #### Parameters
 
@@ -40,12 +40,14 @@ Defined in: [packages/utils/src/asyncQueue.ts:328](https://github.com/lucasols/u
 
 [`AsyncQueue`](-internal-.md#asyncqueue)\<`T`, `E`\>
 
-***
+---
 
 ### createAsyncQueueWithMeta()
 
 ```ts
-function createAsyncQueueWithMeta<T, I, E>(options?): AsyncQueueWithMeta<T, I, E>;
+function createAsyncQueueWithMeta<T, I, E>(
+  options?,
+): AsyncQueueWithMeta<T, I, E>;
 ```
 
 Defined in: [packages/utils/src/asyncQueue.ts:334](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L334)
@@ -62,7 +64,7 @@ Defined in: [packages/utils/src/asyncQueue.ts:334](https://github.com/lucasols/u
 
 ##### E
 
-`E` *extends* `ResultValidErrors` = `Error`
+`E` _extends_ `ResultValidErrors` = `Error`
 
 #### Parameters
 

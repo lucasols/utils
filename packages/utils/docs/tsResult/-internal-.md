@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / [tsResult](README.md) / \<internal\>
 
@@ -16,7 +16,7 @@ type AnyResultMethods = Record<ResultMethodsKeys, never>;
 
 Defined in: [packages/utils/src/tsResult.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L10)
 
-***
+---
 
 ### Err\<E\>
 
@@ -58,9 +58,9 @@ ok: false;
 
 ##### E
 
-`E` *extends* [`ResultValidErrors`](README.md#resultvaliderrors)
+`E` _extends_ [`ResultValidErrors`](README.md#resultvaliderrors)
 
-***
+---
 
 ### Ok\<T\>
 
@@ -96,7 +96,7 @@ value: T;
 
 `T`
 
-***
+---
 
 ### ResultMethods\<T, E\>
 
@@ -114,7 +114,7 @@ Defined in: [packages/utils/src/tsResult.ts:27](https://github.com/lucasols/util
 
 ##### E
 
-`E` *extends* [`ResultValidErrors`](README.md#resultvaliderrors)
+`E` _extends_ [`ResultValidErrors`](README.md#resultvaliderrors)
 
 #### Properties
 
@@ -174,7 +174,7 @@ Defined in: [packages/utils/src/tsResult.ts:37](https://github.com/lucasols/util
 
 ###### NewError
 
-`NewError` *extends* [`ResultValidErrors`](README.md#resultvaliderrors)
+`NewError` _extends_ [`ResultValidErrors`](README.md#resultvaliderrors)
 
 ###### Parameters
 
@@ -234,7 +234,7 @@ Defined in: [packages/utils/src/tsResult.ts:41](https://github.com/lucasols/util
 
 ###### NewError
 
-`NewError` *extends* [`ResultValidErrors`](README.md#resultvaliderrors)
+`NewError` _extends_ [`ResultValidErrors`](README.md#resultvaliderrors)
 
 ###### Parameters
 
@@ -284,7 +284,7 @@ Defined in: [packages/utils/src/tsResult.ts:31](https://github.com/lucasols/util
 
 ###### R
 
-`R` *extends* `T`
+`R` _extends_ `T`
 
 ###### Parameters
 
@@ -316,7 +316,7 @@ Defined in: [packages/utils/src/tsResult.ts:29](https://github.com/lucasols/util
 
 Use `t-result` library instead.
 
-***
+---
 
 ### ResultMethodsKeys
 

@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
-***
+---
 
 [@ls-stack/utils](modules.md) / enhancedMap
 
@@ -34,7 +34,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:5](https://github.com/lucasols/ut
 new EnhancedMap<K, V>(entries?): EnhancedMap<K, V>;
 ```
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
+Defined in: node_modules/.pnpm/typescript@5.7.3/node_modules/typescript/lib/lib.es2015.collection.d.ts:50
 
 ###### Parameters
 
@@ -58,7 +58,7 @@ Map<K, V>.constructor
 new EnhancedMap<K, V>(iterable?): EnhancedMap<K, V>;
 ```
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
+Defined in: node_modules/.pnpm/typescript@5.7.3/node_modules/typescript/lib/lib.es2015.collection.d.ts:49
 
 ###### Parameters
 
@@ -81,7 +81,7 @@ Map<K, V>.constructor
 ##### find()
 
 ```ts
-find(predicate): 
+find(predicate):
   | undefined
   | {
   key: K;
@@ -99,10 +99,10 @@ Defined in: [packages/utils/src/enhancedMap.ts:6](https://github.com/lucasols/ut
 
 ###### Returns
 
-  \| `undefined`
-  \| \{
-  `key`: `K`;
-  `value`: `V`;
+\| `undefined`
+\| \{
+`key`: `K`;
+`value`: `V`;
 \}
 
 ##### getOrInsert()
@@ -231,7 +231,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:64](https://github.com/lucasols/u
 
 ###### mapFunction
 
-(`value`, `key`, `reject`) => *typeof* [`enhancedMapReject`](#enhancedmapreject) \| `T`
+(`value`, `key`, `reject`) => _typeof_ [`enhancedMapReject`](#enhancedmapreject) \| `T`
 
 ###### Returns
 
@@ -249,7 +249,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:84](https://github.com/lucasols/u
 
 ###### ObjKey
 
-`ObjKey` *extends* `PropertyKey`
+`ObjKey` _extends_ `PropertyKey`
 
 ###### ObjValue
 
@@ -291,11 +291,11 @@ Defined in: [packages/utils/src/enhancedMap.ts:108](https://github.com/lucasols/
 
 ###### T
 
-`T` *extends* `Record`\<`string`, `unknown`\>
+`T` _extends_ `Record`\<`string`, `unknown`\>
 
 ###### K
 
-`K` *extends* `string` \| `number` \| `symbol`
+`K` _extends_ `string` \| `number` \| `symbol`
 
 ###### Parameters
 

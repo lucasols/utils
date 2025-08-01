@@ -1,6 +1,6 @@
 **@ls-stack/browser-utils**
 
-***
+---
 
 # @ls-stack/browser-utils
 

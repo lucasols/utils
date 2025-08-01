@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
-***
+---
 
 [@ls-stack/utils](modules.md) / awaitDebounce
 
@@ -11,7 +11,7 @@
 ### awaitDebounce()
 
 ```ts
-function awaitDebounce(options): Promise<"skip" | "continue">;
+function awaitDebounce(options): Promise<'skip' | 'continue'>;
 ```
 
 Defined in: [packages/utils/src/awaitDebounce.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/awaitDebounce.ts#L41)

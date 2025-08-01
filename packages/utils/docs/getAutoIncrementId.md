@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
-***
+---
 
 [@ls-stack/utils](modules.md) / getAutoIncrementId
 
@@ -36,7 +36,7 @@ const id2 = getAutoIncrementId(); // 2
 const id3 = getAutoIncrementId(); // 3
 ```
 
-***
+---
 
 ### getLocalAutoIncrementIdGenerator()
 
@@ -84,7 +84,10 @@ A function that generates formatted auto-increment IDs
 
 ```ts
 const userIdGen = getLocalAutoIncrementIdGenerator({ prefix: 'user-' });
-const postIdGen = getLocalAutoIncrementIdGenerator({ prefix: 'post-', suffix: '-draft' });
+const postIdGen = getLocalAutoIncrementIdGenerator({
+  prefix: 'post-',
+  suffix: '-draft',
+});
 
 console.log(userIdGen()); // "user-1"
 console.log(userIdGen()); // "user-2"

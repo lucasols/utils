@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
-***
+---
 
 [@ls-stack/utils](modules.md) / deepEqual
 
@@ -11,10 +11,7 @@
 ### deepEqual()
 
 ```ts
-function deepEqual(
-   foo, 
-   bar, 
-   maxDepth): boolean;
+function deepEqual(foo, bar, maxDepth): boolean;
 ```
 
 Defined in: [packages/utils/src/deepEqual.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L31)
@@ -50,14 +47,14 @@ True if values are deeply equal, false otherwise
 #### Example
 
 ```ts
-deepEqual({a: 1}, {a: 1}) // true
-deepEqual({a: 1}, {a: 2}) // false
-deepEqual([1, {b: 2}], [1, {b: 2}]) // true
-deepEqual(new Map([['a', 1]]), new Map([['a', 1]])) // true
-deepEqual(new Set([1, 2]), new Set([1, 2])) // true
+deepEqual({ a: 1 }, { a: 1 }); // true
+deepEqual({ a: 1 }, { a: 2 }); // false
+deepEqual([1, { b: 2 }], [1, { b: 2 }]); // true
+deepEqual(new Map([['a', 1]]), new Map([['a', 1]])); // true
+deepEqual(new Set([1, 2]), new Set([1, 2])); // true
 ```
 
-***
+---
 
 ### deepEqualWithMaxDepth()
 

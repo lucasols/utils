@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / cache
 
@@ -52,7 +52,7 @@ value: T;
 
 Defined in: [packages/utils/src/cache.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L34)
 
-***
+---
 
 ### WithExpiration\<T\>
 
@@ -128,10 +128,10 @@ Defined in: [packages/utils/src/cache.ts:75](https://github.com/lucasols/utils/b
 
 #### Properties
 
-#####  cache
+##### cache
 
 ```ts
- cache: object;
+cache: object;
 ```
 
 Defined in: [packages/utils/src/cache.ts:95](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L95)
@@ -139,10 +139,13 @@ Defined in: [packages/utils/src/cache.ts:95](https://github.com/lucasols/utils/b
 ###### map
 
 ```ts
-map: Map<string, {
-  timestamp: number;
-  value: T | Promise<T>;
-}>;
+map: Map<
+  string,
+  {
+    timestamp: number;
+    value: T | Promise<T>;
+  }
+>;
 ```
 
 ##### cleanExpiredItems()
@@ -333,7 +336,7 @@ Defined in: [packages/utils/src/cache.ts:3](https://github.com/lucasols/utils/bl
 value: T;
 ```
 
-***
+---
 
 ### createCache()
 

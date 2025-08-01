@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / [createThrottleController](README.md) / \<internal\>
 
@@ -42,7 +42,7 @@ per: DurationObj;
 
 Defined in: [packages/utils/src/createThrottleController.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/createThrottleController.ts#L7)
 
-***
+---
 
 ### ThrottleController
 

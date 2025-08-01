@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / [throttle](README.md) / \<internal\>
 
@@ -27,7 +27,7 @@ Specify invoking on the leading edge of the timeout.
 ###### Default
 
 ```ts
-true
+true;
 ```
 
 ##### trailing?
@@ -43,5 +43,5 @@ Specify invoking on the trailing edge of the timeout.
 ###### Default
 
 ```ts
-true
+true;
 ```

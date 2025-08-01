@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / arrayUtils
 
@@ -52,7 +52,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:103](https://github.com/lucasols/u
 
 \[`T`, `null` \| `T`\][]
 
-***
+---
 
 ### arrayWithPrevAndIndex()
 
@@ -78,7 +78,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:107](https://github.com/lucasols/u
 
 `object`[]
 
-***
+---
 
 ### filterAndMap()
 
@@ -124,23 +124,18 @@ value to map it.
 const items = ['value', 'value', 'reject', 'reject'];
 
 const mappedItems = filterAndMap(items, (item) =>
-  item === 'reject'
-    ? false
-    : `${item} mapped`,
+  item === 'reject' ? false : `${item} mapped`,
 );
 
 mappedItems; // ['value mapped', 'value mapped']
 ```
 
-***
+---
 
 ### findAfterIndex()
 
 ```ts
-function findAfterIndex<T>(
-   array, 
-   index, 
-   predicate): undefined | T;
+function findAfterIndex<T>(array, index, predicate): undefined | T;
 ```
 
 Defined in: [packages/utils/src/arrayUtils.ts:130](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L130)
@@ -169,15 +164,12 @@ Defined in: [packages/utils/src/arrayUtils.ts:130](https://github.com/lucasols/u
 
 `undefined` \| `T`
 
-***
+---
 
 ### findBeforeIndex()
 
 ```ts
-function findBeforeIndex<T>(
-   array, 
-   index, 
-   predicate): undefined | T;
+function findBeforeIndex<T>(array, index, predicate): undefined | T;
 ```
 
 Defined in: [packages/utils/src/arrayUtils.ts:144](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L144)
@@ -206,7 +198,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:144](https://github.com/lucasols/u
 
 `undefined` \| `T`
 
-***
+---
 
 ### hasDuplicates()
 
@@ -236,7 +228,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:168](https://github.com/lucasols/u
 
 `boolean`
 
-***
+---
 
 ### isInArray()
 
@@ -270,7 +262,7 @@ readonly `U`[]
 
 `value is U`
 
-***
+---
 
 ### rejectArrayUndefinedValues()
 
@@ -284,7 +276,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:164](https://github.com/lucasols/u
 
 ##### T
 
-`T` *extends* `unknown`[]
+`T` _extends_ `unknown`[]
 
 #### Parameters
 
@@ -296,7 +288,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:164](https://github.com/lucasols/u
 
 `T`
 
-***
+---
 
 ### rejectDuplicates()
 
@@ -326,15 +318,12 @@ Defined in: [packages/utils/src/arrayUtils.ts:185](https://github.com/lucasols/u
 
 `T`[]
 
-***
+---
 
 ### sortBy()
 
 ```ts
-function sortBy<T>(
-   arr, 
-   sortByValue, 
-   props): T[];
+function sortBy<T>(arr, sortByValue, props): T[];
 ```
 
 Defined in: [packages/utils/src/arrayUtils.ts:62](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L62)
@@ -379,21 +368,22 @@ const items = [1, 3, 2, 4];
 const sortedItems = sortBy(items, (item) => item);
 // [1, 2, 3, 4]
 
-const items2 = [{ a: 1, b: 2 }, { a: 2, b: 1 }, { a: 1, b: 1}]
+const items2 = [
+  { a: 1, b: 2 },
+  { a: 2, b: 1 },
+  { a: 1, b: 1 },
+];
 
 // return a array to sort by multiple values
 const sortedItems = sortBy(items, (item) => [item.a, item.b]);
 ```
 
-***
+---
 
 ### truncateArray()
 
 ```ts
-function truncateArray<T>(
-   array, 
-   maxLength, 
-   appendIfTruncated?): T[];
+function truncateArray<T>(array, maxLength, appendIfTruncated?): T[];
 ```
 
 Defined in: [packages/utils/src/arrayUtils.ts:205](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L205)

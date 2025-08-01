@@ -1,6 +1,6 @@
 [**@ls-stack/node-utils**](../README.md)
 
-***
+---
 
 [@ls-stack/node-utils](../modules.md) / [runShellCmd](README.md) / \<internal\>
 
@@ -58,7 +58,7 @@ stdout: string;
 
 Defined in: [runShellCmd.ts:7](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L7)
 
-***
+---
 
 ### RunCmdOptions
 

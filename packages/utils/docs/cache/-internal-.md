@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / [cache](README.md) / \<internal\>
 
@@ -49,7 +49,7 @@ The value to check
 
 true if the value should be rejected, false otherwise
 
-***
+---
 
 ### Options
 
@@ -74,7 +74,7 @@ The throttle for checking expired items in milliseconds.
 ###### Default
 
 ```ts
-10_000
+10_000;
 ```
 
 ##### maxCacheSize?
@@ -90,7 +90,7 @@ The maximum number of items in the cache.
 ###### Default
 
 ```ts
-1000
+1000;
 ```
 
 ##### maxItemAge?
@@ -103,7 +103,7 @@ Defined in: [packages/utils/src/cache.ts:24](https://github.com/lucasols/utils/b
 
 The maximum age of items in the cache.
 
-***
+---
 
 ### Utils\<T\>
 

@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
-***
+---
 
 [@ls-stack/utils](modules.md) / castValues
 
@@ -26,7 +26,7 @@ Defined in: [packages/utils/src/castValues.ts:14](https://github.com/lucasols/ut
 
 `null` \| `number`
 
-***
+---
 
 ### castToString()
 

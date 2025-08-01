@@ -1,6 +1,6 @@
 **@ls-stack/utils**
 
-***
+---
 
 # @ls-stack/utils
 

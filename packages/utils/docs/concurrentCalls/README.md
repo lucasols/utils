@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / concurrentCalls
 
@@ -32,7 +32,7 @@ The type of the result value.
 
 ##### E
 
-`E` *extends* `Error` = `Error`
+`E` _extends_ `Error` = `Error`
 
 The type of the error.
 
@@ -40,12 +40,16 @@ The type of the error.
 
 [`ConcurrentCalls`](-internal-.md#concurrentcalls)\<`R`, `E`\>
 
-***
+---
 
 ### concurrentCallsWithMetadata()
 
 ```ts
-function concurrentCallsWithMetadata<M, R, E>(): ConcurrentCallsWithMetadata<M, R, E>;
+function concurrentCallsWithMetadata<M, R, E>(): ConcurrentCallsWithMetadata<
+  M,
+  R,
+  E
+>;
 ```
 
 Defined in: [packages/utils/src/concurrentCalls.ts:373](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L373)
@@ -56,7 +60,7 @@ Executes multiple asynchronous calls concurrently and collects the results in a 
 
 ##### M
 
-`M` *extends* [`ValidMetadata`](-internal-.md#validmetadata)
+`M` _extends_ [`ValidMetadata`](-internal-.md#validmetadata)
 
 The type of the call metadata.
 
@@ -68,7 +72,7 @@ The type of the result value.
 
 ##### E
 
-`E` *extends* `Error` = `Error`
+`E` _extends_ `Error` = `Error`
 
 The type of the error from individual Result objects.
 

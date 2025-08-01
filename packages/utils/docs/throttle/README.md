@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
-***
+---
 
 [@ls-stack/utils](../modules.md) / throttle
 
@@ -15,10 +15,7 @@
 ### createThrottledFunctionFactory()
 
 ```ts
-function createThrottledFunctionFactory<T, R>(
-   wait, 
-   callback, 
-   options?): object;
+function createThrottledFunctionFactory<T, R>(wait, callback, options?): object;
 ```
 
 Defined in: [packages/utils/src/throttle.ts:104](https://github.com/lucasols/utils/blob/main/packages/utils/src/throttle.ts#L104)
@@ -34,7 +31,7 @@ independently. For example, throttling API calls per user ID or throttling UI up
 
 ##### T
 
-`T` *extends* `undefined` \| `null` \| `string` \| `number` \| `boolean`
+`T` _extends_ `undefined` \| `null` \| `string` \| `number` \| `boolean`
 
 The type of arguments the callback function accepts
 
@@ -91,7 +88,7 @@ call: (...args) => undefined | R;
 ```ts
 const apiThrottle = createThrottledFunctionFactory(
   1000,
-  (userId: string, action: string) => callAPI(userId, action)
+  (userId: string, action: string) => callAPI(userId, action),
 );
 
 // Each user gets their own throttled instance
@@ -104,19 +101,16 @@ apiThrottle.call('user1', 'update'); // Throttled (same user)
 // Throttle UI updates per component
 const updateThrottle = createThrottledFunctionFactory(
   100,
-  (componentId: string, data: any) => updateComponent(componentId, data)
+  (componentId: string, data: any) => updateComponent(componentId, data),
 );
 ```
 
-***
+---
 
 ### throttle()
 
 ```ts
-function throttle<T>(
-   func, 
-   wait, 
-options?): DebouncedFunc<T>;
+function throttle<T>(func, wait, options?): DebouncedFunc<T>;
 ```
 
 Defined in: [packages/utils/src/throttle.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/throttle.ts#L51)
@@ -131,7 +125,7 @@ Unlike debouncing, throttling guarantees the function is called at regular inter
 
 ##### T
 
-`T` *extends* [`__LEGIT_ANY_FUNCTION__`](../saferTyping.md#__legit_any_function__)
+`T` _extends_ [`__LEGIT_ANY_FUNCTION__`](../saferTyping.md#__legit_any_function__)
 
 The type of the function to throttle
 

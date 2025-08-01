@@ -1,6 +1,6 @@
 [**@ls-stack/browser-utils**](README.md)
 
-***
+---
 
 [@ls-stack/browser-utils](modules.md) / window
 
@@ -20,6 +20,7 @@ Checks if the current browser window/tab is focused and visible.
 This combines both the document visibility state and focus state for a comprehensive check.
 
 A window is considered focused when:
+
 - The document visibility state is 'visible' (tab is not hidden)
 - The document has focus (window is the active window)
 
@@ -40,7 +41,7 @@ if (isWindowFocused()) {
 }
 ```
 
-***
+---
 
 ### onWindowFocus()
 

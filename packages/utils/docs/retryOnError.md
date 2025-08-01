@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
-***
+---
 
 [@ls-stack/utils](modules.md) / retryOnError
 
@@ -11,11 +11,7 @@
 ### retryOnError()
 
 ```ts
-function retryOnError<T>(
-   fn, 
-   maxRetries, 
-   options, 
-retry): Promise<T>;
+function retryOnError<T>(fn, maxRetries, options, retry): Promise<T>;
 ```
 
 Defined in: [packages/utils/src/retryOnError.ts:3](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L3)
@@ -52,10 +48,10 @@ Defined in: [packages/utils/src/retryOnError.ts:3](https://github.com/lucasols/u
 
 ###### retryCondition?
 
-(`error`) => 
-  \| `boolean`
-  \| \{
-  `maxErrorDurationMs`: `number`;
+(`error`) =>
+\| `boolean`
+\| \{
+`maxErrorDurationMs`: `number`;
 \}
 
 ##### retry

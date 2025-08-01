@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
-***
+---
 
 [@ls-stack/utils](modules.md) / timers
 
@@ -87,7 +87,7 @@ call(); // Only this one will execute after 1000ms
 clean();
 ```
 
-***
+---
 
 ### createInterval()
 
@@ -133,7 +133,7 @@ const cleanup = createInterval(1000, () => {
 cleanup();
 ```
 
-***
+---
 
 ### createTimeout()
 
@@ -179,7 +179,7 @@ const cleanup = createTimeout(1000, () => {
 cleanup();
 ```
 
-***
+---
 
 ### createWaitUntil()
 
@@ -199,7 +199,7 @@ within the maximum wait time, the timeout expires without calling the callback.
 
 ##### T
 
-`T` *extends* `object`
+`T` _extends_ `object`
 
 The type of value returned by the condition function when true
 
@@ -248,7 +248,7 @@ const cleanup = createWaitUntil({
   callback: (element) => {
     console.log('Element found:', element);
   },
-  checkIntervalMs: 50
+  checkIntervalMs: 50,
 });
 
 // Cancel the condition check
