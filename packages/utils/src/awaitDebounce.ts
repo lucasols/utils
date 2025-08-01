@@ -5,7 +5,8 @@ const resolvers: Record<
   string,
   undefined | ((value: 'continue' | 'skip') => void)
 > = {};
-const debouncers: Record<string, number | undefined> = {};
+const debouncers: Record<string, ReturnType<typeof setTimeout> | undefined> =
+  {};
 
 /**
  * Creates an awaitable debounce mechanism that allows you to debounce async operations.
@@ -52,7 +53,7 @@ export async function awaitDebounce({
     const resolve = resolvers[callId];
     resolvers[callId] = undefined;
     resolve?.('continue');
-  }, debounce) as unknown as number;
+  }, debounce);
 
   if (resolvers[callId]) resolvers[callId]('skip');
 
