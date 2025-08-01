@@ -92,6 +92,7 @@ Each package follows a flat module structure:
 - **Pattern**: `src/*.test.{ts,tsx}` files
 - **Timeout**: 2 second test timeout
 - **Coverage**: Tests run with garbage collection exposed via `--expose-gc`
+- Do not run tests with `pnpm vitest` use `pnpm test` instead
 
 ### Key Dependencies
 
@@ -147,7 +148,7 @@ The monorepo uses shared base configurations to maintain consistency:
 
 ## Testing Best Practices
 
-- **Timing in Tests**: 
+- **Timing in Tests**:
   - Do not use `vi.useFakeTimers()`
   - Instead, use `await sleep()` with small intervals when simulating time-based behaviors
 
@@ -156,5 +157,7 @@ The monorepo uses shared base configurations to maintain consistency:
 - **JSDoc Best Practices**:
   - Do not add more than one example in JSDocs
   - Do not add examples for simple or very intuitive functions
+
+```
 
 ```
