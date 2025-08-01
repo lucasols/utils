@@ -172,7 +172,7 @@ export function createWaitUntil<T extends NonNullable<unknown>>({
   check();
 
   return () => {
-    cleanMaxWaitTimeout?.();
+    cleanMaxWaitTimeout();
     cleanCheckTimeout?.();
   };
 }
