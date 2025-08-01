@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { ArgumentsType, describe, expect, test } from 'vitest';
 import { yamlStringify } from './yamlStringify';
 
@@ -123,19 +124,6 @@ test('nested arrays', () => {
       maxLineLength: 5,
     }),
   ).toMatchInlineSnapshot(`
-      "
-      - 1
-      - 2
-      - 3
-      - - 'Hello'
-        - true
-        - null
-        - undefined
-      "
-    `);
-
-  expect(getSnapshot([1, 2, 3, ['Hello', true, null, undefined, [1, 2]], 4]))
-    .toMatchInlineSnapshot(`
     "
     - 1
     - 2
@@ -144,10 +132,23 @@ test('nested arrays', () => {
       - true
       - null
       - undefined
-      - [1, 2]
-    - 4
     "
   `);
+
+  expect(getSnapshot([1, 2, 3, ['Hello', true, null, undefined, [1, 2]], 4]))
+    .toMatchInlineSnapshot(`
+      "
+      - 1
+      - 2
+      - 3
+      - - 'Hello'
+        - true
+        - null
+        - undefined
+        - [1, 2]
+      - 4
+      "
+    `);
 });
 
 test('array inside object', () => {
@@ -170,17 +171,17 @@ test('array inside object with max line length', () => {
       { maxLineLength: 5 },
     ),
   ).toMatchInlineSnapshot(`
-      "
-      a:
-        - 1
-        - 2
-        - 3
-        - - 'Hello'
-          - true
-          - null
-          - undefined
-      "
-    `);
+    "
+    a:
+      - 1
+      - 2
+      - 3
+      - - 'Hello'
+        - true
+        - null
+        - undefined
+    "
+  `);
 });
 
 test('array inside object with object inside', () => {
@@ -389,8 +390,8 @@ test('showUndefined', () => {
 
   expect(yamlStringify(undefined, { showUndefined: true }))
     .toMatchInlineSnapshot(`
-    "undefined"
-  `);
+      "undefined"
+    `);
 });
 
 test('empty objs', () => {

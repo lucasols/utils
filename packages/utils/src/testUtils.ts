@@ -135,6 +135,7 @@ export function createLoggerStore({
 
     const propDivider = '⋅';
 
+    // eslint-disable-next-line complexity
     const snapShot = `\n${filterAndMap(rendersToUse, (render, i) => {
       if (render._lastSnapshotMark) {
         if (includeLastSnapshotEndMark) {
@@ -279,10 +280,8 @@ export function getResultFn<T extends (...args: any[]) => any>(
     const fn = fnGetter();
 
     if (wrapper) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       return wrapper(fn(...args));
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       return fn(...args);
     }
   }) as T;

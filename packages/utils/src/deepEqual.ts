@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
 /** forked from https://github.com/lukeed/dequal to consider invalid dates as equal */
@@ -28,6 +27,7 @@ function find(iter: any[], tar: any, maxDepth: number): any {
  * ```
  */
 
+// eslint-disable-next-line complexity
 export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
   let ctor, len, tmp;
   if (foo === bar) return true;

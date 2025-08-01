@@ -16,5 +16,5 @@
   "gitRevision": "main",
   "useCodeBlocks": true,
   "theme": "default",
-  "tsconfig": "./tsconfig.docs.json"
+  "tsconfig": "./tsconfig.json"
 }

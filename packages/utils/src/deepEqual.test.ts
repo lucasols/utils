@@ -239,13 +239,13 @@ describe('deep equal', () => {
     expect(deepEqual(a, b, maxDepth)).toBe(false);
   }
 
-  cases.forEach(([name, tests]) => {
+  for (const [name, tests] of cases) {
     describe(name, () => {
-      tests.forEach(({ name: testName, a, b, result }) =>
-        test(testName, () => expect(deepEqual(a, b)).toBe(result)),
-      );
+      for (const { name: testName, a, b, result } of tests) {
+        test(testName, () => expect(deepEqual(a, b)).toBe(result));
+      }
     });
-  });
+  }
 
   test('single values, tests from dequal/lite', () => {
     different(1, 2);

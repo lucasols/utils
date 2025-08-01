@@ -231,13 +231,13 @@ const cases: [
 ];
 
 describe('shallow equal', () => {
-  cases.forEach(([name, tests]) => {
+  for (const [name, tests] of cases) {
     describe(name, () => {
-      tests.forEach(({ name: testName, a, b, result }) =>
-        test(testName, () => expect(shallowEqual(a, b)).toBe(result)),
-      );
+      for (const { name: testName, a, b, result } of tests) {
+        test(testName, () => expect(shallowEqual(a, b)).toBe(result));
+      }
     });
-  });
+  }
 
   test('single values, tests from dequal/lite', () => {
     function same(a: any, b: any) {

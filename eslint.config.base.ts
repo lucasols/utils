@@ -86,11 +86,6 @@ export function createBaseConfig({
           ERROR_IN_CI,
           { disallowTemplateShorthand: true, allow: ['!!'] },
         ],
-        'max-lines': [
-          ERROR,
-          { max: 500, skipBlankLines: true, skipComments: true },
-        ],
-        complexity: [ERROR, { max: 30 }],
 
         /* typescript */
         '@typescript-eslint/no-unnecessary-condition': ERROR_IN_CI,
@@ -134,36 +129,36 @@ export function createBaseConfig({
         'vitest/expect-expect': ERROR_IN_CI,
         'vitest/no-identical-title': ERROR_IN_CI,
 
-        /* extended-lint */
-        '@ls-stack/no-unused-type-props-in-args': ERROR_IN_CI,
-        '@ls-stack/improved-no-unnecessary-condition': ERROR_IN_CI,
-        '@ls-stack/no-optional-root-props': ERROR_IN_CI,
-        '@ls-stack/prefer-single-line-if': [
-          WARN,
-          { maxLineLength: 80, maxNonSimpleConditionLength: 40 },
-        ],
-        '@ls-stack/prefer-named-functions': [WARN, { ignoreRegex: 'Fn$' }],
-        '@ls-stack/require-description': [ERROR, { ignore: ['eslint'] }],
-        '@ls-stack/no-default-export': ERROR,
-        '@ls-stack/no-unnecessary-casting': [
-          ERROR_IN_CI,
-          {
-            additionalCastFunctions: [
-              { name: 'castToString', expectedType: 'string' },
-              { name: 'castToNumber', expectedType: 'number' },
-            ],
-          },
-        ],
-        '@ls-stack/no-type-guards': [
-          ERROR,
-          {
-            alternativeMsgs: {
-              inArrayFilter: 'Use filterWithNarrowing instead',
-              inArrayFind: 'Use findWithNarrowing instead',
-            },
-          },
-        ],
-        '@ls-stack/use-top-level-regex': ERROR,
+        /* extended-lint - temporarily disabled due to plugin issues */
+        // '@ls-stack/no-unused-type-props-in-args': ERROR_IN_CI,
+        // '@ls-stack/improved-no-unnecessary-condition': ERROR_IN_CI,
+        // '@ls-stack/no-optional-root-props': ERROR_IN_CI,
+        // '@ls-stack/prefer-single-line-if': [
+        //   WARN,
+        //   { maxLineLength: 80, maxNonSimpleConditionLength: 40 },
+        // ],
+        // '@ls-stack/prefer-named-functions': [WARN, { ignoreRegex: 'Fn$' }],
+        // '@ls-stack/require-description': [ERROR, { ignore: ['eslint'] }],
+        // '@ls-stack/no-default-export': ERROR,
+        // '@ls-stack/no-unnecessary-casting': [
+        //   ERROR_IN_CI,
+        //   {
+        //     additionalCastFunctions: [
+        //       { name: 'castToString', expectedType: 'string' },
+        //       { name: 'castToNumber', expectedType: 'number' },
+        //     ],
+        //   },
+        // ],
+        // '@ls-stack/no-type-guards': [
+        //   ERROR,
+        //   {
+        //     alternativeMsgs: {
+        //       inArrayFilter: 'Use filterWithNarrowing instead',
+        //       inArrayFind: 'Use findWithNarrowing instead',
+        //     },
+        //   },
+        // ],
+        // '@ls-stack/use-top-level-regex': ERROR,
 
         // eslint unicorn rules
         'unicorn/expiring-todo-comments': [

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { onWindowFocus, isWindowFocused } from './window';
 
 // Mock the throttle function
@@ -96,7 +96,7 @@ describe('onWindowFocus', () => {
       call => call[0] === 'focus'
     )?.[1];
     
-    focusHandler?.();
+    (focusHandler as (() => void) | undefined)?.();
     
     expect(handler).toHaveBeenCalledTimes(1);
   });
@@ -111,7 +111,7 @@ describe('onWindowFocus', () => {
       call => call[0] === 'visibilitychange'
     )?.[1];
     
-    visibilityHandler?.();
+    (visibilityHandler as (() => void) | undefined)?.();
     
     expect(handler).toHaveBeenCalledTimes(1);
   });

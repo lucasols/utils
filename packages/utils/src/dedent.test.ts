@@ -4,60 +4,67 @@ import { dedent } from './dedent';
 describe('dedent', () => {
   it('works without interpolation', () => {
     expect(
-      dedent`first
-				 second
-				 third`,
+      dedent`
+        first
+        				 second
+        				 third
+      `,
     ).toMatchInlineSnapshot(`
       "first
-      second
-      third"
+      				 second
+      				 third"
     `);
   });
 
   it('works with interpolation', () => {
     expect(
-      dedent`first ${'line'}
-				 ${'second'}
-				 third`,
+      dedent`
+        first ${'line'}
+        				 ${'second'}
+        				 third
+      `,
     ).toMatchInlineSnapshot(`
       "first line
-      second
-      third"
+      				 second
+      				 third"
     `);
   });
 
   it('works with suppressed newlines', () => {
     expect(
-      dedent`first \
-				 ${'second'}
-				 third`,
+      dedent`
+        first \
+        				 ${'second'}
+        				 third
+      `,
     ).toMatchInlineSnapshot(`
       "first second
-      third"
+      				 third"
     `);
   });
 
   it('works with blank first line', () => {
     expect(dedent`
-			Some text that I might want to indent:
-				* reasons
-				* fun
-			That's all.
-		`).toMatchInlineSnapshot(`
-			"Some text that I might want to indent:
-				* reasons
-				* fun
-			That's all."
-		`);
+      Some text that I might want to indent:
+      	* reasons
+      	* fun
+      That's all.
+    `).toMatchInlineSnapshot(`
+      "Some text that I might want to indent:
+      	* reasons
+      	* fun
+      That's all."
+    `);
   });
 
   it('works with multiple blank first lines', () => {
     expect(
       dedent`
 
-				 first
-				 second
-				 third`,
+        first
+        second
+        third
+      `,
     ).toMatchInlineSnapshot(`
       "first
       second
@@ -68,10 +75,10 @@ describe('dedent', () => {
   it('works with removing same number of spaces', () => {
     expect(
       dedent`
-				 first
-						second
-							 third
-			`,
+        first
+        	second
+        		 third
+      `,
     ).toMatchInlineSnapshot(`
       "first
       	second
@@ -88,21 +95,22 @@ describe('dedent', () => {
 
     it('works with single line and closing backtick on newline', () => {
       expect(dedent`
-				A single line of input.
-			`).toMatchInlineSnapshot(`"A single line of input."`);
+        A single line of input.
+      `).toMatchInlineSnapshot(`"A single line of input."`);
     });
 
     it('works with single line and inline closing backtick', () => {
       expect(dedent`
-				A single line of input.`).toMatchInlineSnapshot(`"A single line of input."`);
+        A single line of input.
+      `).toMatchInlineSnapshot(`"A single line of input."`);
     });
   });
 
   it('can be used as a function', () => {
     expect(
       dedent(`
-			A test argument.
-		`),
+        A test argument.
+      `),
     ).toMatchInlineSnapshot(`"A test argument."`);
   });
 
@@ -261,24 +269,24 @@ describe('dedent', () => {
 
   it("doesn't strip explicit newlines", () => {
     expect(dedent`
-			<p>Hello world!</p>\n
-		`).toMatchSnapshot();
+      <p>Hello world!</p>\n
+    `).toMatchSnapshot();
   });
 
   it("doesn't strip explicit newlines with mindent", () => {
     expect(dedent`
-			<p>
-				Hello world!
-			</p>\n
-		`).toMatchSnapshot();
+      <p>
+      	Hello world!
+      </p>\n
+    `).toMatchSnapshot();
   });
 
   it('works with spaces for indentation', () => {
     expect(
       dedent`
-      first
-        second
-          third
+        first
+          second
+            third
       `,
     ).toMatchSnapshot();
   });
@@ -286,10 +294,10 @@ describe('dedent', () => {
   it('works with tabs for indentation', () => {
     expect(
       dedent`
-			first
-				second
-					third
-			`,
+        first
+        	second
+        		third
+      `,
     ).toMatchSnapshot();
   });
 

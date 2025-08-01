@@ -200,7 +200,7 @@ describe('blockWindowClose', () => {
     expect(window.onbeforeunload).toBeDefined();
 
     // Unblock all rapidly
-    blockers.forEach((blocker) => blocker.unblock());
+    for (const blocker of blockers) blocker.unblock();
 
     expect(window.onbeforeunload).toBe(null);
   });
