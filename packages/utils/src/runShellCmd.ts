@@ -18,6 +18,16 @@ type RunCmdOptions = {
   noCiColorForce?: boolean;
 };
 
+/**
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
+ * ```
+ * // Old (deprecated)
+ * import { runCmd } from '@ls-stack/utils/runShellCmd';
+ * 
+ * // New (preferred)
+ * import { runCmd } from '@ls-stack/node-utils/runShellCmd';
+ * ```
+ */
 export function runCmd(
   label: string | null,
   command: string | string[],
@@ -99,6 +109,16 @@ export function runCmd(
   });
 }
 
+/**
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
+ * ```
+ * // Old (deprecated)
+ * import { concurrentCmd } from '@ls-stack/utils/runShellCmd';
+ * 
+ * // New (preferred)
+ * import { concurrentCmd } from '@ls-stack/node-utils/runShellCmd';
+ * ```
+ */
 export async function concurrentCmd(
   label: string,
   cmd: string | string[],
@@ -127,6 +147,16 @@ export async function concurrentCmd(
   };
 }
 
+/**
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
+ * ```
+ * // Old (deprecated)
+ * import { runCmdUnwrap } from '@ls-stack/utils/runShellCmd';
+ * 
+ * // New (preferred)
+ * import { runCmdUnwrap } from '@ls-stack/node-utils/runShellCmd';
+ * ```
+ */
 export async function runCmdUnwrap(
   label: string | null,
   command: string | string[],
@@ -139,10 +169,30 @@ export async function runCmdUnwrap(
   return (await runCmd(label, command, { silent, throwOnError: true })).stdout;
 }
 
+/**
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
+ * ```
+ * // Old (deprecated)
+ * import { runCmdSilent } from '@ls-stack/utils/runShellCmd';
+ * 
+ * // New (preferred)
+ * import { runCmdSilent } from '@ls-stack/node-utils/runShellCmd';
+ * ```
+ */
 export function runCmdSilent(command: string | string[]) {
   return runCmd(null, command, { silent: true });
 }
 
+/**
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
+ * ```
+ * // Old (deprecated)
+ * import { runCmdSilentUnwrap } from '@ls-stack/utils/runShellCmd';
+ * 
+ * // New (preferred)
+ * import { runCmdSilentUnwrap } from '@ls-stack/node-utils/runShellCmd';
+ * ```
+ */
 export function runCmdSilentUnwrap(command: string | string[]) {
   return runCmdUnwrap(null, command, { silent: true });
 }
