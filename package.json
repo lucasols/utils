@@ -22,7 +22,7 @@
   "author": "Lucas Santos",
   "engines": {
     "node": ">=20.0.0"
-  },,
+  },
 
   "devDependencies": {
     "@eslint/js": "catalog:",
