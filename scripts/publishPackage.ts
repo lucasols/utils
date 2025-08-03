@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync, writeFileSync } from 'fs';
 import { runCmdUnwrap } from '../packages/node-utils/src/runShellCmd';
 import { deepEqual } from '../packages/utils/src/deepEqual';
+import { narrowStringToUnion } from '../packages/utils/src/typingFnUtils';
 
 const availablePackages = [
   'utils',
@@ -14,10 +15,7 @@ type PackageName = (typeof availablePackages)[number];
 const versions = ['major', 'minor', 'patch'] as const;
 type Version = (typeof versions)[number];
 
-export async function publishPackage(
-  packageName: PackageName,
-  version: Version,
-) {
+async function publishPackage(packageName: PackageName, version: Version) {
   // check if there are uncommitted changes
   runCmdUnwrap('check if is sync', ['./scripts/check-if-is-sync.sh']);
 
@@ -61,7 +59,9 @@ export async function publishPackage(
   });
 
   // publish package
-  runCmdUnwrap('publish package', ['pnpm', '--filter', packageName, 'publish']);
+  runCmdUnwrap('publish package', ['pnpm', 'publish', '--access', 'public'], {
+    cwd: `./packages/${packageName}`,
+  });
 }
 
 export async function updatePackageExports(packageName: string) {
@@ -113,3 +113,26 @@ export async function updatePackageExports(packageName: string) {
     writeFileSync(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`);
   }
 }
+
+function runFromCli() {
+  const packageName = narrowStringToUnion(process.argv[2], availablePackages);
+  const version = narrowStringToUnion(process.argv[3], versions);
+
+  if (!packageName || !version) {
+    console.error('Usage: pnpm publish-package <packageName> <version>');
+    process.exit(1);
+  }
+
+  if (!packageName) {
+    console.error('Invalid package name');
+    process.exit(1);
+  }
+
+  if (!version) {
+    console.error('Invalid version');
+    process.exit(1);
+  }
+  publishPackage(packageName, version);
+}
+
+runFromCli();

@@ -32,9 +32,15 @@ export function asType<T = unknown>(value: T): T {
 /** narrow a string to a union of strings */
 export function narrowStringToUnion<const T extends string>(
   key: string | undefined | null,
-  union: T[],
+  union: T[] | readonly T[] | Set<T>,
 ): T | undefined {
-  if (key && union.includes(key as T)) {
+  if (!key) return undefined;
+
+  if (union instanceof Set) {
+    return union.has(key as T) ? (key as T) : undefined;
+  }
+
+  if (union.includes(key as T)) {
     return key as T;
   }
 
