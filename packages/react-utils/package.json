@@ -21,6 +21,7 @@
     "docs"
   ],
   "repository": "github:lucasols/utils",
+  "homepage": "https://github.com/lucasols/utils/tree/main/packages/react-utils",
   "author": "Lucas Santos",
   "type": "module",
   "sideEffects": false,
