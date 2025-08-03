@@ -1,6 +1,6 @@
 [**@ls-stack/node-utils**](../README.md)
 
----
+***
 
 [@ls-stack/node-utils](../modules.md) / runShellCmd
 
@@ -15,7 +15,10 @@
 ### concurrentCmd()
 
 ```ts
-function concurrentCmd(label, cmd, onResult): Promise<() => void>;
+function concurrentCmd(
+   label, 
+   cmd, 
+onResult): Promise<() => void>;
 ```
 
 Defined in: [runShellCmd.ts:102](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L102)
@@ -38,12 +41,15 @@ Defined in: [runShellCmd.ts:102](https://github.com/lucasols/utils/blob/main/pac
 
 `Promise`\<() => `void`\>
 
----
+***
 
 ### runCmd()
 
 ```ts
-function runCmd(label, command, __namedParameters): Promise<CmdResult>;
+function runCmd(
+   label, 
+   command, 
+__namedParameters): Promise<CmdResult>;
 ```
 
 Defined in: [runShellCmd.ts:21](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L21)
@@ -66,7 +72,7 @@ Defined in: [runShellCmd.ts:21](https://github.com/lucasols/utils/blob/main/pack
 
 `Promise`\<[`CmdResult`](-internal-.md#cmdresult)\>
 
----
+***
 
 ### runCmdSilent()
 
@@ -74,7 +80,7 @@ Defined in: [runShellCmd.ts:21](https://github.com/lucasols/utils/blob/main/pack
 function runCmdSilent(command): Promise<CmdResult>;
 ```
 
-Defined in: [runShellCmd.ts:142](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L142)
+Defined in: [runShellCmd.ts:145](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L145)
 
 #### Parameters
 
@@ -86,7 +92,7 @@ Defined in: [runShellCmd.ts:142](https://github.com/lucasols/utils/blob/main/pac
 
 `Promise`\<[`CmdResult`](-internal-.md#cmdresult)\>
 
----
+***
 
 ### runCmdSilentUnwrap()
 
@@ -94,7 +100,7 @@ Defined in: [runShellCmd.ts:142](https://github.com/lucasols/utils/blob/main/pac
 function runCmdSilentUnwrap(command): Promise<string>;
 ```
 
-Defined in: [runShellCmd.ts:146](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L146)
+Defined in: [runShellCmd.ts:149](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L149)
 
 #### Parameters
 
@@ -106,12 +112,15 @@ Defined in: [runShellCmd.ts:146](https://github.com/lucasols/utils/blob/main/pac
 
 `Promise`\<`string`\>
 
----
+***
 
 ### runCmdUnwrap()
 
 ```ts
-function runCmdUnwrap(label, command, __namedParameters): Promise<string>;
+function runCmdUnwrap(
+   label, 
+   command, 
+__namedParameters): Promise<string>;
 ```
 
 Defined in: [runShellCmd.ts:130](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L130)
@@ -127,6 +136,10 @@ Defined in: [runShellCmd.ts:130](https://github.com/lucasols/utils/blob/main/pac
 `string` | `string`[]
 
 ##### \_\_namedParameters
+
+###### cwd?
+
+`string`
 
 ###### silent?
 

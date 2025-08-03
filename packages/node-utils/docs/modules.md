@@ -1,6 +1,6 @@
 [**@ls-stack/node-utils**](README.md)
 
----
+***
 
 # @ls-stack/node-utils
 
