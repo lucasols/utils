@@ -58,12 +58,13 @@ export function useActionFnWithState<
       isInProgressRef.set(state, true);
       setIsInProgress((prev) => ({ ...prev, [state]: true }));
 
-      const result = await action(state, ...args);
-
-      isInProgressRef.set(state, false);
-      setIsInProgress((prev) => ({ ...prev, [state]: false }));
-
-      return result;
+      try {
+        const result = await action(state, ...args);
+        return result;
+      } finally {
+        isInProgressRef.set(state, false);
+        setIsInProgress((prev) => ({ ...prev, [state]: false }));
+      }
     }
 
     return {
@@ -77,4 +78,4 @@ type PartialRecord<K extends string | number | symbol, T> = Partial<
   Record<K, T>
 >;
 
-function noopWithArgs<T extends unknown[]>(...args: T) {}
+function noopWithArgs<T extends unknown[]>(..._args: T) {}

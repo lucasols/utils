@@ -305,6 +305,10 @@ importers:
         version: 3.0.4(@types/node@22.10.9)(@vitest/ui@3.0.4)(happy-dom@18.0.1)(yaml@2.8.0)
 
   packages/react-utils:
+    dependencies:
+      '@ls-stack/utils':
+        specifier: workspace:*
+        version: link:../utils
     devDependencies:
       '@eslint/js':
         specifier: 'catalog:'
