@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / typingFnUtils
 
@@ -15,8 +15,7 @@
 ### ~~isSubTypeOf()~~
 
 ```ts
-const isSubTypeOf: <BaseType, SubType>() => unknown =
-  typeOnRightExtendsLeftType;
+const isSubTypeOf: <BaseType, SubType>() => unknown = typeOnRightExtendsLeftType;
 ```
 
 Defined in: [packages/utils/src/typingFnUtils.ts:59](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L59)
@@ -61,7 +60,7 @@ Defined in: [packages/utils/src/typingFnUtils.ts:3](https://github.com/lucasols/
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 #### Parameters
 
@@ -73,7 +72,7 @@ Defined in: [packages/utils/src/typingFnUtils.ts:3](https://github.com/lucasols/
 
 [`NonPartial`](../typingUtils.md#nonpartial)\<`T`\>
 
----
+***
 
 ### asType()
 
@@ -101,7 +100,7 @@ a safe way to cast types, use to substitute the `as Type`
 
 `T`
 
----
+***
 
 ### isObjKey()
 
@@ -117,7 +116,7 @@ Type helper to narrow a string to a key of an object.
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 #### Parameters
 
@@ -133,7 +132,7 @@ Type helper to narrow a string to a key of an object.
 
 `key is keyof T`
 
----
+***
 
 ### narrowStringToUnion()
 
@@ -149,7 +148,7 @@ narrow a string to a union of strings
 
 ##### T
 
-`T` _extends_ `string`
+`T` *extends* `string`
 
 #### Parameters
 
@@ -165,14 +164,12 @@ narrow a string to a union of strings
 
 `undefined` \| `T`
 
----
+***
 
 ### typedObjectEntries()
 
 ```ts
-function typedObjectEntries<T>(
-  obj,
-): NonNullable<{ [K in string | number | symbol]: [K, T[K]] }[keyof T]>[];
+function typedObjectEntries<T>(obj): NonNullable<{ [K in string | number | symbol]: [K, T[K]] }[keyof T]>[];
 ```
 
 Defined in: [packages/utils/src/typingFnUtils.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L10)
@@ -183,7 +180,7 @@ a wrapper to Object.entries with a better typing inference
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 #### Parameters
 
@@ -195,7 +192,7 @@ a wrapper to Object.entries with a better typing inference
 
 `NonNullable`\<\{ \[K in string \| number \| symbol\]: \[K, T\[K\]\] \}\[keyof `T`\]\>[]
 
----
+***
 
 ### typedObjectKeys()
 
@@ -211,7 +208,7 @@ a wrapper to Object.keys with a better typing inference
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 #### Parameters
 
@@ -223,7 +220,7 @@ a wrapper to Object.keys with a better typing inference
 
 keyof `T`[]
 
----
+***
 
 ### typeOnRightExtendsLeftType()
 
@@ -255,7 +252,7 @@ The type that should extend BaseType
 
 Returns undefined, only used for type checking
 
----
+***
 
 ### unionsAreTheSame()
 

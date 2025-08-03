@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / tsResult
 
@@ -15,10 +15,7 @@
 ### ~~GetTypedResult\<R\>~~
 
 ```ts
-type GetTypedResult<R> = TypedResult<
-  R extends Result<infer T, any> ? T : never,
-  R extends Result<any, infer E> ? E : never
->;
+type GetTypedResult<R> = TypedResult<R extends Result<infer T, any> ? T : never, R extends Result<any, infer E> ? E : never>;
 ```
 
 Defined in: [packages/utils/src/tsResult.ts:328](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L328)
@@ -27,20 +24,20 @@ Defined in: [packages/utils/src/tsResult.ts:328](https://github.com/lucasols/uti
 
 ##### R
 
-`R` _extends_ [`Result`](#result)\<`any`, `any`\>
+`R` *extends* [`Result`](#result)\<`any`, `any`\>
 
 #### Deprecated
 
 Use `t-result` library instead.
 
----
+***
 
 ### ~~Result\<T, E\>~~
 
 ```ts
-type Result<T, E> =
+type Result<T, E> = 
   | Omit<Ok<T>, ResultMethodsKeys>
-  | (Omit<Err<E>, ResultMethodsKeys> & ResultMethods<T, E>);
+| Omit<Err<E>, ResultMethodsKeys> & ResultMethods<T, E>;
 ```
 
 Defined in: [packages/utils/src/tsResult.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L52)
@@ -53,18 +50,18 @@ Defined in: [packages/utils/src/tsResult.ts:52](https://github.com/lucasols/util
 
 ##### E
 
-`E` _extends_ [`ResultValidErrors`](#resultvaliderrors) = `Error`
+`E` *extends* [`ResultValidErrors`](#resultvaliderrors) = `Error`
 
 #### Deprecated
 
 Use `t-result` library instead.
 
----
+***
 
 ### ~~ResultValidErrors~~
 
 ```ts
-type ResultValidErrors =
+type ResultValidErrors = 
   | Error
   | Record<string, unknown>
   | unknown[]
@@ -78,7 +75,7 @@ Defined in: [packages/utils/src/tsResult.ts:13](https://github.com/lucasols/util
 
 Use `t-result` library instead.
 
----
+***
 
 ### ~~TypedResult\<T, E\>~~
 
@@ -100,7 +97,7 @@ Use `t-result` library instead.
 
 ##### E
 
-`E` _extends_ [`ResultValidErrors`](#resultvaliderrors) = `Error`
+`E` *extends* [`ResultValidErrors`](#resultvaliderrors) = `Error`
 
 #### Properties
 
@@ -186,7 +183,7 @@ asyncMap: <T, E>(resultPromise) => object;
 
 ###### E
 
-`E` _extends_ [`ResultValidErrors`](#resultvaliderrors)
+`E` *extends* [`ResultValidErrors`](#resultvaliderrors)
 
 ###### Parameters
 
@@ -208,7 +205,7 @@ err: <NewError>(mapFn) => Promise<Result<T, NewError>>;
 
 ###### NewError
 
-`NewError` _extends_ [`ResultValidErrors`](#resultvaliderrors)
+`NewError` *extends* [`ResultValidErrors`](#resultvaliderrors)
 
 ###### Parameters
 
@@ -245,8 +242,7 @@ ok: <NewValue>(mapFn) => Promise<Result<NewValue, E>>;
 ###### ~~okAndErr()~~
 
 ```ts
-okAndErr: <NewValue, NewError>(__namedParameters) =>
-  Promise<Result<NewValue, NewError>>;
+okAndErr: <NewValue, NewError>(__namedParameters) => Promise<Result<NewValue, NewError>>;
 ```
 
 ###### Type Parameters
@@ -257,7 +253,7 @@ okAndErr: <NewValue, NewError>(__namedParameters) =>
 
 ###### NewError
 
-`NewError` _extends_ [`ResultValidErrors`](#resultvaliderrors)
+`NewError` *extends* [`ResultValidErrors`](#resultvaliderrors)
 
 ###### Parameters
 
@@ -309,7 +305,7 @@ err: <E>(error) => Err<E>;
 
 ###### E
 
-`E` _extends_ [`ResultValidErrors`](#resultvaliderrors)
+`E` *extends* [`ResultValidErrors`](#resultvaliderrors)
 
 ###### Parameters
 
@@ -346,11 +342,11 @@ getOkErr: {
 
 ###### F
 
-`F` _extends_ (...`args`) => `Promise`\<[`Result`](#result)\<`any`, `any`\>\>
+`F` *extends* (...`args`) => `Promise`\<[`Result`](#result)\<`any`, `any`\>\>
 
 ###### Returns
 
-[`TypedResult`](#typedresult)\<`Awaited`\<`ReturnType`\<`F`\>\> _extends_ [`Result`](#result)\<`T`, `any`\> ? `T` : `never`, `Awaited`\<`ReturnType`\<`F`\>\> _extends_ [`Result`](#result)\<`any`, `E`\> ? `E` : `never`\>
+[`TypedResult`](#typedresult)\<`Awaited`\<`ReturnType`\<`F`\>\> *extends* [`Result`](#result)\<`T`, `any`\> ? `T` : `never`, `Awaited`\<`ReturnType`\<`F`\>\> *extends* [`Result`](#result)\<`any`, `E`\> ? `E` : `never`\>
 
 ###### Call Signature
 
@@ -362,11 +358,11 @@ getOkErr: {
 
 ###### F
 
-`F` _extends_ (...`args`) => [`Result`](#result)\<`any`, `any`\>
+`F` *extends* (...`args`) => [`Result`](#result)\<`any`, `any`\>
 
 ###### Returns
 
-[`TypedResult`](#typedresult)\<`ReturnType`\<`F`\> _extends_ [`Result`](#result)\<`T`, `any`\> ? `T` : `never`, `ReturnType`\<`F`\> _extends_ [`Result`](#result)\<`any`, `E`\> ? `E` : `never`\>
+[`TypedResult`](#typedresult)\<`ReturnType`\<`F`\> *extends* [`Result`](#result)\<`T`, `any`\> ? `T` : `never`, `ReturnType`\<`F`\> *extends* [`Result`](#result)\<`any`, `E`\> ? `E` : `never`\>
 
 ###### Call Signature
 
@@ -378,11 +374,11 @@ getOkErr: {
 
 ###### R
 
-`R` _extends_ [`Result`](#result)\<`any`, `any`\>
+`R` *extends* [`Result`](#result)\<`any`, `any`\>
 
 ###### Returns
 
-[`TypedResult`](#typedresult)\<`R` _extends_ [`Result`](#result)\<`T`, `any`\> ? `T` : `never`, `R` _extends_ [`Result`](#result)\<`any`, `E`\> ? `E` : `never`\>
+[`TypedResult`](#typedresult)\<`R` *extends* [`Result`](#result)\<`T`, `any`\> ? `T` : `never`, `R` *extends* [`Result`](#result)\<`any`, `E`\> ? `E` : `never`\>
 
 ###### Call Signature
 
@@ -398,7 +394,7 @@ getOkErr: {
 
 ###### E
 
-`E` _extends_ [`ResultValidErrors`](#resultvaliderrors) = `Error`
+`E` *extends* [`ResultValidErrors`](#resultvaliderrors) = `Error`
 
 ###### Returns
 
@@ -456,7 +452,7 @@ Use `t-result` library instead.
 ##### ~~unknownToError()~~
 
 ```ts
-unknownToError: (error) => (Err<Error> = unknownToResultError);
+unknownToError: (error) => Err<Error> = unknownToResultError;
 ```
 
 ###### Parameters
@@ -487,7 +483,7 @@ Defined in: [packages/utils/src/tsResult.ts:149](https://github.com/lucasols/uti
 
 ##### E
 
-`E` _extends_ [`ResultValidErrors`](#resultvaliderrors)
+`E` *extends* [`ResultValidErrors`](#resultvaliderrors)
 
 #### Parameters
 
@@ -503,7 +499,7 @@ Defined in: [packages/utils/src/tsResult.ts:149](https://github.com/lucasols/uti
 
 Use `t-result` library instead.
 
----
+***
 
 ### ~~ok()~~
 
@@ -563,7 +559,7 @@ Use `t-result` library instead.
 
 Use `t-result` library instead.
 
----
+***
 
 ### ~~resultify()~~
 
@@ -583,13 +579,13 @@ Defined in: [packages/utils/src/tsResult.ts:238](https://github.com/lucasols/uti
 
 ###### E
 
-`E` _extends_ [`ResultValidErrors`](#resultvaliderrors) = `Error`
+`E` *extends* [`ResultValidErrors`](#resultvaliderrors) = `Error`
 
 ##### Parameters
 
 ###### fn
 
-() => `T` _extends_ `Promise`\<`any`\> ? `never` : `T`
+() => `T` *extends* `Promise`\<`any`\> ? `never` : `T`
 
 ###### errorNormalizer?
 
@@ -619,7 +615,7 @@ Defined in: [packages/utils/src/tsResult.ts:243](https://github.com/lucasols/uti
 
 ###### E
 
-`E` _extends_ [`ResultValidErrors`](#resultvaliderrors) = `Error`
+`E` *extends* [`ResultValidErrors`](#resultvaliderrors) = `Error`
 
 ##### Parameters
 
@@ -655,7 +651,7 @@ Defined in: [packages/utils/src/tsResult.ts:248](https://github.com/lucasols/uti
 
 ###### E
 
-`E` _extends_ [`ResultValidErrors`](#resultvaliderrors) = `Error`
+`E` *extends* [`ResultValidErrors`](#resultvaliderrors) = `Error`
 
 ##### Parameters
 
@@ -675,7 +671,7 @@ Defined in: [packages/utils/src/tsResult.ts:248](https://github.com/lucasols/uti
 
 Use `t-result` library instead.
 
----
+***
 
 ### ~~unknownToError()~~
 

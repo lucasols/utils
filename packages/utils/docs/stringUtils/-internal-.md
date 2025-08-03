@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / [stringUtils](README.md) / \<internal\>
 

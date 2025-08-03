@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / typingUtils
 
@@ -11,10 +11,7 @@
 ### DeepPrettify\<T\>
 
 ```ts
-type DeepPrettify<T> = {
-  [K in keyof T]: T[K] extends Record<string, unknown> ? DeepPrettify<T[K]>
-  : T[K];
-} & object;
+type DeepPrettify<T> = { [K in keyof T]: T[K] extends Record<string, unknown> ? DeepPrettify<T[K]> : T[K] } & object;
 ```
 
 Defined in: [packages/utils/src/typingUtils.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L25)
@@ -25,17 +22,12 @@ Defined in: [packages/utils/src/typingUtils.ts:25](https://github.com/lucasols/u
 
 `T`
 
----
+***
 
 ### IsAny\<T\>
 
 ```ts
-type IsAny<T> =
-  unknown extends T ?
-    [keyof T] extends [never] ?
-      false
-    : true
-  : false;
+type IsAny<T> = unknown extends T ? [keyof T] extends [never] ? false : true : false;
 ```
 
 Defined in: [packages/utils/src/typingUtils.ts:14](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L14)
@@ -46,7 +38,7 @@ Defined in: [packages/utils/src/typingUtils.ts:14](https://github.com/lucasols/u
 
 `T`
 
----
+***
 
 ### NonPartial\<T\>
 
@@ -62,14 +54,12 @@ Defined in: [packages/utils/src/typingUtils.ts:5](https://github.com/lucasols/ut
 
 `T`
 
----
+***
 
 ### ObjKeysWithValuesOfType\<Obj, ValueType\>
 
 ```ts
-type ObjKeysWithValuesOfType<Obj, ValueType> = {
-  [K in keyof Obj]: Obj[K] extends ValueType ? K : never;
-}[keyof Obj];
+type ObjKeysWithValuesOfType<Obj, ValueType> = { [K in keyof Obj]: Obj[K] extends ValueType ? K : never }[keyof Obj];
 ```
 
 Defined in: [packages/utils/src/typingUtils.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L7)
@@ -78,13 +68,13 @@ Defined in: [packages/utils/src/typingUtils.ts:7](https://github.com/lucasols/ut
 
 ##### Obj
 
-`Obj` _extends_ `Record`\<`PropertyKey`, `unknown`\>
+`Obj` *extends* `Record`\<`PropertyKey`, `unknown`\>
 
 ##### ValueType
 
 `ValueType`
 
----
+***
 
 ### PartialRecord\<K, T\>
 
@@ -98,13 +88,13 @@ Defined in: [packages/utils/src/typingUtils.ts:1](https://github.com/lucasols/ut
 
 ##### K
 
-`K` _extends_ keyof `any`
+`K` *extends* keyof `any`
 
 ##### T
 
 `T`
 
----
+***
 
 ### Prettify\<T\>
 
@@ -118,4 +108,4 @@ Defined in: [packages/utils/src/typingUtils.ts:21](https://github.com/lucasols/u
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>

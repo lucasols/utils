@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / exhaustiveMatch
 
@@ -24,7 +24,7 @@ Defined in: [packages/utils/src/exhaustiveMatch.ts:1](https://github.com/lucasol
 
 ##### T
 
-`T` _extends_ `string`
+`T` *extends* `string`
 
 #### Parameters
 
@@ -41,10 +41,9 @@ with: <R>(pattern) => R = matchWith;
 ```
 
 The pattern can be:
-
 - a function that returns the result
-- '\_nxt' to try the next pattern
-- '\_never' to indicate that this pattern should never be matched
+- '_nxt' to try the next pattern
+- '_never' to indicate that this pattern should never be matched
 
 ###### Type Parameters
 
@@ -86,7 +85,7 @@ match with early evaluation of the values
 
 `R`
 
----
+***
 
 ### exhaustiveMatchObjUnion()
 
@@ -100,15 +99,15 @@ Defined in: [packages/utils/src/exhaustiveMatch.ts:47](https://github.com/lucaso
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 ##### D
 
-`D` _extends_ `string` \| `number` \| `symbol`
+`D` *extends* `string` \| `number` \| `symbol`
 
 ##### K
 
-`K` _extends_ `string`
+`K` *extends* `string`
 
 #### Parameters
 

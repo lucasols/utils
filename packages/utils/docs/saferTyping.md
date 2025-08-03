@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / saferTyping
 
@@ -8,7 +8,7 @@
 
 ## Type Aliases
 
-### \_\_FIX_THIS_TYPING\_\_
+### \_\_FIX\_THIS\_TYPING\_\_
 
 ```ts
 type __FIX_THIS_TYPING__ = any;
@@ -16,9 +16,9 @@ type __FIX_THIS_TYPING__ = any;
 
 Defined in: [packages/utils/src/saferTyping.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/saferTyping.ts#L48)
 
----
+***
 
-### \_\_LEGIT_ANY\_\_
+### \_\_LEGIT\_ANY\_\_
 
 ```ts
 type __LEGIT_ANY__ = any;
@@ -28,9 +28,9 @@ Defined in: [packages/utils/src/saferTyping.ts:4](https://github.com/lucasols/ut
 
 Use this only when you have 100% of certainty that this will not break the types
 
----
+***
 
-### \_\_LEGIT_ANY_FUNCTION\_\_()
+### \_\_LEGIT\_ANY\_FUNCTION\_\_()
 
 ```ts
 type __LEGIT_ANY_FUNCTION__ = (...params) => __LEGIT_ANY__;
@@ -48,7 +48,7 @@ Defined in: [packages/utils/src/saferTyping.ts:8](https://github.com/lucasols/ut
 
 [`__LEGIT_ANY__`](#__legit_any__)
 
----
+***
 
 ### AnyNonPrimitiveValue
 
@@ -61,7 +61,7 @@ Defined in: [packages/utils/src/saferTyping.ts:56](https://github.com/lucasols/u
 Any type that is not a primitive (number, string, boolean, null, undefined, symbol, bigint, ...)
 Equivalent to `object` type
 
----
+***
 
 ### EmptyObject
 
@@ -75,7 +75,7 @@ An empty object type, equivalent to `{}` but with safer typing
 
 ## Functions
 
-### \_\_FIX_THIS_CASTING\_\_()
+### \_\_FIX\_THIS\_CASTING\_\_()
 
 ```ts
 function __FIX_THIS_CASTING__<T>(value): T;
@@ -99,9 +99,9 @@ Defined in: [packages/utils/src/saferTyping.ts:44](https://github.com/lucasols/u
 
 `T`
 
----
+***
 
-### \_\_FIX_THIS_TYPING\_\_()
+### \_\_FIX\_THIS\_TYPING\_\_()
 
 ```ts
 function __FIX_THIS_TYPING__(value): any;
@@ -119,9 +119,9 @@ Defined in: [packages/utils/src/saferTyping.ts:48](https://github.com/lucasols/u
 
 `any`
 
----
+***
 
-### \_\_LEGIT_ANY_CAST\_\_()
+### \_\_LEGIT\_ANY\_CAST\_\_()
 
 ```ts
 function __LEGIT_ANY_CAST__<V>(value): any;
@@ -149,9 +149,9 @@ Cast a value to `any` type. Use this when you have legit usage of `any` casting.
 
 `any`
 
----
+***
 
-### \_\_LEGIT_CAST\_\_()
+### \_\_LEGIT\_CAST\_\_()
 
 ```ts
 function __LEGIT_CAST__<T, V>(value): T;
@@ -185,9 +185,9 @@ The type to cast to
 
 `T`
 
----
+***
 
-### \_\_REFINE_CAST\_\_()
+### \_\_REFINE\_CAST\_\_()
 
 ```ts
 function __REFINE_CAST__<T>(value): <R>() => R;

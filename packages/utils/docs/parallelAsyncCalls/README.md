@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / parallelAsyncCalls
 
@@ -26,7 +26,7 @@ Executes multiple asynchronous calls in parallel and collects the results in a e
 
 ##### M
 
-`M` _extends_ `undefined` \| [`ValidMetadata`](-internal-.md#validmetadata) = `undefined`
+`M` *extends* `undefined` \| [`ValidMetadata`](-internal-.md#validmetadata) = `undefined`
 
 The type of the call metadata.
 

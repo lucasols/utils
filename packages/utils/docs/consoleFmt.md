@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / consoleFmt
 
@@ -57,7 +57,7 @@ bold: (text) => string;
 ##### color()
 
 ```ts
-color: (color, text) => (string = consoleColors);
+color: (color, text) => string = consoleColors;
 ```
 
 ###### Parameters

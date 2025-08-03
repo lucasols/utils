@@ -12,11 +12,8 @@
     "eslint": "CI=true eslint src/ scripts/ --color --max-warnings=0 --fix",
     "format": "prettier --write .",
     "build": "pnpm test && pnpm lint && pnpm build:no-test && pnpm run docs && pnpm build:update-exports",
-    "build:no-test": "tsup",
+    "build": "tsup",
     "build:update-exports": "tsm --no-warnings scripts/updatePackageExports.ts",
-    "build-test": "tsup --config tsup.test.config.ts",
-    "pre-publish": "../../scripts/check-if-is-sync.sh && pnpm build",
-    "test:console-fmt": "tsm --no-warnings scripts/testConsoleFmt.ts",
     "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch"

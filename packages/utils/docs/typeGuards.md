@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / typeGuards
 
@@ -113,10 +113,7 @@ Defined in: [packages/utils/src/typeGuards.ts:144](https://github.com/lucasols/u
 #### Call Signature
 
 ```ts
-function arrayHasAtLeastXItems<T>(
-  array,
-  minLength,
-): array is [T, T, T, T, ...T[]];
+function arrayHasAtLeastXItems<T>(array, minLength): array is [T, T, T, T, ...T[]];
 ```
 
 Defined in: [packages/utils/src/typeGuards.ts:148](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L148)
@@ -144,10 +141,7 @@ Defined in: [packages/utils/src/typeGuards.ts:148](https://github.com/lucasols/u
 #### Call Signature
 
 ```ts
-function arrayHasAtLeastXItems<T>(
-  array,
-  minLength,
-): array is [T, T, T, T, T, ...T[]];
+function arrayHasAtLeastXItems<T>(array, minLength): array is [T, T, T, T, T, ...T[]];
 ```
 
 Defined in: [packages/utils/src/typeGuards.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L152)
@@ -172,7 +166,7 @@ Defined in: [packages/utils/src/typeGuards.ts:152](https://github.com/lucasols/u
 
 `array is [T, T, T, T, T, ...T[]]`
 
----
+***
 
 ### isFunction()
 
@@ -209,14 +203,14 @@ if (isFunction(value)) {
   const result = value();
 }
 
-isFunction(() => {}); // true
-isFunction(function () {}); // true
-isFunction(Math.max); // true
-isFunction('string'); // false
-isFunction({}); // false
+isFunction(() => {});           // true
+isFunction(function() {});      // true
+isFunction(Math.max);           // true
+isFunction('string');           // false
+isFunction({});                 // false
 ```
 
----
+***
 
 ### isNonEmptyArray()
 
@@ -242,7 +236,7 @@ Defined in: [packages/utils/src/typeGuards.ts:130](https://github.com/lucasols/u
 
 `value is NonEmptyArray<T>`
 
----
+***
 
 ### isObject()
 
@@ -279,14 +273,14 @@ if (isObject(value)) {
   console.log(value.someProperty);
 }
 
-isObject({}); // true
-isObject({ a: 1 }); // true
-isObject(null); // false
-isObject([]); // false
-isObject('string'); // false
+isObject({});           // true
+isObject({ a: 1 });     // true
+isObject(null);         // false
+isObject([]);           // false
+isObject('string');     // false
 ```
 
----
+***
 
 ### isPlainObject()
 
@@ -324,16 +318,16 @@ if (isPlainObject(value)) {
   console.log(Object.keys(value));
 }
 
-isPlainObject({}); // true
-isPlainObject({ a: 1 }); // true
-isPlainObject(Object.create(null)); // true
-isPlainObject(new Date()); // false
-isPlainObject(/regex/); // false
-isPlainObject(new MyClass()); // false
-isPlainObject([]); // false
+isPlainObject({});                    // true
+isPlainObject({ a: 1 });              // true
+isPlainObject(Object.create(null));   // true
+isPlainObject(new Date());            // false
+isPlainObject(/regex/);               // false
+isPlainObject(new MyClass());         // false
+isPlainObject([]);                    // false
 ```
 
----
+***
 
 ### isPromise()
 
@@ -371,9 +365,35 @@ if (isPromise(value)) {
   const result = await value;
 }
 
-isPromise(Promise.resolve()); // true
-isPromise(new Promise(() => {})); // true
-isPromise({ then: () => {} }); // true
-isPromise({ then: 'not a function' }); // false
-isPromise('string'); // false
+isPromise(Promise.resolve());           // true
+isPromise(new Promise(() => {}));       // true
+isPromise({ then: () => {} });          // true
+isPromise({ then: 'not a function' });  // false
+isPromise('string');                    // false
 ```
+
+***
+
+### isTruthy()
+
+```ts
+function isTruthy<T>(value): value is Exclude<T, undefined | null | false | "" | 0 | 0n>;
+```
+
+Defined in: [packages/utils/src/typeGuards.ts:163](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L163)
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+#### Parameters
+
+##### value
+
+`T`
+
+#### Returns
+
+value is Exclude\<T, undefined \| null \| false \| "" \| 0 \| 0n\>

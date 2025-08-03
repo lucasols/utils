@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / interpolate
 
@@ -15,7 +15,10 @@
 ### cyclicLerp()
 
 ```ts
-function cyclicLerp(input, __namedParameters, __namedParameters): number;
+function cyclicLerp(
+   input, 
+   __namedParameters, 
+   __namedParameters): number;
 ```
 
 Defined in: [packages/utils/src/interpolate.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/interpolate.ts#L10)
@@ -38,7 +41,7 @@ Defined in: [packages/utils/src/interpolate.ts:10](https://github.com/lucasols/u
 
 `number`
 
----
+***
 
 ### interpolate()
 

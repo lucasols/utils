@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / objUtils
 
@@ -20,7 +20,7 @@ Defined in: [packages/utils/src/objUtils.ts:50](https://github.com/lucasols/util
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: [packages/utils/src/objUtils.ts:50](https://github.com/lucasols/util
 
 `undefined` \| `T`\[keyof `T`\]
 
----
+***
 
 ### mapArrayToObject()
 
@@ -54,7 +54,7 @@ Defined in: [packages/utils/src/objUtils.ts:18](https://github.com/lucasols/util
 
 ##### K
 
-`K` _extends_ `string`
+`K` *extends* `string`
 
 ##### O
 
@@ -74,7 +74,7 @@ Defined in: [packages/utils/src/objUtils.ts:18](https://github.com/lucasols/util
 
 `Record`\<`K`, `O`\>
 
----
+***
 
 ### mapObjectToObject()
 
@@ -88,11 +88,11 @@ Defined in: [packages/utils/src/objUtils.ts:25](https://github.com/lucasols/util
 
 ##### I
 
-`I` _extends_ `Record`\<`string` \| `number` \| `symbol`, `unknown`\>
+`I` *extends* `Record`\<`string` \| `number` \| `symbol`, `unknown`\>
 
 ##### K
 
-`K` _extends_ `string` \| `number` \| `symbol`
+`K` *extends* `string` \| `number` \| `symbol`
 
 ##### O
 
@@ -112,7 +112,7 @@ Defined in: [packages/utils/src/objUtils.ts:25](https://github.com/lucasols/util
 
 `Record`\<`K`, `O`\>
 
----
+***
 
 ### ~~objectTypedEntries()~~
 
@@ -126,7 +126,7 @@ Defined in: [packages/utils/src/objUtils.ts:2](https://github.com/lucasols/utils
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 #### Parameters
 
@@ -142,7 +142,7 @@ Defined in: [packages/utils/src/objUtils.ts:2](https://github.com/lucasols/utils
 
 use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
 
----
+***
 
 ### omit()
 
@@ -156,11 +156,11 @@ Defined in: [packages/utils/src/objUtils.ts:35](https://github.com/lucasols/util
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 ##### K
 
-`K` _extends_ `string` \| `number` \| `symbol`
+`K` *extends* `string` \| `number` \| `symbol`
 
 #### Parameters
 
@@ -176,7 +176,7 @@ Defined in: [packages/utils/src/objUtils.ts:35](https://github.com/lucasols/util
 
 `Omit`\<`T`, `K`\>
 
----
+***
 
 ### pick()
 
@@ -190,11 +190,11 @@ Defined in: [packages/utils/src/objUtils.ts:6](https://github.com/lucasols/utils
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 ##### K
 
-`K` _extends_ `string` \| `number` \| `symbol`
+`K` *extends* `string` \| `number` \| `symbol`
 
 #### Parameters
 
@@ -210,7 +210,7 @@ Defined in: [packages/utils/src/objUtils.ts:6](https://github.com/lucasols/utils
 
 `Pick`\<`T`, `K`\>
 
----
+***
 
 ### rejectObjUndefinedValues()
 
@@ -224,7 +224,7 @@ Defined in: [packages/utils/src/objUtils.ts:57](https://github.com/lucasols/util
 
 ##### T
 
-`T` _extends_ `Record`\<`string`, `unknown`\>
+`T` *extends* `Record`\<`string`, `unknown`\>
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / serializeXML
 
@@ -14,7 +14,7 @@
 type SerializeOptions = object;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L35)
+Defined in: [packages/utils/src/serializeXML.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L36)
 
 #### Properties
 
@@ -24,7 +24,7 @@ Defined in: [packages/utils/src/serializeXML.ts:35](https://github.com/lucasols/
 optional escapeText: boolean;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L37)
+Defined in: [packages/utils/src/serializeXML.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L38)
 
 ##### indent?
 
@@ -32,7 +32,7 @@ Defined in: [packages/utils/src/serializeXML.ts:37](https://github.com/lucasols/
 optional indent: number | string;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L36)
+Defined in: [packages/utils/src/serializeXML.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L37)
 
 ##### invalidNodes?
 
@@ -40,7 +40,7 @@ Defined in: [packages/utils/src/serializeXML.ts:36](https://github.com/lucasols/
 optional invalidNodes: "throw" | "reject";
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L39)
+Defined in: [packages/utils/src/serializeXML.ts:40](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L40)
 
 ##### validateTagName?
 
@@ -48,32 +48,32 @@ Defined in: [packages/utils/src/serializeXML.ts:39](https://github.com/lucasols/
 optional validateTagName: boolean;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L38)
+Defined in: [packages/utils/src/serializeXML.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L39)
 
----
+***
 
 ### XMLNode
 
 ```ts
-type XMLNode =
+type XMLNode = 
   | {
-      attrs?: Record<string, string | number | boolean | null | undefined>;
-      children?: (XMLNode | null | undefined | false)[] | string;
-      escapeText?: boolean;
-      name: string;
-      type?: 'node';
-    }
+  attrs?: Record<string, string | number | boolean | null | undefined>;
+  children?: (XMLNode | null | undefined | false)[] | string;
+  escapeText?: boolean;
+  name: string;
+  type?: "node";
+}
   | {
-      content: string;
-      escapeText?: boolean;
-      type: 'comment';
-    }
+  content: string;
+  escapeText?: boolean;
+  type: "comment";
+}
   | {
-      type: 'emptyLine';
-    };
+  type: "emptyLine";
+};
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:18](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L18)
+Defined in: [packages/utils/src/serializeXML.ts:19](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L19)
 
 ## Functions
 
@@ -83,13 +83,13 @@ Defined in: [packages/utils/src/serializeXML.ts:18](https://github.com/lucasols/
 function serializeXML(node, options?): string;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L42)
+Defined in: [packages/utils/src/serializeXML.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L43)
 
 #### Parameters
 
 ##### node
 
-[`XMLNode`](#xmlnode) | [`XMLNode`](#xmlnode)[]
+[`XMLNode`](#xmlnode) | false \| XMLNode \| null \| undefined[]
 
 ##### options?
 

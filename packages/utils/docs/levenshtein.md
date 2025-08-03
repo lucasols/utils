@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / levenshtein
 
@@ -11,7 +11,10 @@
 ### getClosestString()
 
 ```ts
-function getClosestString(str, arr, maxDistance): undefined | string;
+function getClosestString(
+   str, 
+   arr, 
+   maxDistance): undefined | string;
 ```
 
 Defined in: [packages/utils/src/levenshtein.ts:134](https://github.com/lucasols/utils/blob/main/packages/utils/src/levenshtein.ts#L134)
@@ -34,12 +37,15 @@ readonly `string`[]
 
 `undefined` \| `string`
 
----
+***
 
 ### getClosestStringsUpToDist()
 
 ```ts
-function getClosestStringsUpToDist(str, arr, maxDistance): string[];
+function getClosestStringsUpToDist(
+   str, 
+   arr, 
+   maxDistance): string[];
 ```
 
 Defined in: [packages/utils/src/levenshtein.ts:151](https://github.com/lucasols/utils/blob/main/packages/utils/src/levenshtein.ts#L151)
@@ -62,7 +68,7 @@ readonly `string`[]
 
 `string`[]
 
----
+***
 
 ### levenshteinDistance()
 

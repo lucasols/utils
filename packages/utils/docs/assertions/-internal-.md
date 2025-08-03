@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / [assertions](README.md) / \<internal\>
 
@@ -22,15 +22,12 @@ Defined in: [packages/utils/src/assertions.ts:11](https://github.com/lucasols/ut
 
 `T`
 
----
+***
 
 ### StrictNonNullable\<T, N\>
 
 ```ts
-type StrictNonNullable<T, N> =
-  undefined extends T ? NonNullable<T>
-  : null extends T ? NonNullable<T>
-  : N;
+type StrictNonNullable<T, N> = undefined extends T ? NonNullable<T> : null extends T ? NonNullable<T> : N;
 ```
 
 Defined in: [packages/utils/src/assertions.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L50)
@@ -45,7 +42,7 @@ Defined in: [packages/utils/src/assertions.ts:50](https://github.com/lucasols/ut
 
 `N` = `unknown`
 
----
+***
 
 ### StrictNonUndefined\<T, N\>
 

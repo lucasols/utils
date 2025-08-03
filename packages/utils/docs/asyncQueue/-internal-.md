@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / [asyncQueue](README.md) / \<internal\>
 
@@ -24,7 +24,7 @@ Defined in: [packages/utils/src/asyncQueue.ts:39](https://github.com/lucasols/ut
 
 ##### E
 
-`E` _extends_ `ResultValidErrors` = `Error`
+`E` *extends* `ResultValidErrors` = `Error`
 
 ##### I
 
@@ -77,15 +77,15 @@ value: T;
 ```ts
 events: Emitter<{
   complete: {
-    meta: I;
-    value: T;
+     meta: I;
+     value: T;
   };
   error: {
-    error: Error | E;
-    meta: I;
+     error: Error | E;
+     meta: I;
   };
   start: {
-    meta: I;
+     meta: I;
   };
 }>;
 ```
@@ -240,7 +240,7 @@ Defined in: [packages/utils/src/asyncQueue.ts:121](https://github.com/lucasols/u
 
 `Promise`\<`Result`\<`T`, `Error` \| `E`\>\>
 
----
+***
 
 ### AsyncQueueWithMeta\<T, I, E\>
 
@@ -262,7 +262,7 @@ Defined in: [packages/utils/src/asyncQueue.ts:304](https://github.com/lucasols/u
 
 ##### E
 
-`E` _extends_ `ResultValidErrors` = `Error`
+`E` *extends* `ResultValidErrors` = `Error`
 
 #### Constructors
 
@@ -319,15 +319,15 @@ value: T;
 ```ts
 events: Emitter<{
   complete: {
-    meta: I;
-    value: T;
+     meta: I;
+     value: T;
   };
   error: {
-    error: Error | E;
-    meta: I;
+     error: Error | E;
+     meta: I;
   };
   start: {
-    meta: I;
+     meta: I;
   };
 }>;
 ```
@@ -544,7 +544,7 @@ Defined in: [packages/utils/src/asyncQueue.ts:17](https://github.com/lucasols/ut
 
 ##### E
 
-`E` _extends_ `ResultValidErrors`
+`E` *extends* `ResultValidErrors`
 
 #### Properties
 
@@ -608,12 +608,12 @@ optional timeout: number;
 
 Defined in: [packages/utils/src/asyncQueue.ts:19](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L19)
 
----
+***
 
 ### AddOptionsWithId\<I, T, E\>
 
 ```ts
-type AddOptionsWithId<I, T, E> = Omit<AddOptions<I, T, E>, 'meta'> & object;
+type AddOptionsWithId<I, T, E> = Omit<AddOptions<I, T, E>, "meta"> & object;
 ```
 
 Defined in: [packages/utils/src/asyncQueue.ts:299](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L299)
@@ -638,9 +638,9 @@ meta: I;
 
 ##### E
 
-`E` _extends_ `ResultValidErrors`
+`E` *extends* `ResultValidErrors`
 
----
+***
 
 ### AsyncQueueOptions
 
@@ -676,7 +676,7 @@ optional timeout: number;
 
 Defined in: [packages/utils/src/asyncQueue.ts:14](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L14)
 
----
+***
 
 ### RunCtx\<I\>
 
@@ -710,7 +710,7 @@ optional signal: AbortSignal;
 
 Defined in: [packages/utils/src/asyncQueue.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L26)
 
----
+***
 
 ### Task\<T, E, I\>
 
@@ -728,7 +728,7 @@ Defined in: [packages/utils/src/asyncQueue.ts:30](https://github.com/lucasols/ut
 
 ##### E
 
-`E` _extends_ `ResultValidErrors`
+`E` *extends* `ResultValidErrors`
 
 ##### I
 

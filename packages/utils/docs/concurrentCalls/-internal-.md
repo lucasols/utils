@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / [concurrentCalls](README.md) / \<internal\>
 
@@ -20,7 +20,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:32](https://github.com/lucaso
 
 ##### E
 
-`E` _extends_ `Error` = `Error`
+`E` *extends* `Error` = `Error`
 
 #### Constructors
 
@@ -113,14 +113,14 @@ Defined in: [packages/utils/src/concurrentCalls.ts:112](https://github.com/lucas
 ###### Returns
 
 `Promise`\<\{
-`aggregatedError`: `null` \| `AggregateError`;
-`allFailed`: `boolean`;
-`failures`: `E`[];
-`succeeded`: `R`[];
-`total`: `number`;
+  `aggregatedError`: `null` \| `AggregateError`;
+  `allFailed`: `boolean`;
+  `failures`: `E`[];
+  `succeeded`: `R`[];
+  `total`: `number`;
 \}\>
 
----
+***
 
 ### ConcurrentCallsWithMetadata\<M, R, E\>
 
@@ -130,7 +130,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:184](https://github.com/lucas
 
 ##### M
 
-`M` _extends_ [`ValidMetadata`](#validmetadata)
+`M` *extends* [`ValidMetadata`](#validmetadata)
 
 ##### R
 
@@ -138,7 +138,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:184](https://github.com/lucas
 
 ##### E
 
-`E` _extends_ `Error` = `Error`
+`E` *extends* `Error` = `Error`
 
 #### Constructors
 
@@ -233,13 +233,13 @@ Defined in: [packages/utils/src/concurrentCalls.ts:274](https://github.com/lucas
 ###### Returns
 
 `Promise`\<\{
-`aggregatedError`: `null` \| `AggregateError`;
-`allFailed`: `boolean`;
-`failed`: [`FailedCall`](#failedcall)\<`M`, `E`\>[];
-`failures`: [`FailedCall`](#failedcall)\<`M`, `E`\>[];
-`results`: [`SettledResultWithMetadata`](#settledresultwithmetadata)\<`R`, `M`, `E`\>[];
-`succeeded`: [`SucceededCall`](#succeededcall)\<`R`, `M`\>[];
-`total`: `number`;
+  `aggregatedError`: `null` \| `AggregateError`;
+  `allFailed`: `boolean`;
+  `failed`: [`FailedCall`](#failedcall)\<`M`, `E`\>[];
+  `failures`: [`FailedCall`](#failedcall)\<`M`, `E`\>[];
+  `results`: [`SettledResultWithMetadata`](#settledresultwithmetadata)\<`R`, `M`, `E`\>[];
+  `succeeded`: [`SucceededCall`](#succeededcall)\<`R`, `M`\>[];
+  `total`: `number`;
 \}\>
 
 ## Type Aliases
@@ -247,7 +247,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:274](https://github.com/lucas
 ### Action\<R, E\>
 
 ```ts
-type Action<R, E> =
+type Action<R, E> = 
   | () => Promise<Result<R, E>>
 | Promise<Result<R, E>>;
 ```
@@ -262,9 +262,9 @@ Defined in: [packages/utils/src/concurrentCalls.ts:23](https://github.com/lucaso
 
 ##### E
 
-`E` _extends_ `Error`
+`E` *extends* `Error`
 
----
+***
 
 ### FailedCall\<M, E\>
 
@@ -282,7 +282,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:18](https://github.com/lucaso
 
 ##### E
 
-`E` _extends_ `Error` = `Error`
+`E` *extends* `Error` = `Error`
 
 #### Properties
 
@@ -302,7 +302,7 @@ metadata: M;
 
 Defined in: [packages/utils/src/concurrentCalls.ts:19](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L19)
 
----
+***
 
 ### RunProps
 
@@ -332,23 +332,23 @@ Defined in: [packages/utils/src/concurrentCalls.ts:10](https://github.com/lucaso
 
 `number`
 
----
+***
 
 ### SettledResultWithMetadata\<R, M, E\>
 
 ```ts
-type SettledResultWithMetadata<R, M, E> =
+type SettledResultWithMetadata<R, M, E> = 
   | {
-      error: false;
-      metadata: M;
-      ok: true;
-      value: R;
-    }
+  error: false;
+  metadata: M;
+  ok: true;
+  value: R;
+}
   | {
-      error: E;
-      metadata: M;
-      ok: false;
-    };
+  error: E;
+  metadata: M;
+  ok: false;
+};
 ```
 
 Defined in: [packages/utils/src/concurrentCalls.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L28)
@@ -365,9 +365,9 @@ Defined in: [packages/utils/src/concurrentCalls.ts:28](https://github.com/lucaso
 
 ##### E
 
-`E` _extends_ `Error` = `Error`
+`E` *extends* `Error` = `Error`
 
----
+***
 
 ### SucceededCall\<R, M\>
 
@@ -405,7 +405,7 @@ value: R;
 
 Defined in: [packages/utils/src/concurrentCalls.ts:15](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L15)
 
----
+***
 
 ### ValidMetadata
 

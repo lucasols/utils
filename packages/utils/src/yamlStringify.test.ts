@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+ 
 import { ArgumentsType, describe, expect, test } from 'vitest';
 import { yamlStringify } from './yamlStringify';
 

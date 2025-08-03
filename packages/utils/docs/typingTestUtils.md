@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / typingTestUtils
 
@@ -11,9 +11,7 @@
 ### TestTypeIsEqual\<X, Y\>
 
 ```ts
-type TestTypeIsEqual<X, Y> = <T>() => T extends X ? 1
-: 2 extends <T>() => T extends Y ? 1 : 2 ? true
-: false;
+type TestTypeIsEqual<X, Y> = <T>() => T extends X ? 1 : 2 extends <T>() => T extends Y ? 1 : 2 ? true : false;
 ```
 
 Defined in: [packages/utils/src/typingTestUtils.ts:1](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingTestUtils.ts#L1)
@@ -28,7 +26,7 @@ Defined in: [packages/utils/src/typingTestUtils.ts:1](https://github.com/lucasol
 
 `Y`
 
----
+***
 
 ### TestTypeNotEqual\<X, Y\>
 
@@ -93,7 +91,7 @@ Used in combination with `TestTypeIsEqual` to verify type equality at compile ti
 
 ###### T
 
-`T` _extends_ `true`
+`T` *extends* `true`
 
 Type that must extend `true`
 
@@ -137,7 +135,7 @@ Second type to compare
 
 ###### result
 
-[`TestTypeIsEqual`](#testtypeisequal)\<`X`, `Y`\> _extends_ `true` ? `"equal"` : `"notEqual"`
+[`TestTypeIsEqual`](#testtypeisequal)\<`X`, `Y`\> *extends* `true` ? `"equal"` : `"notEqual"`
 
 Expected comparison result: 'equal' if types are equal, 'notEqual' if they differ
 

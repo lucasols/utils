@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / dedent
 
@@ -62,7 +62,7 @@ withOptions: CreateDedent;
 
 Defined in: [packages/utils/src/dedent.ts:9](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L9)
 
----
+***
 
 ### DedentOptions
 

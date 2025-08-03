@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / assertions
 
@@ -15,8 +15,7 @@
 ### ~~isFunction()~~
 
 ```ts
-const isFunction: (value) => value is (args: any[]) => any =
-  isFunctionFromTypeGuards;
+const isFunction: (value) => value is (args: any[]) => any = isFunctionFromTypeGuards;
 ```
 
 Defined in: [packages/utils/src/assertions.ts:240](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L240)
@@ -48,24 +47,23 @@ if (isFunction(value)) {
   const result = value();
 }
 
-isFunction(() => {}); // true
-isFunction(function () {}); // true
-isFunction(Math.max); // true
-isFunction('string'); // false
-isFunction({}); // false
+isFunction(() => {});           // true
+isFunction(function() {});      // true
+isFunction(Math.max);           // true
+isFunction('string');           // false
+isFunction({});                 // false
 ```
 
 #### Deprecated
 
 use import from `@ls-stack/typeGuards` instead
 
----
+***
 
 ### ~~isObject()~~
 
 ```ts
-const isObject: (value) => value is Record<string, unknown> =
-  isObjectFromTypeGuards;
+const isObject: (value) => value is Record<string, unknown> = isObjectFromTypeGuards;
 ```
 
 Defined in: [packages/utils/src/assertions.ts:242](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L242)
@@ -97,24 +95,23 @@ if (isObject(value)) {
   console.log(value.someProperty);
 }
 
-isObject({}); // true
-isObject({ a: 1 }); // true
-isObject(null); // false
-isObject([]); // false
-isObject('string'); // false
+isObject({});           // true
+isObject({ a: 1 });     // true
+isObject(null);         // false
+isObject([]);           // false
+isObject('string');     // false
 ```
 
 #### Deprecated
 
 use import from `@ls-stack/typeGuards` instead
 
----
+***
 
 ### ~~isPlainObject()~~
 
 ```ts
-const isPlainObject: (value) => value is Record<string, unknown> =
-  isPlainObjectFromTypeGuards;
+const isPlainObject: (value) => value is Record<string, unknown> = isPlainObjectFromTypeGuards;
 ```
 
 Defined in: [packages/utils/src/assertions.ts:244](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L244)
@@ -147,20 +144,20 @@ if (isPlainObject(value)) {
   console.log(Object.keys(value));
 }
 
-isPlainObject({}); // true
-isPlainObject({ a: 1 }); // true
-isPlainObject(Object.create(null)); // true
-isPlainObject(new Date()); // false
-isPlainObject(/regex/); // false
-isPlainObject(new MyClass()); // false
-isPlainObject([]); // false
+isPlainObject({});                    // true
+isPlainObject({ a: 1 });              // true
+isPlainObject(Object.create(null));   // true
+isPlainObject(new Date());            // false
+isPlainObject(/regex/);               // false
+isPlainObject(new MyClass());         // false
+isPlainObject([]);                    // false
 ```
 
 #### Deprecated
 
 use import from `@ls-stack/typeGuards` instead
 
----
+***
 
 ### ~~isPromise()~~
 
@@ -198,11 +195,11 @@ if (isPromise(value)) {
   const result = await value;
 }
 
-isPromise(Promise.resolve()); // true
-isPromise(new Promise(() => {})); // true
-isPromise({ then: () => {} }); // true
-isPromise({ then: 'not a function' }); // false
-isPromise('string'); // false
+isPromise(Promise.resolve());           // true
+isPromise(new Promise(() => {}));       // true
+isPromise({ then: () => {} });          // true
+isPromise({ then: 'not a function' });  // false
+isPromise('string');                    // false
 ```
 
 #### Deprecated
@@ -214,10 +211,7 @@ use import from `@ls-stack/typeGuards` instead
 ### assertIsNotNullish()
 
 ```ts
-function assertIsNotNullish<T>(
-  value,
-  error,
-): asserts value is StrictNonNullable<T, never>;
+function assertIsNotNullish<T>(value, error): asserts value is StrictNonNullable<T, never>;
 ```
 
 Defined in: [packages/utils/src/assertions.ts:111](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L111)
@@ -269,15 +263,12 @@ function processValue(input: string | null | undefined) {
 assertIsNotNullish(value, 'Value is required for processing');
 ```
 
----
+***
 
 ### assertIsNotUndefined()
 
 ```ts
-function assertIsNotUndefined<T>(
-  value,
-  error,
-): asserts value is StrictNonUndefined<T, never>;
+function assertIsNotUndefined<T>(value, error): asserts value is StrictNonUndefined<T, never>;
 ```
 
 Defined in: [packages/utils/src/assertions.ts:142](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L142)
@@ -329,7 +320,7 @@ function processValue(input: string | undefined) {
 assertIsNotUndefined(value, 'Value must be defined');
 ```
 
----
+***
 
 ### exhaustiveCheck()
 
@@ -398,7 +389,7 @@ function processValue(value: string | number) {
 }
 ```
 
----
+***
 
 ### invariant()
 
@@ -455,7 +446,7 @@ function processUser(user: User | null) {
 invariant(isValid, () => new ValidationError('Invalid state detected'));
 ```
 
----
+***
 
 ### notNullish()
 
@@ -511,13 +502,10 @@ const definiteString = notNullish(maybeString); // Type: string
 const value = notNullish(maybeValue, 'Value cannot be null or undefined');
 
 // With custom error function
-const value = notNullish(
-  maybeValue,
-  () => new ValidationError('Required field'),
-);
+const value = notNullish(maybeValue, () => new ValidationError('Required field'));
 ```
 
----
+***
 
 ### notUndefined()
 
@@ -573,8 +561,5 @@ const definiteString = notUndefined(maybeString); // Type: string
 const value = notUndefined(maybeValue, 'Value must be defined');
 
 // With custom error function
-const value = notUndefined(
-  maybeValue,
-  () => new ValidationError('Required field'),
-);
+const value = notUndefined(maybeValue, () => new ValidationError('Required field'));
 ```

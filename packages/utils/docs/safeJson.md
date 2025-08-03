@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / safeJson
 
@@ -28,7 +28,7 @@ JSON.parse can throw if the value is not valid JSON, this function catches those
 
 `unknown`
 
----
+***
 
 ### safeJsonStringify()
 

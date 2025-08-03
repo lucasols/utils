@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](../README.md)
 
----
+***
 
 [@ls-stack/utils](../modules.md) / [interpolate](README.md) / \<internal\>
 
@@ -50,7 +50,7 @@ out: number[];
 
 Defined in: [packages/utils/src/interpolate.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/interpolate.ts#L32)
 
----
+***
 
 ### Interval
 

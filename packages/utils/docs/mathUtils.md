@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / mathUtils
 
@@ -11,7 +11,10 @@
 ### clamp()
 
 ```ts
-function clamp(num, min, max): number;
+function clamp(
+   num, 
+   min, 
+   max): number;
 ```
 
 Defined in: [packages/utils/src/mathUtils.ts:17](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L17)
@@ -34,7 +37,7 @@ Defined in: [packages/utils/src/mathUtils.ts:17](https://github.com/lucasols/uti
 
 `number`
 
----
+***
 
 ### clampMax()
 
@@ -58,7 +61,7 @@ Defined in: [packages/utils/src/mathUtils.ts:1](https://github.com/lucasols/util
 
 `number`
 
----
+***
 
 ### clampMin()
 
@@ -82,12 +85,15 @@ Defined in: [packages/utils/src/mathUtils.ts:5](https://github.com/lucasols/util
 
 `number`
 
----
+***
 
 ### clampRange()
 
 ```ts
-function clampRange(num, v1, v2): number;
+function clampRange(
+   num, 
+   v1, 
+   v2): number;
 ```
 
 Defined in: [packages/utils/src/mathUtils.ts:9](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L9)
@@ -110,7 +116,7 @@ Defined in: [packages/utils/src/mathUtils.ts:9](https://github.com/lucasols/util
 
 `number`
 
----
+***
 
 ### fixFloatingPointNumber()
 

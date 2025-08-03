@@ -1,6 +1,6 @@
 [**@ls-stack/utils**](README.md)
 
----
+***
 
 [@ls-stack/utils](modules.md) / debounce
 
@@ -16,7 +16,7 @@ Defined in: [packages/utils/src/debounce.ts:16](https://github.com/lucasols/util
 
 ##### T
 
-`T` _extends_ (...`args`) => `void`
+`T` *extends* (...`args`) => `void`
 
 ```ts
 DebouncedFunc(...args): undefined | ReturnType<T>;
@@ -98,7 +98,7 @@ Defined in: [packages/utils/src/debounce.ts:5](https://github.com/lucasols/utils
 
 ###### See
 
-\_.leading
+_.leading
 
 ##### maxWait?
 
@@ -110,7 +110,7 @@ Defined in: [packages/utils/src/debounce.ts:9](https://github.com/lucasols/utils
 
 ###### See
 
-\_.maxWait
+_.maxWait
 
 ##### trailing?
 
@@ -122,14 +122,17 @@ Defined in: [packages/utils/src/debounce.ts:13](https://github.com/lucasols/util
 
 ###### See
 
-\_.trailing
+_.trailing
 
 ## Functions
 
 ### debounce()
 
 ```ts
-function debounce<T>(func, wait, options?): DebouncedFunc<T>;
+function debounce<T>(
+   func, 
+   wait, 
+options?): DebouncedFunc<T>;
 ```
 
 Defined in: [packages/utils/src/debounce.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L44)
@@ -138,7 +141,7 @@ Defined in: [packages/utils/src/debounce.ts:44](https://github.com/lucasols/util
 
 ##### T
 
-`T` _extends_ (...`args`) => `void`
+`T` *extends* (...`args`) => `void`
 
 #### Parameters
 
@@ -158,14 +161,12 @@ Defined in: [packages/utils/src/debounce.ts:44](https://github.com/lucasols/util
 
 [`DebouncedFunc`](#debouncedfunc)\<`T`\>
 
----
+***
 
 ### isDebouncedFn()
 
 ```ts
-function isDebouncedFn<T>(
-  fn,
-): fn is T & { cancel: () => void; flush: () => undefined | ReturnType<T> };
+function isDebouncedFn<T>(fn): fn is T & { cancel: () => void; flush: () => undefined | ReturnType<T> };
 ```
 
 Defined in: [packages/utils/src/debounce.ts:176](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L176)
@@ -174,7 +175,7 @@ Defined in: [packages/utils/src/debounce.ts:176](https://github.com/lucasols/uti
 
 ##### T
 
-`T` _extends_ (...`args`) => `void`
+`T` *extends* (...`args`) => `void`
 
 #### Parameters
 
