@@ -132,11 +132,14 @@ export async function runCmdUnwrap(
   command: string | string[],
   {
     silent,
+    cwd,
   }: {
     silent?: boolean | 'timeOnly';
+    cwd?: string;
   } = {},
 ) {
-  return (await runCmd(label, command, { silent, throwOnError: true })).stdout;
+  return (await runCmd(label, command, { silent, throwOnError: true, cwd }))
+    .stdout;
 }
 
 export function runCmdSilent(command: string | string[]) {
