@@ -186,10 +186,7 @@ export function createBaseConfig({
     {
       files: ['**/*.test.ts'],
       rules: {
-        'max-lines': [
-          ERROR,
-          { max: 700, skipBlankLines: true, skipComments: true },
-        ],
+        'max-lines': OFF,
       },
     },
     {
