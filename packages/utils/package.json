@@ -26,6 +26,7 @@
     "docs"
   ],
   "repository": "github:lucasols/utils",
+  "homepage": "https://github.com/lucasols/utils/tree/main/packages/utils",
   "author": "Lucas Santos",
   "type": "module",
   "sideEffects": false,
