@@ -67,52 +67,10 @@
       "group": "build"
     },
     {
-      "label": "generate docs",
-      "type": "shell",
-      "command": "pnpm docs",
-      "group": "build"
-    },
-    {
       "label": "format all packages",
       "type": "shell",
       "command": "pnpm format",
       "group": "build"
-    },
-    {
-      "label": "bump version and publish utils",
-      "type": "shell",
-      "command": "pnpm --filter @ls-stack/utils pre-publish && pnpm --filter @ls-stack/utils version ${input:version} && pnpm --filter @ls-stack/utils publish",
-      "group": "build",
-      "presentation": {
-        "clear": true
-      }
-    },
-    {
-      "label": "bump version and publish node-utils",
-      "type": "shell",
-      "command": "pnpm --filter @ls-stack/node-utils build && pnpm --filter @ls-stack/node-utils version ${input:version} && pnpm --filter @ls-stack/node-utils publish",
-      "group": "build",
-      "presentation": {
-        "clear": true
-      }
-    },
-    {
-      "label": "bump version and publish browser-utils",
-      "type": "shell",
-      "command": "pnpm --filter @ls-stack/browser-utils build && pnpm --filter @ls-stack/browser-utils version ${input:version} && pnpm --filter @ls-stack/browser-utils publish",
-      "group": "build",
-      "presentation": {
-        "clear": true
-      }
-    },
-    {
-      "label": "bump version and publish react-utils",
-      "type": "shell",
-      "command": "pnpm --filter @ls-stack/react-utils build && pnpm --filter @ls-stack/react-utils version ${input:version} && pnpm --filter @ls-stack/react-utils publish",
-      "group": "build",
-      "presentation": {
-        "clear": true
-      }
     },
     {
       "label": "bump version and publish selected package",
@@ -129,7 +87,12 @@
       "id": "packageName",
       "type": "pickString",
       "description": "Select package to work with",
-      "options": ["@ls-stack/utils", "@ls-stack/node-utils", "@ls-stack/browser-utils", "@ls-stack/react-utils"]
+      "options": [
+        "@ls-stack/utils",
+        "@ls-stack/node-utils",
+        "@ls-stack/browser-utils",
+        "@ls-stack/react-utils"
+      ]
     },
     {
       "id": "version",
