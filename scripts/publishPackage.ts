@@ -16,8 +16,7 @@ const versions = ['major', 'minor', 'patch'] as const;
 type Version = (typeof versions)[number];
 
 async function publishPackage(packageName: PackageName, version: Version) {
-  // check if there are uncommitted changes
-  await runCmdUnwrap('check if is sync', ['./scripts/check-if-is-sync.sh']);
+  await checkIfIsSync();
 
   if (packageName !== 'utils') {
     // build utils first
@@ -159,6 +158,19 @@ async function updatePackageExports(_packageName: string) {
     packageJson.exports = newExportsField;
 
     writeFileSync(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`);
+  }
+}
+
+async function checkIfIsSync() {
+  const gitStatus = await runCmdUnwrap('check git status', [
+    'git',
+    'status',
+    '--porcelain',
+  ]);
+
+  if (gitStatus.trim()) {
+    console.error('Git is not sync, commit your changes first');
+    process.exit(1);
   }
 }
 
