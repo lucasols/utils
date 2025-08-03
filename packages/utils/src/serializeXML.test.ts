@@ -780,3 +780,20 @@ test('serializes array with mixed content', () => {
 </content>
 <footer />`);
 });
+
+test('reject falsy values in root array', () => {
+  const result = serializeXML(
+    [
+      { name: 'first', children: 'First element' },
+      null,
+      undefined,
+      false,
+      { name: 'second', children: 'Second element' },
+    ],
+    { invalidNodes: 'reject' },
+  );
+
+  expect(result).toBe(
+    '<first>First element</first><second>Second element</second>',
+  );
+});

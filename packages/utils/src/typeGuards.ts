@@ -159,3 +159,9 @@ export function arrayHasAtLeastXItems(
 ): boolean {
   return array.length >= minLength;
 }
+
+export function isTruthy<T>(
+  value: T,
+): value is Exclude<T, null | undefined | false | 0 | '' | 0n> {
+  return !!value;
+}

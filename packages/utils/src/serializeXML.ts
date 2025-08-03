@@ -1,4 +1,5 @@
 import { filterAndMap } from './arrayUtils';
+import { isTruthy } from './typeGuards';
 
 // Cache compiled regex at module level for better performance
 const XML_TAG_NAME_REGEX = /^[a-zA-Z_][a-zA-Z0-9._-]*$/;
@@ -40,19 +41,19 @@ export type SerializeOptions = {
 };
 
 export function serializeXML(
-  node: XMLNode | XMLNode[],
+  node: XMLNode | (XMLNode | null | undefined | false)[],
   options?: SerializeOptions,
 ): string {
   if (Array.isArray(node)) {
     const EMPTY_LINE_MARKER = '\x00EMPTY_LINE\x00';
     return node
+      .filter(isTruthy)
       .map((n) => {
         if (n.type === 'emptyLine') {
           return EMPTY_LINE_MARKER;
         }
         return serializeWithLevel(n, options, 0);
       })
-      .filter(Boolean)
       .join(options?.indent ? '\n' : '')
       .replace(new RegExp(EMPTY_LINE_MARKER, 'g'), '');
   }

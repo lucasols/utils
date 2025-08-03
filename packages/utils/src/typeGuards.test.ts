@@ -6,6 +6,7 @@ import {
   isObject,
   isPlainObject,
   isPromise,
+  isTruthy,
   type NonEmptyArray,
 } from './typeGuards';
 import { typingTest } from './typingTestUtils';
@@ -335,6 +336,66 @@ describe('arrayHasAtLeastXItems', () => {
           typeof exactLength3,
           [number, number, number, ...number[]]
         >('equal');
+      }
+    });
+  });
+});
+
+describe('isTruthy', () => {
+  test('should return true for truthy values', () => {
+    expect(isTruthy(1)).toBe(true);
+    expect(isTruthy(-1)).toBe(true);
+    expect(isTruthy('hello')).toBe(true);
+    expect(isTruthy(true)).toBe(true);
+    expect(isTruthy({})).toBe(true);
+    expect(isTruthy([])).toBe(true);
+    expect(isTruthy(new Date())).toBe(true);
+    expect(isTruthy(Infinity)).toBe(true);
+  });
+
+  test('should return false for falsy values', () => {
+    expect(isTruthy(false)).toBe(false);
+    expect(isTruthy(0)).toBe(false);
+    expect(isTruthy('')).toBe(false);
+    expect(isTruthy(null)).toBe(false);
+    expect(isTruthy(undefined)).toBe(false);
+    expect(isTruthy(NaN)).toBe(false);
+    expect(isTruthy(0n)).toBe(false);
+  });
+
+  typingTest.describe('type narrowing', () => {
+    typingTest.test('should narrow union types correctly', () => {
+      const value: string | null | undefined = 'hello';
+
+      if (isTruthy(value)) {
+        typingTest.expectTypesAre<typeof value, string>('equal');
+      }
+    });
+
+    typingTest.test('should exclude all falsy values from type', () => {
+      const value = 5 as string | number | boolean | null | undefined;
+
+      if (isTruthy(value)) {
+        // Should exclude null, undefined, false, but cannot exclude specific falsy strings/numbers from general types
+        typingTest.expectTypesAre<typeof value, string | number | true>(
+          'equal',
+        );
+      }
+    });
+
+    typingTest.test('should handle literal types', () => {
+      const value: 0 | 1 | '' | 'hello' | false | true = 1;
+
+      if (isTruthy(value)) {
+        typingTest.expectTypesAre<typeof value, 1>('equal');
+      }
+    });
+
+    typingTest.test('should work with objects', () => {
+      const value: { name: string } | null | undefined = { name: 'test' };
+
+      if (isTruthy(value)) {
+        typingTest.expectTypesAre<typeof value, { name: string }>('equal');
       }
     });
   });
