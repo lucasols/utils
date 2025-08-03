@@ -31,6 +31,10 @@
       "import": "./lib/main.js",
       "require": "./lib/main.cjs"
     },
+    "./useActionFn": {
+      "import": "./lib/useActionFn.js",
+      "require": "./lib/useActionFn.cjs"
+    },
     "./useConst": {
       "import": "./lib/useConst.js",
       "require": "./lib/useConst.cjs"

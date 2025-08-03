@@ -7,4 +7,5 @@
 ## Modules
 
 - [main](main.md)
+- [useActionFn](useActionFn.md)
 - [useConst](useConst.md)
