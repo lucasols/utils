@@ -18,12 +18,12 @@
     "docs:browser-utils": "pnpm --filter @ls-stack/browser-utils docs",
     "docs:watch": "pnpm -r --parallel docs:watch",
     "build-lint-test-all": "pnpm build && pnpm lint && pnpm test",
-    "publish-package": "tsm ./scripts/publishPackage.ts"
+    "publish-package": "node ./scripts/publishPackage.ts"
   },
   "repository": "github:lucasols/utils",
   "author": "Lucas Santos",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
