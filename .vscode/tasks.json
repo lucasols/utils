@@ -87,12 +87,7 @@
       "id": "packageName",
       "type": "pickString",
       "description": "Select package to work with",
-      "options": [
-        "@ls-stack/utils",
-        "@ls-stack/node-utils",
-        "@ls-stack/browser-utils",
-        "@ls-stack/react-utils"
-      ]
+      "options": ["utils", "node-utils", "browser-utils", "react-utils"]
     },
     {
       "id": "version",
@@ -109,12 +104,7 @@
       "id": "packageNameShort",
       "type": "pickString",
       "description": "Select package to publish",
-      "options": [
-        "utils",
-        "node-utils",
-        "browser-utils",
-        "react-utils"
-      ]
+      "options": ["utils", "node-utils", "browser-utils", "react-utils"]
     }
   ]
 }
