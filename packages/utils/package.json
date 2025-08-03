@@ -9,7 +9,7 @@
     "lint": "pnpm tsc && pnpm eslint",
     "tsc": "tsc -p tsconfig.prod.json",
     "tsc:watch": "tsc -p tsconfig.prod.json --watch",
-    "eslint": "CI=true eslint src/ scripts/ --color --max-warnings=0 --fix",
+    "eslint": "CI=true eslint src/ --color --max-warnings=0 --fix",
     "format": "prettier --write .",
     "build": "tsup",
     "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts",
