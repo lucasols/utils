@@ -17,7 +17,8 @@
     "docs:node-utils": "pnpm --filter @ls-stack/node-utils docs",
     "docs:browser-utils": "pnpm --filter @ls-stack/browser-utils docs",
     "docs:watch": "pnpm -r --parallel docs:watch",
-    "build-lint-test-all": "pnpm build && pnpm lint && pnpm test"
+    "build-lint-test-all": "pnpm build && pnpm lint && pnpm test",
+    "publish-package": "tsm ./scripts/publishPackage.ts"
   },
   "repository": "github:lucasols/utils",
   "author": "Lucas Santos",

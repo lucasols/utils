@@ -17,54 +17,102 @@ type Version = (typeof versions)[number];
 
 async function publishPackage(packageName: PackageName, version: Version) {
   // check if there are uncommitted changes
-  runCmdUnwrap('check if is sync', ['./scripts/check-if-is-sync.sh']);
+  await runCmdUnwrap('check if is sync', ['./scripts/check-if-is-sync.sh']);
 
   if (packageName !== 'utils') {
     // build utils first
-    runCmdUnwrap('build utils', ['pnpm', '--filter', 'utils', 'build']);
+    await runCmdUnwrap('build utils', [
+      'pnpm',
+      '--filter',
+      '@ls-stack/utils',
+      'build',
+    ]);
   }
 
-  runCmdUnwrap('test package', ['pnpm', '--filter', packageName, 'test']);
-
-  runCmdUnwrap('lint (tsc+eslint) package', [
+  await runCmdUnwrap('test package', [
     'pnpm',
     '--filter',
-    packageName,
+    `@ls-stack/${packageName}`,
+    'test',
+  ]);
+
+  await runCmdUnwrap('lint (tsc+eslint) package', [
+    'pnpm',
+    '--filter',
+    `@ls-stack/${packageName}`,
     'lint',
   ]);
 
-  // commit fixes if any
-  runCmdUnwrap('commit fixes', [
+  // check if there are any changes to commit
+  const gitStatus = await runCmdUnwrap('check git status', [
     'git',
-    'commit',
-    '-m',
-    `chore: fix linting issues in ${packageName}`,
+    'status',
+    '--porcelain',
+  ]);
+  if (gitStatus.trim()) {
+    await runCmdUnwrap('stage all changes', ['git', 'add', '.']);
+    await runCmdUnwrap('commit fixes', [
+      'git',
+      'commit',
+      '-m',
+      `chore: fix linting issues in ${packageName}`,
+    ]);
+  }
+
+  await runCmdUnwrap('build package', [
+    'pnpm',
+    '--filter',
+    `@ls-stack/${packageName}`,
+    'build',
   ]);
 
-  runCmdUnwrap('build package', ['pnpm', '--filter', packageName, 'build']);
+  // Update package exports after build
+  const previousCwd = process.cwd();
+  process.chdir(`./packages/${packageName}`);
+  await updatePackageExports(packageName);
+  process.chdir(previousCwd);
 
-  runCmdUnwrap('generate docs', ['pnpm', '--filter', packageName, 'docs']);
-
-  // commit the generated docs
-  runCmdUnwrap('commit docs and package.json exports updates', [
-    'git',
-    'commit',
-    '-m',
-    `chore: update docs and package.json exports for ${packageName}`,
+  await runCmdUnwrap('generate docs', [
+    'pnpm',
+    '--filter',
+    `@ls-stack/${packageName}`,
+    'docs',
   ]);
+
+  // check if there are any changes to commit
+  const gitStatus2 = await runCmdUnwrap('check git status after docs', [
+    'git',
+    'status',
+    '--porcelain',
+  ]);
+  if (gitStatus2.trim()) {
+    await runCmdUnwrap('stage all changes', ['git', 'add', '.']);
+    await runCmdUnwrap('commit docs and package.json exports updates', [
+      'git',
+      'commit',
+      '-m',
+      `chore: update docs and package.json exports for ${packageName}`,
+    ]);
+  }
 
   // bump version
-  runCmdUnwrap('bump version', ['pnpm', 'version', version], {
+  await runCmdUnwrap('bump version', ['pnpm', 'version', version], {
     cwd: `./packages/${packageName}`,
   });
 
   // publish package
-  runCmdUnwrap('publish package', ['pnpm', 'publish', '--access', 'public'], {
-    cwd: `./packages/${packageName}`,
-  });
+  await runCmdUnwrap(
+    'publish package',
+    ['pnpm', 'publish', '--access', 'public'],
+    {
+      cwd: `./packages/${packageName}`,
+    },
+  );
+
+  console.log(`✅ Successfully published @ls-stack/${packageName}`);
 }
 
-export async function updatePackageExports(packageName: string) {
+async function updatePackageExports(_packageName: string) {
   const packagePath = './package.json';
   const srcDir = './src';
   const libDir = './lib';
@@ -114,25 +162,18 @@ export async function updatePackageExports(packageName: string) {
   }
 }
 
-function runFromCli() {
+async function runFromCli() {
   const packageName = narrowStringToUnion(process.argv[2], availablePackages);
   const version = narrowStringToUnion(process.argv[3], versions);
 
   if (!packageName || !version) {
     console.error('Usage: pnpm publish-package <packageName> <version>');
+    console.error(`Available packages: ${availablePackages.join(', ')}`);
+    console.error(`Available versions: ${versions.join(', ')}`);
     process.exit(1);
   }
 
-  if (!packageName) {
-    console.error('Invalid package name');
-    process.exit(1);
-  }
-
-  if (!version) {
-    console.error('Invalid version');
-    process.exit(1);
-  }
-  publishPackage(packageName, version);
+  await publishPackage(packageName, version);
 }
 
 runFromCli();

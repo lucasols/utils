@@ -12,7 +12,7 @@
     "eslint": "CI=true eslint src/ scripts/ --color --max-warnings=0 --fix",
     "format": "prettier --write .",
     "build": "pnpm test && pnpm lint && pnpm build:no-test && pnpm run docs && pnpm build:update-exports",
-    "build": "tsup",
+    "build:no-test": "tsup",
     "build:update-exports": "tsm --no-warnings scripts/updatePackageExports.ts",
     "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts",
     "docs": "typedoc",
