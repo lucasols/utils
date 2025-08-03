@@ -79,25 +79,16 @@ async function publishPackage(packageName: PackageName, version: Version) {
   ]);
 
   // check if there are any changes to commit
-  const gitStatus2 = await runCmdUnwrap('check git status after docs', [
-    'git',
-    'status',
-    '--porcelain',
-  ]);
-  if (gitStatus2.trim()) {
-    await runCmdUnwrap('stage all changes', ['git', 'add', '.']);
-    await runCmdUnwrap('commit docs and package.json exports updates', [
-      'git',
-      'commit',
-      '-m',
-      `chore: update docs and package.json exports for ${packageName}`,
-    ]);
-  }
+  await commitChanges(
+    `chore: update docs and package.json exports for ${packageName}`,
+  );
 
   // bump version
   await runCmdUnwrap('bump version', ['pnpm', 'version', version], {
     cwd: `./packages/${packageName}`,
   });
+
+  await commitChanges(`chore: bump version for ${packageName}`);
 
   // publish package
   await runCmdUnwrap(
@@ -171,6 +162,21 @@ async function checkIfIsSync() {
   if (gitStatus.trim()) {
     console.error('Git is not sync, commit your changes first');
     process.exit(1);
+  }
+}
+
+async function commitChanges(message: string) {
+  const gitStatus = await runCmdUnwrap('check git status', [
+    'git',
+    'status',
+    '--porcelain',
+  ]);
+
+  if (gitStatus.trim()) {
+    await runCmdUnwrap('stage all changes', ['git', 'add', '.']);
+    await runCmdUnwrap('commit changes', ['git', 'commit', '-m', message]);
+  } else {
+    console.log('No changes to commit');
   }
 }
 
