@@ -793,7 +793,7 @@ test('reject falsy values in root array', () => {
     { invalidNodes: 'reject' },
   );
 
-  expect(result).toBe(
-    '<first>First element</first><second>Second element</second>',
+  expect(result).toMatchInlineSnapshot(
+    `"<first>First element</first><second>Second element</second>"`,
   );
 });

@@ -54,6 +54,7 @@ export function serializeXML(
         }
         return serializeWithLevel(n, options, 0);
       })
+      .filter(isTruthy)
       .join(options?.indent ? '\n' : '')
       .replace(new RegExp(EMPTY_LINE_MARKER, 'g'), '');
   }
