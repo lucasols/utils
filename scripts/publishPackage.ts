@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync, writeFileSync } from 'fs';
-import { runCmdUnwrap } from '../packages/node-utils/src/runShellCmd';
-import { deepEqual } from '../packages/utils/src/deepEqual';
-import { narrowStringToUnion } from '../packages/utils/src/typingFnUtils';
+import { runCmdUnwrap } from '../packages/node-utils/src/runShellCmd.ts';
+import { deepEqual } from '../packages/utils/src/deepEqual.ts';
+import { narrowStringToUnion } from '../packages/utils/src/typingFnUtils.ts';
 
 const availablePackages = [
   'utils',

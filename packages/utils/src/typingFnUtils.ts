@@ -1,4 +1,4 @@
-import { NonPartial } from './typingUtils';
+import type { NonPartial } from './typingUtils.ts';
 
 export function asNonPartial<T extends Record<string, unknown>>(
   obj: T,
