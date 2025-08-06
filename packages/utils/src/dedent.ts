@@ -1,21 +1,77 @@
+/**
+ * Configuration options for the dedent function behavior
+ */
 export interface DedentOptions {
+  /**
+   * Whether to process escape sequences like \n, \`, \$, and \{
+   * When true, allows using escaped characters in template literals
+   * @default true for template literals, false for plain strings
+   */
   escapeSpecialCharacters?: boolean;
+  /**
+   * Whether to trim leading and trailing whitespace from the final result
+   * @default true
+   */
   trimWhitespace?: boolean;
+  /**
+   * Whether to preserve relative indentation of interpolated multi-line values
+   * When true, multi-line interpolations are re-indented to match the surrounding context
+   * @default true
+   */
   identInterpolations?: boolean;
-  showFalsyValues?: boolean;
+  /**
+   * Whether to display nullish or false values (false, null, undefined) in interpolations
+   * When false, nullish or false values are skipped entirely
+   * @default false
+   */
+  showNullishOrFalseValues?: boolean;
 }
 
+type InterpolationValue = string | number | boolean | null | undefined;
+
+/**
+ * Dedent function interface that can be used both as a template tag and a regular function
+ */
 export interface Dedent {
+  /**
+   * Process a plain string to remove common indentation
+   */
   (literals: string): string;
-  (
-    strings: TemplateStringsArray,
-    ...values: (string | number | boolean | null | undefined)[]
-  ): string;
+  /**
+   * Process a template literal to remove common indentation while handling interpolations
+   */
+  (strings: TemplateStringsArray, ...values: InterpolationValue[]): string;
+  /**
+   * Create a new dedent function with custom options
+   */
   withOptions: CreateDedent;
 }
 
+/**
+ * Factory function type for creating dedent functions with custom options
+ */
 export type CreateDedent = (options: DedentOptions) => Dedent;
 
+/**
+ * Remove common leading indentation from multi-line strings while preserving relative indentation.
+ * Can be used as a tagged template literal or called with a plain string.
+ *
+ * By default, it will dedent interpolated multi-line strings to match the surrounding context.
+ * And it will not show falsy values.
+ *
+ * @example
+ * ```typescript
+ * const text = dedent`
+ *   function hello() {
+ *     console.log('world');
+ *   }
+ * `;
+ * // Result:
+ * "function hello() {
+ *   console.log('world');
+ * }"
+ * ```
+ */
 export const dedent: Dedent = createDedent({
   identInterpolations: true,
 });
@@ -27,14 +83,20 @@ function createDedent(options: DedentOptions): Dedent {
   return d;
 
   function d(literals: string): string;
-  function d(strings: TemplateStringsArray, ...values: unknown[]): string;
-  function d(strings: TemplateStringsArray | string, ...values: unknown[]) {
+  function d(
+    strings: TemplateStringsArray,
+    ...values: InterpolationValue[]
+  ): string;
+  function d(
+    strings: TemplateStringsArray | string,
+    ...values: InterpolationValue[]
+  ) {
     const raw = typeof strings === 'string' ? [strings] : strings.raw;
     const {
       escapeSpecialCharacters = Array.isArray(strings),
       trimWhitespace = true,
       identInterpolations = true,
-      showFalsyValues = false,
+      showNullishOrFalseValues = false,
     } = options;
 
     // first, perform interpolation
@@ -54,11 +116,16 @@ function createDedent(options: DedentOptions): Dedent {
       result += next;
 
       if (i < values.length) {
-        if (!showFalsyValues && !values[i]) {
+        let val = values[i];
+
+        if (
+          !showNullishOrFalseValues &&
+          (val === false || val === null || val === undefined)
+        ) {
           continue;
         }
 
-        const val = String(values[i]);
+        val = String(val);
 
         // Apply recursive dedent to string values if enabled
         if (identInterpolations && val.includes('\n')) {

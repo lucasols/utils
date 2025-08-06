@@ -432,6 +432,10 @@ test('do not show falsey values', () => {
     ${123}
     true:
     ${true}
+    empty string:
+    ${''}
+    zero:
+    ${0}
     ---
   `).toMatchInlineSnapshot(`
     "false:
@@ -444,6 +448,10 @@ test('do not show falsey values', () => {
     123
     true:
     true
+    empty string:
+
+    zero:
+    0
     ---"
   `);
 });
