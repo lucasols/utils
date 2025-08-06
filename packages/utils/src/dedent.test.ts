@@ -1,4 +1,4 @@
-import { describe, expect, it, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { dedent } from './dedent';
 
 test('works without interpolation', () => {
@@ -311,5 +311,139 @@ test('does not replace \\n when called as a function', () => {
 test('escapes escaped interpolation', () => {
   expect(dedent`\${'foo'}`).toMatchInlineSnapshot(`"\${'foo'}"`);
 });
+
+describe('recursive dedent (default)', () => {
+  test('dedents interpolated multiline strings', () => {
+    const nested = `nested line 1
+nested line 2`;
+
+    expect(dedent`
+      outer line 1
+        ${nested}
+      outer line 2
+    `).toMatchInlineSnapshot(`
+      "outer line 1
+        nested line 1
+        nested line 2
+      outer line 2"
+    `);
   });
+
+  test('preserves indentation of interpolated strings relative to insertion point', () => {
+    const nested = `item 1
+item 2`;
+
+    expect(dedent`
+      list:
+        ${nested}
+      end
+    `).toMatchInlineSnapshot(`
+      "list:
+        item 1
+        item 2
+      end"
+    `);
+  });
+
+  test('handles deeply nested interpolations', () => {
+    const level3 = `level 3 content`;
+
+    const level2 = dedent`
+      level 2 start
+        ${level3}
+      level 2 end
+    `;
+
+    const result = dedent`
+      level 1 start
+        ${level2}
+      level 1 end
+    `;
+
+    expect(result).toMatchInlineSnapshot(`
+      "level 1 start
+        level 2 start
+          level 3 content
+        level 2 end
+      level 1 end"
+    `);
+  });
+
+  test('handles single-line interpolations', () => {
+    const singleLine = 'single line value';
+
+    expect(dedent`
+      before
+        ${singleLine}
+      after
+    `).toMatchInlineSnapshot(`
+      "before
+        single line value
+      after"
+    `);
+  });
+
+  test('handles empty string interpolations', () => {
+    const empty = '';
+
+    expect(dedent`
+      before
+        ${empty}
+      after
+    `).toMatchInlineSnapshot(`
+      "before
+  
+      after"
+    `);
+  });
+});
+
+const noIdentInterpolations = dedent.withOptions({
+  identInterpolations: false,
+});
+
+describe('with identInterpolations false', () => {
+  test('does not dedent interpolated multiline strings', () => {
+    const nested = `nested line 1
+nested line 2`;
+
+    expect(noIdentInterpolations`
+          outer line 1
+            ${nested}
+          outer line 2
+    `).toMatchInlineSnapshot(`
+      "outer line 1
+        nested line 1
+      nested line 2
+      outer line 2"
+    `);
+  });
+});
+
+test('do not show falsey values', () => {
+  expect(dedent`
+    false:
+    ${false}
+    null:
+    ${null}
+    undefined:
+    ${undefined}
+    number:
+    ${123}
+    true:
+    ${true}
+    ---
+  `).toMatchInlineSnapshot(`
+    "false:
+
+    null:
+
+    undefined:
+
+    number:
+    123
+    true:
+    true
+    ---"
+  `);
 });

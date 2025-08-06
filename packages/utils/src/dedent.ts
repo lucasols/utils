@@ -1,17 +1,24 @@
 export interface DedentOptions {
   escapeSpecialCharacters?: boolean;
   trimWhitespace?: boolean;
+  identInterpolations?: boolean;
+  showFalsyValues?: boolean;
 }
 
 export interface Dedent {
   (literals: string): string;
-  (strings: TemplateStringsArray, ...values: unknown[]): string;
+  (
+    strings: TemplateStringsArray,
+    ...values: (string | number | boolean | null | undefined)[]
+  ): string;
   withOptions: CreateDedent;
 }
 
 export type CreateDedent = (options: DedentOptions) => Dedent;
 
-export const dedent: Dedent = createDedent({});
+export const dedent: Dedent = createDedent({
+  identInterpolations: true,
+});
 
 function createDedent(options: DedentOptions): Dedent {
   d.withOptions = (newOptions: DedentOptions): Dedent =>
@@ -26,6 +33,8 @@ function createDedent(options: DedentOptions): Dedent {
     const {
       escapeSpecialCharacters = Array.isArray(strings),
       trimWhitespace = true,
+      identInterpolations = true,
+      showFalsyValues = false,
     } = options;
 
     // first, perform interpolation
@@ -45,8 +54,34 @@ function createDedent(options: DedentOptions): Dedent {
       result += next;
 
       if (i < values.length) {
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        result += values[i];
+        if (!showFalsyValues && !values[i]) {
+          continue;
+        }
+
+        const val = String(values[i]);
+
+        // Apply recursive dedent to string values if enabled
+        if (identInterpolations && val.includes('\n')) {
+          let withIdent = val;
+
+          // Find the indentation level where this value is being inserted
+          const currentIndent = getCurrentIndent(result);
+          if (currentIndent && withIdent) {
+            // Re-indent each line of the interpolated value
+            const lines = withIdent.split('\n');
+            withIdent = lines
+              .map((line: string, index: number) => {
+                // Don't indent the first line (it continues the current line)
+                // Don't indent empty lines
+                return index === 0 || line === '' ? line : currentIndent + line;
+              })
+              .join('\n');
+          }
+
+          result += withIdent;
+        } else {
+          result += val;
+        }
       }
     }
 
@@ -86,4 +121,13 @@ function createDedent(options: DedentOptions): Dedent {
 
     return result;
   }
+}
+
+function getCurrentIndent(str: string): string {
+  // Find the indentation of the current line (the last line in the string)
+  const lines = str.split('\n');
+  const lastLine = lines[lines.length - 1];
+  if (!lastLine) return '';
+  const match = lastLine.match(/^(\s*)/);
+  return match ? match[1]! : '';
 }
