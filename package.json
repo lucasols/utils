@@ -38,6 +38,7 @@
     "eslint": "catalog:",
     "eslint-plugin-unicorn": "catalog:",
     "eslint-plugin-vitest": "catalog:",
+    "jiti": "^2.5.1",
     "mitata": "catalog:",
     "prettier": "catalog:",
     "prettier-plugin-organize-imports": "catalog:",

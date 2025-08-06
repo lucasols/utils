@@ -179,7 +179,7 @@ export function createBaseConfig({
         'unicorn/no-empty-file': ERROR,
         'unicorn/no-array-reduce': [ERROR, { allowSimpleOperations: true }],
         'unicorn/no-array-for-each': ERROR,
-        'unicorn/template-indent': [WARN, { tags: ['dedent'] }],
+        'unicorn/template-indent': WARN,
         ...globalRules,
       },
     },
