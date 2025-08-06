@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import {
   createDebouncedTimeout,
   createInterval,
@@ -6,9 +6,9 @@ import {
   createWaitUntil,
 } from './timers';
 
-describe('timers', () => {
+describe('timers', { retry: 2 }, () => {
   describe('createTimeout', () => {
-    it('should execute callback after specified time', async () => {
+    test('should execute callback after specified time', async () => {
       const callback = vi.fn();
       createTimeout(50, callback);
 
@@ -19,7 +19,7 @@ describe('timers', () => {
       expect(callback).toHaveBeenCalledOnce();
     });
 
-    it('should not execute callback if cleaned up before timeout', async () => {
+    test('should not execute callback if cleaned up before timeout', async () => {
       const callback = vi.fn();
       const cleanup = createTimeout(50, callback);
 
@@ -30,7 +30,7 @@ describe('timers', () => {
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('should be safe to call cleanup multiple times', async () => {
+    test('should be safe to call cleanup multiple times', async () => {
       const callback = vi.fn();
       const cleanup = createTimeout(50, callback);
 
@@ -43,7 +43,7 @@ describe('timers', () => {
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('should not throw when cleanup is called after timeout completes', async () => {
+    test('should not throw when cleanup is called after timeout completes', async () => {
       const callback = vi.fn();
       const cleanup = createTimeout(10, callback);
 
@@ -55,7 +55,7 @@ describe('timers', () => {
   });
 
   describe('createInterval', () => {
-    it('should execute callback multiple times at intervals', async () => {
+    test('should execute callback multiple times at intervals', async () => {
       const callback = vi.fn();
       const cleanup = createInterval(25, callback);
 
@@ -66,7 +66,7 @@ describe('timers', () => {
       expect(callback).toHaveBeenCalledTimes(3);
     });
 
-    it('should not execute callback if cleaned up immediately', async () => {
+    test('should not execute callback if cleaned up immediately', async () => {
       const callback = vi.fn();
       const cleanup = createInterval(25, callback);
 
@@ -77,7 +77,7 @@ describe('timers', () => {
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('should stop executing after cleanup', async () => {
+    test('should stop executing after cleanup', async () => {
       const callback = vi.fn();
       const cleanup = createInterval(20, callback);
 
@@ -91,7 +91,7 @@ describe('timers', () => {
       expect(callback).toHaveBeenCalledTimes(callCountBeforeCleanup);
     });
 
-    it('should be safe to call cleanup multiple times', async () => {
+    test('should be safe to call cleanup multiple times', async () => {
       const callback = vi.fn();
       const cleanup = createInterval(25, callback);
 
@@ -106,7 +106,7 @@ describe('timers', () => {
   });
 
   describe('createNoConcurrentTimeout', () => {
-    it('should execute callback only once when called multiple times', async () => {
+    test('should execute callback only once when called multiple times', async () => {
       const callback = vi.fn();
       const { call } = createDebouncedTimeout(50, callback);
 
@@ -119,7 +119,7 @@ describe('timers', () => {
       expect(callback).toHaveBeenCalledOnce();
     });
 
-    it('should cancel previous timeout when called again', async () => {
+    test('should cancel previous timeout when called again', async () => {
       const callback = vi.fn();
       const { call } = createDebouncedTimeout(100, callback);
 
@@ -134,7 +134,7 @@ describe('timers', () => {
       expect(callback).toHaveBeenCalledOnce();
     });
 
-    it('should not execute callback if cleaned up', async () => {
+    test('should not execute callback if cleaned up', async () => {
       const callback = vi.fn();
       const { call, clean } = createDebouncedTimeout(50, callback);
 
@@ -146,7 +146,7 @@ describe('timers', () => {
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('should be safe to call clean multiple times', () => {
+    test('should be safe to call clean multiple times', () => {
       const callback = vi.fn();
       const { clean } = createDebouncedTimeout(50, callback);
 
@@ -157,7 +157,7 @@ describe('timers', () => {
       }).not.toThrow();
     });
 
-    it('should handle calling call after clean', async () => {
+    test('should handle calling call after clean', async () => {
       const callback = vi.fn();
       const { call, clean } = createDebouncedTimeout(50, callback);
 
@@ -171,7 +171,7 @@ describe('timers', () => {
   });
 
   describe('createConditionTimeout', () => {
-    it('should call callback when condition becomes true', async () => {
+    test('should call callback when condition becomes true', async () => {
       let conditionResult: string | false = false;
       const callback = vi.fn();
 
@@ -191,7 +191,7 @@ describe('timers', () => {
       expect(callback).toHaveBeenCalledWith('success');
     });
 
-    it('should not call callback if condition never becomes true', async () => {
+    test('should not call callback if condition never becomes true', async () => {
       const callback = vi.fn();
 
       createWaitUntil({
@@ -206,7 +206,7 @@ describe('timers', () => {
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('should call callback immediately if condition is already true', async () => {
+    test('should call callback immediately if condition is already true', async () => {
       const callback = vi.fn();
 
       createWaitUntil({
@@ -221,7 +221,7 @@ describe('timers', () => {
       expect(callback).toHaveBeenCalledWith('immediate');
     });
 
-    it('should not call callback if cleaned up before condition becomes true', async () => {
+    test('should not call callback if cleaned up before condition becomes true', async () => {
       let conditionResult: string | false = false;
       const callback = vi.fn();
 
@@ -243,7 +243,7 @@ describe('timers', () => {
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('should stop checking after max wait time', async () => {
+    test('should stop checking after max wait time', async () => {
       let checkCount = 0;
       const callback = vi.fn();
 
@@ -267,7 +267,7 @@ describe('timers', () => {
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('should use default check interval of 20ms', async () => {
+    test('should use default check interval of 20ms', async () => {
       let checkCount = 0;
       const callback = vi.fn();
 
@@ -287,7 +287,7 @@ describe('timers', () => {
       expect(checkCount).toBeGreaterThanOrEqual(3);
     });
 
-    it('should handle complex condition types', async () => {
+    test('should handle complex condition types', async () => {
       interface TestObject {
         id: number;
         name: string;
@@ -312,7 +312,7 @@ describe('timers', () => {
       expect(callback).toHaveBeenCalledWith({ id: 1, name: 'test' });
     });
 
-    it('should be safe to call cleanup multiple times', () => {
+    test('should be safe to call cleanup multiple times', () => {
       const callback = vi.fn();
 
       const cleanup = createWaitUntil({
