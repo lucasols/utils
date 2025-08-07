@@ -21,8 +21,6 @@ type RetryOptions = {
  * @param fn - Function to retry that receives context with retry count
  * @param maxRetries - Maximum number of retries
  * @param options - Configuration options
- * @param retry - Internal parameter tracking current retry count
- * @param originalMaxRetries - Internal parameter tracking original max retries for logging
  * @returns Promise resolving to the function result or rejecting with the final error
  *
  * @example
@@ -36,7 +34,10 @@ type RetryOptions = {
  * );
  */
 export async function retryOnError<T>(
-  fn: (ctx: { retry: number }) => Promise<T>,
+  fn: (ctx: {
+    /** Current retry count, (0 for first attempt) */
+    retry: number;
+  }) => Promise<T>,
   maxRetries: number,
   options: RetryOptions = {},
   retry = 0,
@@ -77,7 +78,13 @@ export async function retryOnError<T>(
         );
       }
 
-      return retryOnError(fn, maxRetries - 1, options, retry + 1, originalMaxRetries);
+      return retryOnError(
+        fn,
+        maxRetries - 1,
+        options,
+        retry + 1,
+        originalMaxRetries,
+      );
     } else {
       throw error;
     }
