@@ -1,28 +1,53 @@
 import { sleep } from './sleep';
 
+/**
+ * Configuration options for retryOnError function.
+ */
+type RetryOptions = {
+  /** Delay between retries in milliseconds or function returning delay */
+  delayBetweenRetriesMs?: number | ((retry: number) => number);
+  /** Function to determine if retry should happen, receives error and duration of last attempt */
+  retryCondition?: (
+    error: unknown,
+    lastAttempt: { duration: number; retry: number },
+  ) => boolean;
+  /** Optional ID for debug logging */
+  debugId?: string;
+};
+
+/**
+ * Retries a function on error with configurable retry logic.
+ *
+ * @param fn - Function to retry that receives context with retry count
+ * @param maxRetries - Maximum number of retries
+ * @param options - Configuration options
+ * @param retry - Internal parameter tracking current retry count
+ * @param originalMaxRetries - Internal parameter tracking original max retries for logging
+ * @returns Promise resolving to the function result or rejecting with the final error
+ *
+ * @example
+ * await retryOnError(
+ *   async (ctx) => {
+ *     console.log(`Attempt ${ctx.retry + 1}`);
+ *     return await fetchData();
+ *   },
+ *   3,
+ *   { delayBetweenRetriesMs: 1000 }
+ * );
+ */
 export async function retryOnError<T>(
-  fn: () => Promise<T>,
+  fn: (ctx: { retry: number }) => Promise<T>,
   maxRetries: number,
-  options: {
-    delayBetweenRetriesMs?: number | ((retry: number) => number);
-    retryCondition?: (
-      error: unknown,
-    ) => boolean | { maxErrorDurationMs: number };
-    maxErrorDurationMs?: number;
-    debugId?: string;
-  } = {},
+  options: RetryOptions = {},
   retry = 0,
+  originalMaxRetries = maxRetries,
 ): Promise<T> {
-  const {
-    delayBetweenRetriesMs,
-    retryCondition,
-    maxErrorDurationMs = 400,
-  } = options;
+  const { delayBetweenRetriesMs, retryCondition } = options;
 
   if (options.debugId) {
     if (retry > 0) {
       console.info(
-        `Retrying ${options.debugId} (retry ${retry}/${maxRetries}) after error`,
+        `Retrying ${options.debugId} (retry ${retry}/${originalMaxRetries}) after error`,
       );
     }
   }
@@ -30,22 +55,17 @@ export async function retryOnError<T>(
   const startTime = Date.now();
 
   try {
-    return await fn();
+    return await fn({ retry });
   } catch (error) {
     if (maxRetries > 0) {
       const errorDuration = Date.now() - startTime;
 
-      const shouldRetry = retryCondition ? retryCondition(error) : true;
+      const shouldRetry =
+        retryCondition ?
+          retryCondition(error, { duration: errorDuration, retry })
+        : true;
 
-      let maxErrorDurationMsToUse = maxErrorDurationMs;
-
-      if (typeof shouldRetry === 'boolean') {
-        if (!shouldRetry) throw error;
-      } else {
-        maxErrorDurationMsToUse = shouldRetry.maxErrorDurationMs;
-      }
-
-      if (errorDuration > maxErrorDurationMsToUse) {
+      if (!shouldRetry) {
         throw error;
       }
 
@@ -57,7 +77,7 @@ export async function retryOnError<T>(
         );
       }
 
-      return retryOnError(fn, maxRetries - 1, options, retry + 1);
+      return retryOnError(fn, maxRetries - 1, options, retry + 1, originalMaxRetries);
     } else {
       throw error;
     }
