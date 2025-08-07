@@ -32,7 +32,7 @@
 - [objUtils](objUtils.md)
 - [parallelAsyncCalls](parallelAsyncCalls/README.md)
 - [promiseUtils](promiseUtils/README.md)
-- [retryOnError](retryOnError.md)
+- [retryOnError](retryOnError/README.md)
 - [runShellCmd](runShellCmd/README.md)
 - [safeJson](safeJson.md)
 - [saferTyping](saferTyping.md)
