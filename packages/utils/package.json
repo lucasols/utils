@@ -1,7 +1,7 @@
 {
   "name": "@ls-stack/utils",
   "description": "Universal TypeScript utilities for browser and Node.js",
-  "version": "3.22.0",
+  "version": "3.23.0",
   "license": "MIT",
   "scripts": {
     "test:ui": "vitest --ui",
