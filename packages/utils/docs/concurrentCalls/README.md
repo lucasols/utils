@@ -18,7 +18,7 @@
 function concurrentCalls<R>(): ConcurrentCalls<R, Error>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:180](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L180)
+Defined in: [packages/utils/src/concurrentCalls.ts:153](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L153)
 
 Executes multiple asynchronous calls concurrently and collects the results in a easier to use format.
 
@@ -42,7 +42,7 @@ The type of the result value.
 function concurrentCallsWithMetadata<M, R>(): ConcurrentCallsWithMetadata<M, R, Error>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:373](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L373)
+Defined in: [packages/utils/src/concurrentCalls.ts:345](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L345)
 
 Executes multiple asynchronous calls concurrently and collects the results in a easier to use format.
 
