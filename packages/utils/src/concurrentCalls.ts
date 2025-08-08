@@ -177,8 +177,8 @@ class ConcurrentCalls<R = unknown, E extends Error = Error> {
  * @template R - The type of the result value.
  * @template E - The type of the error.
  */
-export function concurrentCalls<R = unknown, E extends Error = Error>() {
-  return new ConcurrentCalls<R, E>();
+export function concurrentCalls<R = unknown>() {
+  return new ConcurrentCalls<R>();
 }
 
 class ConcurrentCallsWithMetadata<
@@ -373,7 +373,6 @@ class ConcurrentCallsWithMetadata<
 export function concurrentCallsWithMetadata<
   M extends ValidMetadata,
   R = unknown,
-  E extends Error = Error,
 >() {
-  return new ConcurrentCallsWithMetadata<M, R, E>();
+  return new ConcurrentCallsWithMetadata<M, R, Error>();
 }

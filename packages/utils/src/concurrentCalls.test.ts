@@ -141,7 +141,7 @@ describe('concurrentCalls', () => {
   test('runAllSettled with all failures', async () => {
     const error1 = new Error('error 1');
     const error2 = new Error('error 2');
-    const result = await concurrentCalls<number, Error>()
+    const result = await concurrentCalls<number>()
       .add(() => asyncErrorFn(1, error1, 15))
       .add(() => asyncErrorFn(2, error2, 10))
       .runAllSettled();
@@ -169,7 +169,7 @@ describe('concurrentCalls', () => {
 
   test('runAllSettled with some failures', async () => {
     const error2 = new Error('error 2');
-    const result = await concurrentCalls<number, Error>()
+    const result = await concurrentCalls<number>()
       .add(asyncResultFn(1, 15))
       .add(() => asyncErrorFn(2, error2, 10))
       .add(asyncResultFn(3, 5))
@@ -287,7 +287,7 @@ describe('concurrentCalls', () => {
       const errorSync = new Error('sync throw settle');
       const errorAsync = new Error('async reject settle');
 
-      const result = await concurrentCalls<string, Error>()
+      const result = await concurrentCalls<string>()
         .resultifyAdd(
           Promise.resolve('ok promise'),
           Promise.reject(errorPromise),
@@ -367,11 +367,7 @@ describe('concurrentCallsWithMetadata', () => {
 
   test('runAll error with metadata', async () => {
     const errorB = new Error('error b');
-    const result = await concurrentCallsWithMetadata<
-      { id: string },
-      number,
-      Error
-    >()
+    const result = await concurrentCallsWithMetadata<{ id: string }, number>()
       .add({ fn: () => asyncResultFn(1, 15), metadata: { id: 'a' } })
       .add({ fn: () => asyncErrorFn(2, errorB, 10), metadata: { id: 'b' } })
       .runAll();
@@ -435,11 +431,7 @@ describe('concurrentCallsWithMetadata', () => {
 
   test('runAllSettled with some failures with metadata', async () => {
     const errorB = new Error('error b');
-    const result = await concurrentCallsWithMetadata<
-      { id: string },
-      number,
-      Error
-    >()
+    const result = await concurrentCallsWithMetadata<{ id: string }, number>()
       .add({ fn: () => asyncResultFn(1, 15), metadata: { id: 'a' } })
       .add({ fn: () => asyncErrorFn(2, errorB, 10), metadata: { id: 'b' } })
       .add({ fn: () => asyncResultFn(3, 5), metadata: { id: 'c' } })
@@ -558,9 +550,8 @@ describe('concurrentCallsWithMetadata', () => {
 
       type Meta = { callId: string };
       type Val = string;
-      type Err = Error;
 
-      const result = await concurrentCallsWithMetadata<Meta, Val, Err>()
+      const result = await concurrentCallsWithMetadata<Meta, Val>()
         .resultifyAdd(
           { fn: Promise.resolve('ok promise'), metadata: { callId: 'p1' } },
           { fn: Promise.reject(errorPromise), metadata: { callId: 'p2' } },
@@ -586,15 +577,15 @@ describe('concurrentCallsWithMetadata', () => {
           typeof result,
           {
             allFailed: boolean;
-            failed: { error: Err; metadata: Meta }[];
+            failed: { error: Error; metadata: Meta }[];
             succeeded: { value: Val; metadata: Meta }[];
             total: number;
             results: (
               | { ok: true; value: Val; metadata: Meta; error: false }
-              | { ok: false; error: Err; metadata: Meta }
+              | { ok: false; error: Error; metadata: Meta }
             )[];
             aggregatedError: AggregateError | null;
-            failures: { error: Err; metadata: Meta }[];
+            failures: { error: Error; metadata: Meta }[];
           }
         >
       >();
