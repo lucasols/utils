@@ -15,7 +15,7 @@
 ### concurrentCalls()
 
 ```ts
-function concurrentCalls<R, E>(): ConcurrentCalls<R, E>;
+function concurrentCalls<R>(): ConcurrentCalls<R, Error>;
 ```
 
 Defined in: [packages/utils/src/concurrentCalls.ts:180](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L180)
@@ -30,22 +30,16 @@ Executes multiple asynchronous calls concurrently and collects the results in a 
 
 The type of the result value.
 
-##### E
-
-`E` *extends* `Error` = `Error`
-
-The type of the error.
-
 #### Returns
 
-[`ConcurrentCalls`](-internal-.md#concurrentcalls)\<`R`, `E`\>
+[`ConcurrentCalls`](-internal-.md#concurrentcalls)\<`R`, `Error`\>
 
 ***
 
 ### concurrentCallsWithMetadata()
 
 ```ts
-function concurrentCallsWithMetadata<M, R, E>(): ConcurrentCallsWithMetadata<M, R, E>;
+function concurrentCallsWithMetadata<M, R>(): ConcurrentCallsWithMetadata<M, R, Error>;
 ```
 
 Defined in: [packages/utils/src/concurrentCalls.ts:373](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L373)
@@ -66,12 +60,6 @@ The type of the call metadata.
 
 The type of the result value.
 
-##### E
-
-`E` *extends* `Error` = `Error`
-
-The type of the error from individual Result objects.
-
 #### Returns
 
-[`ConcurrentCallsWithMetadata`](-internal-.md#concurrentcallswithmetadata)\<`M`, `R`, `E`\>
+[`ConcurrentCallsWithMetadata`](-internal-.md#concurrentcallswithmetadata)\<`M`, `R`, `Error`\>
