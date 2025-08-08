@@ -1,8 +1,9 @@
 import { Result, resultify, unknownToError } from 't-result';
 import { truncateArray } from './arrayUtils';
-import { invariant, isPromise } from './assertions';
+import { invariant } from './assertions';
 import { sleep } from './sleep';
 import { truncateString } from './stringUtils';
+import { isPromise } from './typeGuards';
 
 type ValidMetadata = string | number | boolean | Record<string, unknown>;
 
@@ -20,9 +21,7 @@ type FailedCall<M, E extends Error = Error> = {
   error: E;
 };
 
-type Action<R, E extends Error> =
-  | (() => Promise<Result<R, E>>)
-  | Promise<Result<R, E>>;
+type Action<R, E extends Error> = () => Promise<Result<R, E>>;
 
 // Type for the elements in the 'results' array of runAllSettled for ConcurrentCallsWithMetadata
 type SettledResultWithMetadata<R, M, E extends Error = Error> =
@@ -39,36 +38,21 @@ class ConcurrentCalls<R = unknown, E extends Error = Error> {
     return this;
   }
 
-  resultifyAdd(
-    ...calls: (Promise<R> | (() => R) | (() => Promise<R>))[]
-  ): this {
+  resultifyAdd(...calls: ((() => R) | (() => Promise<R>))[]): this {
     const processedCalls = calls.map((call) => {
-      if (isPromise(call)) {
-        // Input is Promise<R>, transform to Promise<Result<R, E>>
-        return call
-          .then((value: R) => Result.ok<R>(value))
-          .catch((err) => Result.err(unknownToError(err) as E));
-      } else {
-        // Input is (() => R) or (() => Promise<R>), transform to () => Promise<Result<R, E>>
-        const originalFn = call;
-        return async (): Promise<Result<R, E>> => {
-          try {
-            const valueOrPromise = originalFn();
-            const value =
-              isPromise(valueOrPromise) ? await valueOrPromise : valueOrPromise;
-            return Result.ok<R>(value);
-          } catch (err) {
-            return Result.err(unknownToError(err) as E);
-          }
-        };
-      }
+      return async (): Promise<Result<R, E>> => {
+        try {
+          const valueOrPromise = call();
+          const value =
+            isPromise(valueOrPromise) ? await valueOrPromise : valueOrPromise;
+          return Result.ok<R>(value);
+        } catch (err) {
+          return Result.err(unknownToError(err) as E);
+        }
+      };
     });
-    // Ensure processedCalls is correctly typed before spreading
-    const correctlyTypedProcessedCalls: (
-      | Promise<Result<R, E>>
-      | (() => Promise<Result<R, E>>)
-    )[] = processedCalls;
-    return this.add(...correctlyTypedProcessedCalls);
+
+    return this.add(...processedCalls);
   }
 
   async runAll({ delayStart }: RunProps = {}): Promise<Result<R[], E>> {
@@ -80,17 +64,11 @@ class ConcurrentCalls<R = unknown, E extends Error = Error> {
       const asyncResults = await Promise.all(
         this.#pendingCalls.map(async (fn, i) => {
           try {
-            const isP = isPromise(fn);
-
             if (delayStart) {
-              invariant(
-                !isP,
-                'Delay start is not supported direct promise calls',
-              );
               await sleep(delayStart(i));
             }
 
-            const result = await (isP ? fn : fn());
+            const result = await fn();
 
             if (!result.ok) throw result.error;
 
@@ -123,15 +101,10 @@ class ConcurrentCalls<R = unknown, E extends Error = Error> {
     const settledResults = await Promise.allSettled(
       this.#pendingCalls.map(async (callOrPromise, i) => {
         try {
-          const isP = isPromise(callOrPromise);
           if (delayStart) {
-            invariant(
-              !isP,
-              'Delay start is not supported for direct promise calls',
-            );
             await sleep(delayStart(i));
           }
-          const result = await (isP ? callOrPromise : callOrPromise());
+          const result = await callOrPromise();
           if (!result.ok) {
             throw result.error;
           }
@@ -204,17 +177,16 @@ class ConcurrentCallsWithMetadata<
   }
 
   resultifyAdd(
-    ...items: { fn: (() => R) | (() => Promise<R>) | Promise<R>; metadata: M }[]
+    ...items: { fn: (() => R) | (() => Promise<R>); metadata: M }[]
   ): this {
     const processedItems = items.map(({ fn, metadata }) => {
-      const cb: Action<R, E> =
-        isPromise(fn) ?
-          resultify(fn)
-        : () =>
-            resultify(async () => {
-              const result = await fn();
-              return result;
-            });
+      const cb: Action<R, E> = () =>
+        resultify(async () => {
+          const valueOrPromise = fn();
+          const value =
+            isPromise(valueOrPromise) ? await valueOrPromise : valueOrPromise;
+          return value;
+        });
 
       return {
         fn: cb,
@@ -240,7 +212,7 @@ class ConcurrentCallsWithMetadata<
           if (delayStart) {
             await sleep(delayStart(i));
           }
-          const result = await (isPromise(call.fn) ? call.fn : call.fn());
+          const result = await call.fn();
           if (!result.ok) {
             throw { metadata: call.metadata, error: result.error };
           }
@@ -305,7 +277,7 @@ class ConcurrentCallsWithMetadata<
           if (delayStart) {
             await sleep(delayStart(i));
           }
-          const result = await (isPromise(call.fn) ? call.fn : call.fn());
+          const result = await call.fn();
           if (!result.ok) {
             throw result.error; // Throw the raw error to be caught by this inner catch
           }

@@ -43,7 +43,7 @@ function asyncErrorFn<T extends string | number | boolean, E extends Error>(
 describe('concurrentCalls', () => {
   test('runAll success', async () => {
     const result = await concurrentCalls<number>()
-      .add(asyncResultFn(1, 15))
+      .add(() => asyncResultFn(1, 15))
       .add(() => asyncResultFn(2, 10))
       .add(() => asyncResultFn(3, 5))
       .runAll();
@@ -114,8 +114,8 @@ describe('concurrentCalls', () => {
 
   test('runAllSettled with all success', async () => {
     const result = await concurrentCalls<number>()
-      .add(asyncResultFn(1, 15))
-      .add(asyncResultFn(2, 10))
+      .add(() => asyncResultFn(1, 15))
+      .add(() => asyncResultFn(2, 10))
       .runAllSettled();
 
     expectType<
@@ -170,9 +170,9 @@ describe('concurrentCalls', () => {
   test('runAllSettled with some failures', async () => {
     const error2 = new Error('error 2');
     const result = await concurrentCalls<number>()
-      .add(asyncResultFn(1, 15))
+      .add(() => asyncResultFn(1, 15))
       .add(() => asyncErrorFn(2, error2, 10))
-      .add(asyncResultFn(3, 5))
+      .add(() => asyncResultFn(3, 5))
       .runAllSettled();
 
     expect(result.succeeded).toEqual([1, 3]);
@@ -226,7 +226,7 @@ describe('concurrentCalls', () => {
   describe('resultifyAdd', () => {
     test('resultifyAdd with Promise resolving + runAll', async () => {
       const result = await concurrentCalls<string>()
-        .resultifyAdd(Promise.resolve('ok'))
+        .resultifyAdd(() => Promise.resolve('ok'))
         .runAll();
       expectType<TestTypeIsEqual<typeof result, Result<string[], Error>>>();
       expect(result.ok && result.value).toEqual(['ok']);
@@ -235,7 +235,7 @@ describe('concurrentCalls', () => {
     test('resultifyAdd with Promise rejecting + runAll', async () => {
       const error = new Error('promise rejected');
       const result = await concurrentCalls<string>()
-        .resultifyAdd(Promise.reject(error))
+        .resultifyAdd(() => Promise.reject(error))
         .runAll();
       expectType<TestTypeIsEqual<typeof result, Result<string[], Error>>>();
       assert(!result.ok);
@@ -289,8 +289,8 @@ describe('concurrentCalls', () => {
 
       const result = await concurrentCalls<string>()
         .resultifyAdd(
-          Promise.resolve('ok promise'),
-          Promise.reject(errorPromise),
+          () => Promise.resolve('ok promise'),
+          () => Promise.reject(errorPromise),
           () => 'ok sync',
           () => {
             throw errorSync;
@@ -479,7 +479,7 @@ describe('concurrentCallsWithMetadata', () => {
     test('resultifyAdd with Promise rejecting + runAll', async () => {
       const error = new Error('promise rejected meta');
       const result = await concurrentCallsWithMetadata<{ id: number }, string>()
-        .resultifyAdd({ fn: Promise.reject(error), metadata: { id: 2 } })
+        .resultifyAdd({ fn: () => Promise.reject(error), metadata: { id: 2 } })
         .runAll();
 
       expectType<
@@ -553,8 +553,14 @@ describe('concurrentCallsWithMetadata', () => {
 
       const result = await concurrentCallsWithMetadata<Meta, Val>()
         .resultifyAdd(
-          { fn: Promise.resolve('ok promise'), metadata: { callId: 'p1' } },
-          { fn: Promise.reject(errorPromise), metadata: { callId: 'p2' } },
+          {
+            fn: () => Promise.resolve('ok promise'),
+            metadata: { callId: 'p1' },
+          },
+          {
+            fn: () => Promise.reject(errorPromise),
+            metadata: { callId: 'p2' },
+          },
           { fn: () => 'ok sync', metadata: { callId: 's1' } },
           {
             fn: () => {
