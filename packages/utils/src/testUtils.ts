@@ -308,22 +308,35 @@ export function waitController(): {
   };
 }
 
-function matchesKeyPattern(path: string, pattern: string): boolean {
-  // Handle exact matches
-  if (path === pattern) {
+function matchesKeyPattern(
+  fullPath: string,
+  key: string,
+  pattern: string,
+  currentPath: string,
+): boolean {
+  // Handle exact full path matches first (e.g., 'user.settings.theme')
+  if (fullPath === pattern) {
     return true;
   }
 
-  // Handle wildcard patterns
-  if (pattern.includes('*')) {
-    // Convert pattern to regex
-    // Replace * with [^.]* to match any characters except dots
-    const regexPattern = pattern
-      .replace(/\./g, '\\.')  // Escape dots
-      .replace(/\*/g, '[^.]*'); // Replace * with non-dot characters
+  // Handle patterns starting with '*.' (nested wildcards like '*.prop')
+  if (pattern.startsWith('*.')) {
+    const propName = pattern.slice(2); // Remove '*.'
+    // Must be nested (have a parent path) and key must match
+    return currentPath !== '' && key === propName;
+  }
 
-    const regex = new RegExp(`^${regexPattern}$`);
-    return regex.test(path);
+  // Handle patterns starting with '*' but not '*.' (global wildcards like '*prop')
+  if (pattern.startsWith('*') && !pattern.startsWith('*.')) {
+    const propName = pattern.slice(1); // Remove '*'
+    // Match exact key name at any level (root or nested)
+    return key === propName;
+  }
+
+  // Handle simple patterns without wildcards (e.g., 'prop')
+  if (!pattern.includes('*')) {
+    // Root level only - must have empty currentPath and key matches
+    return currentPath === '' && key === pattern;
   }
 
   return false;
@@ -335,16 +348,16 @@ function isParentOfPattern(path: string, pattern: string): boolean {
     // For wildcard patterns, check if the pattern could match a child path
     const patternParts = pattern.split('.');
     const pathParts = path.split('.');
-    
+
     if (pathParts.length >= patternParts.length) {
       return false;
     }
-    
+
     // Check if the path parts match the beginning of the pattern
     for (let i = 0; i < pathParts.length; i++) {
       const pathPart = pathParts[i];
       const patternPart = patternParts[i];
-      
+
       if (patternPart === '*') {
         continue; // Wildcard matches anything
       }
@@ -355,42 +368,7 @@ function isParentOfPattern(path: string, pattern: string): boolean {
     return true;
   } else {
     // For exact patterns, check if this is a parent path
-    return pattern.startsWith(`${path  }.`);
-  }
-}
-
-function checkForCircularReferences(
-  value: unknown,
-  visited: Set<object> = new Set(),
-): void {
-  if (!isPlainObject(value) && !Array.isArray(value)) {
-    return;
-  }
-
-  if (Array.isArray(value)) {
-    if (visited.has(value)) {
-      throw new Error('Circular reference detected in array during key filtering');
-    }
-    visited.add(value);
-    try {
-      for (const item of value) {
-        checkForCircularReferences(item, visited);
-      }
-    } finally {
-      visited.delete(value);
-    }
-  } else if (isPlainObject(value)) {
-    if (visited.has(value)) {
-      throw new Error('Circular reference detected in object during key filtering');
-    }
-    visited.add(value);
-    try {
-      for (const itemValue of Object.values(value)) {
-        checkForCircularReferences(itemValue, visited);
-      }
-    } finally {
-      visited.delete(value);
-    }
+    return pattern.startsWith(`${path}.`);
   }
 }
 
@@ -406,12 +384,19 @@ function applyKeyFiltering(
 
   if (Array.isArray(value)) {
     if (visited.has(value)) {
-      throw new Error('Circular reference detected in array during key filtering');
+      throw new Error(
+        'Circular reference detected in array during key filtering',
+      );
     }
     visited.add(value);
     try {
       return value.map((item, index) =>
-        applyKeyFiltering(item, { rejectKeys, filterKeys }, currentPath ? `${currentPath}[${index}]` : `[${index}]`, visited)
+        applyKeyFiltering(
+          item,
+          { rejectKeys, filterKeys },
+          currentPath ? `${currentPath}[${index}]` : `[${index}]`,
+          visited,
+        ),
       );
     } finally {
       visited.delete(value);
@@ -420,7 +405,9 @@ function applyKeyFiltering(
 
   if (isPlainObject(value)) {
     if (visited.has(value)) {
-      throw new Error('Circular reference detected in object during key filtering');
+      throw new Error(
+        'Circular reference detected in object during key filtering',
+      );
     }
     visited.add(value);
     try {
@@ -430,37 +417,53 @@ function applyKeyFiltering(
         const fullPath = currentPath ? `${currentPath}.${key}` : key;
 
         // Check if this key should be rejected
-        if (rejectKeys?.some(rejectPath => 
-          matchesKeyPattern(fullPath, rejectPath) || matchesKeyPattern(key, rejectPath)
-        )) {
+        if (
+          rejectKeys?.some((rejectPath) =>
+            matchesKeyPattern(fullPath, key, rejectPath, currentPath),
+          )
+        ) {
           continue;
         }
 
         // Check if we have filter keys and this key doesn't match
         if (filterKeys) {
-          const exactMatch = filterKeys.some(filterPath => 
-            matchesKeyPattern(fullPath, filterPath) || 
-            matchesKeyPattern(key, filterPath)
+          const exactMatch = filterKeys.some((filterPath) =>
+            matchesKeyPattern(fullPath, key, filterPath, currentPath),
           );
-          
-          const isParent = filterKeys.some(filterPath => 
-            isParentOfPattern(fullPath, filterPath)
+
+          const isParent = filterKeys.some((filterPath) =>
+            isParentOfPattern(fullPath, filterPath),
           );
-          
+
           if (!exactMatch && !isParent) {
             continue;
           }
-          
+
           // If this key exactly matches a filter pattern, include its entire value
+          // but still apply rejectKeys filtering
           if (exactMatch) {
-            checkForCircularReferences(itemValue, visited);
-            result[key] = itemValue;
+            result[key] = applyKeyFiltering(
+              itemValue,
+              { rejectKeys },
+              fullPath,
+              visited,
+            );
           } else {
             // If this is a parent path, continue filtering the children
-            result[key] = applyKeyFiltering(itemValue, { rejectKeys, filterKeys }, fullPath, visited);
+            result[key] = applyKeyFiltering(
+              itemValue,
+              { rejectKeys, filterKeys },
+              fullPath,
+              visited,
+            );
           }
         } else {
-          result[key] = applyKeyFiltering(itemValue, { rejectKeys, filterKeys }, fullPath, visited);
+          result[key] = applyKeyFiltering(
+            itemValue,
+            { rejectKeys, filterKeys },
+            fullPath,
+            visited,
+          );
         }
       }
 
@@ -508,22 +511,83 @@ export function compactSnapshot(
           /* default false text */
           falseText?: string;
         };
-    /* reject keys from the snapshot, use dot notation to reject nested keys */
-    rejectKeys?: string[];
-    /* filter keys from the snapshot, use dot notation to filter nested keys */
-    filterKeys?: string[];
+    /** 
+     * Reject (exclude) keys from the snapshot using pattern matching.
+     * 
+     * **Pattern Syntax:**
+     * - `'prop'` - Only root-level properties named 'prop'
+     * - `'prop.nested'` - Exact nested property paths like `obj.prop.nested` 
+     * - `'*prop'` - Any property named exactly 'prop' at any level (root or nested)
+     * - `'*.prop'` - Any nested property named 'prop' (excludes root-level matches)
+     * 
+     * **Examples:**
+     * ```typescript
+     * // Reject root-level 'secret' only
+     * rejectKeys: ['secret']
+     * 
+     * // Reject nested 'password' properties only  
+     * rejectKeys: ['*.password']
+     * 
+     * // Reject any 'apiKey' property at any level
+     * rejectKeys: ['*apiKey']
+     * 
+     * // Reject specific nested path
+     * rejectKeys: ['user.settings.theme']
+     * ```
+     */
+    rejectKeys?: string[] | string;
+    
+    /** 
+     * Filter (include only) keys that match the specified patterns.
+     * 
+     * **Pattern Syntax:** (same as rejectKeys)
+     * - `'prop'` - Only root-level properties named 'prop'
+     * - `'prop.nested'` - Exact nested property paths like `obj.prop.nested`
+     * - `'*prop'` - Any property named exactly 'prop' at any level (root or nested) 
+     * - `'*.prop'` - Any nested property named 'prop' (excludes root-level matches)
+     * 
+     * **Examples:**
+     * ```typescript
+     * // Include only root-level 'user' 
+     * filterKeys: ['user']
+     * 
+     * // Include all 'name' properties at any level
+     * filterKeys: ['*name']
+     * 
+     * // Include only nested 'id' properties
+     * filterKeys: ['*.id']
+     * 
+     * // Include specific nested paths
+     * filterKeys: ['user.profile.email', 'settings.theme']
+     * ```
+     * 
+     * **Note:** When filtering, parent paths are automatically included if needed
+     * to preserve the structure for nested matches.
+     */
+    filterKeys?: string[] | string;
   } = {},
 ) {
   let processedValue = value;
 
   // Apply key filtering before boolean processing
   if (rejectKeys || filterKeys) {
-    processedValue = applyKeyFiltering(processedValue, { rejectKeys, filterKeys });
+    processedValue = applyKeyFiltering(processedValue, {
+      rejectKeys:
+        Array.isArray(rejectKeys) ? rejectKeys
+        : rejectKeys ? [rejectKeys]
+        : undefined,
+      filterKeys:
+        Array.isArray(filterKeys) ? filterKeys
+        : filterKeys ? [filterKeys]
+        : undefined,
+    });
   }
 
   // Apply boolean emoji replacement
   processedValue =
-    showBooleansAs ? replaceBooleansWithEmoji(processedValue, showBooleansAs) : processedValue;
+    showBooleansAs ?
+      replaceBooleansWithEmoji(processedValue, showBooleansAs)
+    : processedValue;
 
   return `\n${yamlStringify(processedValue, {
     collapseObjects,

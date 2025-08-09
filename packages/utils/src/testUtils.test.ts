@@ -656,6 +656,914 @@ describe('compactSnapshot', () => {
         "
       `);
     });
+
+    test('should not apply rejectKeys with root level keys within filtered nested structures', () => {
+      const data = {
+        type: 'select',
+        options: [
+          { value: '1', label: 'Option 1', secret: 'hidden1' },
+          { value: '2', label: 'Option 2', secret: 'hidden2' },
+        ],
+        config: {
+          secret: 'config-secret',
+          visible: true,
+        },
+      };
+
+      expect(
+        compactSnapshot(data, {
+          filterKeys: ['options'],
+          rejectKeys: ['secret'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        options:
+          - value: '1'
+            label: 'Option 1'
+            secret: 'hidden1'
+          - value: '2'
+            label: 'Option 2'
+            secret: 'hidden2'
+        "
+      `);
+    });
+
+    test('should apply rejectKeys (with nested wildcard) within filtered nested objects', () => {
+      const data = {
+        user: {
+          name: 'John',
+          email: 'john@example.com',
+          password: 'secret123',
+          settings: {
+            theme: 'dark',
+            apiKey: 'secret-key',
+            notifications: true,
+          },
+        },
+        metadata: {
+          version: '1.0',
+          internal: 'secret-data',
+        },
+      };
+
+      expect(
+        compactSnapshot(data, {
+          filterKeys: ['user'],
+          rejectKeys: ['*.password', '*.apiKey'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        user:
+          name: 'John'
+          email: 'john@example.com'
+          settings:
+            theme: 'dark'
+            notifications: '✅'
+        "
+      `);
+    });
+
+    test('should handle rejectKeys with global wildcard patterns in filtered structures', () => {
+      const data = {
+        items: [
+          { id: 1, name: 'Item 1', secret: 'hidden' },
+          { id: 2, name: 'Item 2', secret: 'hidden' },
+        ],
+        other: {
+          secretValue: 'should-be-removed',
+          publicValue: 'should-stay',
+        },
+      };
+
+      expect(
+        compactSnapshot(data, {
+          filterKeys: ['items'],
+          // global wildcard pattern `*secret`
+          rejectKeys: ['*secret'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        items:
+          - id: 1
+            name: 'Item 1'
+          - id: 2
+            name: 'Item 2'
+        "
+      `);
+    });
+  });
+
+  describe('pattern matching specifications', () => {
+    const testData = {
+      secret: 'root-secret',
+      password: 'root-password',
+      user: {
+        name: 'John',
+        secret: 'user-secret',
+        password: 'user-password',
+        settings: {
+          secret: 'settings-secret',
+          apiKey: 'api-key',
+          theme: 'dark',
+        },
+      },
+      items: [
+        { id: 1, secret: 'item1-secret', password: 'item1-pass' },
+        { id: 2, secret: 'item2-secret', password: 'item2-pass' },
+      ],
+    };
+
+    describe('root-only patterns (e.g., "secret")', () => {
+      test('should only reject root-level properties', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          password: 'root-password'
+
+          user:
+            name: 'John'
+            secret: 'user-secret'
+            password: 'user-password'
+            settings:
+              secret: 'settings-secret'
+              apiKey: 'api-key'
+              theme: 'dark'
+
+          items:
+            - id: 1
+              secret: 'item1-secret'
+              password: 'item1-pass'
+            - id: 2
+              secret: 'item2-secret'
+              password: 'item2-pass'
+          "
+        `);
+      });
+
+      test('should work with multiple root-only patterns', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['secret', 'password'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          user:
+            name: 'John'
+            secret: 'user-secret'
+            password: 'user-password'
+            settings:
+              secret: 'settings-secret'
+              apiKey: 'api-key'
+              theme: 'dark'
+
+          items:
+            - id: 1
+              secret: 'item1-secret'
+              password: 'item1-pass'
+            - id: 2
+              secret: 'item2-secret'
+              password: 'item2-pass'
+          "
+        `);
+      });
+    });
+
+    describe('nested wildcard patterns (e.g., "*.secret")', () => {
+      test('should only reject nested properties, not root ones', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['*.secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+
+          user:
+            name: 'John'
+            password: 'user-password'
+            settings:
+              apiKey: 'api-key'
+              theme: 'dark'
+
+          items:
+            - id: 1
+              password: 'item1-pass'
+            - id: 2
+              password: 'item2-pass'
+          "
+        `);
+      });
+
+      test('should work with multiple nested wildcard patterns', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['*.secret', '*.password'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+
+          user:
+            name: 'John'
+            settings:
+              apiKey: 'api-key'
+              theme: 'dark'
+
+          items:
+            - id: 1
+            - id: 2
+          "
+        `);
+      });
+    });
+
+    describe('global wildcard patterns (e.g., "*secret")', () => {
+      test('should reject properties named exactly "secret" at any level', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['*secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          password: 'root-password'
+
+          user:
+            name: 'John'
+            password: 'user-password'
+            settings:
+              apiKey: 'api-key'
+              theme: 'dark'
+
+          items:
+            - id: 1
+              password: 'item1-pass'
+            - id: 2
+              password: 'item2-pass'
+          "
+        `);
+      });
+
+      test('should work with multiple global wildcard patterns', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['*password', '*apiKey'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+
+          user:
+            name: 'John'
+            secret: 'user-secret'
+            settings:
+              secret: 'settings-secret'
+              theme: 'dark'
+
+          items:
+            - id: 1
+              secret: 'item1-secret'
+            - id: 2
+              secret: 'item2-secret'
+          "
+        `);
+      });
+    });
+
+    describe('exact path patterns (e.g., "user.secret")', () => {
+      test('should only reject exact path matches', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['user.secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+
+          user:
+            name: 'John'
+            password: 'user-password'
+            settings:
+              secret: 'settings-secret'
+              apiKey: 'api-key'
+              theme: 'dark'
+
+          items:
+            - id: 1
+              secret: 'item1-secret'
+              password: 'item1-pass'
+            - id: 2
+              secret: 'item2-secret'
+              password: 'item2-pass'
+          "
+        `);
+      });
+
+      test('should work with deeply nested exact paths', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['user.settings.secret', 'user.settings.apiKey'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+
+          user:
+            name: 'John'
+            secret: 'user-secret'
+            password: 'user-password'
+            settings:
+              theme: 'dark'
+
+          items:
+            - id: 1
+              secret: 'item1-secret'
+              password: 'item1-pass'
+            - id: 2
+              secret: 'item2-secret'
+              password: 'item2-pass'
+          "
+        `);
+      });
+    });
+
+    describe('combined pattern types', () => {
+      test('should apply multiple different pattern types together', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: [
+              'secret', // root only
+              '*.password', // nested only
+              '*Key', // global wildcard
+              'user.settings.theme', // exact path
+            ],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          password: 'root-password'
+
+          user:
+            name: 'John'
+            secret: 'user-secret'
+            settings:
+              secret: 'settings-secret'
+              apiKey: 'api-key'
+
+          items:
+            - id: 1
+              secret: 'item1-secret'
+            - id: 2
+              secret: 'item2-secret'
+          "
+        `);
+      });
+    });
+
+    describe('edge cases', () => {
+      test('should handle empty patterns gracefully', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: [],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+
+          user:
+            name: 'John'
+            secret: 'user-secret'
+            password: 'user-password'
+            settings:
+              secret: 'settings-secret'
+              apiKey: 'api-key'
+              theme: 'dark'
+
+          items:
+            - id: 1
+              secret: 'item1-secret'
+              password: 'item1-pass'
+            - id: 2
+              secret: 'item2-secret'
+              password: 'item2-pass'
+          "
+        `);
+      });
+
+      test('should handle non-existent patterns gracefully', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['nonExistent', '*.nonExistent', '*nonExistent'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+
+          user:
+            name: 'John'
+            secret: 'user-secret'
+            password: 'user-password'
+            settings:
+              secret: 'settings-secret'
+              apiKey: 'api-key'
+              theme: 'dark'
+
+          items:
+            - id: 1
+              secret: 'item1-secret'
+              password: 'item1-pass'
+            - id: 2
+              secret: 'item2-secret'
+              password: 'item2-pass'
+          "
+        `);
+      });
+
+      test('should handle patterns with special characters', () => {
+        const specialData = {
+          'key.with.dots': 'value1',
+          'key-with-dashes': 'value2',
+          'key_with_underscores': 'value3',
+          nested: {
+            'key.with.dots': 'nested-value1',
+            'key-with-dashes': 'nested-value2',
+          },
+        };
+
+        expect(
+          compactSnapshot(specialData, {
+            rejectKeys: ['key.with.dots', '*key-with-dashes'], // exact key name patterns
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          key_with_underscores: 'value3'
+
+          nested:
+            key.with.dots: 'nested-value1'
+          "
+        `);
+      });
+    });
+  });
+
+  describe('pattern matching with filterKeys integration', () => {
+    const complexData = {
+      publicInfo: {
+        name: 'Company',
+        description: 'A company',
+      },
+      sensitiveData: {
+        secret: 'company-secret',
+        apiKey: 'api-123',
+        users: [
+          { name: 'John', secret: 'john-secret', password: 'john-pass' },
+          { name: 'Jane', secret: 'jane-secret', password: 'jane-pass' },
+        ],
+      },
+      config: {
+        secret: 'config-secret',
+        theme: 'dark',
+      },
+    };
+
+    test('should apply root-only rejectKeys within filterKeys matches', () => {
+      expect(
+        compactSnapshot(complexData, {
+          filterKeys: ['sensitiveData'],
+          rejectKeys: ['secret'], // root-only, should not affect nested
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        sensitiveData:
+          secret: 'company-secret'
+          apiKey: 'api-123'
+          users:
+            - name: 'John'
+              secret: 'john-secret'
+              password: 'john-pass'
+            - name: 'Jane'
+              secret: 'jane-secret'
+              password: 'jane-pass'
+        "
+      `);
+    });
+
+    test('should apply nested wildcard rejectKeys within filterKeys matches', () => {
+      expect(
+        compactSnapshot(complexData, {
+          filterKeys: ['sensitiveData'],
+          rejectKeys: ['*.secret', '*.password'], // nested-only
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        sensitiveData:
+          apiKey: 'api-123'
+          users:
+            - name: 'John'
+            - name: 'Jane'
+        "
+      `);
+    });
+
+    test('should apply global wildcard rejectKeys within filterKeys matches', () => {
+      expect(
+        compactSnapshot(complexData, {
+          filterKeys: ['sensitiveData'],
+          rejectKeys: ['*secret', '*Key'], // global wildcards
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        sensitiveData:
+          apiKey: 'api-123'
+          users:
+            - name: 'John'
+              password: 'john-pass'
+            - name: 'Jane'
+              password: 'jane-pass'
+        "
+      `);
+    });
+  });
+
+  describe('filterKeys pattern matching', () => {
+    const testData = {
+      secret: 'root-secret',
+      password: 'root-password',
+      user: {
+        name: 'John',
+        secret: 'user-secret',
+        password: 'user-password',
+        settings: {
+          secret: 'settings-secret',
+          apiKey: 'api-key',
+          theme: 'dark',
+        },
+      },
+      items: [
+        { id: 1, secret: 'item1-secret', password: 'item1-pass' },
+        { id: 2, secret: 'item2-secret', password: 'item2-pass' },
+      ],
+    };
+
+    describe('root-only patterns (e.g., "secret")', () => {
+      test('should only include root-level properties', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          "
+        `);
+      });
+
+      test('should work with multiple root-only patterns', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['secret', 'password'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+          "
+        `);
+      });
+    });
+
+    describe('nested wildcard patterns (e.g., "*.secret")', () => {
+      test('should only include nested properties, not root ones', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['*.secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+
+          user:
+            secret: 'user-secret'
+
+          items:
+            - secret: 'item1-secret'
+            - secret: 'item2-secret'
+          "
+        `);
+      });
+
+      test('should work with multiple nested wildcard patterns', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['*.secret', '*.password'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+
+          user:
+            secret: 'user-secret'
+            password: 'user-password'
+
+          items:
+            - secret: 'item1-secret'
+              password: 'item1-pass'
+            - secret: 'item2-secret'
+              password: 'item2-pass'
+          "
+        `);
+      });
+    });
+
+    describe('global wildcard patterns (e.g., "*secret")', () => {
+      test('should include properties named exactly "secret" at any level', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['*secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          "
+        `);
+      });
+
+      test('should work with exact property name matching', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['*password', '*Key'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          password: 'root-password'
+          "
+        `);
+      });
+    });
+
+    describe('exact path patterns (e.g., "user.secret")', () => {
+      test('should only include exact path matches', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['user.secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          user:
+            secret: 'user-secret'
+          "
+        `);
+      });
+
+      test('should work with deeply nested exact paths', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['user.settings.secret', 'user.settings.apiKey'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          user:
+            settings:
+              secret: 'settings-secret'
+              apiKey: 'api-key'
+          "
+        `);
+      });
+
+      test('should include parent paths when filtering nested exact paths', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['user.name', 'items'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          user:
+            name: 'John'
+
+          items:
+            - id: 1
+              secret: 'item1-secret'
+              password: 'item1-pass'
+            - id: 2
+              secret: 'item2-secret'
+              password: 'item2-pass'
+          "
+        `);
+      });
+    });
+
+    describe('combined pattern types', () => {
+      test('should apply multiple different pattern types together', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: [
+              'secret', // root only
+              '*.password', // nested only
+              '*Key', // global wildcard
+              'user.settings.theme', // exact path
+            ],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+
+          user:
+            password: 'user-password'
+            settings:
+              theme: 'dark'
+
+          items:
+            - password: 'item1-pass'
+            - password: 'item2-pass'
+          "
+        `);
+      });
+    });
+
+    describe('edge cases', () => {
+      test('should handle empty patterns gracefully', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: [],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          {}
+          "
+        `);
+      });
+
+      test('should handle non-existent patterns gracefully', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['nonExistent', '*.nonExistent', '*nonExistent'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          secret: 'root-secret'
+          password: 'root-password'
+          user: {}
+
+          items:
+            - {}
+            - {}
+          "
+        `);
+      });
+    });
+  });
+
+  describe('combined filterKeys and rejectKeys pattern matching', () => {
+    const testData = {
+      secret: 'root-secret',
+      password: 'root-password',
+      user: {
+        name: 'John',
+        secret: 'user-secret',
+        password: 'user-password',
+        settings: {
+          secret: 'settings-secret',
+          apiKey: 'api-key',
+          theme: 'dark',
+        },
+      },
+      items: [
+        { id: 1, secret: 'item1-secret', password: 'item1-pass' },
+        { id: 2, secret: 'item2-secret', password: 'item2-pass' },
+      ],
+    };
+
+    test('should apply both root-only filterKeys and nested rejectKeys', () => {
+      expect(
+        compactSnapshot(testData, {
+          filterKeys: ['user'], // root-only filter
+          rejectKeys: ['*.password'], // nested-only reject
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        user:
+          name: 'John'
+          secret: 'user-secret'
+          settings:
+            secret: 'settings-secret'
+            apiKey: 'api-key'
+            theme: 'dark'
+        "
+      `);
+    });
+
+    test('should apply nested wildcard filterKeys and global wildcard rejectKeys', () => {
+      expect(
+        compactSnapshot(testData, {
+          filterKeys: ['*.secret'], // nested-only filter
+          rejectKeys: ['*settings*'], // global wildcard reject
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        secret: 'root-secret'
+        password: 'root-password'
+
+        user:
+          secret: 'user-secret'
+
+        items:
+          - secret: 'item1-secret'
+          - secret: 'item2-secret'
+        "
+      `);
+    });
+
+    test('should apply exact path filterKeys and root-only rejectKeys', () => {
+      expect(
+        compactSnapshot(testData, {
+          filterKeys: ['user.settings'], // exact path filter
+          rejectKeys: ['secret'], // root-only reject (shouldn't affect nested)
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        user:
+          settings:
+            secret: 'settings-secret'
+            apiKey: 'api-key'
+            theme: 'dark'
+        "
+      `);
+    });
+
+    test('should handle complex combinations of all pattern types', () => {
+      expect(
+        compactSnapshot(testData, {
+          filterKeys: [
+            'secret', // root-only
+            '*.name', // nested wildcard
+            '*Key', // global wildcard
+            'items', // exact path (includes all of items)
+          ],
+          rejectKeys: [
+            '*.password', // nested wildcard reject
+            'user.settings.theme', // exact path reject
+          ],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        secret: 'root-secret'
+        password: 'root-password'
+
+        user:
+          name: 'John'
+
+        items:
+          - id: 1
+            secret: 'item1-secret'
+          - id: 2
+            secret: 'item2-secret'
+        "
+      `);
+    });
   });
 
   describe('circular references with key filtering', () => {
