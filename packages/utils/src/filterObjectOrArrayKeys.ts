@@ -53,6 +53,7 @@ export function filterObjectOrArrayKeys(
     value: unknown,
     currentPath: string,
     filterActive = true,
+    pruneActive = filterActive,
   ): unknown {
     if (!isPlainObject(value) && !Array.isArray(value)) {
       return value;
@@ -91,11 +92,16 @@ export function filterObjectOrArrayKeys(
 
             if (includeExactly) {
               // Include whole element content; only apply rejectKeys below
-              const childIncluded = filterValue(value[index], indexPath, false);
+              const childIncluded = filterValue(
+                value[index],
+                indexPath,
+                false,
+                true,
+              );
               if (
                 !(
                   rejectEmptyObjects &&
-                  filterActive &&
+                  pruneActive &&
                   isPlainObject(childIncluded) &&
                   Object.keys(childIncluded as any).length === 0
                 )
@@ -107,11 +113,16 @@ export function filterObjectOrArrayKeys(
             // includeAsParent -> keep filtering descendants
           }
 
-          const child = filterValue(value[index], indexPath, filterActive);
+          const child = filterValue(
+            value[index],
+            indexPath,
+            filterActive,
+            pruneActive,
+          );
           if (
             !(
               rejectEmptyObjects &&
-              filterActive &&
+              pruneActive &&
               isPlainObject(child) &&
               Object.keys(child as any).length === 0
             )
@@ -153,11 +164,11 @@ export function filterObjectOrArrayKeys(
             continue;
           }
           if (includeExactly) {
-            const childIncluded = filterValue(child, fullPath, false);
+            const childIncluded = filterValue(child, fullPath, false, true);
             if (
               !(
                 rejectEmptyObjects &&
-                filterActive &&
+                pruneActive &&
                 isPlainObject(childIncluded) &&
                 Object.keys(childIncluded as any).length === 0
               )
@@ -169,18 +180,23 @@ export function filterObjectOrArrayKeys(
           // includeAsParent -> keep filtering
         }
 
-        const filteredChild = filterValue(child, fullPath, filterActive);
+        const filteredChild = filterValue(
+          child,
+          fullPath,
+          filterActive,
+          pruneActive,
+        );
         if (
           !(
             rejectEmptyObjects &&
-            filterActive &&
+            pruneActive &&
             isPlainObject(filteredChild) &&
             Object.keys(filteredChild as any).length === 0
           ) &&
           // Also drop empty arrays when pruning is enabled (only in filtered contexts)
           !(
             rejectEmptyObjects &&
-            filterActive &&
+            pruneActive &&
             Array.isArray(filteredChild) &&
             filteredChild.length === 0
           )
