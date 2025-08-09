@@ -308,6 +308,56 @@ export function waitController(): {
   };
 }
 
+function parseArrayPattern(pattern: string): {
+  base: string;
+  indices: number[] | '*' | { from: number } | null;
+  suffix: string;
+} | null {
+  const arrayMatch = pattern.match(/^([^[]+)\[([^\]]+)\](.*)$/);
+  if (!arrayMatch || arrayMatch.length < 4) return null;
+
+  const [, base, indexPart, suffix] = arrayMatch;
+
+  if (!base || !indexPart || suffix === undefined) return null;
+
+  if (indexPart === '*') {
+    return { base, indices: '*', suffix };
+  }
+
+  // Handle open-ended range patterns like "1-*" (from index 1 to end)
+  const openRangeMatch = indexPart.match(/^(\d+)-\*$/);
+  if (openRangeMatch && openRangeMatch.length >= 2) {
+    const [, start] = openRangeMatch;
+    if (start) {
+      const startNum = parseInt(start, 10);
+      return { base, indices: { from: startNum }, suffix };
+    }
+  }
+
+  // Handle closed range patterns like "0-2"
+  const rangeMatch = indexPart.match(/^(\d+)-(\d+)$/);
+  if (rangeMatch && rangeMatch.length >= 3) {
+    const [, start, end] = rangeMatch;
+    if (start && end) {
+      const startNum = parseInt(start, 10);
+      const endNum = parseInt(end, 10);
+      const indices = [];
+      for (let i = startNum; i <= endNum; i++) {
+        indices.push(i);
+      }
+      return { base, indices, suffix };
+    }
+  }
+
+  // Handle single index patterns like "0"
+  const singleIndex = parseInt(indexPart, 10);
+  if (!isNaN(singleIndex)) {
+    return { base, indices: [singleIndex], suffix };
+  }
+
+  return null;
+}
+
 function matchesKeyPattern(
   fullPath: string,
   key: string,
@@ -317,6 +367,119 @@ function matchesKeyPattern(
   // Handle exact full path matches first (e.g., 'user.settings.theme')
   if (fullPath === pattern) {
     return true;
+  }
+
+  // Handle array patterns (e.g., 'prop[0]', 'prop[*]', 'prop[0-2]', 'prop[0].nested')
+  const arrayPattern = parseArrayPattern(pattern);
+  if (arrayPattern) {
+    const { base, indices, suffix } = arrayPattern;
+
+    // Handle patterns like 'prop[0].nested' or 'prop[*].nested'
+    if (suffix) {
+      // Check if we're matching a property inside an array element
+      if (fullPath.startsWith(`${base}[`) && fullPath.includes(']')) {
+        const arrayMatch = fullPath.match(
+          new RegExp(
+            `^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\[(\\d+)\\](.*)$`,
+          ),
+        );
+        if (arrayMatch && arrayMatch.length >= 3) {
+          const [, arrayIndex, afterBracket] = arrayMatch;
+          if (!arrayIndex) return false;
+          const idx = parseInt(arrayIndex, 10);
+
+          if (
+            !isNaN(idx) &&
+            afterBracket !== undefined &&
+            (indices === '*' ||
+              (Array.isArray(indices) && indices.includes(idx)) ||
+              (typeof indices === 'object' &&
+                indices !== null &&
+                'from' in indices &&
+                idx >= indices.from))
+          ) {
+            // Now check if the remaining path matches the suffix pattern
+            if (suffix.startsWith('.')) {
+              const suffixPath = suffix.slice(1); // Remove leading dot
+
+              // Handle exact suffix matches like 'prop[0].nested'
+              if (afterBracket === `.${suffixPath}`) {
+                return true;
+              }
+
+              // Handle nested patterns within the suffix
+              if (afterBracket.startsWith('.')) {
+                const pathWithoutDot = afterBracket.slice(1);
+                const lastDotIndex = pathWithoutDot.lastIndexOf('.');
+                const contextPath =
+                  lastDotIndex > 0 ? pathWithoutDot.slice(0, lastDotIndex) : '';
+                return matchesKeyPattern(
+                  pathWithoutDot,
+                  key,
+                  suffixPath,
+                  contextPath,
+                );
+              }
+            } else if (suffix.startsWith('*') && !suffix.startsWith('*.')) {
+              // Handle patterns like 'prop[*]*nested' (no dot before *nested)
+              const targetProp = suffix.slice(1);
+              return (
+                key === targetProp && afterBracket.includes(`.${targetProp}`)
+              );
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    // Simple array patterns without suffix (e.g., 'prop[0]', 'prop[*]')
+    // Check if we're matching an array element directly
+    if (fullPath.startsWith(`${base}[`) && fullPath.includes(']')) {
+      const arrayMatch = fullPath.match(
+        new RegExp(
+          `^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\[(\\d+)\\]$`,
+        ),
+      );
+      if (arrayMatch && arrayMatch.length >= 2) {
+        const [, arrayIndex] = arrayMatch;
+        if (arrayIndex !== undefined) {
+          const idx = parseInt(arrayIndex, 10);
+
+          return (
+            !isNaN(idx) &&
+            (indices === '*' ||
+              (Array.isArray(indices) && indices.includes(idx)) ||
+              (typeof indices === 'object' &&
+                indices !== null &&
+                'from' in indices &&
+                idx >= indices.from))
+          );
+        }
+      }
+    }
+    return false;
+  }
+
+  // Handle nested wildcard patterns with property paths (e.g., 'prop.*nested')
+  if (pattern.includes('.*')) {
+    const parts = pattern.split('.*');
+    if (parts.length === 2) {
+      const [basePath, targetProp] = parts;
+
+      if (basePath && targetProp) {
+        // Check if we're inside the base path
+        if (fullPath.startsWith(`${basePath}.`) && key === targetProp) {
+          // Make sure there's at least one intermediate level
+          const afterBase = fullPath.slice(basePath.length + 1);
+          const beforeTarget = afterBase.slice(
+            0,
+            afterBase.length - targetProp.length - 1,
+          );
+          return beforeTarget.length > 0;
+        }
+      }
+    }
   }
 
   // Handle patterns starting with '*.' (nested wildcards like '*.prop')
@@ -334,7 +497,7 @@ function matchesKeyPattern(
   }
 
   // Handle simple patterns without wildcards (e.g., 'prop')
-  if (!pattern.includes('*')) {
+  if (!pattern.includes('*') && !pattern.includes('[')) {
     // Root level only - must have empty currentPath and key matches
     return currentPath === '' && key === pattern;
   }
@@ -343,9 +506,50 @@ function matchesKeyPattern(
 }
 
 function isParentOfPattern(path: string, pattern: string): boolean {
+  // Handle array patterns
+  const arrayPattern = parseArrayPattern(pattern);
+  if (arrayPattern) {
+    const { base, suffix } = arrayPattern;
+
+    // Check if path matches the array base exactly (e.g., "items" is parent of "items[0]")
+    if (path === base) {
+      return true;
+    }
+
+    // Check if path is parent of the array base
+    if (base.startsWith(`${path}.`)) {
+      return true;
+    }
+
+    // Check if path matches the array base exactly and there's a suffix
+    if (suffix && path === base) {
+      return true;
+    }
+
+    // Check if the path is inside an array element that has a suffix
+    if (suffix && path.startsWith(`${base}[`) && path.includes(']')) {
+      const afterBracket = path.slice(path.indexOf(']') + 1);
+      if (suffix.startsWith('.')) {
+        const suffixPath = suffix.slice(1);
+        return suffixPath.startsWith(`${afterBracket.slice(1)}.`);
+      }
+    }
+
+    return false;
+  }
+
   // Check if this path is a parent of the pattern path
   if (pattern.includes('*')) {
-    // For wildcard patterns, check if the pattern could match a child path
+    // Handle nested wildcard patterns like 'prop.*nested'
+    if (pattern.includes('.*')) {
+      const parts = pattern.split('.*');
+      if (parts.length === 2) {
+        const [basePath] = parts;
+        return Boolean(basePath?.startsWith(`${path}.`));
+      }
+    }
+
+    // For other wildcard patterns, check if the pattern could match a child path
     const patternParts = pattern.split('.');
     const pathParts = path.split('.');
 
@@ -390,14 +594,87 @@ function applyKeyFiltering(
     }
     visited.add(value);
     try {
-      return value.map((item, index) =>
-        applyKeyFiltering(
-          item,
-          { rejectKeys, filterKeys },
-          currentPath ? `${currentPath}[${index}]` : `[${index}]`,
-          visited,
-        ),
-      );
+      const result: unknown[] = [];
+
+      for (let index = 0; index < value.length; index++) {
+        const item = value[index];
+        const indexPath =
+          currentPath ? `${currentPath}[${index}]` : `[${index}]`;
+
+        // Check if this array index should be rejected
+        if (
+          rejectKeys?.some((rejectPath) =>
+            matchesKeyPattern(indexPath, `[${index}]`, rejectPath, currentPath),
+          )
+        ) {
+          continue;
+        }
+
+        // Check if we have filter keys and this index doesn't match
+        if (filterKeys) {
+          const exactMatch = filterKeys.some((filterPath) => {
+            // Also check if this index matches an open-ended range pattern
+            const arrayPattern = parseArrayPattern(filterPath);
+            if (
+              arrayPattern &&
+              arrayPattern.base === currentPath.replace(/\[\d+\]$/, '')
+            ) {
+              const { indices } = arrayPattern;
+              return (
+                indices === '*' ||
+                (Array.isArray(indices) && indices.includes(index)) ||
+                (typeof indices === 'object' &&
+                  indices !== null &&
+                  'from' in indices &&
+                  index >= indices.from)
+              );
+            }
+            return matchesKeyPattern(
+              indexPath,
+              `[${index}]`,
+              filterPath,
+              currentPath,
+            );
+          });
+
+          const isParent = filterKeys.some((filterPath) =>
+            isParentOfPattern(indexPath, filterPath),
+          );
+
+          if (!exactMatch && !isParent) {
+            continue;
+          }
+
+          // If this index exactly matches a filter pattern, include its entire value
+          // but still apply rejectKeys filtering
+          if (exactMatch) {
+            result.push(
+              applyKeyFiltering(item, { rejectKeys }, indexPath, visited),
+            );
+          } else {
+            // If this is a parent path, continue filtering the children
+            result.push(
+              applyKeyFiltering(
+                item,
+                { rejectKeys, filterKeys },
+                indexPath,
+                visited,
+              ),
+            );
+          }
+        } else {
+          result.push(
+            applyKeyFiltering(
+              item,
+              { rejectKeys, filterKeys },
+              indexPath,
+              visited,
+            ),
+          );
+        }
+      }
+
+      return result;
     } finally {
       visited.delete(value);
     }
@@ -482,6 +759,8 @@ function applyKeyFiltering(
  *
  * Filtering patterns in `rejectKeys` and `filterKeys`:
  * - `'prop'` - Only root-level properties named 'prop'
+ * - `'*prop'` - Any property named exactly 'prop' at any level (root or nested)
+ * - `'*.prop'` - Any nested property named 'prop' (excludes root-level matches)
  * - `'prop.nested'` - Exact nested property paths like `obj.prop.nested`
  * - `'prop.*nested'` - All nested properties inside `prop` with name `nested`
  * - `'prop[0]'` - The first item of the `prop` array
@@ -490,8 +769,8 @@ function applyKeyFiltering(
  * - `'prop[*].nested'` - `nested` prop of all items of the `prop` array
  * - `'prop[*]*nested'` - all `nested` props of all items of the `prop` array
  * - `'prop[0-2]'` - The first three items of the `prop` array
- * - `'*prop'` - Any property named exactly 'prop' at any level (root or nested)
- * - `'*.prop'` - Any nested property named 'prop' (excludes root-level matches)
+ * - `'prop[4-*]'` - All items of the `prop` array from the fourth index to the end
+ * - `'prop[0-2].nested.*prop'` - Combining multiple nested patterns is supported
  *
  * @param value - The value to snapshot.
  * @param options - The options for the snapshot.

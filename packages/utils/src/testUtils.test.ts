@@ -1566,6 +1566,703 @@ describe('compactSnapshot', () => {
     });
   });
 
+  describe('array pattern matching', () => {
+    const testData = {
+      items: [
+        { id: 1, name: 'Item 1', secret: 'secret1', metadata: { version: 1, public: true } },
+        { id: 2, name: 'Item 2', secret: 'secret2', metadata: { version: 2, public: false } },
+        { id: 3, name: 'Item 3', secret: 'secret3', metadata: { version: 3, public: true } },
+      ],
+      users: [
+        { name: 'John', password: 'pass1', settings: { theme: 'dark', notifications: true } },
+        { name: 'Jane', password: 'pass2', settings: { theme: 'light', notifications: false } },
+      ],
+      config: {
+        values: ['a', 'b', 'c', 'd'],
+        nested: {
+          data: [{ key: 'value1' }, { key: 'value2' }],
+        },
+      },
+    };
+
+    describe('single array index patterns', () => {
+      test('should filter specific array index - items[0]', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items[0]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 1
+              name: 'Item 1'
+              secret: 'secret1'
+              metadata: { version: 1, public: '✅' }
+          "
+        `);
+      });
+
+      test('should reject specific array index - items[1]', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['items[1]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 1
+              name: 'Item 1'
+              secret: 'secret1'
+              metadata: { version: 1, public: '✅' }
+            - id: 3
+              name: 'Item 3'
+              secret: 'secret3'
+              metadata: { version: 3, public: '✅' }
+
+          users:
+            - name: 'John'
+              password: 'pass1'
+              settings: { theme: 'dark', notifications: '✅' }
+            - name: 'Jane'
+              password: 'pass2'
+              settings: { theme: 'light', notifications: '❌' }
+
+          config:
+            values: ['a', 'b', 'c', 'd']
+            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+          "
+        `);
+      });
+    });
+
+    describe('array wildcard patterns', () => {
+      test('should filter all array items - items[*]', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items[*]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 1
+              name: 'Item 1'
+              secret: 'secret1'
+              metadata: { version: 1, public: '✅' }
+            - id: 2
+              name: 'Item 2'
+              secret: 'secret2'
+              metadata: { version: 2, public: '❌' }
+            - id: 3
+              name: 'Item 3'
+              secret: 'secret3'
+              metadata: { version: 3, public: '✅' }
+          "
+        `);
+      });
+
+      test('should reject all array items - items[*]', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['items[*]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items: []
+
+          users:
+            - name: 'John'
+              password: 'pass1'
+              settings: { theme: 'dark', notifications: '✅' }
+            - name: 'Jane'
+              password: 'pass2'
+              settings: { theme: 'light', notifications: '❌' }
+
+          config:
+            values: ['a', 'b', 'c', 'd']
+            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+          "
+        `);
+      });
+    });
+
+    describe('array range patterns', () => {
+      test('should filter array range - items[0-1]', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items[0-1]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 1
+              name: 'Item 1'
+              secret: 'secret1'
+              metadata: { version: 1, public: '✅' }
+            - id: 2
+              name: 'Item 2'
+              secret: 'secret2'
+              metadata: { version: 2, public: '❌' }
+          "
+        `);
+      });
+
+      test('should reject array range - users[0-1]', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['users[0-1]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 1
+              name: 'Item 1'
+              secret: 'secret1'
+              metadata: { version: 1, public: '✅' }
+            - id: 2
+              name: 'Item 2'
+              secret: 'secret2'
+              metadata: { version: 2, public: '❌' }
+            - id: 3
+              name: 'Item 3'
+              secret: 'secret3'
+              metadata: { version: 3, public: '✅' }
+
+          users: []
+
+          config:
+            values: ['a', 'b', 'c', 'd']
+            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+          "
+        `);
+      });
+    });
+
+    describe('array with nested property patterns', () => {
+      test('should filter nested property in specific array index - items[0].name', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items[0].name'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - name: 'Item 1'
+          "
+        `);
+      });
+
+      test('should filter nested property in all array items - users[*].name', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['users[*].name'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          users:
+            - name: 'John'
+            - name: 'Jane'
+          "
+        `);
+      });
+
+      test('should reject nested property in array range - items[0-1].secret', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['items[0-1].secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 1
+              name: 'Item 1'
+              metadata: { version: 1, public: '✅' }
+            - id: 2
+              name: 'Item 2'
+              metadata: { version: 2, public: '❌' }
+            - id: 3
+              name: 'Item 3'
+              secret: 'secret3'
+              metadata: { version: 3, public: '✅' }
+
+          users:
+            - name: 'John'
+              password: 'pass1'
+              settings: { theme: 'dark', notifications: '✅' }
+            - name: 'Jane'
+              password: 'pass2'
+              settings: { theme: 'light', notifications: '❌' }
+
+          config:
+            values: ['a', 'b', 'c', 'd']
+            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+          "
+        `);
+      });
+    });
+
+    describe('array with wildcard nested property patterns', () => {
+      test('should filter wildcard property in all array items - items[*]*secret', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items[*]*secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - secret: 'secret1'
+            - secret: 'secret2'
+            - secret: 'secret3'
+          "
+        `);
+      });
+
+      test('should reject wildcard property in all array items - users[*]*password', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['users[*]*password'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 1
+              name: 'Item 1'
+              secret: 'secret1'
+              metadata: { version: 1, public: '✅' }
+            - id: 2
+              name: 'Item 2'
+              secret: 'secret2'
+              metadata: { version: 2, public: '❌' }
+            - id: 3
+              name: 'Item 3'
+              secret: 'secret3'
+              metadata: { version: 3, public: '✅' }
+
+          users:
+            - name: 'John'
+              settings: { theme: 'dark', notifications: '✅' }
+            - name: 'Jane'
+              settings: { theme: 'light', notifications: '❌' }
+
+          config:
+            values: ['a', 'b', 'c', 'd']
+            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+          "
+        `);
+      });
+    });
+
+    describe('deeply nested array patterns', () => {
+      test('should filter nested array with specific index - config.nested.data[0]', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['config.nested.data[0]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          config:
+            nested:
+              data:
+                - key: 'value1'
+          "
+        `);
+      });
+
+      test('should filter nested array with wildcard - config.nested.data[*].key', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['config.nested.data[*].key'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          config:
+            nested:
+              data:
+                - key: 'value1'
+                - key: 'value2'
+          "
+        `);
+      });
+    });
+
+    describe('open-ended range patterns', () => {
+      test('should filter from index to end - items[1-*]', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items[1-*]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 2
+              name: 'Item 2'
+              secret: 'secret2'
+              metadata:
+                version: 2
+                public: '❌'
+            - id: 3
+              name: 'Item 3'
+              secret: 'secret3'
+              metadata:
+                version: 3
+                public: '✅'
+          "
+        `);
+      });
+
+      test('should reject from index to end - users[1-*]', () => {
+        expect(
+          compactSnapshot(testData, {
+            rejectKeys: ['users[1-*]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 1
+              name: 'Item 1'
+              secret: 'secret1'
+              metadata:
+                version: 1
+                public: '✅'
+            - id: 2
+              name: 'Item 2'
+              secret: 'secret2'
+              metadata:
+                version: 2
+                public: '❌'
+            - id: 3
+              name: 'Item 3'
+              secret: 'secret3'
+              metadata:
+                version: 3
+                public: '✅'
+
+          users:
+            - name: 'John'
+              password: 'pass1'
+              settings:
+                theme: 'dark'
+                notifications: '✅'
+
+          config:
+            values: ['a', 'b', 'c', 'd']
+            nested:
+              data:
+                - key: 'value1'
+                - key: 'value2'
+          "
+        `);
+      });
+
+      test('should combine open-ended range with property filters - items[1-*].name', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items[1-*].name'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - name: 'Item 2'
+            - name: 'Item 3'
+          "
+        `);
+      });
+
+      test('should filter from index n to end - items[2-*]', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items[2-*]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 3
+              name: 'Item 3'
+              secret: 'secret3'
+              metadata:
+                version: 3
+                public: '✅'
+          "
+        `);
+      });
+
+      test('should handle out-of-bounds range - items[5-*]', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items[5-*]'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items: []
+          "
+        `);
+      });
+
+      test('should work with nested arrays - config.nested.data[1-*].key', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['config.nested.data[1-*].key'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          config:
+            nested:
+              data:
+                - key: 'value2'
+          "
+        `);
+      });
+    });
+
+    describe('combined patterns with arrays', () => {
+      test('should combine root filter with array pattern rejection', () => {
+        expect(
+          compactSnapshot(testData, {
+            filterKeys: ['items'],
+            rejectKeys: ['items[1]', 'items[*].secret'],
+            collapseObjects: false,
+          }),
+        ).toMatchInlineSnapshot(`
+          "
+          items:
+            - id: 1
+              name: 'Item 1'
+              metadata:
+                version: 1
+                public: '✅'
+            - id: 3
+              name: 'Item 3'
+              metadata:
+                version: 3
+                public: '✅'
+          "
+        `);
+      });
+    });
+  });
+
+  describe('nested wildcard property patterns', () => {
+    const testData = {
+      user: {
+        profile: {
+          name: 'John',
+          secret: 'user-secret',
+          settings: {
+            theme: 'dark',
+            secret: 'settings-secret',
+            notifications: true,
+          },
+        },
+        auth: {
+          token: 'token123',
+          secret: 'auth-secret',
+        },
+      },
+      admin: {
+        permissions: {
+          read: true,
+          write: false,
+          secret: 'permission-secret',
+        },
+      },
+    };
+
+    test('should filter nested wildcard property - user.*secret', () => {
+      expect(
+        compactSnapshot(testData, {
+          filterKeys: ['user.*secret'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        user:
+          profile:
+            secret: 'user-secret'
+            settings:
+              secret: 'settings-secret'
+          auth:
+            secret: 'auth-secret'
+        "
+      `);
+    });
+
+    test('should reject nested wildcard property - admin.*secret', () => {
+      expect(
+        compactSnapshot(testData, {
+          rejectKeys: ['admin.*secret'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        user:
+          profile:
+            name: 'John'
+            secret: 'user-secret'
+            settings:
+              theme: 'dark'
+              secret: 'settings-secret'
+              notifications: '✅'
+          auth:
+            token: 'token123'
+            secret: 'auth-secret'
+
+        admin:
+          permissions:
+            read: '✅'
+            write: '❌'
+        "
+      `);
+    });
+
+    test('should handle multiple nested wildcard patterns', () => {
+      expect(
+        compactSnapshot(testData, {
+          filterKeys: ['user.*secret', 'admin.*read'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        user:
+          profile:
+            secret: 'user-secret'
+            settings:
+              secret: 'settings-secret'
+          auth:
+            secret: 'auth-secret'
+
+        admin:
+          permissions:
+            read: '✅'
+        "
+      `);
+    });
+  });
+
+  describe('complex combined pattern scenarios', () => {
+    const complexData = {
+      teams: [
+        {
+          name: 'Frontend',
+          members: [
+            { name: 'Alice', secret: 'alice-secret', role: 'lead' },
+            { name: 'Bob', secret: 'bob-secret', role: 'dev' },
+          ],
+          config: {
+            secret: 'team-secret',
+            public: true,
+          },
+        },
+        {
+          name: 'Backend',
+          members: [
+            { name: 'Carol', secret: 'carol-secret', role: 'lead' },
+            { name: 'Dave', secret: 'dave-secret', role: 'dev' },
+          ],
+          config: {
+            secret: 'backend-secret',
+            public: false,
+          },
+        },
+      ],
+    };
+
+    test('should handle complex array and wildcard combination - teams[0].*secret', () => {
+      expect(
+        compactSnapshot(complexData, {
+          rejectKeys: ['teams[0].*secret'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        teams:
+          - name: 'Frontend'
+            members:
+              - name: 'Alice'
+                secret: 'alice-secret'
+                role: 'lead'
+              - name: 'Bob'
+                secret: 'bob-secret'
+                role: 'dev'
+            config:
+              public: '✅'
+          - name: 'Backend'
+            members:
+              - name: 'Carol'
+                secret: 'carol-secret'
+                role: 'lead'
+              - name: 'Dave'
+                secret: 'dave-secret'
+                role: 'dev'
+            config:
+              secret: 'backend-secret'
+              public: '❌'
+        "
+      `);
+    });
+
+    test('should handle deeply nested array patterns - teams[*].members[0].name', () => {
+      expect(
+        compactSnapshot(complexData, {
+          filterKeys: ['teams[*].members[0].name'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        teams:
+          - members:
+              - name: 'Alice'
+          - members:
+              - name: 'Carol'
+        "
+      `);
+    });
+
+    test('should handle mixed array indices and wildcards - teams[0-1].members[*]*secret', () => {
+      expect(
+        compactSnapshot(complexData, {
+          rejectKeys: ['teams[0-1].members[*]*secret'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        teams:
+          - name: 'Frontend'
+            members:
+              - name: 'Alice'
+                role: 'lead'
+              - name: 'Bob'
+                role: 'dev'
+            config: { secret: 'team-secret', public: '✅' }
+          - name: 'Backend'
+            members:
+              - name: 'Carol'
+                role: 'lead'
+              - name: 'Dave'
+                role: 'dev'
+            config: { secret: 'backend-secret', public: '❌' }
+        "
+      `);
+    });
+  });
+
   describe('circular references with key filtering', () => {
     test('should throw when circular key is not rejected', () => {
       const obj: any = {
