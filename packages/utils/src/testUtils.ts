@@ -423,9 +423,7 @@ function matchesKeyPattern(
             } else if (suffix.startsWith('*') && !suffix.startsWith('*.')) {
               // Handle patterns like 'prop[*]*nested' (no dot before *nested)
               const targetProp = suffix.slice(1);
-              return (
-                key === targetProp && afterBracket.includes(`.${targetProp}`)
-              );
+              return key === targetProp;
             }
           }
         }
@@ -468,15 +466,9 @@ function matchesKeyPattern(
       const [basePath, targetProp] = parts;
 
       if (basePath && targetProp) {
-        // Check if we're inside the base path
+        // Check if we're inside the base path and key matches
         if (fullPath.startsWith(`${basePath}.`) && key === targetProp) {
-          // Make sure there's at least one intermediate level
-          const afterBase = fullPath.slice(basePath.length + 1);
-          const beforeTarget = afterBase.slice(
-            0,
-            afterBase.length - targetProp.length - 1,
-          );
-          return beforeTarget.length > 0;
+          return true;
         }
       }
     }
@@ -521,17 +513,25 @@ function isParentOfPattern(path: string, pattern: string): boolean {
       return true;
     }
 
-    // Check if path matches the array base exactly and there's a suffix
-    if (suffix && path === base) {
-      return true;
-    }
+    // For patterns with suffix like "items[0].name", check if path is the array element
+    if (suffix) {
+      // Check if path matches an array element that the pattern targets
+      const arrayElementMatch = path.match(
+        new RegExp(
+          `^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\[\\d+\\]$`,
+        ),
+      );
+      if (arrayElementMatch) {
+        return true;
+      }
 
-    // Check if the path is inside an array element that has a suffix
-    if (suffix && path.startsWith(`${base}[`) && path.includes(']')) {
-      const afterBracket = path.slice(path.indexOf(']') + 1);
-      if (suffix.startsWith('.')) {
-        const suffixPath = suffix.slice(1);
-        return suffixPath.startsWith(`${afterBracket.slice(1)}.`);
+      // Check if path is inside an array element and is parent to the suffix
+      if (path.startsWith(`${base}[`) && path.includes(']')) {
+        const afterBracket = path.slice(path.indexOf(']') + 1);
+        if (suffix.startsWith('.')) {
+          const suffixPath = suffix.slice(1);
+          return suffixPath.startsWith(`${afterBracket.slice(1)}.`);
+        }
       }
     }
 
@@ -545,7 +545,8 @@ function isParentOfPattern(path: string, pattern: string): boolean {
       const parts = pattern.split('.*');
       if (parts.length === 2) {
         const [basePath] = parts;
-        return Boolean(basePath?.startsWith(`${path}.`));
+        // Check if path is the base or a parent of the base
+        return Boolean(basePath && (path === basePath || basePath.startsWith(`${path}.`)));
       }
     }
 
@@ -619,7 +620,11 @@ function applyKeyFiltering(
               arrayPattern &&
               arrayPattern.base === currentPath.replace(/\[\d+\]$/, '')
             ) {
-              const { indices } = arrayPattern;
+              const { indices, suffix } = arrayPattern;
+              // If there's a suffix (like .name), this is not an exact match for the array element
+              if (suffix) {
+                return false;
+              }
               return (
                 indices === '*' ||
                 (Array.isArray(indices) && indices.includes(index)) ||

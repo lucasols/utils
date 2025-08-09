@@ -1653,8 +1653,8 @@ describe('compactSnapshot', () => {
             values: ['a', 'b', 'c', 'd']
             nested:
               data:
-                - { key: 'value1' }
-                - { key: 'value2' }
+                - key: 'value1'
+                - key: 'value2'
           "
         `);
       });
@@ -1705,8 +1705,8 @@ describe('compactSnapshot', () => {
             values: ['a', 'b', 'c', 'd']
             nested:
               data:
-                - { key: 'value1' }
-                - { key: 'value2' }
+                - key: 'value1'
+                - key: 'value2'
           "
         `);
       });
@@ -1759,8 +1759,8 @@ describe('compactSnapshot', () => {
             values: ['a', 'b', 'c', 'd']
             nested:
               data:
-                - { key: 'value1' }
-                - { key: 'value2' }
+                - key: 'value1'
+                - key: 'value2'
           "
         `);
       });
@@ -1814,7 +1814,6 @@ describe('compactSnapshot', () => {
               name: 'Item 3'
               secret: 'secret3'
               metadata: { version: 3, public: '✅' }
-
           users:
             - name: 'John'
               password: 'pass1'
@@ -1871,7 +1870,6 @@ describe('compactSnapshot', () => {
               name: 'Item 3'
               secret: 'secret3'
               metadata: { version: 3, public: '✅' }
-
           users:
             - name: 'John'
               settings: { theme: 'dark', notifications: '✅' }
@@ -2271,17 +2269,13 @@ describe('compactSnapshot', () => {
         teams:
           - name: 'Frontend'
             members:
-              - name: 'Alice'
-                role: 'lead'
-              - name: 'Bob'
-                role: 'dev'
+              - { name: 'Alice', role: 'lead' }
+              - { name: 'Bob', role: 'dev' }
             config: { secret: 'team-secret', public: '✅' }
           - name: 'Backend'
             members:
-              - name: 'Carol'
-                role: 'lead'
-              - name: 'Dave'
-                role: 'dev'
+              - { name: 'Carol', role: 'lead' }
+              - { name: 'Dave', role: 'dev' }
             config: { secret: 'backend-secret', public: '❌' }
         "
       `);
