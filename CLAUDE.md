@@ -137,6 +137,8 @@ The monorepo uses shared base configurations to maintain consistency:
 - **Timing in Tests**:
   - Do not use `vi.useFakeTimers()`
   - Instead, use `await sleep()` with small intervals when simulating time-based behaviors
+- prefer `toMatchInlineSnapshot` over `toEqual`
+- prefer `toThrowErrorMatchingInlineSnapshot` over `toThrowError`
 
 ## Documentation Guidelines
 

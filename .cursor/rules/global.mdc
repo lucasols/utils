@@ -3,7 +3,6 @@ description:
 globs:
 alwaysApply: true
 ---
-
 ## Overview
 
 This is a monorepo containing three TypeScript utility packages:
@@ -11,7 +10,6 @@ This is a monorepo containing three TypeScript utility packages:
 - **`@ls-stack/utils`** - Universal utilities that work in both browser and Node.js environments
 - **`@ls-stack/node-utils`** - Node.js-specific utilities (shell commands, file system operations)
 - **`@ls-stack/browser-utils`** - Browser-specific utilities (File API, DOM-related operations)
-- **`@ls-stack/react-utils`** - React-specific utilities (hooks, components)
 
 All packages are designed with a modular architecture where each utility is exported as a separate module to enable tree-shaking and selective imports.
 
@@ -144,6 +142,8 @@ The monorepo uses shared base configurations to maintain consistency:
 - **Timing in Tests**:
   - Do not use `vi.useFakeTimers()`
   - Instead, use `await sleep()` with small intervals when simulating time-based behaviors
+- prefer `toMatchInlineSnapshot` over `toEqual`
+- prefer `toThrowErrorMatchingInlineSnapshot` over `toThrowError`
 
 ## Documentation Guidelines
 
