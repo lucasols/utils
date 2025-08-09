@@ -525,6 +525,27 @@ describe('rejectEmptyObjects option', () => {
       "
     `);
   });
+
+  test('should remove empty arrays and its properties if rejectEmptyObjects is true and its children are filtered', () => {
+    const data = {
+      test: true,
+      users: [{ password: 'secret1' }, { password: 'secret2' }],
+      settings: {
+        items: [{ secret: 'hidden1' }, { secret: 'hidden2' }],
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          rejectKeys: ['users[*].password', 'settings.items[*].secret'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      test: true
+      "
+    `);
+  });
 });
 
 describe('string parameter handling', () => {
