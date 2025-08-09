@@ -187,10 +187,8 @@ describe('array filtering', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      - name: 'John'
-        age: 30
-      - name: 'Bob'
-        age: 35
+      - { name: 'John', age: 30 }
+      - { name: 'Bob', age: 35 }
       "
     `);
   });
@@ -262,12 +260,9 @@ describe('array filtering', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      - name: 'John'
-        age: 30
-      - name: 'Jane'
-        age: 25
-      - name: 'Bob'
-        age: 35
+      - { name: 'John', age: 30 }
+      - { name: 'Jane', age: 25 }
+      - { name: 'Bob', age: 35 }
       "
     `);
   });
@@ -324,6 +319,7 @@ describe('advanced wildcard patterns', () => {
             details: { public: 'visible1' }
           - name: 'Item2'
             details: { public: 'visible2' }
+
       section2:
         items:
           - name: 'Item3'
@@ -349,10 +345,14 @@ describe('advanced wildcard patterns', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        john: { profile: { name: 'John' } }
-        jane: { profile: { name: 'Jane' } }
+        john:
+          profile: { name: 'John' }
+        jane:
+          profile: { name: 'Jane' }
+
       admins:
-        admin1: { profile: { name: 'Admin1' } }
+        admin1:
+          profile: { name: 'Admin1' }
       "
     `);
   });
@@ -474,75 +474,58 @@ describe('edge cases and error handling', () => {
   });
 });
 
-describe('rejectEmptyObjects option', () => {
-  test('should remove empty objects when rejectEmptyObjects is true (default)', () => {
+describe('rejectEmptyObjectsInArray option', () => {
+  test('should keep empty objects when rejectEmptyObjectsInArray  is false', () => {
     const data = {
-      user: {
-        name: 'John',
-        credentials: {
-          password: 'secret',
-          apiKey: 'key123',
-        },
-      },
-      emptySection: {},
+      users: [{ test: 'John' }, { name: 'Jane' }],
     };
+
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          rejectKeys: ['user.credentials.password', 'user.credentials.apiKey'],
+          filterKeys: ['users[*].name'],
+          rejectEmptyObjectsInArray: false,
         }),
       ),
     ).toMatchInlineSnapshot(`
       "
-      user: { name: 'John' }
-      emptySection: {}
+      users:
+        - {}
+        - name: 'Jane'
       "
     `);
   });
 
-  test('should keep empty objects when rejectEmptyObjects is false', () => {
+  test('should remove empty objects from array using filterKeys', () => {
     const data = {
-      user: {
-        name: 'John',
-        credentials: {
-          password: 'secret',
-          apiKey: 'key123',
-        },
-      },
+      users: [{ test: 'John' }, { name: 'Jane' }],
     };
+
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          rejectKeys: ['user.credentials.password', 'user.credentials.apiKey'],
-          rejectEmptyObjects: false,
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['users[*].name'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
-      user:
-        name: 'John'
-        credentials: {}
+      users:
+        - name: 'Jane' 
       "
     `);
   });
 
-  test('should remove empty arrays and its properties if rejectEmptyObjects is true and its children are filtered', () => {
+  test('should remove empty objects from array using rejectKeys', () => {
     const data = {
-      test: true,
-      users: [{ password: 'secret1' }, { password: 'secret2' }],
-      settings: {
-        items: [{ secret: 'hidden1' }, { secret: 'hidden2' }],
-      },
+      users: [{ test: 'John' }, { name: 'Jane' }],
     };
+
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          rejectKeys: ['users[*].password', 'settings.items[*].secret'],
-        }),
+        filterObjectOrArrayKeys(data, { rejectKeys: ['users[*].test'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
-      test: true
+      users:
+        - name: 'Jane' 
       "
     `);
   });
