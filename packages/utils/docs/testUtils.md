@@ -8,13 +8,37 @@
 
 ## Functions
 
+### compactSnapshot()
+
+```ts
+function compactSnapshot(value, __namedParameters): string;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:439](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L439)
+
+#### Parameters
+
+##### value
+
+`unknown`
+
+##### \_\_namedParameters
+
+[`YamlStringifyOptions`](yamlStringify.md#yamlstringifyoptions) & `object` = `{}`
+
+#### Returns
+
+`string`
+
+***
+
 ### createLoggerStore()
 
 ```ts
 function createLoggerStore(__namedParameters): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:8](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L8)
+Defined in: [packages/utils/src/testUtils.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L10)
 
 #### Parameters
 
@@ -246,7 +270,7 @@ get snapshotFromLast(): string;
 function getResultFn<T>(fnGetter, wrapper?): T;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:274](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L274)
+Defined in: [packages/utils/src/testUtils.ts:276](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L276)
 
 #### Type Parameters
 
@@ -276,7 +300,7 @@ Defined in: [packages/utils/src/testUtils.ts:274](https://github.com/lucasols/ut
 function waitController(): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:289](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L289)
+Defined in: [packages/utils/src/testUtils.ts:291](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L291)
 
 #### Returns
 
