@@ -508,7 +508,7 @@ describe('rejectEmptyObjectsInArray option', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - name: 'Jane' 
+        - name: 'Jane'
       "
     `);
   });
@@ -525,7 +525,7 @@ describe('rejectEmptyObjectsInArray option', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - name: 'Jane' 
+        - name: 'Jane'
       "
     `);
   });
@@ -641,11 +641,11 @@ describe('complex mixed scenarios', () => {
       "
       sections:
         - items:
-            - name: A1
-            - name: A2
+            - name: 'A1'
+            - name: 'A2'
         - items:
-            - name: B1
-            - name: B2
+            - name: 'B1'
+            - name: 'B2'
       "
     `);
   });
@@ -656,7 +656,7 @@ test('do not filter non plain objects', () => {
     name = 'John';
     age = 30;
   }
-  const date = new Date();
+  const date = new Date('2025-08-09T23:40:31.349Z');
   const classInstance = new MyClass();
   const data = {
     date,
@@ -670,7 +670,12 @@ test('do not filter non plain objects', () => {
   expect((filtered as any).date).toBe(date);
   expect((filtered as any).myClass).toBe(classInstance);
 
-  expect(getSnapshot(filtered)).toMatchInlineSnapshot();
+  expect(getSnapshot(filtered)).toMatchInlineSnapshot(`
+    "
+    date{Date}: '2025-08-09T23:40:31.349Z'
+    myClass{MyClass}: { name: 'John', age: 30 }
+    "
+  `);
 });
 
 describe('circular references with key filtering', () => {
