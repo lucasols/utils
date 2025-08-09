@@ -1104,7 +1104,7 @@ describe('compactSnapshot', () => {
         const specialData = {
           'key.with.dots': 'value1',
           'key-with-dashes': 'value2',
-          'key_with_underscores': 'value3',
+          key_with_underscores: 'value3',
           nested: {
             'key.with.dots': 'nested-value1',
             'key-with-dashes': 'nested-value2',
@@ -1569,13 +1569,36 @@ describe('compactSnapshot', () => {
   describe('array pattern matching', () => {
     const testData = {
       items: [
-        { id: 1, name: 'Item 1', secret: 'secret1', metadata: { version: 1, public: true } },
-        { id: 2, name: 'Item 2', secret: 'secret2', metadata: { version: 2, public: false } },
-        { id: 3, name: 'Item 3', secret: 'secret3', metadata: { version: 3, public: true } },
+        {
+          id: 1,
+          name: 'Item 1',
+          secret: 'secret1',
+          metadata: { version: 1, public: true },
+        },
+        {
+          id: 2,
+          name: 'Item 2',
+          secret: 'secret2',
+          metadata: { version: 2, public: false },
+        },
+        {
+          id: 3,
+          name: 'Item 3',
+          secret: 'secret3',
+          metadata: { version: 3, public: true },
+        },
       ],
       users: [
-        { name: 'John', password: 'pass1', settings: { theme: 'dark', notifications: true } },
-        { name: 'Jane', password: 'pass2', settings: { theme: 'light', notifications: false } },
+        {
+          name: 'John',
+          password: 'pass1',
+          settings: { theme: 'dark', notifications: true },
+        },
+        {
+          name: 'Jane',
+          password: 'pass2',
+          settings: { theme: 'light', notifications: false },
+        },
       ],
       config: {
         values: ['a', 'b', 'c', 'd'],
@@ -1590,7 +1613,6 @@ describe('compactSnapshot', () => {
         expect(
           compactSnapshot(testData, {
             filterKeys: ['items[0]'],
-            collapseObjects: false,
           }),
         ).toMatchInlineSnapshot(`
           "
@@ -1607,7 +1629,6 @@ describe('compactSnapshot', () => {
         expect(
           compactSnapshot(testData, {
             rejectKeys: ['items[1]'],
-            collapseObjects: false,
           }),
         ).toMatchInlineSnapshot(`
           "
@@ -1642,7 +1663,6 @@ describe('compactSnapshot', () => {
         expect(
           compactSnapshot(testData, {
             filterKeys: ['items[*]'],
-            collapseObjects: false,
           }),
         ).toMatchInlineSnapshot(`
           "
@@ -1667,7 +1687,6 @@ describe('compactSnapshot', () => {
         expect(
           compactSnapshot(testData, {
             rejectKeys: ['items[*]'],
-            collapseObjects: false,
           }),
         ).toMatchInlineSnapshot(`
           "
@@ -1694,7 +1713,6 @@ describe('compactSnapshot', () => {
         expect(
           compactSnapshot(testData, {
             filterKeys: ['items[0-1]'],
-            collapseObjects: false,
           }),
         ).toMatchInlineSnapshot(`
           "
