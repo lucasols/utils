@@ -29,6 +29,7 @@ import { isPlainObject } from './typeGuards';
  * @param options - The options for the filter.
  * @param options.filterKeys - The keys to filter.
  * @param options.rejectKeys - The keys to reject.
+ * @param options.rejectEmptyObjects - When true (default), remove empty objects or properties with empty children that result from filtering.
  * @returns The filtered object or array.
  */
 export function filterObjectOrArrayKeys(
@@ -36,9 +37,11 @@ export function filterObjectOrArrayKeys(
   {
     filterKeys,
     rejectKeys,
+    rejectEmptyObjects = true,
   }: {
     filterKeys?: string[] | string;
     rejectKeys?: string[] | string;
+    rejectEmptyObjects?: boolean;
   },
 ): Record<string, any> | Record<string, any>[] {
   const normalizedFilterPatterns = normalizePatterns(filterKeys);
@@ -88,13 +91,33 @@ export function filterObjectOrArrayKeys(
 
             if (includeExactly) {
               // Include whole element content; only apply rejectKeys below
-              result.push(filterValue(value[index], indexPath, false));
+              const childIncluded = filterValue(value[index], indexPath, false);
+              if (
+                !(
+                  rejectEmptyObjects &&
+                  filterActive &&
+                  isPlainObject(childIncluded) &&
+                  Object.keys(childIncluded as any).length === 0
+                )
+              ) {
+                result.push(childIncluded);
+              }
               continue;
             }
             // includeAsParent -> keep filtering descendants
           }
 
-          result.push(filterValue(value[index], indexPath, filterActive));
+          const child = filterValue(value[index], indexPath, filterActive);
+          if (
+            !(
+              rejectEmptyObjects &&
+              filterActive &&
+              isPlainObject(child) &&
+              Object.keys(child as any).length === 0
+            )
+          ) {
+            result.push(child);
+          }
         }
         return result;
       } finally {
@@ -130,13 +153,40 @@ export function filterObjectOrArrayKeys(
             continue;
           }
           if (includeExactly) {
-            output[key] = filterValue(child, fullPath, false);
+            const childIncluded = filterValue(child, fullPath, false);
+            if (
+              !(
+                rejectEmptyObjects &&
+                filterActive &&
+                isPlainObject(childIncluded) &&
+                Object.keys(childIncluded as any).length === 0
+              )
+            ) {
+              output[key] = childIncluded;
+            }
             continue;
           }
           // includeAsParent -> keep filtering
         }
 
-        output[key] = filterValue(child, fullPath, filterActive);
+        const filteredChild = filterValue(child, fullPath, filterActive);
+        if (
+          !(
+            rejectEmptyObjects &&
+            filterActive &&
+            isPlainObject(filteredChild) &&
+            Object.keys(filteredChild as any).length === 0
+          ) &&
+          // Also drop empty arrays when pruning is enabled (only in filtered contexts)
+          !(
+            rejectEmptyObjects &&
+            filterActive &&
+            Array.isArray(filteredChild) &&
+            filteredChild.length === 0
+          )
+        ) {
+          output[key] = filteredChild;
+        }
       }
       return output;
     } finally {
