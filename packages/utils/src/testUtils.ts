@@ -359,6 +359,41 @@ function isParentOfPattern(path: string, pattern: string): boolean {
   }
 }
 
+function checkForCircularReferences(
+  value: unknown,
+  visited: Set<object> = new Set(),
+): void {
+  if (!isPlainObject(value) && !Array.isArray(value)) {
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    if (visited.has(value)) {
+      throw new Error('Circular reference detected in array during key filtering');
+    }
+    visited.add(value);
+    try {
+      for (const item of value) {
+        checkForCircularReferences(item, visited);
+      }
+    } finally {
+      visited.delete(value);
+    }
+  } else if (isPlainObject(value)) {
+    if (visited.has(value)) {
+      throw new Error('Circular reference detected in object during key filtering');
+    }
+    visited.add(value);
+    try {
+      for (const itemValue of Object.values(value)) {
+        checkForCircularReferences(itemValue, visited);
+      }
+    } finally {
+      visited.delete(value);
+    }
+  }
+}
+
 function applyKeyFiltering(
   value: unknown,
   { rejectKeys, filterKeys }: { rejectKeys?: string[]; filterKeys?: string[] },
@@ -403,20 +438,30 @@ function applyKeyFiltering(
 
         // Check if we have filter keys and this key doesn't match
         if (filterKeys) {
-          const shouldInclude = filterKeys.some(filterPath => 
-            // Exact match
+          const exactMatch = filterKeys.some(filterPath => 
             matchesKeyPattern(fullPath, filterPath) || 
-            matchesKeyPattern(key, filterPath) ||
-            // This path is a parent of a filter pattern (so we include it to allow children)
+            matchesKeyPattern(key, filterPath)
+          );
+          
+          const isParent = filterKeys.some(filterPath => 
             isParentOfPattern(fullPath, filterPath)
           );
           
-          if (!shouldInclude) {
+          if (!exactMatch && !isParent) {
             continue;
           }
+          
+          // If this key exactly matches a filter pattern, include its entire value
+          if (exactMatch) {
+            checkForCircularReferences(itemValue, visited);
+            result[key] = itemValue;
+          } else {
+            // If this is a parent path, continue filtering the children
+            result[key] = applyKeyFiltering(itemValue, { rejectKeys, filterKeys }, fullPath, visited);
+          }
+        } else {
+          result[key] = applyKeyFiltering(itemValue, { rejectKeys, filterKeys }, fullPath, visited);
         }
-
-        result[key] = applyKeyFiltering(itemValue, { rejectKeys, filterKeys }, fullPath, visited);
       }
 
       return result;

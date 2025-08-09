@@ -243,12 +243,13 @@ describe('compactSnapshot', () => {
       isDisabled: false,
     };
 
-    expect(compactSnapshot(data, { showBooleansAs: false })).toMatchInlineSnapshot(`
-      "
-      isActive: true
-      isDisabled: false
-      "
-    `);
+    expect(compactSnapshot(data, { showBooleansAs: false }))
+      .toMatchInlineSnapshot(`
+        "
+        isActive: true
+        isDisabled: false
+        "
+      `);
   });
 
   test('should use custom true/false text', () => {
@@ -257,12 +258,14 @@ describe('compactSnapshot', () => {
       error: false,
     };
 
-    expect(compactSnapshot(data, {
-      showBooleansAs: {
-        trueText: 'YES',
-        falseText: 'NO',
-      },
-    })).toMatchInlineSnapshot(`
+    expect(
+      compactSnapshot(data, {
+        showBooleansAs: {
+          trueText: 'YES',
+          falseText: 'NO',
+        },
+      }),
+    ).toMatchInlineSnapshot(`
       "
       success: 'YES'
       error: 'NO'
@@ -278,16 +281,18 @@ describe('compactSnapshot', () => {
       isBlocked: false,
     };
 
-    expect(compactSnapshot(data, {
-      showBooleansAs: {
-        props: {
-          isOnline: { trueText: '🟢', falseText: '🔴' },
-          hasPermission: true, // use default
+    expect(
+      compactSnapshot(data, {
+        showBooleansAs: {
+          props: {
+            isOnline: { trueText: '🟢', falseText: '🔴' },
+            hasPermission: true, // use default
+          },
+          trueText: 'TRUE',
+          falseText: 'FALSE',
         },
-        trueText: 'TRUE',
-        falseText: 'FALSE',
-      },
-    })).toMatchInlineSnapshot(`
+      }),
+    ).toMatchInlineSnapshot(`
       "
       isOnline: '🟢'
       isOffline: 'FALSE'
@@ -304,11 +309,13 @@ describe('compactSnapshot', () => {
       alsoShowEmoji: true,
     };
 
-    expect(compactSnapshot(data, {
-      showBooleansAs: {
-        ignoreProps: ['keepOriginal'],
-      },
-    })).toMatchInlineSnapshot(`
+    expect(
+      compactSnapshot(data, {
+        showBooleansAs: {
+          ignoreProps: ['keepOriginal'],
+        },
+      }),
+    ).toMatchInlineSnapshot(`
       "
       showEmoji: '✅'
       keepOriginal: false
@@ -345,13 +352,15 @@ describe('compactSnapshot', () => {
       },
     };
 
-    expect(compactSnapshot(data, {
-      maxLineLength: 20,
-      showBooleansAs: {
-        trueText: 'ON',
-        falseText: 'OFF',
-      },
-    })).toMatchInlineSnapshot(`
+    expect(
+      compactSnapshot(data, {
+        maxLineLength: 20,
+        showBooleansAs: {
+          trueText: 'ON',
+          falseText: 'OFF',
+        },
+      }),
+    ).toMatchInlineSnapshot(`
       "
       longProperty: 'This is a very long string that should be on its own line'
       active: 'ON'
@@ -387,27 +396,33 @@ describe('compactSnapshot', () => {
     const data: any = { a: true };
     data.self = data;
 
-    expect(() => compactSnapshot(data)).toThrow('Circular reference detected in object');
+    expect(() => compactSnapshot(data)).toThrow(
+      'Circular reference detected in object',
+    );
   });
 
   test('should throw on circular references in arrays', () => {
     const arr: any[] = [true, false];
     arr.push(arr);
 
-    expect(() => compactSnapshot(arr)).toThrow('Circular reference detected in array');
+    expect(() => compactSnapshot(arr)).toThrow(
+      'Circular reference detected in array',
+    );
   });
 
   test('should throw on nested circular references', () => {
     const obj: any = {
       level1: {
         level2: {
-          active: true
-        }
-      }
+          active: true,
+        },
+      },
     };
     obj.level1.level2.circular = obj;
 
-    expect(() => compactSnapshot(obj)).toThrow('Circular reference detected in object');
+    expect(() => compactSnapshot(obj)).toThrow(
+      'Circular reference detected in object',
+    );
   });
 
   test('should handle same object in different branches (not circular)', () => {
@@ -434,13 +449,14 @@ describe('compactSnapshot', () => {
         age: 30,
       };
 
-      expect(compactSnapshot(data, { rejectKeys: ['password'] })).toMatchInlineSnapshot(`
-        "
-        name: 'John'
-        email: 'john@example.com'
-        age: 30
-        "
-      `);
+      expect(compactSnapshot(data, { rejectKeys: ['password'] }))
+        .toMatchInlineSnapshot(`
+          "
+          name: 'John'
+          email: 'john@example.com'
+          age: 30
+          "
+        `);
     });
 
     test('should reject nested keys with dot notation', () => {
@@ -458,7 +474,11 @@ describe('compactSnapshot', () => {
         },
       };
 
-      expect(compactSnapshot(data, { rejectKeys: ['user.credentials.password', 'user.profile.age'] })).toMatchInlineSnapshot(`
+      expect(
+        compactSnapshot(data, {
+          rejectKeys: ['user.credentials.password', 'user.profile.age'],
+        }),
+      ).toMatchInlineSnapshot(`
         "
         user:
           name: 'John'
@@ -476,14 +496,15 @@ describe('compactSnapshot', () => {
         settings: { theme: 'dark', password: 'settings123' },
       };
 
-      expect(compactSnapshot(data, { rejectKeys: ['*.password'] })).toMatchInlineSnapshot(`
-        "
-        user1: { name: 'John' }
-        user2: { name: 'Jane' }
-        admin: { name: 'Admin' }
-        settings: { theme: 'dark' }
-        "
-      `);
+      expect(compactSnapshot(data, { rejectKeys: ['*.password'] }))
+        .toMatchInlineSnapshot(`
+          "
+          user1: { name: 'John' }
+          user2: { name: 'Jane' }
+          admin: { name: 'Admin' }
+          settings: { theme: 'dark' }
+          "
+        `);
     });
 
     test('should handle arrays with rejectKeys', () => {
@@ -494,13 +515,14 @@ describe('compactSnapshot', () => {
         ],
       };
 
-      expect(compactSnapshot(data, { rejectKeys: ['*.password'] })).toMatchInlineSnapshot(`
-        "
-        users:
-          - { name: 'John', active: '✅' }
-          - { name: 'Jane', active: '❌' }
-        "
-      `);
+      expect(compactSnapshot(data, { rejectKeys: ['*.password'] }))
+        .toMatchInlineSnapshot(`
+          "
+          users:
+            - { name: 'John', active: '✅' }
+            - { name: 'Jane', active: '❌' }
+          "
+        `);
     });
   });
 
@@ -514,13 +536,14 @@ describe('compactSnapshot', () => {
         active: true,
       };
 
-      expect(compactSnapshot(data, { filterKeys: ['name', 'email', 'active'] })).toMatchInlineSnapshot(`
-        "
-        name: 'John'
-        email: 'john@example.com'
-        active: '✅'
-        "
-      `);
+      expect(compactSnapshot(data, { filterKeys: ['name', 'email', 'active'] }))
+        .toMatchInlineSnapshot(`
+          "
+          name: 'John'
+          email: 'john@example.com'
+          active: '✅'
+          "
+        `);
     });
 
     test('should filter nested keys with dot notation', () => {
@@ -543,13 +566,40 @@ describe('compactSnapshot', () => {
         },
       };
 
-      expect(compactSnapshot(data, { filterKeys: ['user.name', 'user.profile.email', 'user.profile.active'] })).toMatchInlineSnapshot(`
+      expect(
+        compactSnapshot(data, {
+          filterKeys: [
+            'user.name',
+            'user.profile.email',
+            'user.profile.active',
+          ],
+        }),
+      ).toMatchInlineSnapshot(`
         "
         user:
           name: 'John'
           profile: { email: 'john@example.com', active: '✅' }
         "
       `);
+    });
+
+    test('should keep nested filtered values', () => {
+      const data = {
+        type: 'select',
+        options: [
+          { value: '1', label: 'Option 1' },
+          { value: '2', label: 'Option 2' },
+        ],
+      };
+
+      expect(compactSnapshot(data, { filterKeys: ['options'] }))
+        .toMatchInlineSnapshot(`
+          "
+          options:
+            - { value: '1', label: 'Option 1' }
+            - { value: '2', label: 'Option 2' }
+          "
+        `);
     });
 
     test('should filter with wildcard patterns', () => {
@@ -560,14 +610,15 @@ describe('compactSnapshot', () => {
         settings: { theme: 'dark', name: 'AppSettings', age: null },
       };
 
-      expect(compactSnapshot(data, { filterKeys: ['*.name'] })).toMatchInlineSnapshot(`
-        "
-        user1: { name: 'John' }
-        user2: { name: 'Jane' }
-        admin: { name: 'Admin' }
-        settings: { name: 'AppSettings' }
-        "
-      `);
+      expect(compactSnapshot(data, { filterKeys: ['*.name'] }))
+        .toMatchInlineSnapshot(`
+          "
+          user1: { name: 'John' }
+          user2: { name: 'Jane' }
+          admin: { name: 'Admin' }
+          settings: { name: 'AppSettings' }
+          "
+        `);
     });
   });
 
@@ -585,11 +636,18 @@ describe('compactSnapshot', () => {
       };
 
       // First filter to user fields, then reject password
-      expect(compactSnapshot(data, { 
-        filterKeys: ['user.name', 'user.password', 'user.email', 'user.active'], 
-        rejectKeys: ['user.password'],
-        collapseObjects: false
-      })).toMatchInlineSnapshot(`
+      expect(
+        compactSnapshot(data, {
+          filterKeys: [
+            'user.name',
+            'user.password',
+            'user.email',
+            'user.active',
+          ],
+          rejectKeys: ['user.password'],
+          collapseObjects: false,
+        }),
+      ).toMatchInlineSnapshot(`
         "
         user:
           name: 'John'
@@ -602,61 +660,66 @@ describe('compactSnapshot', () => {
 
   describe('circular references with key filtering', () => {
     test('should throw when circular key is not rejected', () => {
-      const obj: any = { 
+      const obj: any = {
         name: 'John',
         password: 'secret123',
-        active: true
+        active: true,
       };
       obj.self = obj;
 
       // 'self' creates the circular reference but is not rejected, so should throw
-      expect(() => compactSnapshot(obj, { rejectKeys: ['password'] })).toThrow('Circular reference detected in object during key filtering');
+      expect(() => compactSnapshot(obj, { rejectKeys: ['password'] })).toThrow(
+        'Circular reference detected in object during key filtering',
+      );
     });
 
     test('should not throw when the circular reference key itself gets rejected', () => {
-      const obj: any = { 
+      const obj: any = {
         name: 'John',
-        active: true
+        active: true,
       };
       obj.circular = obj;
 
       // The key that creates the circular reference ('circular') is rejected, so no traversal occurs
-      expect(compactSnapshot(obj, { rejectKeys: ['circular'] })).toMatchInlineSnapshot(`
-        "
-        name: 'John'
-        active: '✅'
-        "
-      `);
+      expect(compactSnapshot(obj, { rejectKeys: ['circular'] }))
+        .toMatchInlineSnapshot(`
+          "
+          name: 'John'
+          active: '✅'
+          "
+        `);
     });
 
     test('should handle circular references with filterKeys when circular key is included', () => {
-      const obj: any = { 
+      const obj: any = {
         name: 'John',
         password: 'secret123',
-        active: true
+        active: true,
       };
       obj.self = obj;
 
       // Include the circular key in filter, so it gets traversed and detected
-      expect(() => compactSnapshot(obj, { filterKeys: ['name', 'active', 'self'] })).toThrow('Circular reference detected in object during key filtering');
+      expect(() =>
+        compactSnapshot(obj, { filterKeys: ['name', 'active', 'self'] }),
+      ).toThrow('Circular reference detected in object during key filtering');
     });
 
     test('should not throw when circular key gets filtered out', () => {
-      const obj: any = { 
+      const obj: any = {
         name: 'John',
-        active: true
+        active: true,
       };
       obj.circular = obj;
 
       // Since 'circular' is not in filterKeys, it gets filtered out before circular detection
-      expect(compactSnapshot(obj, { filterKeys: ['name', 'active'] })).toMatchInlineSnapshot(`
-        "
-        name: 'John'
-        active: '✅'
-        "
-      `);
+      expect(compactSnapshot(obj, { filterKeys: ['name', 'active'] }))
+        .toMatchInlineSnapshot(`
+          "
+          name: 'John'
+          active: '✅'
+          "
+        `);
     });
-
 
     test('should handle circular references in nested structures when circular path is included', () => {
       const data: any = {
@@ -664,14 +727,22 @@ describe('compactSnapshot', () => {
           name: 'John',
           profile: {
             email: 'john@example.com',
-            active: true
-          }
-        }
+            active: true,
+          },
+        },
       };
       data.user.profile.backRef = data;
 
       // Include the circular path, so it gets traversed and detected
-      expect(() => compactSnapshot(data, { filterKeys: ['user.name', 'user.profile.email', 'user.profile.backRef'] })).toThrow('Circular reference detected in object during key filtering');
+      expect(() =>
+        compactSnapshot(data, {
+          filterKeys: [
+            'user.name',
+            'user.profile.email',
+            'user.profile.backRef',
+          ],
+        }),
+      ).toThrow('Circular reference detected in object during key filtering');
     });
 
     test('should not throw when nested circular reference key gets rejected', () => {
@@ -680,29 +751,30 @@ describe('compactSnapshot', () => {
           name: 'John',
           profile: {
             email: 'john@example.com',
-            active: true
-          }
-        }
+            active: true,
+          },
+        },
       };
       data.user.profile.backRef = data;
 
       // The circular path gets rejected, so no circular traversal occurs
-      expect(compactSnapshot(data, { rejectKeys: ['user.profile.backRef'] })).toMatchInlineSnapshot(`
-        "
-        user:
-          name: 'John'
-          profile: { email: 'john@example.com', active: '✅' }
-        "
-      `);
+      expect(compactSnapshot(data, { rejectKeys: ['user.profile.backRef'] }))
+        .toMatchInlineSnapshot(`
+          "
+          user:
+            name: 'John'
+            profile: { email: 'john@example.com', active: '✅' }
+          "
+        `);
     });
 
     test('should handle circular references in arrays with key filtering', () => {
-      const arr: any[] = [
-        { name: 'John', password: 'secret', active: true }
-      ];
+      const arr: any[] = [{ name: 'John', password: 'secret', active: true }];
       arr.push(arr);
 
-      expect(() => compactSnapshot({ users: arr }, { rejectKeys: ['*.password'] })).toThrow('Circular reference detected in array during key filtering');
+      expect(() =>
+        compactSnapshot({ users: arr }, { rejectKeys: ['*.password'] }),
+      ).toThrow('Circular reference detected in array during key filtering');
     });
   });
 });
