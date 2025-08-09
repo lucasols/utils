@@ -122,9 +122,15 @@ function errOnErr<T, E extends ResultValidErrors>(
 
 /** @deprecated Use `t-result` library instead. */
 export function ok(): Ok<void>;
-/** @deprecated Use `t-result` library instead. */
+/**
+ * @param value
+ * @deprecated Use `t-result` library instead.
+ */
 export function ok<T>(value: T): Ok<T>;
-/** @deprecated Use `t-result` library instead. */
+/**
+ * @param value
+ * @deprecated Use `t-result` library instead.
+ */
 export function ok(value: any = undefined): Ok<any> {
   const methods: ResultMethods<any, any> = {
     unwrapOrNull: okUnwrapOr,
@@ -145,7 +151,10 @@ export function ok(value: any = undefined): Ok<any> {
   };
 }
 
-/** @deprecated Use `t-result` library instead. */
+/**
+ * @param error
+ * @deprecated Use `t-result` library instead.
+ */
 export function err<E extends ResultValidErrors>(error: E): Err<E> {
   const methods: ResultMethods<any, any> = {
     unwrapOrNull: () => null,
@@ -178,7 +187,10 @@ function unknownToResultError(error: unknown) {
   return err(unknownToError(error));
 }
 
-/** Unwraps a promise result */
+/**
+ * Unwraps a promise result
+ * @param result
+ */
 async function asyncUnwrap<T>(
   result: Promise<Result<T, ResultValidErrors>>,
 ): Promise<T> {
@@ -234,17 +246,29 @@ export const Result = {
   getOkErr,
 };
 
-/** @deprecated Use `t-result` library instead. */
+/**
+ * @param fn
+ * @param errorNormalizer
+ * @deprecated Use `t-result` library instead.
+ */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => T extends Promise<any> ? never : T,
   errorNormalizer?: (err: unknown) => E,
 ): Result<T, E>;
-/** @deprecated Use `t-result` library instead. */
+/**
+ * @param fn
+ * @param errorNormalizer
+ * @deprecated Use `t-result` library instead.
+ */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => Promise<T>,
   errorNormalizer?: (err: unknown) => E,
 ): Promise<Result<Awaited<T>, E>>;
-/** @deprecated Use `t-result` library instead. */
+/**
+ * @param fn
+ * @param errorNormalizer
+ * @deprecated Use `t-result` library instead.
+ */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: Promise<T>,
   errorNormalizer?: (err: unknown) => E,
@@ -292,7 +316,10 @@ export function resultify(
   }
 }
 
-/** @deprecated Use `t-result` library instead. */
+/**
+ * @param error
+ * @deprecated Use `t-result` library instead.
+ */
 export function unknownToError(error: unknown): Error {
   if (error instanceof Error) return error;
 

@@ -6,6 +6,8 @@ import { isFunction } from './assertions';
  * In the `mapFilter` function return `false` to reject the item, or any other
  * value to map it.
  *
+ * @param array
+ * @param mapFilter
  * @example
  * // Filter reject and turn value into `value mapped`
  * const items = ['value', 'value', 'reject', 'reject'];
@@ -48,6 +50,9 @@ type SortOrder = 'desc' | 'asc';
  *
  * Use `Infinity` as as wildcard to absolute max and min values
  *
+ * @param arr
+ * @param sortByValue
+ * @param props
  * @example
  * const items = [1, 3, 2, 4];
  *
@@ -58,7 +63,7 @@ type SortOrder = 'desc' | 'asc';
  *
  * // return a array to sort by multiple values
  * const sortedItems = sortBy(items, (item) => [item.a, item.b]);
- **/
+ */
 export function sortBy<T>(
   arr: T[],
   sortByValue: (item: T) => (number | string)[] | number | string,

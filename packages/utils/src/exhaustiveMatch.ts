@@ -8,6 +8,7 @@ export function exhaustiveMatch<T extends string>(value: T) {
    * - a function that returns the result
    * - '_nxt' to try the next pattern
    * - '_never' to indicate that this pattern should never be matched
+   * @param pattern
    */
   function matchWith<R>(pattern: Pattern<R>): R {
     const result = pattern[value];
@@ -33,7 +34,10 @@ export function exhaustiveMatch<T extends string>(value: T) {
     throw new Error(`Exhaustive match failed: no match for ${value}`);
   }
 
-  /** match with early evaluation of the values */
+  /**
+   * match with early evaluation of the values
+   * @param pattern
+   */
   function withObject<R>(pattern: Record<T, R>): R {
     return pattern[value];
   }

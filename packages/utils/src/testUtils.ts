@@ -480,6 +480,19 @@ function applyKeyFiltering(
  * Produces a more compact and readable snapshot of a value using yaml.
  * By default booleans are shown as `✅` and `❌`, use `showBooleansAs` to disable/configure this.
  *
+ * Filtering patterns in `rejectKeys` and `filterKeys`:
+ * - `'prop'` - Only root-level properties named 'prop'
+ * - `'prop.nested'` - Exact nested property paths like `obj.prop.nested`
+ * - `'prop.*nested'` - All nested properties inside `prop` with name `nested`
+ * - `'prop[0]'` - The first item of the `prop` array
+ * - `'prop[*]'` - All items of the `prop` array
+ * - `'prop[0].nested'` - `nested` prop of the first item of the `prop` array
+ * - `'prop[*].nested'` - `nested` prop of all items of the `prop` array
+ * - `'prop[*]*nested'` - all `nested` props of all items of the `prop` array
+ * - `'prop[0-2]'` - The first three items of the `prop` array
+ * - `'*prop'` - Any property named exactly 'prop' at any level (root or nested)
+ * - `'*.prop'` - Any nested property named 'prop' (excludes root-level matches)
+ *
  * @param value - The value to snapshot.
  * @param options - The options for the snapshot.
  * @returns The compact snapshot of the value.
@@ -511,56 +524,44 @@ export function compactSnapshot(
           /* default false text */
           falseText?: string;
         };
-    /** 
+    /**
      * Reject (exclude) keys from the snapshot using pattern matching.
-     * 
-     * **Pattern Syntax:**
-     * - `'prop'` - Only root-level properties named 'prop'
-     * - `'prop.nested'` - Exact nested property paths like `obj.prop.nested` 
-     * - `'*prop'` - Any property named exactly 'prop' at any level (root or nested)
-     * - `'*.prop'` - Any nested property named 'prop' (excludes root-level matches)
-     * 
+     *
      * **Examples:**
      * ```typescript
      * // Reject root-level 'secret' only
      * rejectKeys: ['secret']
-     * 
-     * // Reject nested 'password' properties only  
+     *
+     * // Reject nested 'password' properties only
      * rejectKeys: ['*.password']
-     * 
+     *
      * // Reject any 'apiKey' property at any level
      * rejectKeys: ['*apiKey']
-     * 
+     *
      * // Reject specific nested path
      * rejectKeys: ['user.settings.theme']
      * ```
      */
     rejectKeys?: string[] | string;
-    
-    /** 
+
+    /**
      * Filter (include only) keys that match the specified patterns.
-     * 
-     * **Pattern Syntax:** (same as rejectKeys)
-     * - `'prop'` - Only root-level properties named 'prop'
-     * - `'prop.nested'` - Exact nested property paths like `obj.prop.nested`
-     * - `'*prop'` - Any property named exactly 'prop' at any level (root or nested) 
-     * - `'*.prop'` - Any nested property named 'prop' (excludes root-level matches)
-     * 
+     *
      * **Examples:**
      * ```typescript
-     * // Include only root-level 'user' 
+     * // Include only root-level 'user'
      * filterKeys: ['user']
-     * 
+     *
      * // Include all 'name' properties at any level
      * filterKeys: ['*name']
-     * 
+     *
      * // Include only nested 'id' properties
      * filterKeys: ['*.id']
-     * 
+     *
      * // Include specific nested paths
      * filterKeys: ['user.profile.email', 'settings.theme']
      * ```
-     * 
+     *
      * **Note:** When filtering, parent paths are automatically included if needed
      * to preserve the structure for nested matches.
      */

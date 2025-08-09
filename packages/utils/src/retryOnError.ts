@@ -21,6 +21,8 @@ type RetryOptions = {
  * @param fn - Function to retry that receives context with retry count
  * @param maxRetries - Maximum number of retries
  * @param options - Configuration options
+ * @param retry
+ * @param originalMaxRetries
  * @returns Promise resolving to the function result or rejecting with the final error
  *
  * @example

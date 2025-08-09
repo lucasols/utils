@@ -28,6 +28,7 @@
   "devDependencies": {
     "@eslint/js": "catalog:",
     "@ls-stack/extended-lint": "catalog:",
+    "eslint-plugin-jsdoc": "catalog:",
     "@types/eslint": "catalog:",
     "@types/eslint__js": "catalog:",
     "@types/node": "catalog:",

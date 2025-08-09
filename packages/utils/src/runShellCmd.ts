@@ -19,6 +19,14 @@ type RunCmdOptions = {
 };
 
 /**
+ * @param label
+ * @param command
+ * @param root0
+ * @param root0.mock
+ * @param root0.silent
+ * @param root0.throwOnError
+ * @param root0.cwd
+ * @param root0.noCiColorForce
  * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
  * ```
  * // Old (deprecated)
@@ -110,6 +118,9 @@ export function runCmd(
 }
 
 /**
+ * @param label
+ * @param cmd
+ * @param onResult
  * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
  * ```
  * // Old (deprecated)
@@ -148,6 +159,10 @@ export async function concurrentCmd(
 }
 
 /**
+ * @param label
+ * @param command
+ * @param root0
+ * @param root0.silent
  * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
  * ```
  * // Old (deprecated)
@@ -170,6 +185,7 @@ export async function runCmdUnwrap(
 }
 
 /**
+ * @param command
  * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
  * ```
  * // Old (deprecated)
@@ -184,6 +200,7 @@ export function runCmdSilent(command: string | string[]) {
 }
 
 /**
+ * @param command
  * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
  * ```
  * // Old (deprecated)

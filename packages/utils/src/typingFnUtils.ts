@@ -6,7 +6,10 @@ export function asNonPartial<T extends Record<string, unknown>>(
   return obj;
 }
 
-/** a wrapper to Object.entries with a better typing inference */
+/**
+ * a wrapper to Object.entries with a better typing inference
+ * @param obj
+ */
 export function typedObjectEntries<T extends Record<string, unknown>>(
   obj: T,
 ): NonNullable<
@@ -17,19 +20,29 @@ export function typedObjectEntries<T extends Record<string, unknown>>(
   return Object.entries(obj) as any;
 }
 
-/** a wrapper to Object.keys with a better typing inference */
+/**
+ * a wrapper to Object.keys with a better typing inference
+ * @param obj
+ */
 export function typedObjectKeys<T extends Record<string, unknown>>(
   obj: T,
 ): (keyof T)[] {
   return Object.keys(obj) as any;
 }
 
-/** a safe way to cast types, use to substitute the `as Type` */
+/**
+ * a safe way to cast types, use to substitute the `as Type`
+ * @param value
+ */
 export function asType<T = unknown>(value: T): T {
   return value;
 }
 
-/** narrow a string to a union of strings */
+/**
+ * narrow a string to a union of strings
+ * @param key
+ * @param union
+ */
 export function narrowStringToUnion<const T extends string>(
   key: string | undefined | null,
   union: T[] | readonly T[] | Set<T>,
@@ -52,7 +65,7 @@ export function narrowStringToUnion<const T extends string>(
  *
  * @template BaseType - The base type to check against
  * @template SubType - The type that should extend BaseType
- * @returns {unknown} Returns undefined, only used for type checking
+ * @returns Returns undefined, only used for type checking
  */
 export function typeOnRightExtendsLeftType<
   BaseType,
@@ -66,6 +79,8 @@ export const isSubTypeOf = typeOnRightExtendsLeftType;
 
 /**
  * Type helper to narrow a string to a key of an object.
+ * @param key
+ * @param obj
  */
 export function isObjKey<T extends Record<string, unknown>>(
   key: unknown,
@@ -88,6 +103,5 @@ type UnionDiff<T, U> =
  * @template T - The first union type (left side)
  * @template U - The second union type (right side)
  * @param _diff - null if unions are identical, or an object describing the errors
- * @returns void - This function is only used for type checking
  */
 export function unionsAreTheSame<T, U>(_diff: UnionDiff<T, U>): void {}

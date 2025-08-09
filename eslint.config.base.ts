@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import { extendedLintPlugin } from '@ls-stack/extended-lint';
+import jsdoc from 'eslint-plugin-jsdoc';
 import eslintUnicornPlugin from 'eslint-plugin-unicorn';
 import vitest from 'eslint-plugin-vitest';
 import tseslint from 'typescript-eslint';
@@ -31,6 +32,7 @@ export function createBaseConfig({
   extraIgnorePatterns?: string[];
 } = {}) {
   return tseslint.config(
+    jsdoc.configs['flat/recommended-typescript'],
     js.configs.recommended,
     tseslint.configs.recommendedTypeChecked,
     {
@@ -180,6 +182,13 @@ export function createBaseConfig({
         'unicorn/no-array-reduce': [ERROR, { allowSimpleOperations: true }],
         'unicorn/no-array-for-each': ERROR,
         'unicorn/template-indent': WARN,
+
+        /* jsdoc */
+        'jsdoc/tag-lines': OFF,
+        'jsdoc/require-jsdoc': OFF,
+        'jsdoc/require-param-description': OFF,
+        'jsdoc/require-returns': OFF,
+
         ...globalRules,
       },
     },

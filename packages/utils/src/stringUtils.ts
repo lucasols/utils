@@ -3,6 +3,7 @@ type Arg = string | false | undefined | null;
 /**
  * A util to create more legible conditional concatenated strings
  *
+ * @param args
  * @example
  * joinStrings('a', 'b', 'c') // 'abc'
  * joinStrings('a', false, 'c') // 'ac'
