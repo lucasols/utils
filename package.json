@@ -18,7 +18,8 @@
     "docs:browser-utils": "pnpm --filter @ls-stack/browser-utils docs",
     "docs:watch": "pnpm -r --parallel docs:watch",
     "build-lint-test-all": "pnpm build && pnpm lint && pnpm test",
-    "publish-package": "node ./scripts/publishPackage.ts"
+    "publish-package": "node ./scripts/publishPackage.ts",
+    "sync-ai": "node ./scripts/syncAi.ts"
   },
   "repository": "github:lucasols/utils",
   "author": "Lucas Santos",

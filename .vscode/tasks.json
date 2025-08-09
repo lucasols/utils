@@ -80,6 +80,12 @@
       "presentation": {
         "clear": true
       }
+    },
+    {
+      "label": "sync AI rules",
+      "type": "shell",
+      "command": "pnpm sync-ai",
+      "group": "build"
     }
   ],
   "inputs": [
