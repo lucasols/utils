@@ -1641,7 +1641,6 @@ describe('compactSnapshot', () => {
               name: 'Item 3'
               secret: 'secret3'
               metadata: { version: 3, public: '✅' }
-
           users:
             - name: 'John'
               password: 'pass1'
@@ -1652,7 +1651,10 @@ describe('compactSnapshot', () => {
 
           config:
             values: ['a', 'b', 'c', 'd']
-            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+            nested:
+              data:
+                - { key: 'value1' }
+                - { key: 'value2' }
           "
         `);
       });
@@ -1691,7 +1693,6 @@ describe('compactSnapshot', () => {
         ).toMatchInlineSnapshot(`
           "
           items: []
-
           users:
             - name: 'John'
               password: 'pass1'
@@ -1702,7 +1703,10 @@ describe('compactSnapshot', () => {
 
           config:
             values: ['a', 'b', 'c', 'd']
-            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+            nested:
+              data:
+                - { key: 'value1' }
+                - { key: 'value2' }
           "
         `);
       });
@@ -1733,7 +1737,6 @@ describe('compactSnapshot', () => {
         expect(
           compactSnapshot(testData, {
             rejectKeys: ['users[0-1]'],
-            collapseObjects: false,
           }),
         ).toMatchInlineSnapshot(`
           "
@@ -1750,12 +1753,14 @@ describe('compactSnapshot', () => {
               name: 'Item 3'
               secret: 'secret3'
               metadata: { version: 3, public: '✅' }
-
           users: []
 
           config:
             values: ['a', 'b', 'c', 'd']
-            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+            nested:
+              data:
+                - { key: 'value1' }
+                - { key: 'value2' }
           "
         `);
       });
@@ -1795,7 +1800,6 @@ describe('compactSnapshot', () => {
         expect(
           compactSnapshot(testData, {
             rejectKeys: ['items[0-1].secret'],
-            collapseObjects: false,
           }),
         ).toMatchInlineSnapshot(`
           "
@@ -1821,7 +1825,10 @@ describe('compactSnapshot', () => {
 
           config:
             values: ['a', 'b', 'c', 'd']
-            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+            nested:
+              data:
+                - key: 'value1'
+                - key: 'value2'
           "
         `);
       });
@@ -1848,7 +1855,6 @@ describe('compactSnapshot', () => {
         expect(
           compactSnapshot(testData, {
             rejectKeys: ['users[*]*password'],
-            collapseObjects: false,
           }),
         ).toMatchInlineSnapshot(`
           "
@@ -1874,7 +1880,10 @@ describe('compactSnapshot', () => {
 
           config:
             values: ['a', 'b', 'c', 'd']
-            nested: { data: [{ key: 'value1' }, { key: 'value2' }] }
+            nested:
+              data:
+                - key: 'value1'
+                - key: 'value2'
           "
         `);
       });
@@ -1968,7 +1977,6 @@ describe('compactSnapshot', () => {
               metadata:
                 version: 3
                 public: '✅'
-
           users:
             - name: 'John'
               password: 'pass1'
@@ -2257,7 +2265,6 @@ describe('compactSnapshot', () => {
       expect(
         compactSnapshot(complexData, {
           rejectKeys: ['teams[0-1].members[*]*secret'],
-          collapseObjects: false,
         }),
       ).toMatchInlineSnapshot(`
         "
