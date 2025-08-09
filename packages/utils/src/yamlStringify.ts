@@ -1,6 +1,19 @@
-import { isObject, isPlainObject } from './assertions';
 import { bytesToHumanReadable } from './conversions';
 import { truncateString } from './stringUtils';
+import { isObject, isPlainObject } from './typeGuards';
+
+export type YamlStringifyOptions = {
+  /* max line length before splitting array and object values into multiple lines */
+  maxLineLength?: number;
+  /* show undefined values */
+  showUndefined?: boolean;
+  /* max depth of nested objects */
+  maxDepth?: number;
+  /* collapse simple non-nested objects with no keys into a single line */
+  collapseObjects?: boolean;
+  /* add spaces in root object */
+  addRootObjSpaces?: 'before' | 'after' | 'beforeAndAfter' | false;
+};
 
 export function yamlStringify(
   obj: unknown,
@@ -8,16 +21,12 @@ export function yamlStringify(
     maxLineLength = 100,
     showUndefined,
     maxDepth = 50,
+    collapseObjects = false,
     addRootObjSpaces = 'beforeAndAfter',
-  }: {
-    maxLineLength?: number;
-    showUndefined?: boolean;
-    maxDepth?: number;
-    addRootObjSpaces?: 'before' | 'after' | 'beforeAndAfter' | false;
-  } = {},
+  }: YamlStringifyOptions = {},
 ): string {
   if (isObject(obj) || Array.isArray(obj) || typeof obj === 'function') {
-    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0, addRootObjSpaces)}\n`;
+    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0, collapseObjects, addRootObjSpaces)}\n`;
   }
 
   return JSON.stringify(obj) || 'undefined';
@@ -30,6 +39,7 @@ function stringifyValue(
   showUndefined: boolean,
   maxDepth: number,
   depth: number,
+  collapseObjects: boolean,
   addObjSpaces: 'before' | 'after' | 'beforeAndAfter' | false,
 ): string {
   let result = '';
@@ -38,6 +48,57 @@ function stringifyValue(
   if (isPlainObject(value)) {
     if (Object.keys(value).length === 0) {
       return '{}';
+    }
+
+    // Try to collapse simple objects if collapseObjects is enabled (but not for root objects)
+    if (collapseObjects && depth > 0) {
+      const entries = Object.entries(value).filter(
+        ([, val]) => val !== undefined || showUndefined,
+      );
+      const isSimpleObject = entries.every(
+        ([, val]) => {
+          if (typeof val === 'string') {
+            // Don't collapse objects if strings contain quotes or escape sequences
+            return !val.includes("'") && !val.includes('"') && !val.includes('\\');
+          }
+          return (
+            typeof val === 'number' ||
+            typeof val === 'boolean' ||
+            val === null ||
+            val === undefined
+          );
+        },
+      );
+
+      if (isSimpleObject && entries.length > 0) {
+        let line = '{ ';
+
+        line += entries
+          .map(([key, val]) => {
+            let valueStr: string;
+            if (typeof val === 'string') {
+              if (val.includes("'") && !val.includes('"')) {
+                valueStr = `"${val}"`;
+              } else if (val.includes('"') && !val.includes("'")) {
+                valueStr = `'${val}'`;
+              } else if (val.includes("'") && val.includes('"')) {
+                valueStr = `"${val.replace(/"/g, '\\"')}"`;
+              } else {
+                valueStr = `'${val}'`;
+              }
+            } else {
+              valueStr = String(val);
+            }
+            return `${key}: ${valueStr}`;
+          })
+          .join(', ');
+
+        line += ' }';
+
+        if (line.length <= maxLineLength) {
+          return line;
+        }
+      }
     }
 
     let prevValue: unknown;
@@ -66,14 +127,60 @@ function stringifyValue(
         showUndefined,
         maxDepth,
         depth + 1,
+        collapseObjects,
         addObjSpaces,
       );
+
+      // Check if the current value will be collapsed (including empty objects)
+      const willBeCollapsed =
+        isObject(objVal) &&
+        (Object.keys(objVal).length === 0 ||
+          (collapseObjects &&
+            depth + 1 > 0 &&
+            Object.entries(objVal)
+              .filter(([, val]) => val !== undefined || showUndefined)
+              .every(([, val]) => {
+                if (typeof val === 'string') {
+                  // Don't collapse objects if strings contain quotes or escape sequences
+                  return !val.includes("'") && !val.includes('"') && !val.includes('\\');
+                }
+                return (
+                  typeof val === 'number' ||
+                  typeof val === 'boolean' ||
+                  val === null ||
+                  val === undefined
+                );
+              })));
+
+      // Check if the previous value was a collapsed object
+      const prevWasCollapsed =
+        prevValue &&
+        isObject(prevValue) &&
+        (Object.keys(prevValue).length === 0 ||
+          (collapseObjects &&
+            depth + 1 > 0 &&
+            Object.entries(prevValue)
+              .filter(([, val]) => val !== undefined || showUndefined)
+              .every(([, val]) => {
+                if (typeof val === 'string') {
+                  // Don't collapse objects if strings contain quotes or escape sequences
+                  return !val.includes("'") && !val.includes('"') && !val.includes('\\');
+                }
+                return (
+                  typeof val === 'number' ||
+                  typeof val === 'boolean' ||
+                  val === null ||
+                  val === undefined
+                );
+              })));
 
       if (
         !afterSpaceWasAdded &&
         indent === '' &&
         isObject(objVal) &&
+        !willBeCollapsed &&
         prevValue &&
+        !prevWasCollapsed &&
         (addObjSpaces === 'before' || addObjSpaces === 'beforeAndAfter')
       ) {
         result += '\n';
@@ -88,7 +195,11 @@ function stringifyValue(
           result += `${indent}${key}:\n`;
         }
       } else if (isObject(objVal)) {
-        if (Object.keys(objVal).length === 0) {
+        // Check if the value string is a collapsed object (single line starting with '{')
+        const isCollapsedObject =
+          valueString.startsWith('{') && !valueString.includes('\n');
+
+        if (Object.keys(objVal).length === 0 || isCollapsedObject) {
           result += `${indent}${key}: `;
         } else {
           result += `${indent}${key}:\n`;
@@ -101,7 +212,13 @@ function stringifyValue(
       result += '\n';
 
       if (indent === '') {
-        if (isObject(objVal)) {
+        // Check if the value is a collapsed object (single line starting with '{' and containing content)
+        const isCollapsedObject =
+          valueString.startsWith('{') &&
+          !valueString.includes('\n') &&
+          valueString.length > 2;
+
+        if (isObject(objVal) && !isCollapsedObject) {
           if (addObjSpaces === 'after' || addObjSpaces === 'beforeAndAfter') {
             result += '\n';
             afterSpaceWasAdded = true;
@@ -154,6 +271,7 @@ function stringifyValue(
             showUndefined,
             maxDepth,
             depth + 1,
+            collapseObjects,
             addObjSpaces,
           );
         })
@@ -183,6 +301,7 @@ function stringifyValue(
             showUndefined,
             maxDepth,
             depth + 1,
+            collapseObjects,
             addObjSpaces,
           );
 
@@ -197,6 +316,7 @@ function stringifyValue(
             showUndefined,
             maxDepth,
             depth + 1,
+            collapseObjects,
             addObjSpaces,
           );
         }
@@ -261,6 +381,7 @@ function stringifyValue(
       showUndefined,
       maxDepth,
       depth + 1,
+      collapseObjects,
       addObjSpaces,
     );
   }

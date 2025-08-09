@@ -4,6 +4,8 @@ import { deepEqual } from './deepEqual';
 import { clampMin } from './mathUtils';
 import { omit, pick } from './objUtils';
 import { defer } from './promiseUtils';
+import { isPlainObject } from './typeGuards';
+import { yamlStringify, YamlStringifyOptions } from './yamlStringify';
 
 export function createLoggerStore({
   filterKeys: defaultFilterKeys,
@@ -304,4 +306,136 @@ export function waitController(): {
       }, ms);
     },
   };
+}
+
+/*
+ * Produces a more compact and readable snapshot of a value using yaml.
+ * By default booleans are shown as `✅` and `❌`, use `showBooleansAs` to disable/configure this.
+ *
+ * @param value - The value to snapshot.
+ * @param options - The options for the snapshot.
+ * @returns The compact snapshot of the value.
+ */
+export function compactSnapshot(
+  value: unknown,
+  {
+    collapseObjects = true,
+    maxLineLength = 100,
+    showUndefined = false,
+    showBooleansAs = true,
+    ...options
+  }: YamlStringifyOptions & {
+    /* show booleans as text, by default true is `✅` and false is `❌` */
+    showBooleansAs?:
+      | boolean
+      | {
+          /* configure individual props */
+          props?: Record<
+            string,
+            { trueText?: string; falseText?: string } | true
+          >;
+          /* ignore props */
+          ignoreProps?: string[];
+          /* default true text */
+          trueText?: string;
+          /* default false text */
+          falseText?: string;
+        };
+    showUndefined?: boolean;
+  } = {},
+) {
+  const processedValue =
+    showBooleansAs ? replaceBooleansWithEmoji(value, showBooleansAs) : value;
+
+  return `\n${yamlStringify(processedValue, {
+    collapseObjects,
+    maxLineLength,
+    showUndefined,
+    ...options,
+  })}`;
+}
+
+function replaceBooleansWithEmoji(
+  value: unknown,
+  showBooleansAs:
+    | boolean
+    | {
+        props?: Record<
+          string,
+          { trueText?: string; falseText?: string } | true
+        >;
+        ignoreProps?: string[];
+        trueText?: string;
+        falseText?: string;
+      },
+  visited: Set<object> = new Set(),
+): unknown {
+  if (showBooleansAs === false) {
+    return value;
+  }
+
+  const defaultTrueText = '✅';
+  const defaultFalseText = '❌';
+
+  const config =
+    typeof showBooleansAs === 'boolean' ?
+      { trueText: defaultTrueText, falseText: defaultFalseText }
+    : {
+        trueText: showBooleansAs.trueText ?? defaultTrueText,
+        falseText: showBooleansAs.falseText ?? defaultFalseText,
+        props: showBooleansAs.props ?? {},
+        ignoreProps: showBooleansAs.ignoreProps ?? [],
+      };
+
+  function processValue(val: unknown, propName?: string): unknown {
+    if (typeof val === 'boolean') {
+      if (propName && config.ignoreProps?.includes(propName)) {
+        return val;
+      }
+
+      if (propName && config.props?.[propName]) {
+        const propConfig = config.props[propName];
+        if (propConfig === true) {
+          return val ? config.trueText : config.falseText;
+        }
+        return val ?
+            (propConfig.trueText ?? config.trueText)
+          : (propConfig.falseText ?? config.falseText);
+      }
+
+      return val ? config.trueText : config.falseText;
+    }
+
+    if (Array.isArray(val)) {
+      if (visited.has(val)) {
+        throw new Error('Circular reference detected in array');
+      }
+      visited.add(val);
+      try {
+        return val.map((item) => processValue(item));
+      } finally {
+        visited.delete(val);
+      }
+    }
+
+    if (isPlainObject(val)) {
+      if (visited.has(val)) {
+        throw new Error('Circular reference detected in object');
+      }
+      visited.add(val);
+      try {
+        const result: Record<string, unknown> = {};
+        for (const [key, itemValue] of Object.entries(val)) {
+          result[key] = processValue(itemValue, key);
+        }
+        return result;
+      } finally {
+        visited.delete(val);
+      }
+    }
+
+    return val;
+  }
+
+  return processValue(value);
 }

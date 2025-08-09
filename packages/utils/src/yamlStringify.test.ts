@@ -1,4 +1,3 @@
- 
 import { ArgumentsType, describe, expect, test } from 'vitest';
 import { yamlStringify } from './yamlStringify';
 
@@ -911,6 +910,156 @@ describe('add obj spaces', () => {
       obj:
         a: 1
       b: 2
+      "
+    `);
+  });
+});
+
+describe('collapseObjects', () => {
+  test('collapses simple objects with primitive values', () => {
+    expect(
+      getSnapshot(
+        {
+          person: { name: 'John', age: 30, active: true },
+          empty: {},
+          single: { key: 'value' },
+        },
+        { collapseObjects: true, addRootObjSpaces: false },
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      person: { name: 'John', age: 30, active: true }
+      empty: {}
+      single: { key: 'value' }
+      "
+    `);
+  });
+
+  test('does not collapse objects with nested structures', () => {
+    expect(
+      getSnapshot(
+        {
+          simple: { a: 1, b: 2 },
+          nested: { a: 1, b: { c: 3 } },
+          withArray: { a: 1, b: [1, 2, 3] },
+        },
+        { collapseObjects: true, addRootObjSpaces: false },
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      simple: { a: 1, b: 2 }
+      nested:
+        a: 1
+        b: { c: 3 }
+      withArray:
+        a: 1
+        b: [1, 2, 3]
+      "
+    `);
+  });
+
+  test('respects maxLineLength when collapsing', () => {
+    expect(
+      getSnapshot(
+        {
+          short: { a: 1, b: 2 },
+          long: {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@example.com',
+            phone: '+1-555-0123',
+            city: 'New York',
+          },
+        },
+        { collapseObjects: true, maxLineLength: 50 },
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      short: { a: 1, b: 2 }
+      long:
+        firstName: 'John'
+        lastName: 'Doe'
+        email: 'john.doe@example.com'
+        phone: '+1-555-0123'
+        city: 'New York'
+      "
+    `);
+  });
+
+  test('handles undefined values with showUndefined option', () => {
+    expect(
+      getSnapshot(
+        {
+          withUndefined: { a: 1, b: undefined, c: 'test' },
+        },
+        { collapseObjects: true, showUndefined: true },
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      withUndefined: { a: 1, b: undefined, c: 'test' }
+      "
+    `);
+  });
+
+  test('handles null values correctly', () => {
+    expect(
+      getSnapshot(
+        {
+          withNull: { a: 1, b: null, c: 'test' },
+        },
+        { collapseObjects: true },
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      withNull: { a: 1, b: null, c: 'test' }
+      "
+    `);
+  });
+
+  test('does not collapse objects with strings containing quotes', () => {
+    expect(
+      getSnapshot(
+        {
+          quotes: {
+            single: "let's go",
+            double: 'he said "hello"',
+            both: `it's "working"`,
+          },
+        },
+        { collapseObjects: true },
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      quotes:
+        single: "let's go"
+        double: 'he said "hello"'
+        both: "it's \\"working\\""
+      "
+    `);
+  });
+
+  test('does not collapse root object', () => {
+    expect(getSnapshot({ a: 1, b: 2, c: 3 }, { collapseObjects: true }))
+      .toMatchInlineSnapshot(`
+        "
+        a: 1
+        b: 2
+        c: 3
+        "
+      `);
+  });
+
+  test('does not collapse when disabled (default)', () => {
+    expect(
+      getSnapshot({
+        simple: { a: 1, b: 2, c: 3 },
+      }),
+    ).toMatchInlineSnapshot(`
+      "
+      simple:
+        a: 1
+        b: 2
+        c: 3
       "
     `);
   });
