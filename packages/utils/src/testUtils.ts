@@ -308,6 +308,126 @@ export function waitController(): {
   };
 }
 
+function matchesKeyPattern(path: string, pattern: string): boolean {
+  // Handle exact matches
+  if (path === pattern) {
+    return true;
+  }
+
+  // Handle wildcard patterns
+  if (pattern.includes('*')) {
+    // Convert pattern to regex
+    // Replace * with [^.]* to match any characters except dots
+    const regexPattern = pattern
+      .replace(/\./g, '\\.')  // Escape dots
+      .replace(/\*/g, '[^.]*'); // Replace * with non-dot characters
+
+    const regex = new RegExp(`^${regexPattern}$`);
+    return regex.test(path);
+  }
+
+  return false;
+}
+
+function isParentOfPattern(path: string, pattern: string): boolean {
+  // Check if this path is a parent of the pattern path
+  if (pattern.includes('*')) {
+    // For wildcard patterns, check if the pattern could match a child path
+    const patternParts = pattern.split('.');
+    const pathParts = path.split('.');
+    
+    if (pathParts.length >= patternParts.length) {
+      return false;
+    }
+    
+    // Check if the path parts match the beginning of the pattern
+    for (let i = 0; i < pathParts.length; i++) {
+      const pathPart = pathParts[i];
+      const patternPart = patternParts[i];
+      
+      if (patternPart === '*') {
+        continue; // Wildcard matches anything
+      }
+      if (pathPart !== patternPart) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    // For exact patterns, check if this is a parent path
+    return pattern.startsWith(`${path  }.`);
+  }
+}
+
+function applyKeyFiltering(
+  value: unknown,
+  { rejectKeys, filterKeys }: { rejectKeys?: string[]; filterKeys?: string[] },
+  currentPath = '',
+  visited: Set<object> = new Set(),
+): unknown {
+  if (!isPlainObject(value) && !Array.isArray(value)) {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    if (visited.has(value)) {
+      throw new Error('Circular reference detected in array during key filtering');
+    }
+    visited.add(value);
+    try {
+      return value.map((item, index) =>
+        applyKeyFiltering(item, { rejectKeys, filterKeys }, currentPath ? `${currentPath}[${index}]` : `[${index}]`, visited)
+      );
+    } finally {
+      visited.delete(value);
+    }
+  }
+
+  if (isPlainObject(value)) {
+    if (visited.has(value)) {
+      throw new Error('Circular reference detected in object during key filtering');
+    }
+    visited.add(value);
+    try {
+      const result: Record<string, unknown> = {};
+
+      for (const [key, itemValue] of Object.entries(value)) {
+        const fullPath = currentPath ? `${currentPath}.${key}` : key;
+
+        // Check if this key should be rejected
+        if (rejectKeys?.some(rejectPath => 
+          matchesKeyPattern(fullPath, rejectPath) || matchesKeyPattern(key, rejectPath)
+        )) {
+          continue;
+        }
+
+        // Check if we have filter keys and this key doesn't match
+        if (filterKeys) {
+          const shouldInclude = filterKeys.some(filterPath => 
+            // Exact match
+            matchesKeyPattern(fullPath, filterPath) || 
+            matchesKeyPattern(key, filterPath) ||
+            // This path is a parent of a filter pattern (so we include it to allow children)
+            isParentOfPattern(fullPath, filterPath)
+          );
+          
+          if (!shouldInclude) {
+            continue;
+          }
+        }
+
+        result[key] = applyKeyFiltering(itemValue, { rejectKeys, filterKeys }, fullPath, visited);
+      }
+
+      return result;
+    } finally {
+      visited.delete(value);
+    }
+  }
+
+  return value;
+}
+
 /*
  * Produces a more compact and readable snapshot of a value using yaml.
  * By default booleans are shown as `✅` and `❌`, use `showBooleansAs` to disable/configure this.
@@ -323,6 +443,8 @@ export function compactSnapshot(
     maxLineLength = 100,
     showUndefined = false,
     showBooleansAs = true,
+    rejectKeys,
+    filterKeys,
     ...options
   }: YamlStringifyOptions & {
     /* show booleans as text, by default true is `✅` and false is `❌` */
@@ -341,11 +463,22 @@ export function compactSnapshot(
           /* default false text */
           falseText?: string;
         };
-    showUndefined?: boolean;
+    /* reject keys from the snapshot, use dot notation to reject nested keys */
+    rejectKeys?: string[];
+    /* filter keys from the snapshot, use dot notation to filter nested keys */
+    filterKeys?: string[];
   } = {},
 ) {
-  const processedValue =
-    showBooleansAs ? replaceBooleansWithEmoji(value, showBooleansAs) : value;
+  let processedValue = value;
+
+  // Apply key filtering before boolean processing
+  if (rejectKeys || filterKeys) {
+    processedValue = applyKeyFiltering(processedValue, { rejectKeys, filterKeys });
+  }
+
+  // Apply boolean emoji replacement
+  processedValue =
+    showBooleansAs ? replaceBooleansWithEmoji(processedValue, showBooleansAs) : processedValue;
 
   return `\n${yamlStringify(processedValue, {
     collapseObjects,

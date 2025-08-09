@@ -424,4 +424,285 @@ describe('compactSnapshot', () => {
       "
     `);
   });
+
+  describe('rejectKeys functionality', () => {
+    test('should reject simple keys', () => {
+      const data = {
+        name: 'John',
+        password: 'secret',
+        email: 'john@example.com',
+        age: 30,
+      };
+
+      expect(compactSnapshot(data, { rejectKeys: ['password'] })).toMatchInlineSnapshot(`
+        "
+        name: 'John'
+        email: 'john@example.com'
+        age: 30
+        "
+      `);
+    });
+
+    test('should reject nested keys with dot notation', () => {
+      const data = {
+        user: {
+          name: 'John',
+          credentials: {
+            password: 'secret',
+            apiKey: 'key123',
+          },
+          profile: {
+            email: 'john@example.com',
+            age: 30,
+          },
+        },
+      };
+
+      expect(compactSnapshot(data, { rejectKeys: ['user.credentials.password', 'user.profile.age'] })).toMatchInlineSnapshot(`
+        "
+        user:
+          name: 'John'
+          credentials: { apiKey: 'key123' }
+          profile: { email: 'john@example.com' }
+        "
+      `);
+    });
+
+    test('should reject keys with wildcard patterns', () => {
+      const data = {
+        user1: { password: 'secret1', name: 'John' },
+        user2: { password: 'secret2', name: 'Jane' },
+        admin: { password: 'admin123', name: 'Admin' },
+        settings: { theme: 'dark', password: 'settings123' },
+      };
+
+      expect(compactSnapshot(data, { rejectKeys: ['*.password'] })).toMatchInlineSnapshot(`
+        "
+        user1: { name: 'John' }
+        user2: { name: 'Jane' }
+        admin: { name: 'Admin' }
+        settings: { theme: 'dark' }
+        "
+      `);
+    });
+
+    test('should handle arrays with rejectKeys', () => {
+      const data = {
+        users: [
+          { name: 'John', password: 'secret1', active: true },
+          { name: 'Jane', password: 'secret2', active: false },
+        ],
+      };
+
+      expect(compactSnapshot(data, { rejectKeys: ['*.password'] })).toMatchInlineSnapshot(`
+        "
+        users:
+          - { name: 'John', active: '✅' }
+          - { name: 'Jane', active: '❌' }
+        "
+      `);
+    });
+  });
+
+  describe('filterKeys functionality', () => {
+    test('should filter to include only specified keys', () => {
+      const data = {
+        name: 'John',
+        password: 'secret',
+        email: 'john@example.com',
+        age: 30,
+        active: true,
+      };
+
+      expect(compactSnapshot(data, { filterKeys: ['name', 'email', 'active'] })).toMatchInlineSnapshot(`
+        "
+        name: 'John'
+        email: 'john@example.com'
+        active: '✅'
+        "
+      `);
+    });
+
+    test('should filter nested keys with dot notation', () => {
+      const data = {
+        user: {
+          name: 'John',
+          credentials: {
+            password: 'secret',
+            apiKey: 'key123',
+          },
+          profile: {
+            email: 'john@example.com',
+            age: 30,
+            active: true,
+          },
+        },
+        system: {
+          version: '1.0',
+          status: 'online',
+        },
+      };
+
+      expect(compactSnapshot(data, { filterKeys: ['user.name', 'user.profile.email', 'user.profile.active'] })).toMatchInlineSnapshot(`
+        "
+        user:
+          name: 'John'
+          profile: { email: 'john@example.com', active: '✅' }
+        "
+      `);
+    });
+
+    test('should filter with wildcard patterns', () => {
+      const data = {
+        user1: { name: 'John', password: 'secret1', age: 25 },
+        user2: { name: 'Jane', password: 'secret2', age: 30 },
+        admin: { name: 'Admin', password: 'admin123', age: 45 },
+        settings: { theme: 'dark', name: 'AppSettings', age: null },
+      };
+
+      expect(compactSnapshot(data, { filterKeys: ['*.name'] })).toMatchInlineSnapshot(`
+        "
+        user1: { name: 'John' }
+        user2: { name: 'Jane' }
+        admin: { name: 'Admin' }
+        settings: { name: 'AppSettings' }
+        "
+      `);
+    });
+  });
+
+  describe('combined rejectKeys and filterKeys', () => {
+    test('should apply both filter and reject operations', () => {
+      const data = {
+        user: {
+          name: 'John',
+          password: 'secret',
+          email: 'john@example.com',
+          age: 30,
+          active: true,
+          lastLogin: '2023-01-01',
+        },
+      };
+
+      // First filter to user fields, then reject password
+      expect(compactSnapshot(data, { 
+        filterKeys: ['user.name', 'user.password', 'user.email', 'user.active'], 
+        rejectKeys: ['user.password'],
+        collapseObjects: false
+      })).toMatchInlineSnapshot(`
+        "
+        user:
+          name: 'John'
+          email: 'john@example.com'
+          active: '✅'
+        "
+      `);
+    });
+  });
+
+  describe('circular references with key filtering', () => {
+    test('should throw when circular key is not rejected', () => {
+      const obj: any = { 
+        name: 'John',
+        password: 'secret123',
+        active: true
+      };
+      obj.self = obj;
+
+      // 'self' creates the circular reference but is not rejected, so should throw
+      expect(() => compactSnapshot(obj, { rejectKeys: ['password'] })).toThrow('Circular reference detected in object during key filtering');
+    });
+
+    test('should not throw when the circular reference key itself gets rejected', () => {
+      const obj: any = { 
+        name: 'John',
+        active: true
+      };
+      obj.circular = obj;
+
+      // The key that creates the circular reference ('circular') is rejected, so no traversal occurs
+      expect(compactSnapshot(obj, { rejectKeys: ['circular'] })).toMatchInlineSnapshot(`
+        "
+        name: 'John'
+        active: '✅'
+        "
+      `);
+    });
+
+    test('should handle circular references with filterKeys when circular key is included', () => {
+      const obj: any = { 
+        name: 'John',
+        password: 'secret123',
+        active: true
+      };
+      obj.self = obj;
+
+      // Include the circular key in filter, so it gets traversed and detected
+      expect(() => compactSnapshot(obj, { filterKeys: ['name', 'active', 'self'] })).toThrow('Circular reference detected in object during key filtering');
+    });
+
+    test('should not throw when circular key gets filtered out', () => {
+      const obj: any = { 
+        name: 'John',
+        active: true
+      };
+      obj.circular = obj;
+
+      // Since 'circular' is not in filterKeys, it gets filtered out before circular detection
+      expect(compactSnapshot(obj, { filterKeys: ['name', 'active'] })).toMatchInlineSnapshot(`
+        "
+        name: 'John'
+        active: '✅'
+        "
+      `);
+    });
+
+
+    test('should handle circular references in nested structures when circular path is included', () => {
+      const data: any = {
+        user: {
+          name: 'John',
+          profile: {
+            email: 'john@example.com',
+            active: true
+          }
+        }
+      };
+      data.user.profile.backRef = data;
+
+      // Include the circular path, so it gets traversed and detected
+      expect(() => compactSnapshot(data, { filterKeys: ['user.name', 'user.profile.email', 'user.profile.backRef'] })).toThrow('Circular reference detected in object during key filtering');
+    });
+
+    test('should not throw when nested circular reference key gets rejected', () => {
+      const data: any = {
+        user: {
+          name: 'John',
+          profile: {
+            email: 'john@example.com',
+            active: true
+          }
+        }
+      };
+      data.user.profile.backRef = data;
+
+      // The circular path gets rejected, so no circular traversal occurs
+      expect(compactSnapshot(data, { rejectKeys: ['user.profile.backRef'] })).toMatchInlineSnapshot(`
+        "
+        user:
+          name: 'John'
+          profile: { email: 'john@example.com', active: '✅' }
+        "
+      `);
+    });
+
+    test('should handle circular references in arrays with key filtering', () => {
+      const arr: any[] = [
+        { name: 'John', password: 'secret', active: true }
+      ];
+      arr.push(arr);
+
+      expect(() => compactSnapshot({ users: arr }, { rejectKeys: ['*.password'] })).toThrow('Circular reference detected in array during key filtering');
+    });
+  });
 });
