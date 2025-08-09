@@ -651,6 +651,28 @@ describe('complex mixed scenarios', () => {
   });
 });
 
+test('do not filter non plain objects', () => {
+  class MyClass {
+    name = 'John';
+    age = 30;
+  }
+  const date = new Date();
+  const classInstance = new MyClass();
+  const data = {
+    date,
+    myClass: classInstance,
+  };
+
+  const filtered = filterObjectOrArrayKeys(data, {
+    rejectKeys: ['*name', '*age', '*now'],
+  });
+
+  expect((filtered as any).date).toBe(date);
+  expect((filtered as any).myClass).toBe(classInstance);
+
+  expect(getSnapshot(filtered)).toMatchInlineSnapshot();
+});
+
 describe('circular references with key filtering', () => {
   test('should throw when the circular reference key itself gets filtered', () => {
     const obj: any = {
