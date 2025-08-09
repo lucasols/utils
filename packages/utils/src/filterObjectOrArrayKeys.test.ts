@@ -20,8 +20,8 @@ describe('rejectKeys functionality', () => {
       getSnapshot(filterObjectOrArrayKeys(data, { rejectKeys: ['password'] })),
     ).toMatchInlineSnapshot(`
       "
-      name: John
-      email: john@example.com
+      name: 'John'
+      email: 'john@example.com'
       age: 30
       "
     `);
@@ -50,9 +50,9 @@ describe('rejectKeys functionality', () => {
     ).toMatchInlineSnapshot(`
       "
       user:
-        name: John
-        credentials: { apiKey: key123 }
-        profile: { email: john@example.com }
+        name: 'John'
+        credentials: { apiKey: 'key123' }
+        profile: { email: 'john@example.com' }
       "
     `);
   });
@@ -70,10 +70,10 @@ describe('rejectKeys functionality', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      user1: { name: John }
-      user2: { name: Jane }
-      admin: { name: Admin }
-      settings: { theme: dark }
+      user1: { name: 'John' }
+      user2: { name: 'Jane' }
+      admin: { name: 'Admin' }
+      settings: { theme: 'dark' }
       "
     `);
   });
@@ -96,8 +96,8 @@ describe('filterKeys functionality', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      name: John
-      email: john@example.com
+      name: 'John'
+      email: 'john@example.com'
       active: true
       "
     `);
@@ -135,8 +135,8 @@ describe('filterKeys functionality', () => {
     ).toMatchInlineSnapshot(`
       "
       user:
-        name: John
-        profile: { email: john@example.com, active: true }
+        name: 'John'
+        profile: { email: 'john@example.com', active: true }
       "
     `);
   });
@@ -168,7 +168,7 @@ describe('combined rejectKeys and filterKeys', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      user: { name: John, email: john@example.com, active: true }
+      user: { name: 'John', email: 'john@example.com', active: true }
       "
     `);
   });
@@ -187,9 +187,9 @@ describe('array filtering', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      - name: John
+      - name: 'John'
         age: 30
-      - name: Bob
+      - name: 'Bob'
         age: 35
       "
     `);
@@ -207,9 +207,9 @@ describe('array filtering', () => {
       getSnapshot(filterObjectOrArrayKeys(data, { filterKeys: ['[1-3]'] })),
     ).toMatchInlineSnapshot(`
       "
-      - name: Item2
-      - name: Item3
-      - name: Item4
+      - name: 'Item2'
+      - name: 'Item3'
+      - name: 'Item4'
       "
     `);
   });
@@ -226,9 +226,9 @@ describe('array filtering', () => {
       getSnapshot(filterObjectOrArrayKeys(data, { filterKeys: ['[2-*]'] })),
     ).toMatchInlineSnapshot(`
       "
-      - name: Item3
-      - name: Item4
-      - name: Item5
+      - name: 'Item3'
+      - name: 'Item4'
+      - name: 'Item5'
       "
     `);
   });
@@ -243,9 +243,9 @@ describe('array filtering', () => {
       getSnapshot(filterObjectOrArrayKeys(data, { filterKeys: ['[*].name'] })),
     ).toMatchInlineSnapshot(`
       "
-      - name: John
-      - name: Jane
-      - name: Bob
+      - name: 'John'
+      - name: 'Jane'
+      - name: 'Bob'
       "
     `);
   });
@@ -262,11 +262,11 @@ describe('array filtering', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      - name: John
+      - name: 'John'
         age: 30
-      - name: Jane
+      - name: 'Jane'
         age: 25
-      - name: Bob
+      - name: 'Bob'
         age: 35
       "
     `);
@@ -289,7 +289,7 @@ describe('array filtering', () => {
       "
       users:
         - posts:
-            - title: Post1
+            - title: 'Post1'
       "
     `);
   });
@@ -320,14 +320,14 @@ describe('advanced wildcard patterns', () => {
       "
       section1:
         items:
-          - name: Item1
-            details: { public: visible1 }
-          - name: Item2
-            details: { public: visible2 }
+          - name: 'Item1'
+            details: { public: 'visible1' }
+          - name: 'Item2'
+            details: { public: 'visible2' }
       section2:
         items:
-          - name: Item3
-            details: { public: visible3 }
+          - name: 'Item3'
+            details: { public: 'visible3' }
       "
     `);
   });
@@ -349,10 +349,10 @@ describe('advanced wildcard patterns', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        john: { profile: { name: John } }
-        jane: { profile: { name: Jane } }
+        john: { profile: { name: 'John' } }
+        jane: { profile: { name: 'Jane' } }
       admins:
-        admin1: { profile: { name: Admin1 } }
+        admin1: { profile: { name: 'Admin1' } }
       "
     `);
   });
@@ -371,7 +371,7 @@ describe('advanced wildcard patterns', () => {
     ).toMatchInlineSnapshot(`
       "
       user:
-        profile: { name: John }
+        profile: { name: 'John' }
       "
     `);
   });
@@ -413,7 +413,7 @@ describe('edge cases and error handling', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      name: John
+      name: 'John'
       nullable: null
       "
     `);
@@ -429,7 +429,7 @@ describe('edge cases and error handling', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      name: John
+      name: 'John'
       "
     `);
   });
@@ -468,7 +468,7 @@ describe('edge cases and error handling', () => {
       level1:
         level2:
           level3:
-            level4: { value: deep value }
+            level4: { value: 'deep value' }
       "
     `);
   });
@@ -494,7 +494,7 @@ describe('rejectEmptyObjects option', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      user: { name: John }
+      user: { name: 'John' }
       emptySection: {}
       "
     `);
@@ -520,7 +520,7 @@ describe('rejectEmptyObjects option', () => {
     ).toMatchInlineSnapshot(`
       "
       user:
-        name: John
+        name: 'John'
         credentials: {}
       "
     `);
@@ -554,7 +554,7 @@ describe('string parameter handling', () => {
     expect(getSnapshot(filterObjectOrArrayKeys(data, { filterKeys: 'name' })))
       .toMatchInlineSnapshot(`
         "
-        name: John
+        name: 'John'
         "
       `);
   });
@@ -565,7 +565,7 @@ describe('string parameter handling', () => {
       getSnapshot(filterObjectOrArrayKeys(data, { rejectKeys: 'password' })),
     ).toMatchInlineSnapshot(`
       "
-      name: John
+      name: 'John'
       age: 30
       "
     `);
@@ -616,10 +616,10 @@ describe('complex mixed scenarios', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - name: John
-          profile: { email: john@example.com }
-        - name: Jane
-          profile: { email: jane@example.com }
+        - name: 'John'
+          profile: { email: 'john@example.com' }
+        - name: 'Jane'
+          profile: { email: 'jane@example.com' }
       metadata: { version: '1.0' }
       "
     `);
@@ -692,7 +692,7 @@ describe('circular references with key filtering', () => {
       getSnapshot(filterObjectOrArrayKeys(obj, { rejectKeys: ['circular'] })),
     ).toMatchInlineSnapshot(`
       "
-      name: John
+      name: 'John'
       active: true
       "
     `);
