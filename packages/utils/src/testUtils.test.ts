@@ -1268,9 +1268,6 @@ describe('compactSnapshot', () => {
           }),
         ).toMatchInlineSnapshot(`
           "
-          secret: 'root-secret'
-          password: 'root-password'
-
           user:
             secret: 'user-secret'
 
@@ -1289,9 +1286,6 @@ describe('compactSnapshot', () => {
           }),
         ).toMatchInlineSnapshot(`
           "
-          secret: 'root-secret'
-          password: 'root-password'
-
           user:
             secret: 'user-secret'
             password: 'user-password'
