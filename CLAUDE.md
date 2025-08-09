@@ -23,13 +23,10 @@ All packages are designed with a modular architecture where each utility is expo
 
 ### Individual Package Commands
 
-- `pnpm test` - Run tests for utils package
-- `pnpm test:ui` - Run tests with Vitest UI
+- `pnpm test` - Run tests for the package
 - `pnpm lint` - Run TypeScript compiler and ESLint checks
 - `pnpm tsc` - Run TypeScript compiler only
 - `pnpm eslint` - Run ESLint only
-- `pnpm build` - Full build process (includes building dependencies first)
-- `pnpm build:no-test` - Build without running tests
 
 ### Package-Specific Commands
 
@@ -39,20 +36,13 @@ To run commands in specific packages:
 - `pnpm --filter @ls-stack/node-utils <command>` - Run command in node-utils package
 - `pnpm --filter @ls-stack/browser-utils <command>` - Run command in browser-utils package
 
-### Documentation
-
-- `pnpm docs` - Generate TypeDoc documentation
-- `pnpm docs:watch` - Generate docs in watch mode
-
 ### Testing Single Files
 
-- `pnpm vitest src/fileName.test.ts` - Run specific test file
-- `pnpm vitest src/fileName.test.ts --ui` - Run specific test with UI
+- `cd package && pnpm test src/fileName.test.ts` - Run specific test file
 
-### Other
+### running single test
 
-- `pnpm bench:deepEqual` - Run deepEqual benchmarks
-- `pnpm test:console-fmt` - Test console formatting utilities
+- `cd package && pnpm test src/testUtils.test.ts -t "should filter with wildcard patterns"` - Run specific test in test file
 
 ## Architecture
 

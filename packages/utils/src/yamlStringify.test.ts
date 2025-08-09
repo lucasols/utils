@@ -1063,4 +1063,44 @@ describe('collapseObjects', () => {
       "
     `);
   });
+
+  test('does not collapse objects with exactly one property when they are array items', () => {
+    expect(
+      getSnapshot(
+        {
+          // Objects as direct properties should still collapse when they have one property
+          singleProp: { key: 'value' },
+          multipleProps: { a: 1, b: 2 },
+          
+          // Objects in arrays should NOT collapse when they have one property  
+          arrayWithSingleProps: [
+            { key: 'value' },
+            { count: 42 },
+            { active: true },
+            { data: null },
+          ],
+          
+          // Objects in arrays with multiple props can still collapse
+          arrayWithMultipleProps: [
+            { a: 1, b: 2 },
+            { name: 'John', age: 30 },
+          ],
+        },
+        { collapseObjects: true, addRootObjSpaces: false },
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      singleProp: { key: 'value' }
+      multipleProps: { a: 1, b: 2 }
+      arrayWithSingleProps:
+        - key: 'value'
+        - count: 42
+        - active: true
+        - data: null
+      arrayWithMultipleProps:
+        - { a: 1, b: 2 }
+        - { name: 'John', age: 30 }
+      "
+    `);
+  });
 });

@@ -26,7 +26,7 @@ export function yamlStringify(
   }: YamlStringifyOptions = {},
 ): string {
   if (isObject(obj) || Array.isArray(obj) || typeof obj === 'function') {
-    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0, collapseObjects, addRootObjSpaces)}\n`;
+    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0, collapseObjects, addRootObjSpaces, false)}\n`;
   }
 
   return JSON.stringify(obj) || 'undefined';
@@ -41,6 +41,7 @@ function stringifyValue(
   depth: number,
   collapseObjects: boolean,
   addObjSpaces: 'before' | 'after' | 'beforeAndAfter' | false,
+  isArrayItem: boolean,
 ): string {
   let result = '';
   const childIndent = `${indent}  `;
@@ -70,7 +71,8 @@ function stringifyValue(
         },
       );
 
-      if (isSimpleObject && entries.length > 0) {
+      const shouldCollapse = isArrayItem ? entries.length > 1 : entries.length > 0;
+      if (isSimpleObject && shouldCollapse) {
         let line = '{ ';
 
         line += entries
@@ -129,6 +131,7 @@ function stringifyValue(
         depth + 1,
         collapseObjects,
         addObjSpaces,
+        false,
       );
 
       // Check if the current value will be collapsed (including empty objects)
@@ -137,9 +140,10 @@ function stringifyValue(
         (Object.keys(objVal).length === 0 ||
           (collapseObjects &&
             depth + 1 > 0 &&
-            Object.entries(objVal)
-              .filter(([, val]) => val !== undefined || showUndefined)
-              .every(([, val]) => {
+            (() => {
+              const filteredEntries = Object.entries(objVal).filter(([, val]) => val !== undefined || showUndefined);
+              const shouldCollapseThis = isArrayItem ? filteredEntries.length > 1 : filteredEntries.length > 0;
+              return shouldCollapseThis && filteredEntries.every(([, val]) => {
                 if (typeof val === 'string') {
                   // Don't collapse objects if strings contain quotes or escape sequences
                   return !val.includes("'") && !val.includes('"') && !val.includes('\\');
@@ -150,7 +154,8 @@ function stringifyValue(
                   val === null ||
                   val === undefined
                 );
-              })));
+              });
+            })()));
 
       // Check if the previous value was a collapsed object
       const prevWasCollapsed =
@@ -159,9 +164,10 @@ function stringifyValue(
         (Object.keys(prevValue).length === 0 ||
           (collapseObjects &&
             depth + 1 > 0 &&
-            Object.entries(prevValue)
-              .filter(([, val]) => val !== undefined || showUndefined)
-              .every(([, val]) => {
+            (() => {
+              const filteredEntries = Object.entries(prevValue).filter(([, val]) => val !== undefined || showUndefined);
+              const shouldCollapseThis = isArrayItem ? filteredEntries.length > 1 : filteredEntries.length > 0;
+              return shouldCollapseThis && filteredEntries.every(([, val]) => {
                 if (typeof val === 'string') {
                   // Don't collapse objects if strings contain quotes or escape sequences
                   return !val.includes("'") && !val.includes('"') && !val.includes('\\');
@@ -172,7 +178,8 @@ function stringifyValue(
                   val === null ||
                   val === undefined
                 );
-              })));
+              });
+            })()));
 
       if (
         !afterSpaceWasAdded &&
@@ -273,6 +280,7 @@ function stringifyValue(
             depth + 1,
             collapseObjects,
             addObjSpaces,
+            true,
           );
         })
         .join(', ');
@@ -303,6 +311,7 @@ function stringifyValue(
             depth + 1,
             collapseObjects,
             addObjSpaces,
+            true,
           );
 
           arrayString = arrayString.trimStart();
@@ -318,6 +327,7 @@ function stringifyValue(
             depth + 1,
             collapseObjects,
             addObjSpaces,
+            true,
           );
         }
 
@@ -383,6 +393,7 @@ function stringifyValue(
       depth + 1,
       collapseObjects,
       addObjSpaces,
+      false,
     );
   }
 
