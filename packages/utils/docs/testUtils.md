@@ -14,7 +14,7 @@
 function compactSnapshot(value, __namedParameters): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:439](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L439)
+Defined in: [packages/utils/src/testUtils.ts:487](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L487)
 
 #### Parameters
 
