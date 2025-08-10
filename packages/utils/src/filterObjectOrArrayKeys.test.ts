@@ -93,8 +93,8 @@ describe('rejectKeys functionality', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', active: '✅' }
-        - { name: 'Jane', active: '❌' }
+        - { name: 'John', active: true }
+        - { name: 'Jane', active: false }
       "
     `);
   });
@@ -223,7 +223,7 @@ describe('combined rejectKeys and filterKeys', () => {
       user:
         name: 'John'
         email: 'john@example.com'
-        settings: { theme: 'dark', notifications: '✅' }
+        settings: { theme: 'dark', notifications: true }
       "
     `);
   });
@@ -428,7 +428,8 @@ describe('advanced wildcard patterns', () => {
       "
       user:
         profile: { name: 'John' }
-        settings2: { obj: { name: 'obj' } }
+        settings2:
+          obj: { name: 'obj' }
       "
     `);
   });
@@ -532,7 +533,7 @@ describe('edge cases and error handling', () => {
 });
 
 describe('rejectEmptyObjectsInArray option', () => {
-  test('should keep empty objects when rejectEmptyObjectsInArray  is false', () => {
+  test('should keep empty objects when rejectEmptyObjectsInArray is false', () => {
     const data = {
       users: [{ test: 'John' }, { name: 'Jane' }],
     };
