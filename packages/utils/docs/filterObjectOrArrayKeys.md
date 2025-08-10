@@ -14,7 +14,7 @@
 function filterObjectOrArrayKeys(objOrArray, options): Record<string, any> | Record<string, any>[];
 ```
 
-Defined in: [packages/utils/src/filterObjectOrArrayKeys.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/filterObjectOrArrayKeys.ts#L38)
+Defined in: [packages/utils/src/filterObjectOrArrayKeys.ts:40](https://github.com/lucasols/utils/blob/main/packages/utils/src/filterObjectOrArrayKeys.ts#L40)
 
 Filters the keys of an object based on the provided patterns.
 
@@ -42,6 +42,8 @@ Filtering patterns in `rejectKeys` and `filterKeys`:
   - `'[*]**nested'` - all `nested` props of all items of the array
   - `'[0-2]'` - The first three items of the array
   - `'[4-*]'` - All items of the array from the fourth index to the end
+- Selecting multiple properties:
+  - `'prop.test.(prop1|prop2|prop3)'` - The `prop1`, `prop2`, and `prop3` properties of `prop.test` object
 
 #### Parameters
 
