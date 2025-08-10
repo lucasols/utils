@@ -223,9 +223,7 @@ describe('combined rejectKeys and filterKeys', () => {
       user:
         name: 'John'
         email: 'john@example.com'
-        settings:
-          theme: 'dark'
-          notifications: '✅'
+        settings: { theme: 'dark', notifications: '✅' }
       "
     `);
   });
