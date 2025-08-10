@@ -854,7 +854,6 @@ describe('multi-key patterns', () => {
       "
     `);
   });
-
 });
 
 describe('pattern expansion functionality', () => {
@@ -1032,7 +1031,9 @@ describe('complex pattern expansion scenarios', () => {
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          filterKeys: ['app.modules[*].components[*].fields[*].(name|validation)'],
+          filterKeys: [
+            'app.modules[*].components[*].fields[*].(name|validation)',
+          ],
         }),
       ),
     ).toMatchInlineSnapshot(`
@@ -1087,7 +1088,9 @@ describe('complex pattern expansion scenarios', () => {
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          filterKeys: ['environments.(prod|dev).(services|workers).*.config.port'],
+          filterKeys: [
+            'environments.(prod|dev).(services|workers).*.config.port',
+          ],
         }),
       ),
     ).toMatchInlineSnapshot(`
@@ -1166,6 +1169,51 @@ describe('complex pattern expansion scenarios', () => {
     `);
   });
 
+  test('should expand patterns with array patterns', () => {
+    const data = {
+      homePage: {
+        components: [
+          {
+            type: 'kanban',
+            id: 'kanban_component',
+            component_name: 'Task Board',
+            table_id: 'table_id_1',
+            fields: ['status'],
+            group_by: 'status',
+            columns: ['todo', 'in_progress', 'done'],
+            filters: [
+              {
+                field_id: 'status',
+                operator: '==',
+                type: 'select',
+                value: 'todo',
+              },
+            ],
+            background_color: null,
+          },
+        ],
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: [
+            'homePage.components[*].(table_id|columns|group_by|filters[*])',
+          ],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      homePage:
+        components:
+          - table_id: 'table_id_1'
+            group_by: 'status'
+            columns: ['todo', 'in_progress', 'done']
+            filters:
+              - { field_id: 'status', operator: '==', type: 'select', value: 'todo' }
+      "
+    `);
+  });
 });
 
 describe('circular references with key filtering', () => {
