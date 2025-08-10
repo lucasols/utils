@@ -417,16 +417,18 @@ describe('advanced wildcard patterns', () => {
       user: {
         profile: { name: 'John', age: 30 },
         settings: { theme: 'dark', notifications: true },
+        settings2: { theme: 'dark', notifications: true, obj: { name: 'obj' } },
       },
     };
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, { filterKeys: ['user.*name'] }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['user.**name'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
       user:
         profile: { name: 'John' }
+        settings2: { obj: { name: 'obj' } }
       "
     `);
   });
@@ -719,7 +721,7 @@ test('do not filter non plain objects', () => {
   };
 
   const filtered = filterObjectOrArrayKeys(data, {
-    rejectKeys: ['*name', '*age', '*now'],
+    rejectKeys: ['**name', '**age', '**now'],
   });
 
   expect((filtered as any).date).toBe(date);
