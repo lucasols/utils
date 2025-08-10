@@ -855,128 +855,317 @@ describe('multi-key patterns', () => {
     `);
   });
 
-  test('should handle multi-key patterns with nested structures', () => {
+});
+
+describe('pattern expansion functionality', () => {
+  test('should expand basic pattern groups', () => {
     const data = {
-      users: {
-        john: {
-          profile: { name: 'John', age: 30 },
-          settings: { theme: 'dark' },
-          metadata: { created: '2023-01-01' },
-        },
-        jane: {
-          profile: { name: 'Jane', age: 25 },
-          settings: { theme: 'light' },
-          metadata: { created: '2023-01-02' },
-        },
+      homePage: {
+        components: [
+          {
+            table_id: 'table1',
+            columns: ['col1', 'col2'],
+            filters: [{ value: 'filter1' }, { value: 'filter2' }],
+          },
+          {
+            table_id: 'table2',
+            columns: ['col3', 'col4'],
+            filters: [{ value: 'filter3' }],
+          },
+        ],
       },
     };
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          filterKeys: ['users.*.(profile|settings)'],
+          filterKeys: ['homePage.components[*].(table_id|columns)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      homePage:
+        components:
+          - table_id: 'table1'
+            columns: ['col1', 'col2']
+          - table_id: 'table2'
+            columns: ['col3', 'col4']
+      "
+    `);
+  });
+
+  test('should expand nested array patterns', () => {
+    const data = {
+      homePage: {
+        components: [
+          {
+            table_id: 'table1',
+            filters: [{ value: 'filter1' }, { value: 'filter2' }],
+          },
+        ],
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['homePage.components[*].filters[*].value'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      homePage:
+        components:
+          - filters:
+              - value: 'filter1'
+              - value: 'filter2'
+      "
+    `);
+  });
+
+  test('should expand patterns at the beginning', () => {
+    const data = {
+      users: [{ name: 'Alice', age: 25 }],
+      admins: [{ name: 'Bob', age: 30 }],
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['(users|admins)[*].name'],
         }),
       ),
     ).toMatchInlineSnapshot(`
       "
       users:
-        john:
-          profile: { name: 'John', age: 30 }
-          settings: { theme: 'dark' }
-        jane:
-          profile: { name: 'Jane', age: 25 }
-          settings: { theme: 'light' }
+        - name: 'Alice'
+      admins:
+        - name: 'Bob'
       "
     `);
   });
 
-  test('should handle multi-key patterns with arrays', () => {
-    const data = [
-      {
-        name: 'Item1',
-        value: 100,
-        price: 50,
-        category: 'A',
+  test('should expand multiple groups in single pattern', () => {
+    const data = {
+      prod: {
+        users: [{ active: true, verified: false }],
+        admins: [{ active: false, verified: true }],
       },
-      {
-        name: 'Item2',
-        value: 200,
-        price: 75,
-        category: 'B',
+      dev: {
+        users: [{ active: true, verified: true }],
+        admins: [{ active: true, verified: false }],
       },
-    ];
-    expect(
-      getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['[*].(name|value)'],
-        }),
-      ),
-    ).toMatchInlineSnapshot(`
-      "
-      - { name: 'Item1', value: 100 }
-      - { name: 'Item2', value: 200 }
-      "
-    `);
-  });
-
-  test('should handle empty multi-key patterns gracefully', () => {
-    const data = {
-      test: { prop1: 'value1', prop2: 'value2' },
     };
-    // When using (|) with empty names, no MULTI_KEY token is created,
-    // so the pattern becomes just 'test' which includes everything in test
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          filterKeys: ['test.(|)'],
+          filterKeys: ['(prod|dev).(users|admins)[*].(active|verified)'],
         }),
       ),
     ).toMatchInlineSnapshot(`
       "
-      test: { prop1: 'value1', prop2: 'value2' }
+      prod:
+        users:
+          - { active: true, verified: false }
+        admins:
+          - { active: false, verified: true }
+
+      dev:
+        users:
+          - { active: true, verified: true }
+        admins:
+          - { active: true, verified: false }
       "
     `);
   });
 
-  test('should handle multi-key patterns with empty names', () => {
+  test('should expand patterns with wildcards', () => {
     const data = {
-      test: { prop1: 'value1', prop2: 'value2' },
+      section1: {
+        items: [
+          { config: { enabled: true, mode: 'auto' } },
+          { config: { enabled: false, mode: 'manual' } },
+        ],
+      },
+      section2: {
+        items: [{ config: { enabled: true, mode: 'auto' } }],
+      },
     };
-    // Using (||) should also not match anything meaningful
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          filterKeys: ['test.(||)'],
+          filterKeys: ['*.items[*].config.(enabled|mode)'],
         }),
       ),
     ).toMatchInlineSnapshot(`
       "
-      test: { prop1: 'value1', prop2: 'value2' }
+      section1:
+        items:
+          - config: { enabled: true, mode: 'auto' }
+          - config: { enabled: false, mode: 'manual' }
+
+      section2:
+        items:
+          - config: { enabled: true, mode: 'auto' }
+      "
+    `);
+  });
+});
+
+describe('complex pattern expansion scenarios', () => {
+  test('should handle deeply nested expansions', () => {
+    const data = {
+      app: {
+        modules: [
+          {
+            name: 'auth',
+            components: [
+              {
+                type: 'form',
+                fields: [
+                  { name: 'username', validation: { required: true } },
+                  { name: 'password', validation: { minLength: 8 } },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['app.modules[*].components[*].fields[*].(name|validation)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      app:
+        modules:
+          - components:
+              - fields:
+                  - name: 'username'
+                    validation: { required: true }
+                  - name: 'password'
+                    validation: { minLength: 8 }
       "
     `);
   });
 
-  test('should handle multi-key patterns with non-matching keys', () => {
+  test('should expand patterns with reject keys', () => {
     const data = {
-      prop: {
-        test: {
-          prop1: 'value1',
-          prop2: 'value2',
-          other: 'value3',
+      config: {
+        database: { host: 'localhost', password: 'secret', port: 5432 },
+        cache: { host: 'redis', password: 'secret', ttl: 3600 },
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          rejectKeys: ['config.(database|cache).password'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      config:
+        database: { host: 'localhost', port: 5432 }
+        cache: { host: 'redis', ttl: 3600 }
+      "
+    `);
+  });
+
+  test('should handle triple nested expansions', () => {
+    const data = {
+      environments: {
+        prod: {
+          services: { api: { config: { port: 3000, ssl: true } } },
+          workers: { queue: { config: { threads: 4, timeout: 30 } } },
+        },
+        dev: {
+          services: { api: { config: { port: 3001, ssl: false } } },
+          workers: { queue: { config: { threads: 2, timeout: 10 } } },
         },
       },
     };
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          filterKeys: ['prop.test.(nonexistent|alsononexistent)'],
+          filterKeys: ['environments.(prod|dev).(services|workers).*.config.port'],
         }),
       ),
     ).toMatchInlineSnapshot(`
       "
-      {}
+      environments:
+        prod:
+          services:
+            api:
+              config: { port: 3000 }
+        dev:
+          services:
+            api:
+              config: { port: 3001 }
       "
     `);
   });
+
+  test('should combine expansions with array ranges', () => {
+    const data = {
+      batches: [
+        { type: 'daily', items: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+        { type: 'weekly', items: [{ id: 4 }, { id: 5 }] },
+        { type: 'monthly', items: [{ id: 6 }] },
+      ],
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['batches[0-1].(type|items[0].id)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      batches:
+        - type: 'daily'
+          items:
+            - id: 1
+        - type: 'weekly'
+          items:
+            - id: 4
+      "
+    `);
+  });
+
+  test('should handle expansion patterns with double wildcards', () => {
+    const data = {
+      root: {
+        level1: {
+          deep: {
+            target: 'found1',
+            other: 'ignored1',
+          },
+        },
+        level2: {
+          nested: {
+            target: 'found2',
+            other: 'ignored2',
+          },
+        },
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['root.(level1|level2).**target'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      root:
+        level1:
+          deep: { target: 'found1' }
+        level2:
+          nested: { target: 'found2' }
+      "
+    `);
+  });
+
 });
 
 describe('circular references with key filtering', () => {

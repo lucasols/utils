@@ -27,8 +27,10 @@ import { isPlainObject } from './typeGuards';
  *   - `'[*]**nested'` - all `nested` props of all items of the array
  *   - `'[0-2]'` - The first three items of the array
  *   - `'[4-*]'` - All items of the array from the fourth index to the end
- * - Selecting multiple properties:
- *   - `'prop.test.(prop1|prop2|prop3)'` - The `prop1`, `prop2`, and `prop3` properties of `prop.test` object
+ * - Pattern expansion with parentheses:
+ *   - `'prop.test.(prop1|prop2|prop3)'` - Expands to `prop.test.prop1`, `prop.test.prop2`, and `prop.test.prop3`
+ *   - `'components[*].(table_id|columns|filters[*].value)'` - Expands to `components[*].table_id`, `components[*].columns`, and `components[*].filters[*].value`
+ *   - `'(users|admins)[*].name'` - Expands to `users[*].name` and `admins[*].name`
  *
  * @param objOrArray - The object or array to filter.
  * @param options - The options for the filter.
@@ -63,8 +65,10 @@ export function filterObjectOrArrayKeys(
   const hasFilters = filterPatternsRaw.length > 0;
   const hasRejects = rejectPatternsRaw.length > 0;
 
-  const filterPatterns = filterPatternsRaw.map(parsePattern);
-  const rejectPatterns = rejectPatternsRaw.map(parsePattern);
+  const expandedFilterPatterns = filterPatternsRaw.flatMap(expandPatterns);
+  const expandedRejectPatterns = rejectPatternsRaw.flatMap(expandPatterns);
+  const filterPatterns = expandedFilterPatterns.map(parsePattern);
+  const rejectPatterns = expandedRejectPatterns.map(parsePattern);
 
   function matchPath(path: PathToken[], pattern: PatternToken[]): boolean {
     function rec(pi: number, pti: number): boolean {
@@ -90,12 +94,6 @@ export function filterObjectOrArrayKeys(
       switch (pt.type) {
         case 'KEY':
           if (ct.type === 'KEY' && ct.name === pt.name)
-            return rec(pi + 1, pti + 1);
-          // allow skipping index tokens transparently when matching keys
-          if (ct.type === 'INDEX') return rec(pi + 1, pti);
-          return false;
-        case 'MULTI_KEY':
-          if (ct.type === 'KEY' && pt.names.includes(ct.name))
             return rec(pi + 1, pti + 1);
           // allow skipping index tokens transparently when matching keys
           if (ct.type === 'INDEX') return rec(pi + 1, pti);
@@ -251,12 +249,45 @@ export function filterObjectOrArrayKeys(
 
 type PatternToken =
   | { type: 'KEY'; name: string }
-  | { type: 'MULTI_KEY'; names: string[] }
   | { type: 'WILDCARD_ONE' }
   | { type: 'WILDCARD_ANY' }
   | { type: 'INDEX'; index: number }
   | { type: 'INDEX_ANY' }
   | { type: 'INDEX_RANGE'; start: number; end: number | null };
+
+function expandPatterns(pattern: string): string[] {
+  function expandSingle(str: string): string[] {
+    const start = str.indexOf('(');
+    if (start === -1) {
+      return [str];
+    }
+    
+    const end = str.indexOf(')', start);
+    if (end === -1) {
+      return [str];
+    }
+    
+    const before = str.slice(0, start);
+    const inside = str.slice(start + 1, end);
+    const after = str.slice(end + 1);
+    
+    if (!inside.includes('|')) {
+      return expandSingle(before + inside + after);
+    }
+    
+    const options = inside.split('|').filter(option => option.trim().length > 0);
+    const results: string[] = [];
+    
+    for (const option of options) {
+      const newStr = before + option + after;
+      results.push(...expandSingle(newStr));
+    }
+    
+    return results;
+  }
+  
+  return expandSingle(pattern);
+}
 
 function parsePattern(pattern: string): PatternToken[] {
   const tokens: PatternToken[] = [];
@@ -292,19 +323,6 @@ function parsePattern(pattern: string): PatternToken[] {
       } else if (inside.length > 0) {
         const idx = parseInt(inside, 10);
         tokens.push({ type: 'INDEX', index: idx });
-      }
-      i = end === -1 ? n : end + 1;
-      continue;
-    }
-    if (ch === '(') {
-      const end = pattern.indexOf(')', i + 1);
-      const inside =
-        end === -1 ? pattern.slice(i + 1) : pattern.slice(i + 1, end);
-      if (inside.includes('|') && inside.trim().length > 0) {
-        const names = inside.split('|').filter(name => name.length > 0);
-        if (names.length > 0) {
-          tokens.push({ type: 'MULTI_KEY', names });
-        }
       }
       i = end === -1 ? n : end + 1;
       continue;

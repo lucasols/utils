@@ -337,8 +337,8 @@ export function waitController(): {
  *   - `'[*]**nested'` - all `nested` props of all items of the array
  *   - `'[0-2]'` - The first three items of the array
  *   - `'[4-*]'` - All items of the array from the fourth index to the end
- * - Selecting multiple properties:
- *   - `'prop.test.(prop1|prop2|prop3)'` - The `prop1`, `prop2`, and `prop3` properties of `prop.test` object
+ * - Expanding the patterns with parentheses:
+ *   - `'prop.test.(prop1|prop2|prop3.prop4)'` - Will produce `prop.test.prop1`, `prop.test.prop2`, and `prop.test.prop3.prop4`
  *
  * @param value - The value to snapshot.
  * @param options - The options for the snapshot.
