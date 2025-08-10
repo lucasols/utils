@@ -309,34 +309,44 @@ export function waitController(): {
   };
 }
 
-/*
+/**
  * Produces a more compact and readable snapshot of a value using yaml.
  * By default booleans are shown as `✅` and `❌`, use `showBooleansAs` to disable/configure this.
  *
  * Filtering patterns in `rejectKeys` and `filterKeys`:
  * - `'prop'` - Only root-level properties named 'prop'
- * - `'*prop'` - Any property named exactly 'prop' at any level (root or nested)
- * - `'*.prop'` - Any nested property named 'prop' (excludes root-level matches)
+ * - `'**prop'` - Any property named exactly 'prop' at any level (root or nested)
+ * - `'*.prop'` - Any nested property named 'prop' at second level (excludes root-level matches)
+ * - `'test.*.prop'` - Any property named 'prop' at second level of 'test'
+ * - `'test.*.test.**prop'` - Any property named 'prop' inside of 'test.*.test'
  * - `'prop.nested'` - Exact nested property paths like `obj.prop.nested`
- * - `'prop.*nested'` - All nested properties inside `prop` with name `nested`
+ * - `'prop.**nested'` - All nested properties inside root `prop` with name `nested`
  * - `'prop[0]'` - The first item of the `prop` array
  * - `'prop[*]'` - All items of the `prop` array
  * - `'prop[0].nested'` - `nested` prop of the first item of the `prop` array
  * - `'prop[*].nested'` - `nested` prop of all items of the `prop` array
- * - `'prop[*]*nested'` - all `nested` props of all items of the `prop` array
+ * - `'prop[*]**nested'` - all `nested` props of all items of the `prop` array
  * - `'prop[0-2]'` - The first three items of the `prop` array
  * - `'prop[4-*]'` - All items of the `prop` array from the fourth index to the end
- * - `'prop[0-2].nested.*prop'` - Combining multiple nested patterns is supported
- * - `'[0]'` - The first item of the array
- * - `'[*]'` - All items of the array
- * - `'[0].nested'` - `nested` prop of the first item of the array
- * - `'[*].nested'` - `nested` prop of all items of the array
- * - `'[*]*nested'` - all `nested` props of all items of the array
- * - `'[0-2]'` - The first three items of the array
- * - `'[4-*]'` - All items of the array from the fourth index to the end
+ * - `'prop[0-2].nested.**prop'` - Combining multiple nested patterns is supported
+ * - Root array:
+ *   - `'[0]'` - The first item of the root array
+ *   - `'[*]'` - All items of the array
+ *   - `'[0].nested'` - `nested` prop of the first item of the array
+ *   - `'[*].nested'` - `nested` prop of all items of the array
+ *   - `'[*]**nested'` - all `nested` props of all items of the array
+ *   - `'[0-2]'` - The first three items of the array
+ *   - `'[4-*]'` - All items of the array from the fourth index to the end
  *
  * @param value - The value to snapshot.
  * @param options - The options for the snapshot.
+ * @param options.collapseObjects - Whether to collapse objects into a single line.
+ * @param options.maxLineLength - The maximum length of a line.
+ * @param options.showUndefined - Whether to show undefined values.
+ * @param options.showBooleansAs - Whether to show booleans as text, by default true is `✅` and false is `❌`
+ * @param options.rejectKeys - The keys to reject.
+ * @param options.filterKeys - The keys to filter.
+ * @param options.ignoreProps - The props to ignore.
  * @returns The compact snapshot of the value.
  */
 export function compactSnapshot(
