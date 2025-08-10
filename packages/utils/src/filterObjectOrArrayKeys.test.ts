@@ -433,6 +433,72 @@ describe('advanced wildcard patterns', () => {
       "
     `);
   });
+
+  test('should filter with test.*.prop pattern', () => {
+    const data = {
+      test: {
+        section1: { prop: 'value1', other: 'data1' },
+        section2: { prop: 'value2', other: 'data2' },
+        section3: { other: 'data3' },
+      },
+      other: {
+        section1: { prop: 'should-not-match', other: 'data4' },
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, { filterKeys: ['test.*.prop'] }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      test:
+        section1: { prop: 'value1' }
+        section2: { prop: 'value2' }
+      "
+    `);
+  });
+
+  test('should filter with test.*.test.**prop pattern', () => {
+    const data = {
+      test: {
+        section1: {
+          test: {
+            level1: { prop: 'deep1', other: 'data1' },
+            level2: { nested: { prop: 'deep2' }, other: 'data2' },
+          },
+          other: { prop: 'should-not-match' },
+        },
+        section2: {
+          test: {
+            level1: { prop: 'deep3', other: 'data3' },
+          },
+          other: { prop: 'should-not-match' },
+        },
+      },
+      other: {
+        section1: {
+          test: { prop: 'should-not-match' },
+        },
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, { filterKeys: ['test.*.test.**prop'] }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      test:
+        section1:
+          test:
+            level1: { prop: 'deep1' }
+            level2:
+              nested: { prop: 'deep2' }
+        section2:
+          test:
+            level1: { prop: 'deep3' }
+      "
+    `);
+  });
 });
 
 describe('edge cases and error handling', () => {
