@@ -2285,7 +2285,7 @@ describe('compactSnapshot', () => {
 
       // 'self' creates the circular reference but is not rejected, so should throw
       expect(() => compactSnapshot(obj, { rejectKeys: ['password'] })).toThrow(
-        'Circular reference detected in object during filtering',
+        'Circular references are not supported',
       );
     });
 
@@ -2317,7 +2317,7 @@ describe('compactSnapshot', () => {
       // Include the circular key in filter, so it gets traversed and detected
       expect(() =>
         compactSnapshot(obj, { filterKeys: ['name', 'active', 'self'] }),
-      ).toThrow('Circular reference detected in object during filtering');
+      ).toThrow('Circular references are not supported');
     });
 
     test('should not throw when circular key gets filtered out', () => {
@@ -2358,7 +2358,7 @@ describe('compactSnapshot', () => {
             'user.profile.backRef',
           ],
         }),
-      ).toThrow('Circular reference detected in object during filtering');
+      ).toThrow('Circular references are not supported');
     });
 
     test('should not throw when nested circular reference key gets rejected', () => {
@@ -2390,7 +2390,7 @@ describe('compactSnapshot', () => {
 
       expect(() =>
         compactSnapshot({ users: arr }, { rejectKeys: ['*.password'] }),
-      ).toThrow('Circular reference detected in array during filtering');
+      ).toThrow('Circular references are not supported');
     });
   });
 });
