@@ -51,14 +51,6 @@ export function filterObjectOrArrayKeys(
     | { type: 'KEY'; name: string }
     | { type: 'INDEX'; index: number };
 
-  type PatternToken =
-    | { type: 'KEY'; name: string }
-    | { type: 'WILDCARD_ONE' }
-    | { type: 'WILDCARD_ANY' }
-    | { type: 'INDEX'; index: number }
-    | { type: 'INDEX_ANY' }
-    | { type: 'INDEX_RANGE'; start: number; end: number | null };
-
   const toArray = (v?: string[] | string): string[] =>
     v === undefined ? []
     : Array.isArray(v) ? v
@@ -68,77 +60,6 @@ export function filterObjectOrArrayKeys(
   const rejectPatternsRaw = toArray(rejectKeys);
   const hasFilters = filterPatternsRaw.length > 0;
   const hasRejects = rejectPatternsRaw.length > 0;
-
-  function parsePattern(pattern: string): PatternToken[] {
-    const tokens: PatternToken[] = [];
-    let i = 0;
-    const n = pattern.length;
-    const pushKey = (name: string) => {
-      if (name.length === 0) return;
-      tokens.push({ type: 'KEY', name });
-    };
-    while (i < n) {
-      const ch = pattern[i];
-      if (ch === '.') {
-        i += 1;
-        continue;
-      }
-      if (ch === '[') {
-        const end = pattern.indexOf(']', i + 1);
-        const inside =
-          end === -1 ? pattern.slice(i + 1) : pattern.slice(i + 1, end);
-        if (inside === '*') {
-          tokens.push({ type: 'INDEX_ANY' });
-        } else if (inside.includes('-')) {
-          const parts = inside.split('-');
-          const startStr = parts[0] ?? '';
-          const endStr = parts[1] ?? '';
-          const start = parseInt(startStr, 10);
-          const endNum = endStr === '*' ? null : parseInt(endStr, 10);
-          tokens.push({
-            type: 'INDEX_RANGE',
-            start,
-            end: endNum === null || Number.isFinite(endNum) ? endNum : null,
-          });
-        } else if (inside.length > 0) {
-          const idx = parseInt(inside, 10);
-          tokens.push({ type: 'INDEX', index: idx });
-        }
-        i = end === -1 ? n : end + 1;
-        continue;
-      }
-      if (ch === '*') {
-        if (pattern[i + 1] === '*') {
-          tokens.push({ type: 'WILDCARD_ANY' });
-          i += 2;
-          let j = i;
-          while (j < n) {
-            const c = pattern[j];
-            if (c === '.' || c === '[') break;
-            j += 1;
-          }
-          if (j > i) {
-            pushKey(pattern.slice(i, j));
-            i = j;
-          }
-          continue;
-        } else {
-          tokens.push({ type: 'WILDCARD_ONE' });
-          i += 1;
-          continue;
-        }
-      }
-      let j = i;
-      while (j < n) {
-        const c = pattern[j];
-        if (c === '.' || c === '[') break;
-        j += 1;
-      }
-      pushKey(pattern.slice(i, j));
-      i = j;
-    }
-    return tokens;
-  }
 
   const filterPatterns = filterPatternsRaw.map(parsePattern);
   const rejectPatterns = rejectPatternsRaw.map(parsePattern);
@@ -318,4 +239,83 @@ export function filterObjectOrArrayKeys(
   );
   if (built === undefined) return Array.isArray(objOrArray) ? [] : {};
   return built;
+}
+
+type PatternToken =
+  | { type: 'KEY'; name: string }
+  | { type: 'WILDCARD_ONE' }
+  | { type: 'WILDCARD_ANY' }
+  | { type: 'INDEX'; index: number }
+  | { type: 'INDEX_ANY' }
+  | { type: 'INDEX_RANGE'; start: number; end: number | null };
+
+function parsePattern(pattern: string): PatternToken[] {
+  const tokens: PatternToken[] = [];
+  let i = 0;
+  const n = pattern.length;
+  const pushKey = (name: string) => {
+    if (name.length === 0) return;
+    tokens.push({ type: 'KEY', name });
+  };
+  while (i < n) {
+    const ch = pattern[i];
+    if (ch === '.') {
+      i += 1;
+      continue;
+    }
+    if (ch === '[') {
+      const end = pattern.indexOf(']', i + 1);
+      const inside =
+        end === -1 ? pattern.slice(i + 1) : pattern.slice(i + 1, end);
+      if (inside === '*') {
+        tokens.push({ type: 'INDEX_ANY' });
+      } else if (inside.includes('-')) {
+        const parts = inside.split('-');
+        const startStr = parts[0] ?? '';
+        const endStr = parts[1] ?? '';
+        const start = parseInt(startStr, 10);
+        const endNum = endStr === '*' ? null : parseInt(endStr, 10);
+        tokens.push({
+          type: 'INDEX_RANGE',
+          start,
+          end: endNum === null || Number.isFinite(endNum) ? endNum : null,
+        });
+      } else if (inside.length > 0) {
+        const idx = parseInt(inside, 10);
+        tokens.push({ type: 'INDEX', index: idx });
+      }
+      i = end === -1 ? n : end + 1;
+      continue;
+    }
+    if (ch === '*') {
+      if (pattern[i + 1] === '*') {
+        tokens.push({ type: 'WILDCARD_ANY' });
+        i += 2;
+        let j = i;
+        while (j < n) {
+          const c = pattern[j];
+          if (c === '.' || c === '[') break;
+          j += 1;
+        }
+        if (j > i) {
+          pushKey(pattern.slice(i, j));
+          i = j;
+        }
+        continue;
+      } else {
+        tokens.push({ type: 'WILDCARD_ONE' });
+        i += 1;
+        continue;
+      }
+    }
+    let j = i;
+    while (j < n) {
+      const c = pattern[j];
+      if (c === '.' || c === '[') break;
+      j += 1;
+    }
+    pushKey(pattern.slice(i, j));
+    i = j;
+  }
+  return tokens;
 }
