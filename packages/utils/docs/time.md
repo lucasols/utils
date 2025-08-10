@@ -243,7 +243,7 @@ Defined in: [packages/utils/src/time.ts:29](https://github.com/lucasols/utils/bl
 
 ##### format
 
-`"seconds"` | `"minutes"` | `"milliseconds"`
+`"minutes"` | `"seconds"` | `"milliseconds"`
 
 ##### hoursMinLength
 

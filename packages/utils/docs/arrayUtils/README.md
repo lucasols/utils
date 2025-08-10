@@ -18,7 +18,7 @@
 type FilterAndMapReturn<T> = false | T;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:40](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L40)
+Defined in: [packages/utils/src/arrayUtils.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L42)
 
 #### Type Parameters
 
@@ -34,7 +34,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:40](https://github.com/lucasols/ut
 function arrayWithPrev<T>(array): [T, null | T][];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:103](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L103)
+Defined in: [packages/utils/src/arrayUtils.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L108)
 
 #### Type Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:103](https://github.com/lucasols/u
 function arrayWithPrevAndIndex<T>(array): object[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:107](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L107)
+Defined in: [packages/utils/src/arrayUtils.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L112)
 
 #### Type Parameters
 
@@ -86,7 +86,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:107](https://github.com/lucasols/u
 function filterAndMap<T, R>(array, mapFilter): R[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L21)
+Defined in: [packages/utils/src/arrayUtils.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L23)
 
 allow to filter and map with better typing ergonomics
 
@@ -143,7 +143,7 @@ function findAfterIndex<T>(
    predicate): undefined | T;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:130](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L130)
+Defined in: [packages/utils/src/arrayUtils.ts:135](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L135)
 
 #### Type Parameters
 
@@ -180,7 +180,7 @@ function findBeforeIndex<T>(
    predicate): undefined | T;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:144](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L144)
+Defined in: [packages/utils/src/arrayUtils.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L149)
 
 #### Type Parameters
 
@@ -214,7 +214,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:144](https://github.com/lucasols/u
 function hasDuplicates<T>(array, getKey): boolean;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:168](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L168)
+Defined in: [packages/utils/src/arrayUtils.ts:173](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L173)
 
 #### Type Parameters
 
@@ -244,7 +244,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:168](https://github.com/lucasols/u
 function isInArray<T, U>(value, oneOf): value is U;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:117](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L117)
+Defined in: [packages/utils/src/arrayUtils.ts:122](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L122)
 
 #### Type Parameters
 
@@ -278,7 +278,7 @@ readonly `U`[]
 function rejectArrayUndefinedValues<T>(array): T;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:164](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L164)
+Defined in: [packages/utils/src/arrayUtils.ts:169](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L169)
 
 #### Type Parameters
 
@@ -304,7 +304,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:164](https://github.com/lucasols/u
 function rejectDuplicates<T>(array, getKey): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:185](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L185)
+Defined in: [packages/utils/src/arrayUtils.ts:190](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L190)
 
 #### Type Parameters
 
@@ -337,7 +337,7 @@ function sortBy<T>(
    props): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:62](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L62)
+Defined in: [packages/utils/src/arrayUtils.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L67)
 
 Sort an array based on a value
 
@@ -396,7 +396,7 @@ function truncateArray<T>(
    appendIfTruncated?): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:205](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L205)
+Defined in: [packages/utils/src/arrayUtils.ts:210](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L210)
 
 #### Type Parameters
 

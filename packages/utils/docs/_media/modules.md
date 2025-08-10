@@ -21,6 +21,7 @@
 - [deepEqual](deepEqual.md)
 - [enhancedMap](enhancedMap.md)
 - [exhaustiveMatch](exhaustiveMatch/README.md)
+- [filterObjectOrArrayKeys](filterObjectOrArrayKeys.md)
 - [getAutoIncrementId](getAutoIncrementId.md)
 - [getCompositeKey](getCompositeKey.md)
 - [getValueStableKey](getValueStableKey.md)

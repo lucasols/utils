@@ -93,7 +93,7 @@ match with early evaluation of the values
 function exhaustiveMatchObjUnion<T, D, K>(obj, key): object;
 ```
 
-Defined in: [packages/utils/src/exhaustiveMatch.ts:47](https://github.com/lucasols/utils/blob/main/packages/utils/src/exhaustiveMatch.ts#L47)
+Defined in: [packages/utils/src/exhaustiveMatch.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/exhaustiveMatch.ts#L51)
 
 #### Type Parameters
 

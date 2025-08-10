@@ -97,6 +97,10 @@
       "import": "./lib/exhaustiveMatch.js",
       "require": "./lib/exhaustiveMatch.cjs"
     },
+    "./filterObjectOrArrayKeys": {
+      "import": "./lib/filterObjectOrArrayKeys.js",
+      "require": "./lib/filterObjectOrArrayKeys.cjs"
+    },
     "./getAutoIncrementId": {
       "import": "./lib/getAutoIncrementId.js",
       "require": "./lib/getAutoIncrementId.cjs"

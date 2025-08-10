@@ -18,7 +18,7 @@
 const joinStrings: (...args) => string = concatStrings;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L33)
+Defined in: [packages/utils/src/stringUtils.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L34)
 
 A util to create more legible conditional concatenated strings
 
@@ -52,7 +52,7 @@ Use [concatStrings](#concatstrings) instead
 function concatStrings(...args): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L11)
+Defined in: [packages/utils/src/stringUtils.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L12)
 
 A util to create more legible conditional concatenated strings
 
@@ -82,7 +82,7 @@ joinStrings('a', addBString ? 'b' : null, 'c') // 'ac' if addBString is false, '
 function convertToSnakeCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L46)
+Defined in: [packages/utils/src/stringUtils.ts:47](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L47)
 
 #### Parameters
 
@@ -102,7 +102,7 @@ Defined in: [packages/utils/src/stringUtils.ts:46](https://github.com/lucasols/u
 function formatNum(num): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L35)
+Defined in: [packages/utils/src/stringUtils.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L36)
 
 #### Parameters
 
@@ -122,7 +122,7 @@ Defined in: [packages/utils/src/stringUtils.ts:35](https://github.com/lucasols/u
 function isSnakeCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L42)
+Defined in: [packages/utils/src/stringUtils.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L43)
 
 #### Parameters
 
@@ -145,7 +145,7 @@ function truncateString(
    ellipsis): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L53)
+Defined in: [packages/utils/src/stringUtils.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L54)
 
 #### Parameters
 

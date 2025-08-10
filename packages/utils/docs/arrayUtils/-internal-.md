@@ -14,4 +14,4 @@
 type SortOrder = "desc" | "asc";
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L42)
+Defined in: [packages/utils/src/arrayUtils.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L44)

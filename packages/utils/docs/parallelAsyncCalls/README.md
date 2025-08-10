@@ -18,7 +18,7 @@
 function parallelAsyncCalls<M, R>(): ParallelAsyncResultCalls<M, R>;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:214](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L214)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:217](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L217)
 
 Executes multiple asynchronous calls in parallel and collects the results in a easier to use format.
 

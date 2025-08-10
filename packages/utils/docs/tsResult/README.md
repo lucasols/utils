@@ -18,7 +18,7 @@
 type GetTypedResult<R> = TypedResult<R extends Result<infer T, any> ? T : never, R extends Result<any, infer E> ? E : never>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:328](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L328)
+Defined in: [packages/utils/src/tsResult.ts:355](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L355)
 
 #### Type Parameters
 
@@ -83,7 +83,7 @@ Use `t-result` library instead.
 type TypedResult<T, E> = object;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:318](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L318)
+Defined in: [packages/utils/src/tsResult.ts:345](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L345)
 
 #### Deprecated
 
@@ -107,7 +107,7 @@ Use `t-result` library instead.
 _type: Result<T, E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:324](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L324)
+Defined in: [packages/utils/src/tsResult.ts:351](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L351)
 
 ###### Deprecated
 
@@ -119,7 +119,7 @@ Use `t-result` library instead.
 err: (error) => Err<E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:322](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L322)
+Defined in: [packages/utils/src/tsResult.ts:349](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L349)
 
 ###### Parameters
 
@@ -141,7 +141,7 @@ Use `t-result` library instead.
 ok: (value) => Ok<T>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:320](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L320)
+Defined in: [packages/utils/src/tsResult.ts:347](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L347)
 
 ###### Parameters
 
@@ -477,7 +477,7 @@ Use `t-result` library instead.
 function err<E>(error): Err<E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L149)
+Defined in: [packages/utils/src/tsResult.ts:158](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L158)
 
 #### Type Parameters
 
@@ -503,6 +503,8 @@ Use `t-result` library instead.
 
 ### ~~ok()~~
 
+#### Param
+
 #### Deprecated
 
 Use `t-result` library instead.
@@ -519,6 +521,8 @@ Defined in: [packages/utils/src/tsResult.ts:124](https://github.com/lucasols/uti
 
 [`Ok`](-internal-.md#ok)\<`void`\>
 
+##### Param
+
 ##### Deprecated
 
 Use `t-result` library instead.
@@ -533,7 +537,7 @@ Use `t-result` library instead.
 function ok<T>(value): Ok<T>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:126](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L126)
+Defined in: [packages/utils/src/tsResult.ts:129](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L129)
 
 ##### Type Parameters
 
@@ -550,6 +554,8 @@ Defined in: [packages/utils/src/tsResult.ts:126](https://github.com/lucasols/uti
 ##### Returns
 
 [`Ok`](-internal-.md#ok)\<`T`\>
+
+##### Param
 
 ##### Deprecated
 
@@ -569,7 +575,7 @@ Use `t-result` library instead.
 function resultify<T, E>(fn, errorNormalizer?): Result<T, E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:238](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L238)
+Defined in: [packages/utils/src/tsResult.ts:254](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L254)
 
 ##### Type Parameters
 
@@ -605,7 +611,7 @@ Use `t-result` library instead.
 function resultify<T, E>(fn, errorNormalizer?): Promise<Result<Awaited<T>, E>>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:243](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L243)
+Defined in: [packages/utils/src/tsResult.ts:263](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L263)
 
 ##### Type Parameters
 
@@ -641,7 +647,7 @@ Use `t-result` library instead.
 function resultify<T, E>(fn, errorNormalizer?): Promise<Result<T, E>>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:248](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L248)
+Defined in: [packages/utils/src/tsResult.ts:272](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L272)
 
 ##### Type Parameters
 
@@ -679,7 +685,7 @@ Use `t-result` library instead.
 function unknownToError(error): Error;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:296](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L296)
+Defined in: [packages/utils/src/tsResult.ts:323](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L323)
 
 #### Parameters
 

@@ -72,7 +72,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:51](https://github.com/luc
 addTuple<T>(...calls): object;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:63](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L63)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L66)
 
 adds calls return tuples with inferred results
 
@@ -139,7 +139,7 @@ runAll(__namedParameters): Promise<Result<Succeeded<R, M>[], {
 }>>;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:151](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L151)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:154](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L154)
 
 ###### Parameters
 
@@ -167,7 +167,7 @@ runAllSettled(__namedParameters): Promise<{
 }>;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:96](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L96)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:99](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L99)
 
 ###### Parameters
 

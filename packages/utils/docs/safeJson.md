@@ -14,7 +14,7 @@
 function safeJsonParse(value): unknown;
 ```
 
-Defined in: [packages/utils/src/safeJson.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/safeJson.ts#L11)
+Defined in: [packages/utils/src/safeJson.ts:17](https://github.com/lucasols/utils/blob/main/packages/utils/src/safeJson.ts#L17)
 
 JSON.parse can throw if the value is not valid JSON, this function catches those errors and returns undefined
 
@@ -36,7 +36,7 @@ JSON.parse can throw if the value is not valid JSON, this function catches those
 function safeJsonStringify(value): undefined | string;
 ```
 
-Defined in: [packages/utils/src/safeJson.ts:2](https://github.com/lucasols/utils/blob/main/packages/utils/src/safeJson.ts#L2)
+Defined in: [packages/utils/src/safeJson.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/safeJson.ts#L5)
 
 JSON.stringify can throw if the value is circular or contains functions, this function catches those errors and returns undefined
 

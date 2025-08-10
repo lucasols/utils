@@ -23,7 +23,7 @@ function retryOnError<T>(
 originalMaxRetries): Promise<T>;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L36)
+Defined in: [packages/utils/src/retryOnError.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L38)
 
 Retries a function on error with configurable retry logic.
 

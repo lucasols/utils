@@ -11,10 +11,38 @@
 ### compactSnapshot()
 
 ```ts
-function compactSnapshot(value, __namedParameters): string;
+function compactSnapshot(value, options): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:487](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L487)
+Defined in: [packages/utils/src/testUtils.ts:352](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L352)
+
+Produces a more compact and readable snapshot of a value using yaml.
+By default booleans are shown as `✅` and `❌`, use `showBooleansAs` to disable/configure this.
+
+Filtering patterns in `rejectKeys` and `filterKeys`:
+- `'prop'` - Only root-level properties named 'prop'
+- `'**prop'` - Any property named exactly 'prop' at any level (root or nested)
+- `'*.prop'` - Any nested property named 'prop' at second level (excludes root-level matches)
+- `'test.*.prop'` - Any property named 'prop' at second level of 'test'
+- `'test.*.test.**prop'` - Any property named 'prop' inside of 'test.*.test'
+- `'prop.nested'` - Exact nested property paths like `obj.prop.nested`
+- `'prop.**nested'` - All nested properties inside root `prop` with name `nested`
+- `'prop[0]'` - The first item of the `prop` array
+- `'prop[*]'` - All items of the `prop` array
+- `'prop[0].nested'` - `nested` prop of the first item of the `prop` array
+- `'prop[*].nested'` - `nested` prop of all items of the `prop` array
+- `'prop[*]**nested'` - all `nested` props of all items of the `prop` array
+- `'prop[0-2]'` - The first three items of the `prop` array
+- `'prop[4-*]'` - All items of the `prop` array from the fourth index to the end
+- `'prop[0-2].nested.**prop'` - Combining multiple nested patterns is supported
+- Root array:
+  - `'[0]'` - The first item of the root array
+  - `'[*]'` - All items of the array
+  - `'[0].nested'` - `nested` prop of the first item of the array
+  - `'[*].nested'` - `nested` prop of all items of the array
+  - `'[*]**nested'` - all `nested` props of all items of the array
+  - `'[0-2]'` - The first three items of the array
+  - `'[4-*]'` - All items of the array from the fourth index to the end
 
 #### Parameters
 
@@ -22,13 +50,19 @@ Defined in: [packages/utils/src/testUtils.ts:487](https://github.com/lucasols/ut
 
 `unknown`
 
-##### \_\_namedParameters
+The value to snapshot.
+
+##### options
 
 [`YamlStringifyOptions`](yamlStringify.md#yamlstringifyoptions) & `object` = `{}`
+
+The options for the snapshot.
 
 #### Returns
 
 `string`
+
+The compact snapshot of the value.
 
 ***
 
@@ -38,7 +72,7 @@ Defined in: [packages/utils/src/testUtils.ts:487](https://github.com/lucasols/ut
 function createLoggerStore(__namedParameters): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L10)
+Defined in: [packages/utils/src/testUtils.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L11)
 
 #### Parameters
 
@@ -270,7 +304,7 @@ get snapshotFromLast(): string;
 function getResultFn<T>(fnGetter, wrapper?): T;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:276](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L276)
+Defined in: [packages/utils/src/testUtils.ts:277](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L277)
 
 #### Type Parameters
 
@@ -300,7 +334,7 @@ Defined in: [packages/utils/src/testUtils.ts:276](https://github.com/lucasols/ut
 function waitController(): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:291](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L291)
+Defined in: [packages/utils/src/testUtils.ts:292](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L292)
 
 #### Returns
 
