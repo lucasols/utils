@@ -77,6 +77,27 @@ describe('rejectKeys functionality', () => {
       "
     `);
   });
+
+  test('should handle arrays with rejectKeys', () => {
+    const data = {
+      users: [
+        { name: 'John', password: 'secret1', active: true },
+        { name: 'Jane', password: 'secret2', active: false },
+      ],
+    };
+
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, { rejectKeys: ['*.password'] }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      users:
+        - { name: 'John', active: '✅' }
+        - { name: 'Jane', active: '❌' }
+      "
+    `);
+  });
 });
 
 describe('filterKeys functionality', () => {
@@ -169,6 +190,42 @@ describe('combined rejectKeys and filterKeys', () => {
     ).toMatchInlineSnapshot(`
       "
       user: { name: 'John', email: 'john@example.com', active: true }
+      "
+    `);
+  });
+
+  test('should apply rejectKeys (with nested wildcard) within filtered nested objects', () => {
+    const data = {
+      user: {
+        name: 'John',
+        email: 'john@example.com',
+        password: 'secret123',
+        settings: {
+          theme: 'dark',
+          apiKey: 'secret-key',
+          notifications: true,
+        },
+      },
+      metadata: {
+        version: '1.0',
+      },
+    };
+
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['user'],
+          rejectKeys: ['*.password', '*.apiKey'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      user:
+        name: 'John'
+        email: 'john@example.com'
+        settings:
+          theme: 'dark'
+          notifications: '✅'
       "
     `);
   });

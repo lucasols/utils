@@ -42,234 +42,353 @@ export function filterObjectOrArrayKeys(
     rejectEmptyObjectsInArray?: boolean;
   },
 ): Record<string, any> | Record<string, any>[] {
-  const filterPatterns = normalizePatterns(filterKeys);
-  const rejectPatterns = normalizePatterns(rejectKeys);
-
-  // Track visited objects to detect circular references
+  // Handle circular references detection
   const visited = new WeakSet();
 
-  function normalizePatterns(
-    patterns: string[] | string | undefined,
-  ): string[] {
-    if (!patterns) return [];
-    return Array.isArray(patterns) ? patterns : [patterns];
+  // Normalize keys to arrays
+  const normalizedFilterKeys = filterKeys
+    ? Array.isArray(filterKeys)
+      ? filterKeys
+      : [filterKeys]
+    : [];
+  const normalizedRejectKeys = rejectKeys
+    ? Array.isArray(rejectKeys)
+      ? rejectKeys
+      : [rejectKeys]
+    : [];
+
+  // Parse a key pattern into segments
+  function parseKeyPattern(pattern: string): string[] {
+    const segments: string[] = [];
+    let current = '';
+    let i = 0;
+
+    while (i < pattern.length) {
+      const char = pattern[i];
+      
+      if (char === '.') {
+        if (current) {
+          segments.push(current);
+          current = '';
+        }
+      } else if (char === '[') {
+        // Handle array notation
+        if (current) {
+          segments.push(current);
+          current = '';
+        }
+        const closingBracket = pattern.indexOf(']', i);
+        if (closingBracket === -1) {
+          throw new Error(`Invalid pattern: missing closing bracket in "${pattern}"`);
+        }
+        segments.push(pattern.slice(i, closingBracket + 1));
+        i = closingBracket;
+      } else {
+        current += char;
+      }
+      i++;
+    }
+    
+    if (current) {
+      segments.push(current);
+    }
+    
+    return segments;
   }
 
-  function matchesPattern(path: string, pattern: string): boolean {
-    // Direct match
-    if (path === pattern) return true;
-
-    // Handle array range patterns (must come before wildcard check)
-    if (pattern.includes('[') && pattern.includes('-')) {
-      return matchesRangePattern(path, pattern);
-    }
-
-    // Handle simple array index patterns like [0], [1], [2]
-    if (pattern.match(/^\[\d+\]$/)) {
-      return path === pattern;
-    }
-
-    // Handle wildcard patterns
-    if (pattern.includes('*')) {
-      return matchesWildcardPattern(path, pattern);
-    }
-
-    return false;
-  }
-
-  function matchesWildcardPattern(path: string, pattern: string): boolean {
-    // Convert pattern to regex
-    let regexPattern = escapeRegex(pattern);
-
-    // Handle different wildcard types
-    // '*prop' - matches any property named 'prop' at any level
-    if (pattern.match(/^\*[^.[]+$/)) {
-      const propName = pattern.slice(1);
-      const pathSegments = path.split(/[.[\]]+/).filter(Boolean);
-      return pathSegments[pathSegments.length - 1] === propName;
-    }
-
-    // '*.prop' - matches nested property 'prop' (not at root)
-    if (pattern.match(/^\*\.[^*]+$/)) {
-      const propName = pattern.slice(2);
-      if (!path.includes('.')) return false;
-      const pathSegments = path.split(/[.[\]]+/).filter(Boolean);
-      return pathSegments[pathSegments.length - 1] === propName;
-    }
-
-    // Handle patterns with wildcards in various positions
-    regexPattern = regexPattern
-      .replace(/\\\*/g, '.*') // Replace escaped * with .*
-      .replace(/\\\[/g, '\\[')
-      .replace(/\\\]/g, '\\]')
-      .replace(/\\\./g, '\\.');
-
-    // Handle [*] patterns
-    regexPattern = regexPattern.replace(/\\\[\\.\*\\\]/g, '\\[\\d+\\]');
-
-    // Handle patterns like 'prop.*nested' or '*.*.name'
-    const regex = new RegExp(`^${regexPattern}$`);
-    return regex.test(path);
-  }
-
-  function matchesRangePattern(path: string, pattern: string): boolean {
-    // Extract range from pattern
-    const rangeMatch = pattern.match(/\[(\d+)-(\d+|\*)\]/);
-    if (!rangeMatch) return false;
-
-    const rangeStart = parseInt(rangeMatch[1] ?? '0');
-    const rangeEnd =
-      rangeMatch[2] === '*' ? Infinity : parseInt(rangeMatch[2] ?? '0');
-
-    // Extract index from path
-    const indexMatch = path.match(/\[(\d+)\]/);
-    if (!indexMatch) return false;
-
-    const index = parseInt(indexMatch[1] ?? '0');
-
-    // Check if index is in range
-    if (index < rangeStart || index > rangeEnd) return false;
-
-    // Check if the rest of the pattern matches
-    const patternWithIndex = pattern.replace(rangeMatch[0], `[${index}]`);
-    return path === patternWithIndex;
-  }
-
-  function escapeRegex(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
-
-  function shouldIncludePath(path: string): boolean | 'partial' {
-    const hasFilters = filterPatterns.length > 0;
-    const hasRejects = rejectPatterns.length > 0;
-
-    // Check if explicitly rejected
-    if (hasRejects && rejectPatterns.some((p) => matchesPattern(path, p))) {
-      return false;
-    }
-
-    // If no filters, include everything not rejected
-    if (!hasFilters) {
-      return true;
-    }
-
-    // Check if explicitly included
-    if (filterPatterns.some((p) => matchesPattern(path, p))) {
-      return true;
-    }
-
-    // Check if this path is a child of any included pattern
-    // For example, if '[0]' is included, then '[0].name' should also be included
-    // This also handles range patterns like '[1-3]' matching '[1].name'
-    for (const pattern of filterPatterns) {
-      if (path.startsWith(`${pattern}.`) || path.startsWith(`${pattern}[`)) {
+  // Check if a key matches a pattern segment
+  function matchesSegment(key: string, segment: string, isArrayIndex = false): boolean {
+    if (isArrayIndex && segment.startsWith('[') && segment.endsWith(']')) {
+      const indexPattern = segment.slice(1, -1);
+      
+      if (indexPattern === '*') {
         return true;
       }
+      
+      if (indexPattern.includes('-')) {
+        const parts = indexPattern.split('-');
+        const start = parts[0];
+        const end = parts[1];
+        if (!start || !end) return false;
+        
+        const keyNum = parseInt(key, 10);
+        const startNum = parseInt(start, 10);
+        
+        if (isNaN(keyNum) || isNaN(startNum)) return false;
+        
+        if (end === '*') {
+          return keyNum >= startNum;
+        }
+        
+        const endNum = parseInt(end, 10);
+        if (isNaN(endNum)) return false;
+        
+        return keyNum >= startNum && keyNum <= endNum;
+      }
+      
+      return key === indexPattern;
+    }
+    
+    if (segment === '*') {
+      return true;
+    }
+    
+    if (segment.includes('*')) {
+      if (segment.startsWith('*')) {
+        return key.endsWith(segment.slice(1));
+      }
+      if (segment.endsWith('*')) {
+        return key.startsWith(segment.slice(0, -1));
+      }
+      // Handle middle wildcards
+      const parts = segment.split('*');
+      if (parts.length === 2 && parts[0] !== undefined && parts[1] !== undefined) {
+        return key.startsWith(parts[0]) && key.endsWith(parts[1]);
+      }
+    }
+    
+    return key === segment;
+  }
 
-      // Handle range patterns: if pattern is '[1-3]' and path is '[2].name', check if '[2]' matches '[1-3]'
-      if (pattern.includes('[') && pattern.includes('-')) {
-        // Extract the array index part of the path
-        const pathIndexMatch = path.match(/^(\[\d+\])/);
-        if (
-          pathIndexMatch?.[1] &&
-          matchesRangePattern(pathIndexMatch[1], pattern)
-        ) {
+
+  // Check if any descendant paths from the given object match the patterns
+  function hasMatchingDescendants(obj: any, currentPath: string[], patterns: string[]): boolean {
+    if (!isPlainObject(obj) && !Array.isArray(obj)) {
+      return false;
+    }
+    
+    // Prevent infinite recursion on circular references
+    if (typeof obj === 'object' && obj !== null && visited.has(obj)) {
+      return false;
+    }
+    
+    if (Array.isArray(obj)) {
+      for (let i = 0; i < obj.length; i++) {
+        const itemPath = [...currentPath, i.toString()];
+        
+        // Check if this path itself matches
+        if (patterns.some(pattern => {
+          const segments = parseKeyPattern(pattern);
+          return matchesPath(itemPath, segments, 0, 0);
+        })) {
+          return true;
+        }
+        
+        // Check descendants recursively
+        if (hasMatchingDescendants(obj[i], itemPath, patterns)) {
+          return true;
+        }
+      }
+    } else {
+      for (const [key, val] of Object.entries(obj)) {
+        const keyPath = [...currentPath, key];
+        
+        // Check if this path itself matches
+        if (patterns.some(pattern => {
+          const segments = parseKeyPattern(pattern);
+          return matchesPath(keyPath, segments, 0, 0);
+        })) {
+          return true;
+        }
+        
+        // Check descendants recursively
+        if (hasMatchingDescendants(val, keyPath, patterns)) {
           return true;
         }
       }
     }
-
-    // Check if any filter pattern is a child of this path
-    // This means we need to traverse deeper
-    for (const pattern of filterPatterns) {
-      if (pattern.startsWith(`${path}.`) || pattern.startsWith(`${path}[`)) {
-        return 'partial';
-      }
-      // Handle wildcard patterns that might match descendants
-      if (pattern.includes('*')) {
-        const segments = pattern.split(/[.[\]]+/).filter(Boolean);
-        const pathSegments = path.split(/[.[\]]+/).filter(Boolean);
-        if (pathSegments.length < segments.length) {
-          // Could potentially match descendants
-          return 'partial';
-        }
-      }
-    }
-
+    
     return false;
   }
 
-  function filterValue(value: any, path: string): any {
-    // Handle primitives and null/undefined
+  // Recursively match path segments against pattern segments
+  function matchesPath(path: string[], pattern: string[], pathIndex: number, patternIndex: number): boolean {
+    if (patternIndex >= pattern.length) {
+      return pathIndex >= path.length;
+    }
+    
+    if (pathIndex >= path.length) {
+      return false;
+    }
+    
+    const segment = pattern[patternIndex];
+    const key = path[pathIndex];
+    if (!segment || !key) return false;
+    
+    const isArrayIndex = /^\d+$/.test(key);
+    
+    // Handle special wildcard patterns like *name that can match at any remaining level
+    if (segment.startsWith('*') && !segment.endsWith(']') && segment !== '*') {
+      const targetName = segment.slice(1);
+      
+      // Try to find the target name in the remaining path
+      for (let i = pathIndex; i < path.length; i++) {
+        if (path[i] === targetName) {
+          // If this is the last pattern segment, we found a match
+          if (patternIndex === pattern.length - 1) {
+            return true;
+          }
+          // Try to match the remaining pattern from the next position
+          if (matchesPath(path, pattern, i + 1, patternIndex + 1)) {
+            return true;
+          }
+        }
+      }
+      
+      return false;
+    }
+    
+    if (matchesSegment(key, segment, isArrayIndex)) {
+      return matchesPath(path, pattern, pathIndex + 1, patternIndex + 1);
+    }
+    
+    // For regular wildcards (like *), try skipping to next path segment
+    if (segment === '*') {
+      return matchesPath(path, pattern, pathIndex + 1, patternIndex + 1);
+    }
+    
+    return false;
+  }
+
+  // Check if a value is a plain object (not a class instance, Date, etc.)
+  function isPlainObject(value: any): boolean {
+    if (value === null || typeof value !== 'object') return false;
+    if (Array.isArray(value)) return false;
+    
+    const proto = Object.getPrototypeOf(value);
+    return proto === null || proto === Object.prototype;
+  }
+
+  // Check if an object is empty
+  function isEmpty(obj: any): boolean {
+    if (Array.isArray(obj)) return obj.length === 0;
+    if (isPlainObject(obj)) return Object.keys(obj).length === 0;
+    return false;
+  }
+
+  // Recursively filter object/array
+  function filterRecursive(
+    value: any,
+    currentPath: string[] = [],
+    filterPatterns: string[],
+    rejectPatterns: string[]
+  ): any {
     if (value === null || value === undefined) {
       return value;
     }
 
-    if (typeof value !== 'object') {
+    // Handle circular references
+    if (typeof value === 'object' && visited.has(value)) {
+      throw new TypeError('Circular references are not supported');
+    }
+
+    // Don't filter non-plain objects
+    if (!isPlainObject(value) && !Array.isArray(value)) {
       return value;
     }
 
-    // Check for circular references
-    if (visited.has(value)) {
-      throw new TypeError('Circular references are not supported');
+    if (typeof value === 'object') {
+      visited.add(value);
     }
-    visited.add(value);
 
-    // Handle arrays
-    if (Array.isArray(value)) {
-      const result: any[] = [];
-      let hasContent = false;
+    try {
+      if (Array.isArray(value)) {
+        const result: any[] = [];
+        
+        for (let i = 0; i < value.length; i++) {
+          const itemPath = [...currentPath, i.toString()];
+          
+          // Check if this array index should be included
+          const shouldInclude = filterPatterns.length === 0 || 
+            filterPatterns.some(pattern => {
+              const segments = parseKeyPattern(pattern);
+              const itemMatches = matchesPath(itemPath, segments, 0, 0);
+              // Also check if this is a prefix of the pattern (for nested objects)
+              const hasNestedMatch = segments.length > itemPath.length && 
+                matchesPath(itemPath, segments.slice(0, itemPath.length), 0, 0);
+              // Check if there are any actual matching descendant paths
+              const couldMatchDeeper = hasMatchingDescendants(value[i], itemPath, filterPatterns);
+              return itemMatches || hasNestedMatch || couldMatchDeeper;
+            });
 
-      for (let i = 0; i < value.length; i++) {
-        const itemPath = path ? `${path}[${i}]` : `[${i}]`;
-        const includeStatus = shouldIncludePath(itemPath);
+          const shouldReject = rejectPatterns.some(pattern => {
+            const segments = parseKeyPattern(pattern);
+            return matchesPath(itemPath, segments, 0, 0);
+          });
 
-        if (includeStatus === true) {
-          const filtered = filterValue(value[i], itemPath);
-          // Apply rejectEmptyObjectsInArray logic even for 'true' status
-          if (!rejectEmptyObjectsInArray || !isEmpty(filtered)) {
-            result[i] = filtered;
-            hasContent = true;
-          }
-        } else if (includeStatus === 'partial') {
-          const filtered = filterValue(value[i], itemPath);
-          if (!rejectEmptyObjectsInArray || !isEmpty(filtered)) {
-            result[i] = filtered;
-            hasContent = true;
+          if (!shouldReject && shouldInclude) {
+            // Check if any pattern exactly matches this path (should include entire item)
+            const exactMatch = filterPatterns.some(pattern => {
+              const segments = parseKeyPattern(pattern);
+              return segments.length === itemPath.length && matchesPath(itemPath, segments, 0, 0);
+            });
+            
+            const filteredItem = exactMatch 
+              ? value[i] 
+              : filterRecursive(value[i], itemPath, filterPatterns, rejectPatterns);
+            
+            // Only add non-empty objects if rejectEmptyObjectsInArray is true
+            if (!rejectEmptyObjectsInArray || !isEmpty(filteredItem)) {
+              result.push(filteredItem);
+            }
           }
         }
+        
+        return result;
+      } else if (isPlainObject(value)) {
+        const result: Record<string, any> = {};
+        
+        for (const [key, val] of Object.entries(value)) {
+          const keyPath = [...currentPath, key];
+          
+          // Check if this key should be included
+          const shouldInclude = filterPatterns.length === 0 || 
+            filterPatterns.some(pattern => {
+              const segments = parseKeyPattern(pattern);
+              const keyMatches = matchesPath(keyPath, segments, 0, 0);
+              
+              // Check if there are any actual matching descendant paths
+              const couldMatchDeeper = hasMatchingDescendants(val, keyPath, filterPatterns);
+              
+              // Also check if this is a prefix of the pattern (for nested objects)
+              const hasNestedMatch = segments.length > keyPath.length && 
+                matchesPath(keyPath, segments.slice(0, keyPath.length), 0, 0);
+                
+              return keyMatches || hasNestedMatch || couldMatchDeeper;
+            });
+
+          const shouldReject = rejectPatterns.some(pattern => {
+            const segments = parseKeyPattern(pattern);
+            return matchesPath(keyPath, segments, 0, 0);
+          });
+
+          if (!shouldReject && shouldInclude) {
+            // Check if any pattern exactly matches this path (should include entire value)
+            const exactMatch = filterPatterns.some(pattern => {
+              const segments = parseKeyPattern(pattern);
+              return segments.length === keyPath.length && matchesPath(keyPath, segments, 0, 0);
+            });
+            
+            // For exact matches, include the entire value but check for circular references
+            const filteredValue = exactMatch
+              ? (typeof val === 'object' && val !== null && visited.has(val) 
+                  ? (() => { throw new TypeError('Circular references are not supported'); })()
+                  : val)
+              : filterRecursive(val, keyPath, filterPatterns, rejectPatterns);
+            result[key] = filteredValue;
+          }
+        }
+        
+        return result;
       }
-
-      // Return compacted array (remove undefined slots)
-      return hasContent ? result.filter((_, i) => i in result) : [];
-    }
-
-    // Handle objects
-    const result: Record<string, any> = {};
-
-    for (const key in value) {
-      if (!Object.prototype.hasOwnProperty.call(value, key)) continue;
-
-      const keyPath = path ? `${path}.${key}` : key;
-      const includeStatus = shouldIncludePath(keyPath);
-
-      if (includeStatus === true) {
-        result[key] = filterValue(value[key], keyPath);
-      } else if (includeStatus === 'partial') {
-        const filtered = filterValue(value[key], keyPath);
-        result[key] = filtered;
+      
+      return value;
+    } finally {
+      if (typeof value === 'object') {
+        visited.delete(value);
       }
     }
-
-    return result;
   }
 
-  function isEmpty(value: any): boolean {
-    if (value === null || value === undefined) return true;
-    if (typeof value !== 'object') return false;
-    if (Array.isArray(value)) return value.length === 0;
-    return Object.keys(value).length === 0;
-  }
-
-  return filterValue(objOrArray, '');
+  return filterRecursive(objOrArray, [], normalizedFilterKeys, normalizedRejectKeys);
 }
