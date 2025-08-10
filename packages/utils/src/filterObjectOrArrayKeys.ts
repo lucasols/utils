@@ -27,6 +27,8 @@ import { isPlainObject } from './typeGuards';
  *   - `'[*]**nested'` - all `nested` props of all items of the array
  *   - `'[0-2]'` - The first three items of the array
  *   - `'[4-*]'` - All items of the array from the fourth index to the end
+ * - Selecting multiple properties:
+ *   - `'prop.test.(prop1|prop2|prop3)'` - The `prop1`, `prop2`, and `prop3` properties of `prop.test` object
  *
  * @param objOrArray - The object or array to filter.
  * @param options - The options for the filter.
@@ -88,6 +90,12 @@ export function filterObjectOrArrayKeys(
       switch (pt.type) {
         case 'KEY':
           if (ct.type === 'KEY' && ct.name === pt.name)
+            return rec(pi + 1, pti + 1);
+          // allow skipping index tokens transparently when matching keys
+          if (ct.type === 'INDEX') return rec(pi + 1, pti);
+          return false;
+        case 'MULTI_KEY':
+          if (ct.type === 'KEY' && pt.names.includes(ct.name))
             return rec(pi + 1, pti + 1);
           // allow skipping index tokens transparently when matching keys
           if (ct.type === 'INDEX') return rec(pi + 1, pti);
@@ -243,6 +251,7 @@ export function filterObjectOrArrayKeys(
 
 type PatternToken =
   | { type: 'KEY'; name: string }
+  | { type: 'MULTI_KEY'; names: string[] }
   | { type: 'WILDCARD_ONE' }
   | { type: 'WILDCARD_ANY' }
   | { type: 'INDEX'; index: number }
@@ -283,6 +292,19 @@ function parsePattern(pattern: string): PatternToken[] {
       } else if (inside.length > 0) {
         const idx = parseInt(inside, 10);
         tokens.push({ type: 'INDEX', index: idx });
+      }
+      i = end === -1 ? n : end + 1;
+      continue;
+    }
+    if (ch === '(') {
+      const end = pattern.indexOf(')', i + 1);
+      const inside =
+        end === -1 ? pattern.slice(i + 1) : pattern.slice(i + 1, end);
+      if (inside.includes('|') && inside.trim().length > 0) {
+        const names = inside.split('|').filter(name => name.length > 0);
+        if (names.length > 0) {
+          tokens.push({ type: 'MULTI_KEY', names });
+        }
       }
       i = end === -1 ? n : end + 1;
       continue;

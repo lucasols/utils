@@ -802,6 +802,183 @@ test('do not filter non plain objects', () => {
   `);
 });
 
+describe('multi-key patterns', () => {
+  test('should filter multiple properties with pipe syntax', () => {
+    const data = {
+      prop: {
+        test: {
+          prop1: 'value1',
+          prop2: 'value2',
+          prop3: 'value3',
+          prop4: 'value4',
+          other: 'should-not-match',
+        },
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['prop.test.(prop1|prop2|prop3)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      prop:
+        test: { prop1: 'value1', prop2: 'value2', prop3: 'value3' }
+      "
+    `);
+  });
+
+  test('should reject multiple properties with pipe syntax', () => {
+    const data = {
+      prop: {
+        test: {
+          prop1: 'value1',
+          prop2: 'value2',
+          prop3: 'value3',
+          prop4: 'value4',
+          keep: 'should-keep',
+        },
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          rejectKeys: ['prop.test.(prop1|prop3|prop4)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      prop:
+        test: { prop2: 'value2', keep: 'should-keep' }
+      "
+    `);
+  });
+
+  test('should handle multi-key patterns with nested structures', () => {
+    const data = {
+      users: {
+        john: {
+          profile: { name: 'John', age: 30 },
+          settings: { theme: 'dark' },
+          metadata: { created: '2023-01-01' },
+        },
+        jane: {
+          profile: { name: 'Jane', age: 25 },
+          settings: { theme: 'light' },
+          metadata: { created: '2023-01-02' },
+        },
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['users.*.(profile|settings)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      users:
+        john:
+          profile: { name: 'John', age: 30 }
+          settings: { theme: 'dark' }
+        jane:
+          profile: { name: 'Jane', age: 25 }
+          settings: { theme: 'light' }
+      "
+    `);
+  });
+
+  test('should handle multi-key patterns with arrays', () => {
+    const data = [
+      {
+        name: 'Item1',
+        value: 100,
+        price: 50,
+        category: 'A',
+      },
+      {
+        name: 'Item2',
+        value: 200,
+        price: 75,
+        category: 'B',
+      },
+    ];
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['[*].(name|value)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      - { name: 'Item1', value: 100 }
+      - { name: 'Item2', value: 200 }
+      "
+    `);
+  });
+
+  test('should handle empty multi-key patterns gracefully', () => {
+    const data = {
+      test: { prop1: 'value1', prop2: 'value2' },
+    };
+    // When using (|) with empty names, no MULTI_KEY token is created,
+    // so the pattern becomes just 'test' which includes everything in test
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['test.(|)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      test: { prop1: 'value1', prop2: 'value2' }
+      "
+    `);
+  });
+
+  test('should handle multi-key patterns with empty names', () => {
+    const data = {
+      test: { prop1: 'value1', prop2: 'value2' },
+    };
+    // Using (||) should also not match anything meaningful
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['test.(||)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      test: { prop1: 'value1', prop2: 'value2' }
+      "
+    `);
+  });
+
+  test('should handle multi-key patterns with non-matching keys', () => {
+    const data = {
+      prop: {
+        test: {
+          prop1: 'value1',
+          prop2: 'value2',
+          other: 'value3',
+        },
+      },
+    };
+    expect(
+      getSnapshot(
+        filterObjectOrArrayKeys(data, {
+          filterKeys: ['prop.test.(nonexistent|alsononexistent)'],
+        }),
+      ),
+    ).toMatchInlineSnapshot(`
+      "
+      {}
+      "
+    `);
+  });
+});
+
 describe('circular references with key filtering', () => {
   test('should throw when the circular reference key itself gets filtered', () => {
     const obj: any = {
