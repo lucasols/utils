@@ -7,10 +7,19 @@ import { isPromise } from './typeGuards';
 
 export class ConcurrentCallsAggregateError extends AggregateError {
   errors: Error[] = [];
+  total: number = 0;
+  failed: number = 0;
 
-  constructor(errors: Error[], message: string) {
+  constructor(errors: Error[], total: number, failed: number) {
+    const message = `${failed}/${total} calls failed: ${truncateArray(
+      errors.map((e) => truncateString(e.message, 50)),
+      5,
+      '...',
+    ).join('; ')}`;
     super(errors, message);
     this.errors = errors;
+    this.total = total;
+    this.failed = failed;
   }
 }
 
@@ -138,7 +147,7 @@ class ConcurrentCalls<R = unknown, E extends Error = Error> {
     const allFailed = failed.length === total;
     const aggregatedError =
       failed.length > 0 ?
-        new ConcurrentCallsAggregateError(failed, 'One or more calls failed')
+        new ConcurrentCallsAggregateError(failed, total, failed.length)
       : null;
 
     this.#pendingCalls = [];
@@ -322,13 +331,10 @@ class ConcurrentCallsWithMetadata<
     const allFailed = failedProcessing.length === total;
     const aggregatedError =
       failedProcessing.length > 0 ?
-        new AggregateError(
+        new ConcurrentCallsAggregateError(
           failedProcessing.map((f) => f.error),
-          `${failedProcessing.length}/${total} calls failed: ${truncateArray(
-            failedProcessing.map((f) => truncateString(f.error.message, 20)),
-            5,
-            '...',
-          ).join('; ')}`,
+          total,
+          failedProcessing.length,
         )
       : null;
 
