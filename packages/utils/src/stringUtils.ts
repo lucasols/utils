@@ -33,10 +33,20 @@ export function concatStrings(...args: (Arg | Arg[])[]) {
  */
 export const joinStrings = concatStrings;
 
-export function formatNum(num: number) {
+export function formatNum(
+  num: number,
+  decimalsOrOptions?: number | Intl.NumberFormatOptions,
+) {
+  const options =
+    typeof decimalsOrOptions === 'number' ?
+      {
+        minimumFractionDigits: decimalsOrOptions,
+        maximumFractionDigits: decimalsOrOptions,
+      }
+    : decimalsOrOptions;
+
   return num.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    ...options,
   });
 }
 
@@ -58,7 +68,7 @@ export function convertToSnakeCase(str: string) {
 export function convertToPascalCase(str: string) {
   return str
     .split(/[\s_-]+/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join('');
 }
 
@@ -70,9 +80,16 @@ export function convertToCamelCase(str: string) {
 export function convertToSentenceCase(str: string) {
   return str
     .split(/[\s_-]+/)
-    .map(word => word.toLowerCase())
+    .map((word) => word.toLowerCase())
     .join(' ')
-    .replace(/^\w/, char => char.toUpperCase());
+    .replace(/^\w/, (char) => char.toUpperCase());
+}
+
+export function convertToTitleCase(str: string) {
+  return str
+    .split(/[\s_-]+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
 }
 
 export function truncateString(str: string, length: number, ellipsis = '…') {
