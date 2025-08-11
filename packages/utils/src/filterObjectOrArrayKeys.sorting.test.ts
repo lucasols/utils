@@ -96,18 +96,18 @@ describe('object key sorting', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      emptyArray: []
-      complexArray:
-        - id: 1
-        - id: 2
-      primitiveArray: [1, 2, 3]
+      anotherString: 'more text'
+      simpleString: 'text'
+      numberValue: 42
 
       complexObject:
         nested: { deep: 'value' }
 
-      numberValue: 42
-      anotherString: 'more text'
-      simpleString: 'text'
+      primitiveArray: [1, 2, 3]
+      complexArray:
+        - id: 1
+        - id: 2
+      emptyArray: []
       "
     `);
   });

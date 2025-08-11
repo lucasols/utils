@@ -328,6 +328,7 @@ export function filterObjectOrArrayKeys(
         }
         return 0;
       },
+      'desc',
     );
   }
 
