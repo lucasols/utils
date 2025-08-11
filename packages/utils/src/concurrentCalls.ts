@@ -11,11 +11,11 @@ export class ConcurrentCallsAggregateError extends AggregateError {
   failed: number = 0;
 
   constructor(errors: Error[], total: number, failed: number) {
-    const message = `${failed}/${total} calls failed: ${truncateArray(
-      errors.map((e) => truncateString(e.message, 50)),
+    const message = `${failed}/${total} calls failed:\n${truncateArray(
+      errors.map((e) => truncateString(e.message, 100)),
       5,
       '...',
-    ).join('; ')}`;
+    ).join('\n')}`;
     super(errors, message);
     this.errors = errors;
     this.total = total;
