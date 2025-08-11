@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/require-await */
+ 
 import { randomInt } from 'crypto';
 import { Result, resultify } from 't-result';
 import { assert, expect, test, vi } from 'vitest';

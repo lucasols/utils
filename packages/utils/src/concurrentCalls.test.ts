@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/require-await */
+ 
 import { resultify, type Result } from 't-result';
 import { assert, describe, expect, test } from 'vitest';
 import {
