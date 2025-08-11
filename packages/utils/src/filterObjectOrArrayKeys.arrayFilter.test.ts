@@ -29,7 +29,7 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', age: 30, role: 'admin' }
+        - { age: 30, name: 'John', role: 'admin' }
       "
     `);
   });
@@ -54,8 +54,8 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', age: 30, role: 'admin' }
-        - { name: 'Jane', age: 25, role: 'user' }
+        - { age: 30, name: 'John', role: 'admin' }
+        - { age: 25, name: 'Jane', role: 'user' }
       "
     `);
   });
@@ -80,8 +80,8 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', age: 30, role: 'admin' }
-        - { name: 'Alice', age: 30, role: 'admin' }
+        - { age: 30, name: 'John', role: 'admin' }
+        - { age: 30, name: 'Alice', role: 'admin' }
       "
     `);
   });
@@ -106,9 +106,9 @@ describe('array filtering by value', () => {
       "
       users:
         - name: 'John'
-          config: { theme: 'dark', lang: 'en' }
+          config: { lang: 'en', theme: 'dark' }
         - name: 'Bob'
-          config: { theme: 'dark', lang: 'de' }
+          config: { lang: 'de', theme: 'dark' }
       "
     `);
   });
@@ -133,8 +133,8 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', email: 'john@example.com' }
-        - { name: 'Johnny', email: 'johnny@example.com' }
+        - { email: 'john@example.com', name: 'John' }
+        - { email: 'johnny@example.com', name: 'Johnny' }
       "
     `);
     
@@ -148,9 +148,9 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', email: 'john@example.com' }
-        - { name: 'Johnny', email: 'johnny@example.com' }
-        - { name: 'Bob', email: 'bob@example.com' }
+        - { email: 'john@example.com', name: 'John' }
+        - { email: 'johnny@example.com', name: 'Johnny' }
+        - { email: 'bob@example.com', name: 'Bob' }
       "
     `);
   });
@@ -201,8 +201,8 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       files:
-        - { name: 'document.pdf', size: 1024 }
-        - { name: 'archive.pdf', size: 4096 }
+        - { size: 1024, name: 'document.pdf' }
+        - { size: 4096, name: 'archive.pdf' }
       "
     `);
   });
@@ -252,7 +252,7 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'Jane', email: 'jane@test.com' }
+        - { email: 'jane@test.com', name: 'Jane' }
       "
     `);
   });
@@ -331,7 +331,7 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', email: 'JOHN@example.com' }
+        - { email: 'JOHN@example.com', name: 'John' }
       "
     `);
     
@@ -345,8 +345,8 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', email: 'JOHN@example.com' }
-        - { name: 'bob', email: 'Bob@Example.COM' }
+        - { email: 'JOHN@example.com', name: 'John' }
+        - { email: 'Bob@Example.COM', name: 'bob' }
       "
     `);
     
@@ -360,7 +360,7 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'JANE', email: 'jane@test.com' }
+        - { email: 'jane@test.com', name: 'JANE' }
       "
     `);
   });
@@ -384,7 +384,7 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', email: 'john@example.com' }
+        - { email: 'john@example.com', name: 'John' }
       "
     `);
   });
@@ -405,8 +405,8 @@ describe('array filtering by value', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      - { name: 'Jane', age: 25, role: 'user' }
-      - { name: 'Bob', age: 35, role: 'user' }
+      - { age: 25, name: 'Jane', role: 'user' }
+      - { age: 35, name: 'Bob', role: 'user' }
       "
     `);
   });
@@ -431,9 +431,9 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       products:
-        - { name: 'Laptop', category: 'Electronics', price: 1000, inStock: true }
-        - { name: 'Shirt', category: 'Clothing', price: 50, inStock: true }
-        - { name: 'Shoes', category: 'Clothing', price: 100, inStock: true }
+        - { inStock: true, price: 1000, category: 'Electronics', name: 'Laptop' }
+        - { inStock: true, price: 50, category: 'Clothing', name: 'Shirt' }
+        - { inStock: true, price: 100, category: 'Clothing', name: 'Shoes' }
       "
     `);
   });
@@ -548,8 +548,8 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'Bob', age: 35, role: 'user' }
-        - { name: 'Alice', age: 28, role: 'admin' }
+        - { age: 35, name: 'Bob', role: 'user' }
+        - { age: 28, name: 'Alice', role: 'admin' }
       "
     `);
   });
@@ -574,9 +574,9 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', age: 30, role: 'admin' }
-        - { name: 'Jane', age: 25, role: 'user' }
-        - { name: 'Bob', age: 35, role: 'user' }
+        - { age: 30, name: 'John', role: 'admin' }
+        - { age: 25, name: 'Jane', role: 'user' }
+        - { age: 35, name: 'Bob', role: 'user' }
       "
     `);
   });
@@ -601,8 +601,8 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', age: 30, role: 'admin' }
-        - { name: 'Bob', age: 35, role: 'user' }
+        - { age: 30, name: 'John', role: 'admin' }
+        - { age: 35, name: 'Bob', role: 'user' }
       "
     `);
   });
@@ -630,7 +630,7 @@ describe('array filtering by value', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'JOHN', age: 30, status: 'active' }
+        - { age: 30, name: 'JOHN', status: 'active' }
       "
     `);
   });

@@ -452,9 +452,9 @@ describe('compactSnapshot', () => {
       expect(compactSnapshot(data, { rejectKeys: ['password'] }))
         .toMatchInlineSnapshot(`
           "
+          age: 30
           email: 'john@example.com'
           name: 'John'
-          age: 30
           "
         `);
     });
@@ -519,8 +519,8 @@ describe('compactSnapshot', () => {
         .toMatchInlineSnapshot(`
           "
           users:
-            - { name: 'John', active: '✅' }
-            - { name: 'Jane', active: '❌' }
+            - { active: '✅', name: 'John' }
+            - { active: '❌', name: 'Jane' }
           "
         `);
     });
@@ -539,9 +539,9 @@ describe('compactSnapshot', () => {
       expect(compactSnapshot(data, { filterKeys: ['name', 'email', 'active'] }))
         .toMatchInlineSnapshot(`
           "
+          active: '✅'
           email: 'john@example.com'
           name: 'John'
-          active: '✅'
           "
         `);
     });
@@ -578,7 +578,7 @@ describe('compactSnapshot', () => {
         "
         user:
           name: 'John'
-          profile: { email: 'john@example.com', active: '✅' }
+          profile: { active: '✅', email: 'john@example.com' }
         "
       `);
     });

@@ -323,7 +323,9 @@ export function filterObjectOrArrayKeys(
               return 1.5 + value.length * -0.01;
             }
           }
-          if (typeof value === 'string') return 3;
+          if (typeof value === 'boolean') return 4;
+          if (typeof value === 'number') return 3.5;
+          if (typeof value === 'string' && value.length < 20) return 3;
           return 2;
         }
         return 0;

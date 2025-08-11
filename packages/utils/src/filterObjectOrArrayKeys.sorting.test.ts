@@ -21,10 +21,10 @@ describe('object key sorting', () => {
     expect(getSnapshot(filterObjectOrArrayKeys(data, {})))
       .toMatchInlineSnapshot(`
         "
-        zebra: 'animal'
         apple: 'fruit'
-        carrot: 'vegetable'
         banana: 'fruit'
+        carrot: 'vegetable'
+        zebra: 'animal'
         "
       `);
   });
@@ -96,9 +96,9 @@ describe('object key sorting', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
+      numberValue: 42
       anotherString: 'more text'
       simpleString: 'text'
-      numberValue: 42
 
       complexObject:
         nested: { deep: 'value' }

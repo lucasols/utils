@@ -20,9 +20,9 @@ describe('rejectKeys functionality', () => {
       getSnapshot(filterObjectOrArrayKeys(data, { rejectKeys: ['password'] })),
     ).toMatchInlineSnapshot(`
       "
-      name: 'John'
-      email: 'john@example.com'
       age: 30
+      email: 'john@example.com'
+      name: 'John'
       "
     `);
   });
@@ -70,10 +70,10 @@ describe('rejectKeys functionality', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      user1: { name: 'John' }
-      user2: { name: 'Jane' }
       admin: { name: 'Admin' }
       settings: { theme: 'dark' }
+      user1: { name: 'John' }
+      user2: { name: 'Jane' }
       "
     `);
   });
@@ -93,8 +93,8 @@ describe('rejectKeys functionality', () => {
     ).toMatchInlineSnapshot(`
       "
       users:
-        - { name: 'John', active: true }
-        - { name: 'Jane', active: false }
+        - { active: true, name: 'John' }
+        - { active: false, name: 'Jane' }
       "
     `);
   });
@@ -117,9 +117,9 @@ describe('filterKeys functionality', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      name: 'John'
-      email: 'john@example.com'
       active: true
+      email: 'john@example.com'
+      name: 'John'
       "
     `);
   });
@@ -157,7 +157,7 @@ describe('filterKeys functionality', () => {
       "
       user:
         name: 'John'
-        profile: { email: 'john@example.com', active: true }
+        profile: { active: true, email: 'john@example.com' }
       "
     `);
   });
@@ -189,7 +189,7 @@ describe('combined rejectKeys and filterKeys', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      user: { name: 'John', email: 'john@example.com', active: true }
+      user: { active: true, email: 'john@example.com', name: 'John' }
       "
     `);
   });
@@ -221,9 +221,9 @@ describe('combined rejectKeys and filterKeys', () => {
     ).toMatchInlineSnapshot(`
       "
       user:
-        name: 'John'
         email: 'john@example.com'
-        settings: { theme: 'dark', notifications: true }
+        name: 'John'
+        settings: { notifications: true, theme: 'dark' }
       "
     `);
   });
@@ -242,8 +242,8 @@ describe('array filtering', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      - { name: 'John', age: 30 }
-      - { name: 'Bob', age: 35 }
+      - { age: 30, name: 'John' }
+      - { age: 35, name: 'Bob' }
       "
     `);
   });
@@ -315,9 +315,9 @@ describe('array filtering', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      - { name: 'John', age: 30 }
-      - { name: 'Jane', age: 25 }
-      - { name: 'Bob', age: 35 }
+      - { age: 30, name: 'John' }
+      - { age: 25, name: 'Jane' }
+      - { age: 35, name: 'Bob' }
       "
     `);
   });
@@ -399,15 +399,15 @@ describe('advanced wildcard patterns', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      users:
-        john:
-          profile: { name: 'John' }
-        jane:
-          profile: { name: 'Jane' }
-
       admins:
         admin1:
           profile: { name: 'Admin1' }
+
+      users:
+        jane:
+          profile: { name: 'Jane' }
+        john:
+          profile: { name: 'John' }
       "
     `);
   });
@@ -672,8 +672,8 @@ describe('string parameter handling', () => {
       getSnapshot(filterObjectOrArrayKeys(data, { rejectKeys: 'password' })),
     ).toMatchInlineSnapshot(`
       "
-      name: 'John'
       age: 30
+      name: 'John'
       "
     `);
   });
@@ -722,12 +722,12 @@ describe('complex mixed scenarios', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
+      metadata: { version: '1.0' }
       users:
         - name: 'John'
           profile: { email: 'john@example.com' }
         - name: 'Jane'
           profile: { email: 'jane@example.com' }
-      metadata: { version: '1.0' }
       "
     `);
   });
@@ -850,7 +850,7 @@ describe('multi-key patterns', () => {
     ).toMatchInlineSnapshot(`
       "
       prop:
-        test: { prop2: 'value2', keep: 'should-keep' }
+        test: { keep: 'should-keep', prop2: 'value2' }
       "
     `);
   });
@@ -933,10 +933,10 @@ describe('pattern expansion functionality', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      users:
-        - name: 'Alice'
       admins:
         - name: 'Bob'
+      users:
+        - name: 'Alice'
       "
     `);
   });
@@ -960,16 +960,16 @@ describe('pattern expansion functionality', () => {
       ),
     ).toMatchInlineSnapshot(`
       "
-      prod:
-        users:
-          - { active: true, verified: false }
-        admins:
-          - { active: false, verified: true }
-
       dev:
+        admins:
+          - { active: true, verified: false }
         users:
           - { active: true, verified: true }
+
+      prod:
         admins:
+          - { active: false, verified: true }
+        users:
           - { active: true, verified: false }
       "
     `);
@@ -1066,8 +1066,8 @@ describe('complex pattern expansion scenarios', () => {
     ).toMatchInlineSnapshot(`
       "
       config:
-        database: { host: 'localhost', port: 5432 }
-        cache: { host: 'redis', ttl: 3600 }
+        cache: { ttl: 3600, host: 'redis' }
+        database: { port: 5432, host: 'localhost' }
       "
     `);
   });
@@ -1096,14 +1096,14 @@ describe('complex pattern expansion scenarios', () => {
     ).toMatchInlineSnapshot(`
       "
       environments:
-        prod:
-          services:
-            api:
-              config: { port: 3000 }
         dev:
           services:
             api:
               config: { port: 3001 }
+        prod:
+          services:
+            api:
+              config: { port: 3000 }
       "
     `);
   });
@@ -1206,8 +1206,8 @@ describe('complex pattern expansion scenarios', () => {
       "
       homePage:
         components:
-          - table_id: 'table_id_1'
-            group_by: 'status'
+          - group_by: 'status'
+            table_id: 'table_id_1'
             columns: ['todo', 'in_progress', 'done']
             filters:
               - { field_id: 'status', operator: '==', type: 'select', value: 'todo' }
@@ -1240,8 +1240,8 @@ describe('circular references with key filtering', () => {
       getSnapshot(filterObjectOrArrayKeys(obj, { rejectKeys: ['circular'] })),
     ).toMatchInlineSnapshot(`
       "
-      name: 'John'
       active: true
+      name: 'John'
       "
     `);
   });
