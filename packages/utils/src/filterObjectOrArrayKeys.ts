@@ -1,6 +1,8 @@
 import { sortBy } from './arrayUtils';
 import { isPlainObject } from './typeGuards';
 
+const ID_PROP_REGEXP = /^(id_|key_|id-|key-)|(_id|_key|-id|-key)$/i;
+
 /**
  * Filters the keys of an object based on the provided patterns.
  *
@@ -323,6 +325,8 @@ export function filterObjectOrArrayKeys(
               return 1.5 + value.length * -0.01;
             }
           }
+          if (key === 'id' || key === 'key') return 5;
+          if (ID_PROP_REGEXP.test(key)) return 4.5;
           if (typeof value === 'boolean') return 4;
           if (typeof value === 'number') return 3.5;
           if (typeof value === 'string' && value.length < 20) return 3;

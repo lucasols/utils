@@ -1206,8 +1206,8 @@ describe('complex pattern expansion scenarios', () => {
       "
       homePage:
         components:
-          - group_by: 'status'
-            table_id: 'table_id_1'
+          - table_id: 'table_id_1'
+            group_by: 'status'
             columns: ['todo', 'in_progress', 'done']
             filters:
               - { field_id: 'status', operator: '==', type: 'select', value: 'todo' }
