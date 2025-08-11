@@ -46,9 +46,33 @@ export function isSnakeCase(str: string) {
 
 export function convertToSnakeCase(str: string) {
   return str
-    .replace(/([A-Z])/g, '_$1')
-    .replace(/[^a-z0-9_]/g, '')
-    .toLowerCase();
+    .replace(/[\s\-.]+/g, '_') // Convert spaces, dashes, dots to underscores
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2') // Add underscore between lowercase and uppercase
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2') // Add underscore between consecutive caps
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g, '') // Remove non-alphanumeric except underscores
+    .replace(/^_+|_+$/g, '') // Remove leading/trailing underscores
+    .replace(/_+/g, '_'); // Collapse multiple underscores
+}
+
+export function convertToPascalCase(str: string) {
+  return str
+    .split(/[\s_-]+/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
+}
+
+export function convertToCamelCase(str: string) {
+  const pascalCase = convertToPascalCase(str);
+  return pascalCase.charAt(0).toLowerCase() + pascalCase.slice(1);
+}
+
+export function convertToSentenceCase(str: string) {
+  return str
+    .split(/[\s_-]+/)
+    .map(word => word.toLowerCase())
+    .join(' ')
+    .replace(/^\w/, char => char.toUpperCase());
 }
 
 export function truncateString(str: string, length: number, ellipsis = '…') {
