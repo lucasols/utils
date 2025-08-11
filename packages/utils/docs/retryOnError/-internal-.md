@@ -14,7 +14,7 @@
 type RetryOptions = object;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:6](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L6)
+Defined in: [packages/utils/src/retryOnError.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L7)
 
 Configuration options for retryOnError function.
 
@@ -26,7 +26,7 @@ Configuration options for retryOnError function.
 optional debugId: string;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:15](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L15)
+Defined in: [packages/utils/src/retryOnError.ts:16](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L16)
 
 Optional ID for debug logging
 
@@ -36,9 +36,19 @@ Optional ID for debug logging
 optional delayBetweenRetriesMs: number | (retry) => number;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:8](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L8)
+Defined in: [packages/utils/src/retryOnError.ts:9](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L9)
 
 Delay between retries in milliseconds or function returning delay
+
+##### disableRetries?
+
+```ts
+optional disableRetries: boolean;
+```
+
+Defined in: [packages/utils/src/retryOnError.ts:18](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L18)
+
+Disable retries
 
 ##### retryCondition()?
 
@@ -46,7 +56,7 @@ Delay between retries in milliseconds or function returning delay
 optional retryCondition: (error, lastAttempt) => boolean;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L10)
+Defined in: [packages/utils/src/retryOnError.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L11)
 
 Function to determine if retry should happen, receives error and duration of last attempt
 
@@ -54,7 +64,7 @@ Function to determine if retry should happen, receives error and duration of las
 
 ###### error
 
-`unknown`
+`Error`
 
 ###### lastAttempt
 
