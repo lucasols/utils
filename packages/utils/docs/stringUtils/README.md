@@ -76,13 +76,93 @@ joinStrings('a', addBString ? 'b' : null, 'c') // 'ac' if addBString is false, '
 
 ***
 
+### convertToCamelCase()
+
+```ts
+function convertToCamelCase(str): string;
+```
+
+Defined in: [packages/utils/src/stringUtils.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L72)
+
+#### Parameters
+
+##### str
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### convertToPascalCase()
+
+```ts
+function convertToPascalCase(str): string;
+```
+
+Defined in: [packages/utils/src/stringUtils.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L65)
+
+#### Parameters
+
+##### str
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### convertToSentenceCase()
+
+```ts
+function convertToSentenceCase(str): string;
+```
+
+Defined in: [packages/utils/src/stringUtils.ts:77](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L77)
+
+#### Parameters
+
+##### str
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
 ### convertToSnakeCase()
 
 ```ts
 function convertToSnakeCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:47](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L47)
+Defined in: [packages/utils/src/stringUtils.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L54)
+
+#### Parameters
+
+##### str
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
+### convertToTitleCase()
+
+```ts
+function convertToTitleCase(str): string;
+```
+
+Defined in: [packages/utils/src/stringUtils.ts:85](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L85)
 
 #### Parameters
 
@@ -99,7 +179,7 @@ Defined in: [packages/utils/src/stringUtils.ts:47](https://github.com/lucasols/u
 ### formatNum()
 
 ```ts
-function formatNum(num): string;
+function formatNum(num, maxDecimalsOrOptions): string;
 ```
 
 Defined in: [packages/utils/src/stringUtils.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L36)
@@ -109,6 +189,10 @@ Defined in: [packages/utils/src/stringUtils.ts:36](https://github.com/lucasols/u
 ##### num
 
 `number`
+
+##### maxDecimalsOrOptions
+
+`number` | `NumberFormatOptions`
 
 #### Returns
 
@@ -122,7 +206,7 @@ Defined in: [packages/utils/src/stringUtils.ts:36](https://github.com/lucasols/u
 function isSnakeCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L43)
+Defined in: [packages/utils/src/stringUtils.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L50)
 
 #### Parameters
 
@@ -145,7 +229,7 @@ function truncateString(
    ellipsis): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L54)
+Defined in: [packages/utils/src/stringUtils.ts:92](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L92)
 
 #### Parameters
 
