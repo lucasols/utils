@@ -35,15 +35,14 @@ export const joinStrings = concatStrings;
 
 export function formatNum(
   num: number,
-  decimalsOrOptions?: number | Intl.NumberFormatOptions,
+  maxDecimalsOrOptions: number | Intl.NumberFormatOptions = 2,
 ) {
   const options =
-    typeof decimalsOrOptions === 'number' ?
+    typeof maxDecimalsOrOptions === 'number' ?
       {
-        minimumFractionDigits: decimalsOrOptions,
-        maximumFractionDigits: decimalsOrOptions,
+        maximumFractionDigits: maxDecimalsOrOptions,
       }
-    : decimalsOrOptions;
+    : maxDecimalsOrOptions;
 
   return num.toLocaleString('en-US', {
     ...options,
