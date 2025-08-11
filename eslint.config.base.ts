@@ -126,6 +126,7 @@ export function createBaseConfig({
         '@typescript-eslint/restrict-template-expressions': OFF,
         '@typescript-eslint/unbound-method': OFF,
         '@typescript-eslint/no-unsafe-return': OFF,
+        '@typescript-eslint/require-await': OFF,
 
         /* vitest */
         'vitest/expect-expect': ERROR_IN_CI,
