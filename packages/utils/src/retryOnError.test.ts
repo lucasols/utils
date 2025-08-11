@@ -245,6 +245,30 @@ test('retryCondition receives correct context', async () => {
   }
 });
 
+test('onRetry callback is called with error and context', async () => {
+  const fn = vi.fn(async () => {
+    throw new Error('fail');
+  });
+
+  const onRetryCalls: Array<{ error: Error; ctx: { duration: number; retry: number } }> = [];
+  const onRetry = vi.fn((error: Error, ctx: { duration: number; retry: number }) => {
+    onRetryCalls.push({ error, ctx });
+  });
+
+  await expect(
+    retryOnError((_ctx) => fn(), 2, { onRetry }),
+  ).rejects.toThrow('fail');
+
+  expect(fn).toHaveBeenCalledTimes(3); // initial + 2 retries
+  expect(onRetry).toHaveBeenCalledTimes(2); // called on each retry
+  expect(onRetryCalls).toHaveLength(2);
+  
+  expect(onRetryCalls[0]?.error.message).toBe('fail');
+  expect(onRetryCalls[0]?.ctx.retry).toBe(0);
+  expect(onRetryCalls[1]?.error.message).toBe('fail');
+  expect(onRetryCalls[1]?.ctx.retry).toBe(1);
+});
+
 // Tests for retryResultOnError
 
 describe('retryResultOnError', () => {
@@ -510,5 +534,28 @@ describe('retryResultOnError', () => {
       expect(result.value).toBe(42);
     }
     expect(fn).toHaveBeenCalledTimes(3);
+  });
+
+  test('onRetry callback is called with error and context', async () => {
+    const fn = vi.fn(async (): Promise<Result<string, Error>> => {
+      return err(new Error('fail'));
+    });
+
+    const onRetryCalls: Array<{ error: Error; ctx: { duration: number; retry: number } }> = [];
+    const onRetry = vi.fn((error: Error, ctx: { duration: number; retry: number }) => {
+      onRetryCalls.push({ error, ctx });
+    });
+
+    const result = await retryResultOnError((_ctx) => fn(), 2, { onRetry });
+
+    expect(result.ok).toBe(false);
+    expect(fn).toHaveBeenCalledTimes(3); // initial + 2 retries
+    expect(onRetry).toHaveBeenCalledTimes(2); // called on each retry
+    expect(onRetryCalls).toHaveLength(2);
+    
+    expect(onRetryCalls[0]?.error.message).toBe('fail');
+    expect(onRetryCalls[0]?.ctx.retry).toBe(0);
+    expect(onRetryCalls[1]?.error.message).toBe('fail');
+    expect(onRetryCalls[1]?.ctx.retry).toBe(1);
   });
 });
