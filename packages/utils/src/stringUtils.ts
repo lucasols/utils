@@ -44,9 +44,7 @@ export function formatNum(
       }
     : maxDecimalsOrOptions;
 
-  return num.toLocaleString('en-US', {
-    ...options,
-  });
+  return num.toLocaleString('en-US', options);
 }
 
 export function isSnakeCase(str: string) {
