@@ -61,7 +61,7 @@ export function filterObjectOrArrayKeys(
     filterKeys,
     rejectKeys,
     rejectEmptyObjectsInArray = true,
-    sortKeys,
+    sortKeys = 'simpleValuesFirst',
     sortPatterns,
   }: {
     filterKeys?: string[] | string;
