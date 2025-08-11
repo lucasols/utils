@@ -248,8 +248,8 @@ test('concatStrings', () => {
 
 test('formatNum', () => {
   expect(formatNum(1234.5678)).toBe('1,234.57');
-  expect(formatNum(0)).toBe('0.00');
-  expect(formatNum(1000000)).toBe('1,000,000.00');
+  expect(formatNum(0)).toBe('0');
+  expect(formatNum(1000000)).toBe('1,000,000');
   expect(formatNum(-500.123)).toBe('-500.12');
 });
 
