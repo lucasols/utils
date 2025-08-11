@@ -5,6 +5,15 @@ import { sleep } from './sleep';
 import { truncateString } from './stringUtils';
 import { isPromise } from './typeGuards';
 
+export class ConcurrentCallsAggregateError extends AggregateError {
+  errors: Error[] = [];
+
+  constructor(errors: Error[], message: string) {
+    super(errors, message);
+    this.errors = errors;
+  }
+}
+
 type ValidMetadata = string | number | boolean | Record<string, unknown>;
 
 type RunProps = {
@@ -92,7 +101,7 @@ class ConcurrentCalls<R = unknown, E extends Error = Error> {
     failures: E[];
     succeeded: R[];
     total: number;
-    aggregatedError: AggregateError | null;
+    aggregatedError: ConcurrentCallsAggregateError | null;
   }> {
     invariant(!this.#alreadyRun, 'Already run');
     this.#alreadyRun = true;
@@ -129,7 +138,7 @@ class ConcurrentCalls<R = unknown, E extends Error = Error> {
     const allFailed = failed.length === total;
     const aggregatedError =
       failed.length > 0 ?
-        new AggregateError(failed, 'One or more calls failed')
+        new ConcurrentCallsAggregateError(failed, 'One or more calls failed')
       : null;
 
     this.#pendingCalls = [];
@@ -251,7 +260,7 @@ class ConcurrentCallsWithMetadata<
     succeeded: SucceededCall<R, M>[];
     total: number;
     results: SettledResultWithMetadata<R, M, E>[];
-    aggregatedError: AggregateError | null;
+    aggregatedError: ConcurrentCallsAggregateError | null;
   }> {
     invariant(!this.#alreadyRun, 'Already run');
     this.#alreadyRun = true;

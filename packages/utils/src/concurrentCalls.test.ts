@@ -4,6 +4,7 @@ import { assert, describe, expect, test } from 'vitest';
 import {
   concurrentCalls,
   concurrentCallsWithMetadata,
+  type ConcurrentCallsAggregateError,
 } from './concurrentCalls';
 import { sleep } from './sleep';
 import { typingTest, type TestTypeIsEqual } from './typingTestUtils';
@@ -126,7 +127,7 @@ describe('concurrentCalls', () => {
           failures: Error[];
           succeeded: number[];
           total: number;
-          aggregatedError: AggregateError | null;
+          aggregatedError: ConcurrentCallsAggregateError | null;
         }
       >
     >();
@@ -154,7 +155,7 @@ describe('concurrentCalls', () => {
           failures: Error[];
           succeeded: number[];
           total: number;
-          aggregatedError: AggregateError | null;
+          aggregatedError: ConcurrentCallsAggregateError | null;
         }
       >
     >();
@@ -310,7 +311,7 @@ describe('concurrentCalls', () => {
             failures: Error[];
             succeeded: string[];
             total: number;
-            aggregatedError: AggregateError | null;
+            aggregatedError: ConcurrentCallsAggregateError | null;
           }
         >
       >();
@@ -409,7 +410,7 @@ describe('concurrentCallsWithMetadata', () => {
                 error: false;
               }
           )[];
-          aggregatedError: AggregateError | null;
+          aggregatedError: ConcurrentCallsAggregateError | null;
           failures: { metadata: { id: string }; error: Error }[];
         }
       >
@@ -590,7 +591,7 @@ describe('concurrentCallsWithMetadata', () => {
               | { ok: true; value: Val; metadata: Meta; error: false }
               | { ok: false; error: Error; metadata: Meta }
             )[];
-            aggregatedError: AggregateError | null;
+            aggregatedError: ConcurrentCallsAggregateError | null;
             failures: { error: Error; metadata: Meta }[];
           }
         >
