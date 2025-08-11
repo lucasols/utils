@@ -31,6 +31,11 @@ import { isPlainObject } from './typeGuards';
  *   - `'prop.test.(prop1|prop2|prop3)'` - Expands to `prop.test.prop1`, `prop.test.prop2`, and `prop.test.prop3`
  *   - `'components[*].(table_id|columns|filters[*].value)'` - Expands to `components[*].table_id`, `components[*].columns`, and `components[*].filters[*].value`
  *   - `'(users|admins)[*].name'` - Expands to `users[*].name` and `admins[*].name`
+ * - Array filtering by value:
+ *   - `'users[%name="John"]'` - Filters the `users` with the `name` property equal to `John`
+ *   - `'users[%name="John" | "Jane"]'` - Filters the `users` with the `name` property equal to `John` or `Jane`
+ *   - `'users[%name="John" | "Jane" && %age=20]'` - AND and OR are supported by using `&&` and `||`, nesting logical operators is not supported yet
+ *   - `'users[%config.name="John" | "Jane"]'` - Dot notation is supported
  *
  * @param objOrArray - The object or array to filter.
  * @param options - The options for the filter.
@@ -261,31 +266,33 @@ function expandPatterns(pattern: string): string[] {
     if (start === -1) {
       return [str];
     }
-    
+
     const end = str.indexOf(')', start);
     if (end === -1) {
       return [str];
     }
-    
+
     const before = str.slice(0, start);
     const inside = str.slice(start + 1, end);
     const after = str.slice(end + 1);
-    
+
     if (!inside.includes('|')) {
       return expandSingle(before + inside + after);
     }
-    
-    const options = inside.split('|').filter(option => option.trim().length > 0);
+
+    const options = inside
+      .split('|')
+      .filter((option) => option.trim().length > 0);
     const results: string[] = [];
-    
+
     for (const option of options) {
       const newStr = before + option + after;
       results.push(...expandSingle(newStr));
     }
-    
+
     return results;
   }
-  
+
   return expandSingle(pattern);
 }
 
