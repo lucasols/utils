@@ -47,6 +47,8 @@
 - [timers](timers.md)
 - [tsResult](tsResult/README.md)
 - [typeGuards](typeGuards.md)
+- [typeUtils](typeUtils/README.md)
+- [typeUtils.typesTest](typeUtils.typesTest.md)
 - [typingFnUtils](typingFnUtils/README.md)
 - [typingTestUtils](typingTestUtils.md)
 - [typingUtils](typingUtils.md)

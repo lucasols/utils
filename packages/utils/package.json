@@ -197,6 +197,14 @@
       "import": "./lib/typeGuards.js",
       "require": "./lib/typeGuards.cjs"
     },
+    "./typeUtils": {
+      "import": "./lib/typeUtils.js",
+      "require": "./lib/typeUtils.cjs"
+    },
+    "./typeUtils.typesTest": {
+      "import": "./lib/typeUtils.typesTest.js",
+      "require": "./lib/typeUtils.typesTest.cjs"
+    },
     "./typingFnUtils": {
       "import": "./lib/typingFnUtils.js",
       "require": "./lib/typingFnUtils.cjs"
