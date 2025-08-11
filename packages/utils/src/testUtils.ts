@@ -356,6 +356,8 @@ export function waitController(): {
  * @param options.rejectKeys - The keys to reject.
  * @param options.filterKeys - The keys to filter.
  * @param options.ignoreProps - The props to ignore.
+ * @param options.sortKeys - Sort all keys by a specific order (default: `simpleValuesFirst`).
+ * @param options.sortPatterns - Sort specific keys by pattern. Use to control the order of specific properties. The same patterns as `filterKeys` are supported.
  * @returns The compact snapshot of the value.
  */
 export function compactSnapshot(
@@ -367,6 +369,8 @@ export function compactSnapshot(
     showBooleansAs = true,
     rejectKeys,
     filterKeys,
+    sortKeys,
+    sortPatterns,
     ...options
   }: YamlStringifyOptions & {
     /* show booleans as text, by default true is `✅` and false is `❌` */
@@ -385,48 +389,11 @@ export function compactSnapshot(
           /* default false text */
           falseText?: string;
         };
-    /**
-     * Reject (exclude) keys from the snapshot using pattern matching.
-     *
-     * **Examples:**
-     * ```typescript
-     * // Reject root-level 'secret' only
-     * rejectKeys: ['secret']
-     *
-     * // Reject nested 'password' properties only
-     * rejectKeys: ['*.password']
-     *
-     * // Reject any 'apiKey' property at any level
-     * rejectKeys: ['*apiKey']
-     *
-     * // Reject specific nested path
-     * rejectKeys: ['user.settings.theme']
-     * ```
-     */
-    rejectKeys?: string[] | string;
 
-    /**
-     * Filter (include only) keys that match the specified patterns.
-     *
-     * **Examples:**
-     * ```typescript
-     * // Include only root-level 'user'
-     * filterKeys: ['user']
-     *
-     * // Include all 'name' properties at any level
-     * filterKeys: ['*name']
-     *
-     * // Include only nested 'id' properties
-     * filterKeys: ['*.id']
-     *
-     * // Include specific nested paths
-     * filterKeys: ['user.profile.email', 'settings.theme']
-     * ```
-     *
-     * **Note:** When filtering, parent paths are automatically included if needed
-     * to preserve the structure for nested matches.
-     */
+    rejectKeys?: string[] | string;
     filterKeys?: string[] | string;
+    sortKeys?: 'asc' | 'desc' | 'simpleValuesFirst' | false;
+    sortPatterns?: string[];
   } = {},
 ) {
   let processedValue = value;
@@ -437,6 +404,8 @@ export function compactSnapshot(
       processedValue = filterObjectOrArrayKeys(processedValue, {
         rejectKeys,
         filterKeys,
+        sortKeys,
+        sortPatterns,
       });
     }
   }
