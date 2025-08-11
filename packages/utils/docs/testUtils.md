@@ -14,7 +14,7 @@
 function compactSnapshot(value, options): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:354](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L354)
+Defined in: [packages/utils/src/testUtils.ts:363](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L363)
 
 Produces a more compact and readable snapshot of a value using yaml.
 By default booleans are shown as `✅` and `❌`, use `showBooleansAs` to disable/configure this.
@@ -45,6 +45,13 @@ Filtering patterns in `rejectKeys` and `filterKeys`:
   - `'[4-*]'` - All items of the array from the fourth index to the end
 - Expanding the patterns with parentheses:
   - `'prop.test.(prop1|prop2|prop3.prop4)'` - Will produce `prop.test.prop1`, `prop.test.prop2`, and `prop.test.prop3.prop4`
+- Array filtering by value:
+  - `'users[%name="John"]'` - Filters the `users` with the `name` property equal to `John`
+  - `'users[%name="John" | "Jane"]'` - Filters the `users` with the `name` property equal to `John` or `Jane`
+  - `'users[%name="John" | "Jane" && %age=20]'` - AND and OR are supported by using `&&` and `||`, nesting logical operators is not supported yet
+  - `'users[%config.name="John" | "Jane"]'` - Dot notation is supported
+
+Check more supported patterns in [filterObjectOrArrayKeys](filterObjectOrArrayKeys.md#filterobjectorarraykeys) docs.
 
 #### Parameters
 

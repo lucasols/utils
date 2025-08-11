@@ -14,7 +14,7 @@
 function filterObjectOrArrayKeys(objOrArray, options): Record<string, any> | Record<string, any>[];
 ```
 
-Defined in: [packages/utils/src/filterObjectOrArrayKeys.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/filterObjectOrArrayKeys.ts#L42)
+Defined in: [packages/utils/src/filterObjectOrArrayKeys.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/filterObjectOrArrayKeys.ts#L58)
 
 Filters the keys of an object based on the provided patterns.
 
@@ -46,6 +46,19 @@ Filtering patterns in `rejectKeys` and `filterKeys`:
   - `'prop.test.(prop1|prop2|prop3)'` - Expands to `prop.test.prop1`, `prop.test.prop2`, and `prop.test.prop3`
   - `'components[*].(table_id|columns|filters[*].value)'` - Expands to `components[*].table_id`, `components[*].columns`, and `components[*].filters[*].value`
   - `'(users|admins)[*].name'` - Expands to `users[*].name` and `admins[*].name`
+- Array filtering by value:
+  - `'users[%name="John"]'` - Filters the `users` with the `name` property equal to `John`
+  - `'users[%name="John" | "Jane"]'` - Value-level OR using `|` for multiple values of same property
+  - `'users[%name="Alice" || %age=35]'` - Property-level OR using `||` for different properties
+  - `'users[%age=30 && %role="admin"]'` - Property-level AND using `&&` for different properties
+  - Note: Mixing `&&` and `||` in the same filter is not supported - use separate filter patterns instead
+  - `'users[%config.name="John" | "Jane"]'` - Dot notation is supported
+  - `'users[%name*="oh"]'` - Contains operator (*=) - filters users where name contains "oh"
+  - `'users[%name^="Jo"]'` - Starts with operator (^=) - filters users where name starts with "Jo"
+  - `'users[%name$="hn"]'` - Ends with operator ($=) - filters users where name ends with "hn"
+  - `'users[%name!="John"]'` - Not equal operator (!=) - filters users where name is not "John"
+  - `'users[%name!*="admin"]'` - Not contains operator (!*=) - filters users where name doesn't contain "admin"
+  - `'users[i%name="john"]'` - Case-insensitive matching (i% prefix) - matches "John", "JOHN", "john", etc.
 
 #### Parameters
 
@@ -76,6 +89,18 @@ Whether to reject empty objects in arrays (default: true).
 `string` \| `string`[]
 
 The keys to reject.
+
+###### sortKeys?
+
+`false` \| `"asc"` \| `"simpleValuesFirst"` \| `"desc"` = `'simpleValuesFirst'`
+
+Sort all keys by a specific order (optional, preserves original order when not specified).
+
+###### sortPatterns?
+
+`string`[]
+
+Sort specific keys by pattern. Use to control the order of specific properties. The same patterns as `filterKeys` are supported.
 
 #### Returns
 
