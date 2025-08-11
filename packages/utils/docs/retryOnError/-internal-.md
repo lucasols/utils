@@ -50,6 +50,36 @@ Defined in: [packages/utils/src/retryOnError.ts:18](https://github.com/lucasols/
 
 Disable retries
 
+##### onRetry()?
+
+```ts
+optional onRetry: (error, lastAttempt) => void;
+```
+
+Defined in: [packages/utils/src/retryOnError.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L20)
+
+Function to call when retry happens
+
+###### Parameters
+
+###### error
+
+`Error`
+
+###### lastAttempt
+
+###### duration
+
+`number`
+
+###### retry
+
+`number`
+
+###### Returns
+
+`void`
+
 ##### retryCondition()?
 
 ```ts

@@ -23,7 +23,7 @@ function retryOnError<T>(
 originalMaxRetries): Promise<T>;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L41)
+Defined in: [packages/utils/src/retryOnError.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L46)
 
 Retries a function on error with configurable retry logic.
 
@@ -97,7 +97,7 @@ function retryResultOnError<T, E>(
 __originalMaxRetries): Promise<Result<T, E>>;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:116](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L116)
+Defined in: [packages/utils/src/retryOnError.ts:132](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L132)
 
 Retries a result function on error with configurable retry logic.
 
@@ -140,6 +140,10 @@ Configuration options
 ###### disableRetries?
 
 `boolean`
+
+###### onRetry?
+
+(`error`, `lastAttempt`) => `void`
 
 ###### retryCondition?
 
