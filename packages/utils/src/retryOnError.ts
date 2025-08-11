@@ -16,6 +16,11 @@ type RetryOptions = {
   debugId?: string;
   /** Disable retries */
   disableRetries?: boolean;
+  /** Function to call when retry happens */
+  onRetry?: (
+    error: Error,
+    lastAttempt: { duration: number; retry: number },
+  ) => void;
 };
 
 /**
@@ -48,7 +53,8 @@ export async function retryOnError<T>(
   retry = 0,
   originalMaxRetries = maxRetries,
 ): Promise<T> {
-  const { delayBetweenRetriesMs, retryCondition, disableRetries } = options;
+  const { delayBetweenRetriesMs, retryCondition, disableRetries, onRetry } =
+    options;
 
   if (options.debugId) {
     if (retry > 0) {
@@ -66,16 +72,25 @@ export async function retryOnError<T>(
     if (maxRetries > 0 && !disableRetries) {
       const errorDuration = Date.now() - startTime;
 
+      const normalizedError = unknownToError(error);
+
       const shouldRetry =
         retryCondition ?
-          retryCondition(unknownToError(error), {
+          retryCondition(normalizedError, {
             duration: errorDuration,
             retry,
           })
         : true;
 
       if (!shouldRetry) {
-        throw error;
+        throw normalizedError;
+      }
+
+      if (onRetry) {
+        onRetry(normalizedError, {
+          duration: errorDuration,
+          retry,
+        });
       }
 
       if (delayBetweenRetriesMs) {
@@ -109,6 +124,7 @@ export async function retryOnError<T>(
  * @param options.retryCondition
  * @param options.debugId
  * @param options.disableRetries
+ * @param options.onRetry
  * @param __retry - internal use only
  * @param __originalMaxRetries - internal use only
  * @returns Promise resolving to the function result or rejecting with the final error
@@ -127,11 +143,15 @@ export async function retryResultOnError<T, E extends ResultValidErrors>(
     ) => boolean;
     debugId?: string;
     disableRetries?: boolean;
+    onRetry?: (
+      error: E,
+      lastAttempt: { duration: number; retry: number },
+    ) => void;
   } = {},
   __retry = 0,
   __originalMaxRetries = maxRetries,
 ): Promise<Result<T, E>> {
-  const { delayBetweenRetriesMs, retryCondition } = options;
+  const { delayBetweenRetriesMs, retryCondition, onRetry } = options;
 
   if (options.debugId) {
     if (__retry > 0) {
@@ -162,6 +182,13 @@ export async function retryResultOnError<T, E extends ResultValidErrors>(
 
     if (!shouldRetry) {
       return result;
+    }
+
+    if (onRetry) {
+      onRetry(result.error, {
+        duration: errorDuration,
+        retry: __retry,
+      });
     }
 
     if (delayBetweenRetriesMs) {
