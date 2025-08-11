@@ -452,8 +452,8 @@ describe('compactSnapshot', () => {
       expect(compactSnapshot(data, { rejectKeys: ['password'] }))
         .toMatchInlineSnapshot(`
           "
-          name: 'John'
           email: 'john@example.com'
+          name: 'John'
           age: 30
           "
         `);
@@ -499,10 +499,10 @@ describe('compactSnapshot', () => {
       expect(compactSnapshot(data, { rejectKeys: ['*.password'] }))
         .toMatchInlineSnapshot(`
           "
-          user1: { name: 'John' }
-          user2: { name: 'Jane' }
           admin: { name: 'Admin' }
           settings: { theme: 'dark' }
+          user1: { name: 'John' }
+          user2: { name: 'Jane' }
           "
         `);
     });
@@ -539,8 +539,8 @@ describe('compactSnapshot', () => {
       expect(compactSnapshot(data, { filterKeys: ['name', 'email', 'active'] }))
         .toMatchInlineSnapshot(`
           "
-          name: 'John'
           email: 'john@example.com'
+          name: 'John'
           active: '✅'
           "
         `);
@@ -596,8 +596,8 @@ describe('compactSnapshot', () => {
         .toMatchInlineSnapshot(`
           "
           options:
-            - { value: '1', label: 'Option 1' }
-            - { value: '2', label: 'Option 2' }
+            - { label: 'Option 1', value: '1' }
+            - { label: 'Option 2', value: '2' }
           "
         `);
     });
@@ -613,10 +613,10 @@ describe('compactSnapshot', () => {
       expect(compactSnapshot(data, { filterKeys: ['*.name'] }))
         .toMatchInlineSnapshot(`
           "
-          user1: { name: 'John' }
-          user2: { name: 'Jane' }
           admin: { name: 'Admin' }
           settings: { name: 'AppSettings' }
+          user1: { name: 'John' }
+          user2: { name: 'Jane' }
           "
         `);
     });
