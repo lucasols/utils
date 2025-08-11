@@ -20,13 +20,13 @@ describe('object key sorting', () => {
     // No sorting specified - should preserve original order
     expect(getSnapshot(filterObjectOrArrayKeys(data, {})))
       .toMatchInlineSnapshot(`
-      "
-      zebra: 'animal'
-      apple: 'fruit'
-      carrot: 'vegetable'
-      banana: 'fruit'
-      "
-    `);
+        "
+        zebra: 'animal'
+        apple: 'fruit'
+        carrot: 'vegetable'
+        banana: 'fruit'
+        "
+      `);
   });
 
   test('should sort keys in ascending order', () => {
