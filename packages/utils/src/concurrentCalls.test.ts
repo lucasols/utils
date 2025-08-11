@@ -166,6 +166,11 @@ describe('concurrentCalls', () => {
     expect(result.total).toBe(2);
     assert(result.aggregatedError);
     expect(result.aggregatedError.errors).toEqual([error1, error2]);
+    expect(result.aggregatedError).toMatchInlineSnapshot(`
+      [AggregateError: 2/2 calls failed:
+      - error 1
+      - error 2]
+    `);
   });
 
   test('runAllSettled with some failures', async () => {
