@@ -5,6 +5,7 @@ import {
   concurrentCalls,
   concurrentCallsWithMetadata,
   type ConcurrentCallsAggregateError,
+  type ConcurrentCallsWithMetadataAggregateError,
 } from './concurrentCalls';
 import { sleep } from './sleep';
 import { typingTest, type TestTypeIsEqual } from './typingTestUtils';
@@ -415,7 +416,9 @@ describe('concurrentCallsWithMetadata', () => {
                 error: false;
               }
           )[];
-          aggregatedError: ConcurrentCallsAggregateError | null;
+          aggregatedError: ConcurrentCallsWithMetadataAggregateError<{
+            id: string;
+          }> | null;
           failures: { metadata: { id: string }; error: Error }[];
         }
       >
@@ -461,6 +464,10 @@ describe('concurrentCallsWithMetadata', () => {
         { ok: true, value: 3, metadata: { id: 'c' }, error: false },
       ]),
     );
+    expect(result.aggregatedError).toMatchInlineSnapshot(`
+      [AggregateError: 1/3 calls failed:
+      - {"id":"b"}: error b]
+    `);
   });
 
   describe('resultifyAdd', () => {
@@ -596,7 +603,7 @@ describe('concurrentCallsWithMetadata', () => {
               | { ok: true; value: Val; metadata: Meta; error: false }
               | { ok: false; error: Error; metadata: Meta }
             )[];
-            aggregatedError: ConcurrentCallsAggregateError | null;
+            aggregatedError: ConcurrentCallsWithMetadataAggregateError<Meta> | null;
             failures: { error: Error; metadata: Meta }[];
           }
         >

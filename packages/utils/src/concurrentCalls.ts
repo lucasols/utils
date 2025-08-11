@@ -3,7 +3,31 @@ import { truncateArray } from './arrayUtils';
 import { invariant } from './assertions';
 import { sleep } from './sleep';
 import { truncateString } from './stringUtils';
-import { isPromise } from './typeGuards';
+import { isObject, isPromise } from './typeGuards';
+
+function formatErrorMessagesWithCounts(
+  messages: string[],
+  failed: number,
+  total: number,
+): string {
+  // Format error messages and count occurrences
+  const errorMessageCounts = new Map<string, number>();
+
+  for (const message of messages) {
+    errorMessageCounts.set(message, (errorMessageCounts.get(message) || 0) + 1);
+  }
+
+  // Create formatted messages with counts
+  const formattedMessages = Array.from(errorMessageCounts.entries()).map(
+    ([message, count]) => (count > 1 ? `${message} (${count}x)` : message),
+  );
+
+  return `${failed}/${total} calls failed:\n${truncateArray(
+    formattedMessages,
+    5,
+    '...',
+  ).join('\n')}`;
+}
 
 export class ConcurrentCallsAggregateError extends AggregateError {
   errors: Error[] = [];
@@ -11,13 +35,64 @@ export class ConcurrentCallsAggregateError extends AggregateError {
   failed: number = 0;
 
   constructor(errors: Error[], total: number, failed: number) {
-    const message = `${failed}/${total} calls failed:\n${truncateArray(
-      errors.map((e) => `- ${truncateString(e.message, 100)}`),
-      5,
-      '...',
-    ).join('\n')}`;
+    const messages = errors.map(
+      (error) => `- ${truncateString(error.message, 100)}`,
+    );
+    const message = formatErrorMessagesWithCounts(messages, failed, total);
+
     super(errors, message);
     this.errors = errors;
+    this.total = total;
+    this.failed = failed;
+  }
+}
+
+export class ConcurrentCallsWithMetadataAggregateError<
+  M extends ValidMetadata,
+> extends AggregateError {
+  errors: Error[] = [];
+  errorsWithMetadata: { error: Error; metadata: M }[] = [];
+  total: number = 0;
+  failed: number = 0;
+
+  constructor(
+    errors: { error: Error; metadata: M }[],
+    total: number,
+    failed: number,
+  ) {
+    const messages = errors.map(({ error, metadata }) => {
+      let metadataPrefix =
+        (
+          typeof metadata === 'string' ||
+          typeof metadata === 'number' ||
+          typeof metadata === 'boolean'
+        ) ?
+          `${metadata}: `
+        : '';
+
+      try {
+        const isArray = Array.isArray(metadata);
+        if (isObject(metadata) || isArray) {
+          const stringifiedMetadata = JSON.stringify(metadata);
+          if (stringifiedMetadata.length < 30) {
+            metadataPrefix = `${stringifiedMetadata}: `;
+          } else {
+            metadataPrefix = `[${isArray ? 'Array' : 'Object'} metadata]: `;
+          }
+        }
+      } catch (_) {
+        // ignore on stringify error
+      }
+
+      return `- ${metadataPrefix}${truncateString(error.message, 100)}`;
+    });
+
+    const message = formatErrorMessagesWithCounts(messages, failed, total);
+
+    const errorInstances = errors.map((e) => e.error);
+    super(errorInstances, message);
+    this.errors = errorInstances;
+    this.errorsWithMetadata = errors;
     this.total = total;
     this.failed = failed;
   }
@@ -269,7 +344,7 @@ class ConcurrentCallsWithMetadata<
     succeeded: SucceededCall<R, M>[];
     total: number;
     results: SettledResultWithMetadata<R, M, E>[];
-    aggregatedError: ConcurrentCallsAggregateError | null;
+    aggregatedError: ConcurrentCallsWithMetadataAggregateError<M> | null;
   }> {
     invariant(!this.#alreadyRun, 'Already run');
     this.#alreadyRun = true;
@@ -331,8 +406,8 @@ class ConcurrentCallsWithMetadata<
     const allFailed = failedProcessing.length === total;
     const aggregatedError =
       failedProcessing.length > 0 ?
-        new ConcurrentCallsAggregateError(
-          failedProcessing.map((f) => f.error),
+        new ConcurrentCallsWithMetadataAggregateError(
+          failedProcessing,
           total,
           failedProcessing.length,
         )
