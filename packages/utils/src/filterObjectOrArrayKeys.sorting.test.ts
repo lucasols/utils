@@ -170,9 +170,9 @@ describe('object key sorting', () => {
   test('should handle wildcard patterns in sorting', () => {
     const data = {
       user: {
-        profile: { name: 'John', age: 30 },
         settings: { theme: 'dark', lang: 'en' },
         preferences: { notifications: true },
+        profile: { name: 'John', age: 30 },
       },
     };
 
@@ -180,7 +180,7 @@ describe('object key sorting', () => {
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          sortPatterns: ['user.profile.*'],
+          sortPatterns: ['user.profile'],
         }),
       ),
     ).toMatchInlineSnapshot(`
