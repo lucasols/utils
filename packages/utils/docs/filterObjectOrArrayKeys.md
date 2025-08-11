@@ -14,7 +14,7 @@
 function filterObjectOrArrayKeys(objOrArray, options): Record<string, any> | Record<string, any>[];
 ```
 
-Defined in: [packages/utils/src/filterObjectOrArrayKeys.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/filterObjectOrArrayKeys.ts#L58)
+Defined in: [packages/utils/src/filterObjectOrArrayKeys.ts:60](https://github.com/lucasols/utils/blob/main/packages/utils/src/filterObjectOrArrayKeys.ts#L60)
 
 Filters the keys of an object based on the provided patterns.
 
