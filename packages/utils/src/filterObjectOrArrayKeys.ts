@@ -335,21 +335,23 @@ export function filterObjectOrArrayKeys(
   }
 
   function sortKeysWithPatterns(
-    keys: string[],
+    keys_: string[],
     obj: any,
     currentPath: PathToken[],
   ): string[] {
     // If no sorting is requested and no sort patterns, return original order
     if (!sortKeys && sortPatternsParsed.length === 0) {
-      return keys;
+      return keys_;
     }
 
-    if (sortPatternsParsed.length === 0) {
-      return sortKeys ? applySortKeys(keys, obj, sortKeys) : keys;
+    let keysToSort = keys_;
+
+    if (sortKeys) {
+      keysToSort = applySortKeys(keysToSort, obj, sortKeys);
     }
 
     // Sort by pattern priority first, then by the general sort order
-    const sortedKeys = [...keys].sort((a, b) => {
+    const sortedKeys = [...keysToSort].sort((a, b) => {
       const pathA = currentPath.concat({ type: 'KEY', name: a });
       const pathB = currentPath.concat({ type: 'KEY', name: b });
 

@@ -133,8 +133,8 @@ describe('object key sorting', () => {
       name: 'Sample'
       id: 123
       description: 'A sample object'
-      metadata: { version: '1.0', author: 'test' }
       status: 'active'
+      metadata: { author: 'test', version: '1.0' }
       "
     `);
   });
@@ -186,9 +186,9 @@ describe('object key sorting', () => {
     ).toMatchInlineSnapshot(`
       "
       user:
-        profile: { name: 'John', age: 30 }
-        settings: { theme: 'dark', lang: 'en' }
+        profile: { age: 30, name: 'John' }
         preferences: { notifications: true }
+        settings: { lang: 'en', theme: 'dark' }
       "
     `);
   });
@@ -259,9 +259,9 @@ describe('object key sorting', () => {
     ).toMatchInlineSnapshot(`
       "
       config:
-        database: { host: 'localhost', port: 5432 }
-        api: { version: 'v1', timeout: 30 }
-        cache: { ttl: 3600, enabled: true }
+        database: { port: 5432, host: 'localhost' }
+        api: { timeout: 30, version: 'v1' }
+        cache: { enabled: true, ttl: 3600 }
       "
     `);
   });
