@@ -1,9 +1,10 @@
- 
 import { resultify, type Result } from 't-result';
 import { assert, describe, expect, test } from 'vitest';
 import {
   concurrentCalls,
   concurrentCallsWithMetadata,
+  concurrentResultCalls,
+  concurrentResultsWithMetadata,
   type ConcurrentCallsAggregateError,
   type ConcurrentCallsWithMetadataAggregateError,
 } from './concurrentCalls';
@@ -668,5 +669,85 @@ describe('concurrentCallsWithMetadata', () => {
       );
       expect(sortedActualResults).toEqual(expectedResults);
     });
+  });
+});
+
+describe('concurrentResults', () => {
+  test('runAll success', async () => {
+    const result = await concurrentResultCalls<number, Error>()
+      .add(() => asyncResultFn(1, 15))
+      .add(() => asyncResultFn(2, 10))
+      .runAll();
+
+    expectType<TestTypeIsEqual<typeof result, Result<number[]>>>();
+
+    expect(result.ok && result.value).toEqual([1, 2]);
+  });
+
+  test('runAllSettled success', async () => {
+    const result = await concurrentResultCalls<number, Error>()
+      .add(() => asyncResultFn(1, 15))
+      .add(() => asyncResultFn(2, 10))
+      .runAllSettled();
+
+    expect(result.succeeded).toEqual([1, 2]);
+    expect(result.failures).toEqual([]);
+    expect(result.allFailed).toBe(false);
+  });
+
+  test('resultifyAdd throws error', () => {
+    expect(() => {
+      concurrentResultCalls().resultifyAdd(() => Promise.resolve('test'));
+    }).toThrowErrorMatchingInlineSnapshot(
+      `[Error: resultifyAdd is not allowed when using concurrentResults]`,
+    );
+  });
+});
+
+describe('concurrentResultsWithMetadata', () => {
+  test('runAll success with metadata', async () => {
+    const result = await concurrentResultsWithMetadata<
+      { id: string },
+      number,
+      Error
+    >()
+      .add({ fn: () => asyncResultFn(1, 15), metadata: { id: 'a' } })
+      .add({ fn: () => asyncResultFn(2, 10), metadata: { id: 'b' } })
+      .runAll();
+
+    assert(result.ok);
+    expect(result.value).toEqual([
+      { value: 1, metadata: { id: 'a' } },
+      { value: 2, metadata: { id: 'b' } },
+    ]);
+  });
+
+  test('runAllSettled success with metadata', async () => {
+    const result = await concurrentResultsWithMetadata<
+      { id: string },
+      number,
+      Error
+    >()
+      .add({ fn: () => asyncResultFn(1, 15), metadata: { id: 'a' } })
+      .add({ fn: () => asyncResultFn(2, 10), metadata: { id: 'b' } })
+      .runAllSettled();
+
+    expect(result.succeeded).toEqual([
+      { value: 1, metadata: { id: 'a' } },
+      { value: 2, metadata: { id: 'b' } },
+    ]);
+    expect(result.failures).toEqual([]);
+    expect(result.allFailed).toBe(false);
+  });
+
+  test('resultifyAdd throws error', () => {
+    expect(() => {
+      concurrentResultsWithMetadata().resultifyAdd({
+        fn: () => Promise.resolve('test'),
+        metadata: { id: 1 },
+      });
+    }).toThrowErrorMatchingInlineSnapshot(
+      `[Error: resultifyAdd is not allowed when using concurrentResultsWithMetadata]`,
+    );
   });
 });

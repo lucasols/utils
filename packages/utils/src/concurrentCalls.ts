@@ -124,6 +124,11 @@ type SettledResultWithMetadata<R, M, E extends Error = Error> =
 class ConcurrentCalls<R = unknown, E extends Error = Error> {
   #pendingCalls: Action<R, E>[] = [];
   #alreadyRun = false;
+  allowResultify: boolean = true;
+
+  constructor(allowResultify: boolean) {
+    this.allowResultify = allowResultify;
+  }
 
   add(...calls: Action<R, E>[]): this {
     this.#pendingCalls.push(...calls);
@@ -132,6 +137,12 @@ class ConcurrentCalls<R = unknown, E extends Error = Error> {
   }
 
   resultifyAdd(...calls: ((() => R) | (() => Promise<R>))[]): this {
+    if (!this.allowResultify) {
+      throw new Error(
+        'resultifyAdd is not allowed when using concurrentResults',
+      );
+    }
+
     const processedCalls = calls.map((call) => {
       return async (): Promise<Result<R, E>> => {
         try {
@@ -241,10 +252,9 @@ class ConcurrentCalls<R = unknown, E extends Error = Error> {
  * Executes multiple asynchronous calls concurrently and collects the results in a easier to use format.
  *
  * @template R - The type of the result value.
- * @template E - The type of the error.
  */
 export function concurrentCalls<R = unknown>() {
-  return new ConcurrentCalls<R>();
+  return new ConcurrentCalls<R>(true);
 }
 
 class ConcurrentCallsWithMetadata<
@@ -254,6 +264,11 @@ class ConcurrentCallsWithMetadata<
 > {
   #pendingCalls: { fn: Action<R, E>; metadata: M }[] = [];
   #alreadyRun = false;
+  allowResultify: boolean = true;
+
+  constructor(allowResultify: boolean) {
+    this.allowResultify = allowResultify;
+  }
 
   add(
     ...calls: {
@@ -272,6 +287,12 @@ class ConcurrentCallsWithMetadata<
   resultifyAdd(
     ...items: { fn: (() => R) | (() => Promise<R>); metadata: M }[]
   ): this {
+    if (!this.allowResultify) {
+      throw new Error(
+        'resultifyAdd is not allowed when using concurrentResultsWithMetadata',
+      );
+    }
+
     const processedItems = items.map(({ fn, metadata }) => {
       const cb: Action<R, E> = () =>
         resultify(async () => {
@@ -426,15 +447,39 @@ class ConcurrentCallsWithMetadata<
 }
 
 /**
- * Executes multiple asynchronous calls concurrently and collects the results in a easier to use format.
+ * Executes multiple asynchronous calls concurrently with metadata for each call and collects the results in a easier to use format.
  *
  * @template M - The type of the call metadata.
  * @template R - The type of the result value.
- * @template E - The type of the error from individual Result objects.
  */
 export function concurrentCallsWithMetadata<
   M extends ValidMetadata,
   R = unknown,
 >() {
-  return new ConcurrentCallsWithMetadata<M, R, Error>();
+  return new ConcurrentCallsWithMetadata<M, R, Error>(true);
+}
+
+/**
+ * Executes multiple asynchronous result calls concurrently and collects the results in a easier to use format.
+ *
+ * @template R - The type of the result value.
+ * @template E - The type of the error.
+ */
+export function concurrentResultCalls<R, E extends Error>() {
+  return new ConcurrentCalls<R, E>(false);
+}
+
+/**
+ * Executes multiple asynchronous result calls concurrently with metadata for each call and collects the results in a easier to use format.
+ *
+ * @template M - The type of the call metadata.
+ * @template R - The type of the result value.
+ * @template E - The type of the error.
+ */
+export function concurrentResultsWithMetadata<
+  M extends ValidMetadata,
+  R,
+  E extends Error,
+>() {
+  return new ConcurrentCallsWithMetadata<M, R, E>(false);
 }
