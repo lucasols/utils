@@ -1,4 +1,4 @@
-import { resultify, type Result } from 't-result';
+import { err, ok, Result, resultify } from 't-result';
 import { assert, describe, expect, test } from 'vitest';
 import {
   concurrentCalls,
@@ -40,6 +40,32 @@ function asyncErrorFn<T extends string | number | boolean, E extends Error>(
     await sleep(duration);
 
     throw error;
+  });
+}
+
+class CustomError extends Error {
+  constructor(
+    message: string,
+    public code: string,
+  ) {
+    super(message);
+    this.name = 'CustomError';
+  }
+}
+
+function asyncCustomErrorResultFn<T extends string | number | boolean>(
+  value: T,
+  error?: CustomError,
+  duration: number = 10,
+): Promise<Result<T, CustomError>> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      if (error) {
+        resolve(Result.err(error));
+      } else {
+        resolve(Result.ok(value));
+      }
+    }, duration);
   });
 }
 
@@ -429,7 +455,7 @@ describe('concurrentCallsWithMetadata', () => {
       { value: 1, metadata: { id: 'a' } },
       { value: 2, metadata: { id: 'b' } },
     ]);
-    expect(result.failed).toEqual([]);
+    expect(result.failures).toEqual([]);
     expect(result.allFailed).toBe(false);
     expect(result.total).toBe(2);
     expect(result.aggregatedError).toBeNull();
@@ -451,7 +477,7 @@ describe('concurrentCallsWithMetadata', () => {
       { value: 1, metadata: { id: 'a' } },
       { value: 3, metadata: { id: 'c' } },
     ]);
-    expect(result.failed).toEqual([{ metadata: { id: 'b' }, error: errorB }]);
+    expect(result.failures).toEqual([{ metadata: { id: 'b' }, error: errorB }]);
     expect(result.allFailed).toBe(false);
     expect(result.total).toBe(3);
     assert(result.aggregatedError);
@@ -623,7 +649,7 @@ describe('concurrentCallsWithMetadata', () => {
       );
 
       expect(
-        result.failed.sort((a, b) =>
+        result.failures.sort((a, b) =>
           a.metadata.callId.localeCompare(b.metadata.callId),
         ),
       ).toEqual(
@@ -669,5 +695,95 @@ describe('concurrentCallsWithMetadata', () => {
       );
       expect(sortedActualResults).toEqual(expectedResults);
     });
+  });
+});
+
+describe('concurrentResultCalls', () => {
+  test('creates instance with allowResultify: false', () => {
+    const instance =
+      concurrentResultCalls<() => Promise<Result<string, Error>>>();
+    expect(() => instance.resultifyAdd(() => 'test')).toThrow(
+      'resultifyAdd is not allowed when using concurrentResults',
+    );
+  });
+
+  test('infers types from function signature and works with custom Error types', async () => {
+    async function resultFn(
+      duration: number,
+      error?: string,
+    ): Promise<Result<string, { error: string }>> {
+      await sleep(duration);
+      if (error) {
+        return err({ error });
+      }
+      return ok('hello');
+    }
+
+    const result = await concurrentResultCalls<typeof resultFn>()
+      .add(() => resultFn(15))
+      .add(() => resultFn(10))
+      .runAll();
+
+    expectType<
+      TestTypeIsEqual<typeof result, Result<string[], { error: string }>>
+    >();
+    expect(result.ok && result.value).toEqual(['hello', 'hello']);
+  });
+});
+
+describe('concurrentResultsWithMetadata', () => {
+  test('creates instance with allowResultify: false', () => {
+    const instance = concurrentResultsWithMetadata<
+      { id: string },
+      () => Promise<Result<string, Error>>
+    >();
+    expect(() =>
+      instance.resultifyAdd({ fn: () => 'test', metadata: { id: '1' } }),
+    ).toThrow(
+      'resultifyAdd is not allowed when using concurrentResultsWithMetadata',
+    );
+  });
+
+  test('infers types from function signature and works with custom Error types', async () => {
+    async function resultFn(
+      duration: number,
+      error?: string,
+    ): Promise<Result<boolean, { error: string }>> {
+      await sleep(duration);
+      if (error) {
+        return err({ error });
+      }
+      return ok(true);
+    }
+
+    const result = await concurrentResultsWithMetadata<
+      { task: string },
+      typeof resultFn
+    >()
+      .add({
+        fn: () => resultFn(15),
+        metadata: { task: 'first' },
+      })
+      .add({
+        fn: () => resultFn(10),
+        metadata: { task: 'second' },
+      })
+      .runAll();
+
+    expectType<
+      TestTypeIsEqual<
+        typeof result,
+        Result<
+          { value: boolean; metadata: { task: string } }[],
+          { metadata: { task: string }; error: { error: string } }
+        >
+      >
+    >();
+
+    assert(result.ok);
+    expect(result.value).toEqual([
+      { value: true, metadata: { task: 'first' } },
+      { value: true, metadata: { task: 'second' } },
+    ]);
   });
 });
