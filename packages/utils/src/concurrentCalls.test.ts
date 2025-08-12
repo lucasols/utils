@@ -43,32 +43,6 @@ function asyncErrorFn<T extends string | number | boolean, E extends Error>(
   });
 }
 
-class CustomError extends Error {
-  constructor(
-    message: string,
-    public code: string,
-  ) {
-    super(message);
-    this.name = 'CustomError';
-  }
-}
-
-function asyncCustomErrorResultFn<T extends string | number | boolean>(
-  value: T,
-  error?: CustomError,
-  duration: number = 10,
-): Promise<Result<T, CustomError>> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (error) {
-        resolve(Result.err(error));
-      } else {
-        resolve(Result.ok(value));
-      }
-    }, duration);
-  });
-}
-
 describe('concurrentCalls', () => {
   test('runAll success', async () => {
     const result = await concurrentCalls<number>()
