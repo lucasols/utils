@@ -14,7 +14,7 @@
 
 ### ConcurrentCallsAggregateError
 
-Defined in: [packages/utils/src/concurrentCalls.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L32)
+Defined in: [packages/utils/src/concurrentCalls.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L38)
 
 #### Extends
 
@@ -31,13 +31,13 @@ new ConcurrentCallsAggregateError(
    failed): ConcurrentCallsAggregateError;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L37)
+Defined in: [packages/utils/src/concurrentCalls.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L43)
 
 ###### Parameters
 
 ###### errors
 
-`Error`[]
+`ResultValidErrors`[]
 
 ###### total
 
@@ -62,10 +62,10 @@ AggregateError.constructor
 ##### errors
 
 ```ts
-errors: Error[] = [];
+errors: ResultValidErrors[] = [];
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L33)
+Defined in: [packages/utils/src/concurrentCalls.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L39)
 
 ###### Overrides
 
@@ -79,7 +79,7 @@ AggregateError.errors
 failed: number = 0;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L35)
+Defined in: [packages/utils/src/concurrentCalls.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L41)
 
 ##### total
 
@@ -87,13 +87,13 @@ Defined in: [packages/utils/src/concurrentCalls.ts:35](https://github.com/lucaso
 total: number = 0;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L34)
+Defined in: [packages/utils/src/concurrentCalls.ts:40](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L40)
 
 ***
 
 ### ConcurrentCallsWithMetadataAggregateError\<M\>
 
-Defined in: [packages/utils/src/concurrentCalls.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L50)
+Defined in: [packages/utils/src/concurrentCalls.ts:62](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L62)
 
 #### Extends
 
@@ -116,7 +116,7 @@ new ConcurrentCallsWithMetadataAggregateError<M>(
 failed): ConcurrentCallsWithMetadataAggregateError<M>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L58)
+Defined in: [packages/utils/src/concurrentCalls.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L70)
 
 ###### Parameters
 
@@ -147,10 +147,10 @@ AggregateError.constructor
 ##### errors
 
 ```ts
-errors: Error[] = [];
+errors: ResultValidErrors[] = [];
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L53)
+Defined in: [packages/utils/src/concurrentCalls.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L65)
 
 ###### Overrides
 
@@ -164,12 +164,12 @@ AggregateError.errors
 errorsWithMetadata: object[] = [];
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L54)
+Defined in: [packages/utils/src/concurrentCalls.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L66)
 
 ###### error
 
 ```ts
-error: Error;
+error: ResultValidErrors;
 ```
 
 ###### metadata
@@ -184,7 +184,7 @@ metadata: M;
 failed: number = 0;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L56)
+Defined in: [packages/utils/src/concurrentCalls.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L68)
 
 ##### total
 
@@ -192,7 +192,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:56](https://github.com/lucaso
 total: number = 0;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L55)
+Defined in: [packages/utils/src/concurrentCalls.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L67)
 
 ## Functions
 
@@ -202,7 +202,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:55](https://github.com/lucaso
 function concurrentCalls<R>(): ConcurrentCalls<R, Error>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:246](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L246)
+Defined in: [packages/utils/src/concurrentCalls.ts:273](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L273)
 
 Executes multiple asynchronous calls concurrently and collects the results in a easier to use format.
 
@@ -226,9 +226,9 @@ The type of the result value.
 function concurrentCallsWithMetadata<M, R>(): ConcurrentCallsWithMetadata<M, R, Error>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:435](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L435)
+Defined in: [packages/utils/src/concurrentCalls.ts:472](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L472)
 
-Executes multiple asynchronous calls concurrently and collects the results in a easier to use format.
+Executes multiple asynchronous calls concurrently with metadata for each call and collects the results in a easier to use format.
 
 #### Type Parameters
 
@@ -247,3 +247,53 @@ The type of the result value.
 #### Returns
 
 [`ConcurrentCallsWithMetadata`](-internal-.md#concurrentcallswithmetadata)\<`M`, `R`, `Error`\>
+
+***
+
+### concurrentResultCalls()
+
+```ts
+function concurrentResultCalls<ResultFn>(): ConcurrentCalls<ValueFromResult<Awaited<ReturnType<ResultFn>>>, ErrorFromResult<Awaited<ReturnType<ResultFn>>>>;
+```
+
+Defined in: [packages/utils/src/concurrentCalls.ts:487](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L487)
+
+Executes multiple asynchronous result calls concurrently and collects the results in a easier to use format.
+
+#### Type Parameters
+
+##### ResultFn
+
+`ResultFn` *extends* (...`args`) => `Promise`\<`Result`\<`unknown`, `ResultValidErrors`\>\>
+
+#### Returns
+
+[`ConcurrentCalls`](-internal-.md#concurrentcalls)\<[`ValueFromResult`](-internal-.md#valuefromresult)\<`Awaited`\<`ReturnType`\<`ResultFn`\>\>\>, [`ErrorFromResult`](-internal-.md#errorfromresult)\<`Awaited`\<`ReturnType`\<`ResultFn`\>\>\>\>
+
+***
+
+### concurrentResultsWithMetadata()
+
+```ts
+function concurrentResultsWithMetadata<M, ResultFn>(): ConcurrentCallsWithMetadata<M, ValueFromResult<Awaited<ReturnType<ResultFn>>>, ErrorFromResult<Awaited<ReturnType<ResultFn>>>>;
+```
+
+Defined in: [packages/utils/src/concurrentCalls.ts:504](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L504)
+
+Executes multiple asynchronous result calls concurrently with metadata for each call and collects the results in a easier to use format.
+
+#### Type Parameters
+
+##### M
+
+`M` *extends* [`ValidMetadata`](-internal-.md#validmetadata)
+
+##### ResultFn
+
+`ResultFn` *extends* (...`args`) => `Promise`\<`Result`\<`unknown`, `ResultValidErrors`\>\>
+
+The type of the result function that will be called.
+
+#### Returns
+
+[`ConcurrentCallsWithMetadata`](-internal-.md#concurrentcallswithmetadata)\<`M`, [`ValueFromResult`](-internal-.md#valuefromresult)\<`Awaited`\<`ReturnType`\<`ResultFn`\>\>\>, [`ErrorFromResult`](-internal-.md#errorfromresult)\<`Awaited`\<`ReturnType`\<`ResultFn`\>\>\>\>
