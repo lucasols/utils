@@ -1,6 +1,12 @@
-import { Result, resultify, unknownToError } from 't-result';
+import {
+  Result,
+  resultify,
+  unknownToError,
+  type ResultValidErrors,
+} from 't-result';
 import { truncateArray } from './arrayUtils';
 import { invariant } from './assertions';
+import { safeJsonStringify } from './safeJson';
 import { sleep } from './sleep';
 import { truncateString } from './stringUtils';
 import { isObject, isPromise } from './typeGuards';
@@ -30,13 +36,19 @@ function formatErrorMessagesWithCounts(
 }
 
 export class ConcurrentCallsAggregateError extends AggregateError {
-  errors: Error[] = [];
+  errors: ResultValidErrors[] = [];
   total: number = 0;
   failed: number = 0;
 
-  constructor(errors: Error[], total: number, failed: number) {
+  constructor(errors: ResultValidErrors[], total: number, failed: number) {
     const messages = errors.map(
-      (error) => `- ${truncateString(error.message, 100)}`,
+      (error) =>
+        `- ${truncateString(
+          error instanceof Error ?
+            error.message
+          : (safeJsonStringify(error) ?? '???'),
+          100,
+        )}`,
     );
     const message = formatErrorMessagesWithCounts(messages, failed, total);
 
@@ -50,13 +62,13 @@ export class ConcurrentCallsAggregateError extends AggregateError {
 export class ConcurrentCallsWithMetadataAggregateError<
   M extends ValidMetadata,
 > extends AggregateError {
-  errors: Error[] = [];
-  errorsWithMetadata: { error: Error; metadata: M }[] = [];
+  errors: ResultValidErrors[] = [];
+  errorsWithMetadata: { error: ResultValidErrors; metadata: M }[] = [];
   total: number = 0;
   failed: number = 0;
 
   constructor(
-    errors: { error: Error; metadata: M }[],
+    errors: { error: ResultValidErrors; metadata: M }[],
     total: number,
     failed: number,
   ) {
@@ -84,7 +96,12 @@ export class ConcurrentCallsWithMetadataAggregateError<
         // ignore on stringify error
       }
 
-      return `- ${metadataPrefix}${truncateString(error.message, 100)}`;
+      return `- ${metadataPrefix}${truncateString(
+        error instanceof Error ?
+          error.message
+        : (safeJsonStringify(error) ?? '???'),
+        100,
+      )}`;
     });
 
     const message = formatErrorMessagesWithCounts(messages, failed, total);
@@ -109,19 +126,19 @@ type SucceededCall<R, M> = {
   value: R;
   metadata: M;
 };
-type FailedCall<M, E extends Error = Error> = {
+type FailedCall<M, E extends ResultValidErrors = Error> = {
   metadata: M;
   error: E;
 };
 
-type Action<R, E extends Error> = () => Promise<Result<R, E>>;
+type Action<R, E extends ResultValidErrors> = () => Promise<Result<R, E>>;
 
 // Type for the elements in the 'results' array of runAllSettled for ConcurrentCallsWithMetadata
-type SettledResultWithMetadata<R, M, E extends Error = Error> =
+type SettledResultWithMetadata<R, M, E extends ResultValidErrors = Error> =
   | { ok: true; value: R; metadata: M; error: false }
   | { ok: false; error: E; metadata: M };
 
-class ConcurrentCalls<R = unknown, E extends Error = Error> {
+class ConcurrentCalls<R = unknown, E extends ResultValidErrors = Error> {
   #pendingCalls: Action<R, E>[] = [];
   #alreadyRun = false;
   allowResultify: boolean = true;
@@ -260,7 +277,7 @@ export function concurrentCalls<R = unknown>() {
 class ConcurrentCallsWithMetadata<
   M extends ValidMetadata,
   R = unknown,
-  E extends Error = Error,
+  E extends ResultValidErrors = Error,
 > {
   #pendingCalls: { fn: Action<R, E>; metadata: M }[] = [];
   #alreadyRun = false;
@@ -459,27 +476,41 @@ export function concurrentCallsWithMetadata<
   return new ConcurrentCallsWithMetadata<M, R, Error>(true);
 }
 
+type ValueFromResult<R> = R extends Result<infer T, any> ? T : never;
+type ErrorFromResult<R> = R extends Result<any, infer E> ? E : never;
+
 /**
  * Executes multiple asynchronous result calls concurrently and collects the results in a easier to use format.
  *
- * @template R - The type of the result value.
- * @template E - The type of the error.
+ * @template R - The type of the result function that will be called.
  */
-export function concurrentResultCalls<R, E extends Error>() {
-  return new ConcurrentCalls<R, E>(false);
+export function concurrentResultCalls<
+  ResultFn extends (
+    ...args: any[]
+  ) => Promise<Result<unknown, ResultValidErrors>>,
+>() {
+  type ReturnedResult = Awaited<ReturnType<ResultFn>>;
+  return new ConcurrentCalls<
+    ValueFromResult<ReturnedResult>,
+    ErrorFromResult<ReturnedResult>
+  >(false);
 }
 
 /**
  * Executes multiple asynchronous result calls concurrently with metadata for each call and collects the results in a easier to use format.
  *
- * @template M - The type of the call metadata.
- * @template R - The type of the result value.
- * @template E - The type of the error.
+ * @template ResultFn - The type of the result function that will be called.
  */
 export function concurrentResultsWithMetadata<
   M extends ValidMetadata,
-  R,
-  E extends Error,
+  ResultFn extends (
+    ...args: any[]
+  ) => Promise<Result<unknown, ResultValidErrors>>,
 >() {
-  return new ConcurrentCallsWithMetadata<M, R, E>(false);
+  type ReturnedResult = Awaited<ReturnType<ResultFn>>;
+  return new ConcurrentCallsWithMetadata<
+    M,
+    ValueFromResult<ReturnedResult>,
+    ErrorFromResult<ReturnedResult>
+  >(false);
 }
