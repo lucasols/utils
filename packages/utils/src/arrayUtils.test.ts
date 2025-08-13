@@ -1,11 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import {
+  arrayOps,
   findAfterIndex,
   findBeforeIndex,
   rejectArrayUndefinedValues,
   rejectDuplicates,
   truncateArray,
 } from './arrayUtils';
+import { typingTest } from './typingTestUtils';
 
 describe('findAfterIndex', () => {
   test('not throws', () => {
@@ -143,4 +145,49 @@ describe('truncateArray', () => {
     expect(result).toEqual([1, 2, 3]);
     expect(result).not.toBe(array);
   });
+});
+
+describe('arrayOps', () => {
+  test('should provide filterAndMap method', () => {
+    const array = [1, 2, 3, 4];
+    const result = arrayOps(array).filterAndMap((item) => item % 2 === 0 ? item * 2 : false);
+    
+    typingTest.expectTypesAre<typeof result, number[]>('equal');
+    expect(result).toMatchInlineSnapshot(`
+      [
+        4,
+        8,
+      ]
+    `);
+  });
+
+  test('should provide sortBy method', () => {
+    const array = [3, 1, 4, 2];
+    const result = arrayOps(array).sortBy((item) => item, 'asc');
+    
+    typingTest.expectTypesAre<typeof result, number[]>('equal');
+    expect(result).toMatchInlineSnapshot(`
+      [
+        1,
+        2,
+        3,
+        4,
+      ]
+    `);
+  });
+
+  test('should provide rejectDuplicates method', () => {
+    const array = [1, 2, 2, 3, 1];
+    const result = arrayOps(array).rejectDuplicates((item) => item);
+    
+    typingTest.expectTypesAre<typeof result, number[]>('equal');
+    expect(result).toMatchInlineSnapshot(`
+      [
+        1,
+        2,
+        3,
+      ]
+    `);
+  });
+
 });
