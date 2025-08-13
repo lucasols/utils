@@ -43,6 +43,15 @@ export type FilterAndMapReturn<T> = false | T;
 
 type SortOrder = 'desc' | 'asc';
 
+type SortByValue<T> = (item: T) => (number | string)[] | number | string;
+
+type SortByProps =
+  | {
+      order?: SortOrder | SortOrder[];
+    }
+  | SortOrder
+  | SortOrder[];
+
 /**
  * Sort an array based on a value
  *
@@ -66,8 +75,8 @@ type SortOrder = 'desc' | 'asc';
  */
 export function sortBy<T>(
   arr: T[],
-  sortByValue: (item: T) => (number | string)[] | number | string,
-  props: { order?: SortOrder | SortOrder[] } | SortOrder | SortOrder[] = 'asc',
+  sortByValue: SortByValue<T>,
+  props: SortByProps = 'asc',
 ) {
   const order =
     Array.isArray(props) || typeof props === 'string' ?
@@ -224,4 +233,42 @@ export function truncateArray<T>(
   }
 
   return result;
+}
+
+type ArrayOps<T> = {
+  /**
+   * Filter and map an array
+   *
+   * @param mapFilter - A function that takes an item and returns a value or `false`
+   * to reject the item.
+   * @example
+   * const items = [1, 2, 3];
+   *
+   * const enhancedItems = arrayOps(items);
+   *
+   * enhancedItems.filterAndMap((item) => item === 2 ? false : item);
+   */
+  filterAndMap: <R>(mapFilter: (item: T, index: number) => false | R) => R[];
+  sortBy: (sortByValue: SortByValue<T>, props: SortByProps) => T[];
+  rejectDuplicates: (getKey: (item: T) => unknown) => T[];
+};
+
+/**
+ * Enhance an array with extra methods
+ *
+ * @param array
+ * @example
+ *
+ * const enhancedItems = arrayOps(array);
+ *
+ * enhancedItems.filterAndMap((item) => item === 2 ? false : item);
+ * enhancedItems.sortBy((item) => item);
+ * enhancedItems.rejectDuplicates((item) => item);
+ */
+export function arrayOps<T>(array: T[]): ArrayOps<T> {
+  return {
+    filterAndMap: (mapFilter) => filterAndMap(array, mapFilter),
+    sortBy: (sortByValue, props) => sortBy(array, sortByValue, props),
+    rejectDuplicates: (getKey) => rejectDuplicates(array, getKey),
+  };
 }
