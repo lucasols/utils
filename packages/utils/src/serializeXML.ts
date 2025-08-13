@@ -68,7 +68,7 @@ function serializeWithLevel(
 ): string {
   const {
     indent,
-    escapeText: globalEscapeText = true,
+    escapeText: globalEscapeText = false,
     validateTagName = true,
     invalidNodes = 'throw',
   } = options;

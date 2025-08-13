@@ -133,13 +133,25 @@ test('handles multiline text without indentation', () => {
   expect(result).toBe('<pre>Line 1\nLine 2\n  Line 3</pre>');
 });
 
-test('escapes XML characters in text content', () => {
+test('does not escape XML characters in text content by default', () => {
   const node: XMLNode = {
     name: 'p',
     children: 'Text with <tags> & "quotes" and \'apostrophes\'',
   };
 
   const result = serializeXML(node);
+  expect(result).toBe(
+    '<p>Text with <tags> & "quotes" and \'apostrophes\'</p>',
+  );
+});
+
+test('escapes XML characters when escapeText is explicitly enabled', () => {
+  const node: XMLNode = {
+    name: 'p',
+    children: 'Text with <tags> & "quotes" and \'apostrophes\'',
+  };
+
+  const result = serializeXML(node, { escapeText: true });
   expect(result).toBe(
     '<p>Text with &lt;tags&gt; &amp; &quot;quotes&quot; and &#39;apostrophes&#39;</p>',
   );
@@ -511,26 +523,26 @@ test('disables both text and attribute escaping globally', () => {
   );
 });
 
-test('disables text escaping per node', () => {
+test('enables text escaping per node', () => {
   const node: XMLNode = {
     name: 'article',
     children: [
       {
         name: 'p',
-        children: 'This <em>should</em> be escaped',
+        children: 'This <em>should NOT</em> be escaped',
       },
       {
         name: 'div',
-        escapeText: false,
-        children: 'This <strong>should NOT</strong> be escaped',
+        escapeText: true,
+        children: 'This <strong>should</strong> be escaped',
       },
     ],
   };
 
   const result = serializeXML(node, { indent: 2 });
   expect(result).toBe(`<article>
-  <p>This &lt;em&gt;should&lt;/em&gt; be escaped</p>
-  <div>This <strong>should NOT</strong> be escaped</div>
+  <p>This <em>should NOT</em> be escaped</p>
+  <div>This &lt;strong&gt;should&lt;/strong&gt; be escaped</div>
 </article>`);
 });
 
@@ -540,25 +552,25 @@ test('per-node escaping options override global options', () => {
     children: [
       {
         name: 'p',
-        attrs: { title: 'Global disabled' },
-        children: 'Global disabled',
+        attrs: { title: 'Global enabled' },
+        children: 'Global enabled',
       },
       {
         name: 'p',
-        escapeText: true,
-        attrs: { title: 'Node enabled <override>' },
-        children: 'Node enabled <override>',
+        escapeText: false,
+        attrs: { title: 'Node disabled <override>' },
+        children: 'Node disabled <override>',
       },
     ],
   };
 
   const result = serializeXML(node, {
     indent: 2,
-    escapeText: false,
+    escapeText: true,
   });
   expect(result).toBe(`<div>
-  <p title="Global disabled">Global disabled</p>
-  <p title="Node enabled &lt;override&gt;">Node enabled &lt;override&gt;</p>
+  <p title="Global enabled">Global enabled</p>
+  <p title="Node disabled &lt;override&gt;">Node disabled <override></p>
 </div>`);
 });
 
@@ -586,7 +598,6 @@ test('mixed escaping in nested structure', () => {
         children: [
           {
             name: 'style',
-            escapeText: false,
             children: 'body { color: red; } /* <comment> */',
           },
         ],
@@ -596,11 +607,11 @@ test('mixed escaping in nested structure', () => {
         children: [
           {
             name: 'p',
+            escapeText: true,
             children: 'This <will> be escaped',
           },
           {
             name: 'script',
-            escapeText: false,
             children: 'if (x < 5) { console.log("test"); }',
           },
         ],
