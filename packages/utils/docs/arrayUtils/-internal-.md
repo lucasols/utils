@@ -14,7 +14,7 @@
 type ArrayOps<T> = object;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:238](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L238)
+Defined in: [packages/utils/src/arrayUtils.ts:259](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L259)
 
 #### Type Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:238](https://github.com/lucasols/u
 filterAndMap: <R>(mapFilter) => R[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:251](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L251)
+Defined in: [packages/utils/src/arrayUtils.ts:272](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L272)
 
 Filter and map an array
 
@@ -69,7 +69,7 @@ enhancedItems.filterAndMap((item) => item === 2 ? false : item);
 rejectDuplicates: (getKey) => T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:253](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L253)
+Defined in: [packages/utils/src/arrayUtils.ts:274](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L274)
 
 ###### Parameters
 
@@ -87,7 +87,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:253](https://github.com/lucasols/u
 sortBy: (sortByValue, props) => T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:252](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L252)
+Defined in: [packages/utils/src/arrayUtils.ts:273](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L273)
 
 ###### Parameters
 

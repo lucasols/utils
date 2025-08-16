@@ -220,6 +220,26 @@ Defined in: [packages/utils/src/stringUtils.ts:50](https://github.com/lucasols/u
 
 ***
 
+### removeANSIColors()
+
+```ts
+function removeANSIColors(str): string;
+```
+
+Defined in: [packages/utils/src/stringUtils.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L98)
+
+#### Parameters
+
+##### str
+
+`string`
+
+#### Returns
+
+`string`
+
+***
+
 ### truncateString()
 
 ```ts
