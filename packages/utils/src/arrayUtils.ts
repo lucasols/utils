@@ -114,6 +114,27 @@ export function sortBy<T>(
   });
 }
 
+/**
+ * Get the correct 0 based value for sync with other array in ascending order
+ *
+ * @param index
+ *
+ * @example
+ * ```ts
+ * const items = [1, 2, 3];
+ *
+ * const index = sortBy(
+ *   items,
+ *   (item) => getAscIndexOrder(
+ *     followOrder.findIndex((order) => order === item)
+ *   )
+ * );
+ * ```
+ */
+export function getAscIndexOrder(index: number | undefined): number {
+  return index === -1 ? Infinity : (index ?? Infinity);
+}
+
 export function arrayWithPrev<T>(array: T[]): [current: T, prev: T | null][] {
   return array.map((item, i) => [item, array[i - 1] ?? null]);
 }

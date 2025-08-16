@@ -10,11 +10,8 @@ export function createTsupConfig(options: Partial<Options> = {}) {
     ],
     clean: true,
     dts: true,
-    outDir: 'lib',
+    outDir: 'dist',
     format: ['esm', 'cjs'],
-    esbuildOptions(esbuildOptions) {
-      esbuildOptions.mangleProps = /[^_]_$/;
-    },
     ...options,
   });
 }

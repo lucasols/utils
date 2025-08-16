@@ -17,7 +17,7 @@
     "docs:watch": "typedoc --watch"
   },
   "files": [
-    "lib",
+    "dist",
     "docs"
   ],
   "repository": "github:lucasols/utils",

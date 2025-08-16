@@ -94,3 +94,8 @@ export function truncateString(str: string, length: number, ellipsis = '…') {
 
   return str.slice(0, length - 1) + ellipsis;
 }
+
+export function removeANSIColors(str: string) {
+  // eslint-disable-next-line no-control-regex -- valid usage of control character
+  return str.replace(/\u001b\[\d+m/g, '');
+}
