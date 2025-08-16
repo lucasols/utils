@@ -34,192 +34,192 @@
       "require": "./dist/main.cjs"
     },
     "./__snapshots__": {
-      "import": "./lib/__snapshots__.js",
-      "require": "./lib/__snapshots__.cjs"
+      "import": "./dist/__snapshots__.js",
+      "require": "./dist/__snapshots__.cjs"
     },
     "./arrayUtils": {
-      "import": "./lib/arrayUtils.js",
-      "require": "./lib/arrayUtils.cjs"
+      "import": "./dist/arrayUtils.js",
+      "require": "./dist/arrayUtils.cjs"
     },
     "./assertions": {
-      "import": "./lib/assertions.js",
-      "require": "./lib/assertions.cjs"
+      "import": "./dist/assertions.js",
+      "require": "./dist/assertions.cjs"
     },
     "./asyncQueue": {
-      "import": "./lib/asyncQueue.js",
-      "require": "./lib/asyncQueue.cjs"
+      "import": "./dist/asyncQueue.js",
+      "require": "./dist/asyncQueue.cjs"
     },
     "./awaitDebounce": {
-      "import": "./lib/awaitDebounce.js",
-      "require": "./lib/awaitDebounce.cjs"
+      "import": "./dist/awaitDebounce.js",
+      "require": "./dist/awaitDebounce.cjs"
     },
     "./cache": {
-      "import": "./lib/cache.js",
-      "require": "./lib/cache.cjs"
+      "import": "./dist/cache.js",
+      "require": "./dist/cache.cjs"
     },
     "./castValues": {
-      "import": "./lib/castValues.js",
-      "require": "./lib/castValues.cjs"
+      "import": "./dist/castValues.js",
+      "require": "./dist/castValues.cjs"
     },
     "./concurrentCalls": {
-      "import": "./lib/concurrentCalls.js",
-      "require": "./lib/concurrentCalls.cjs"
+      "import": "./dist/concurrentCalls.js",
+      "require": "./dist/concurrentCalls.cjs"
     },
     "./consoleFmt": {
-      "import": "./lib/consoleFmt.js",
-      "require": "./lib/consoleFmt.cjs"
+      "import": "./dist/consoleFmt.js",
+      "require": "./dist/consoleFmt.cjs"
     },
     "./conversions": {
-      "import": "./lib/conversions.js",
-      "require": "./lib/conversions.cjs"
+      "import": "./dist/conversions.js",
+      "require": "./dist/conversions.cjs"
     },
     "./createThrottleController": {
-      "import": "./lib/createThrottleController.js",
-      "require": "./lib/createThrottleController.cjs"
+      "import": "./dist/createThrottleController.js",
+      "require": "./dist/createThrottleController.cjs"
     },
     "./debounce": {
-      "import": "./lib/debounce.js",
-      "require": "./lib/debounce.cjs"
+      "import": "./dist/debounce.js",
+      "require": "./dist/debounce.cjs"
     },
     "./dedent": {
-      "import": "./lib/dedent.js",
-      "require": "./lib/dedent.cjs"
+      "import": "./dist/dedent.js",
+      "require": "./dist/dedent.cjs"
     },
     "./deepEqual": {
-      "import": "./lib/deepEqual.js",
-      "require": "./lib/deepEqual.cjs"
+      "import": "./dist/deepEqual.js",
+      "require": "./dist/deepEqual.cjs"
     },
     "./enhancedMap": {
-      "import": "./lib/enhancedMap.js",
-      "require": "./lib/enhancedMap.cjs"
+      "import": "./dist/enhancedMap.js",
+      "require": "./dist/enhancedMap.cjs"
     },
     "./exhaustiveMatch": {
-      "import": "./lib/exhaustiveMatch.js",
-      "require": "./lib/exhaustiveMatch.cjs"
+      "import": "./dist/exhaustiveMatch.js",
+      "require": "./dist/exhaustiveMatch.cjs"
     },
     "./filterObjectOrArrayKeys": {
-      "import": "./lib/filterObjectOrArrayKeys.js",
-      "require": "./lib/filterObjectOrArrayKeys.cjs"
+      "import": "./dist/filterObjectOrArrayKeys.js",
+      "require": "./dist/filterObjectOrArrayKeys.cjs"
     },
     "./getAutoIncrementId": {
-      "import": "./lib/getAutoIncrementId.js",
-      "require": "./lib/getAutoIncrementId.cjs"
+      "import": "./dist/getAutoIncrementId.js",
+      "require": "./dist/getAutoIncrementId.cjs"
     },
     "./getCompositeKey": {
-      "import": "./lib/getCompositeKey.js",
-      "require": "./lib/getCompositeKey.cjs"
+      "import": "./dist/getCompositeKey.js",
+      "require": "./dist/getCompositeKey.cjs"
     },
     "./getValueStableKey": {
-      "import": "./lib/getValueStableKey.js",
-      "require": "./lib/getValueStableKey.cjs"
+      "import": "./dist/getValueStableKey.js",
+      "require": "./dist/getValueStableKey.cjs"
     },
     "./hash": {
-      "import": "./lib/hash.js",
-      "require": "./lib/hash.cjs"
+      "import": "./dist/hash.js",
+      "require": "./dist/hash.cjs"
     },
     "./interpolate": {
-      "import": "./lib/interpolate.js",
-      "require": "./lib/interpolate.cjs"
+      "import": "./dist/interpolate.js",
+      "require": "./dist/interpolate.cjs"
     },
     "./levenshtein": {
-      "import": "./lib/levenshtein.js",
-      "require": "./lib/levenshtein.cjs"
+      "import": "./dist/levenshtein.js",
+      "require": "./dist/levenshtein.cjs"
     },
     "./mathUtils": {
-      "import": "./lib/mathUtils.js",
-      "require": "./lib/mathUtils.cjs"
+      "import": "./dist/mathUtils.js",
+      "require": "./dist/mathUtils.cjs"
     },
     "./objUtils": {
-      "import": "./lib/objUtils.js",
-      "require": "./lib/objUtils.cjs"
+      "import": "./dist/objUtils.js",
+      "require": "./dist/objUtils.cjs"
     },
     "./parallelAsyncCalls": {
-      "import": "./lib/parallelAsyncCalls.js",
-      "require": "./lib/parallelAsyncCalls.cjs"
+      "import": "./dist/parallelAsyncCalls.js",
+      "require": "./dist/parallelAsyncCalls.cjs"
     },
     "./promiseUtils": {
-      "import": "./lib/promiseUtils.js",
-      "require": "./lib/promiseUtils.cjs"
+      "import": "./dist/promiseUtils.js",
+      "require": "./dist/promiseUtils.cjs"
     },
     "./retryOnError": {
-      "import": "./lib/retryOnError.js",
-      "require": "./lib/retryOnError.cjs"
+      "import": "./dist/retryOnError.js",
+      "require": "./dist/retryOnError.cjs"
     },
     "./runShellCmd": {
-      "import": "./lib/runShellCmd.js",
-      "require": "./lib/runShellCmd.cjs"
+      "import": "./dist/runShellCmd.js",
+      "require": "./dist/runShellCmd.cjs"
     },
     "./safeJson": {
-      "import": "./lib/safeJson.js",
-      "require": "./lib/safeJson.cjs"
+      "import": "./dist/safeJson.js",
+      "require": "./dist/safeJson.cjs"
     },
     "./saferTyping": {
-      "import": "./lib/saferTyping.js",
-      "require": "./lib/saferTyping.cjs"
+      "import": "./dist/saferTyping.js",
+      "require": "./dist/saferTyping.cjs"
     },
     "./serializeXML": {
-      "import": "./lib/serializeXML.js",
-      "require": "./lib/serializeXML.cjs"
+      "import": "./dist/serializeXML.js",
+      "require": "./dist/serializeXML.cjs"
     },
     "./shallowEqual": {
-      "import": "./lib/shallowEqual.js",
-      "require": "./lib/shallowEqual.cjs"
+      "import": "./dist/shallowEqual.js",
+      "require": "./dist/shallowEqual.cjs"
     },
     "./sleep": {
-      "import": "./lib/sleep.js",
-      "require": "./lib/sleep.cjs"
+      "import": "./dist/sleep.js",
+      "require": "./dist/sleep.cjs"
     },
     "./stringUtils": {
-      "import": "./lib/stringUtils.js",
-      "require": "./lib/stringUtils.cjs"
+      "import": "./dist/stringUtils.js",
+      "require": "./dist/stringUtils.cjs"
     },
     "./testUtils": {
-      "import": "./lib/testUtils.js",
-      "require": "./lib/testUtils.cjs"
+      "import": "./dist/testUtils.js",
+      "require": "./dist/testUtils.cjs"
     },
     "./throttle": {
-      "import": "./lib/throttle.js",
-      "require": "./lib/throttle.cjs"
+      "import": "./dist/throttle.js",
+      "require": "./dist/throttle.cjs"
     },
     "./time": {
-      "import": "./lib/time.js",
-      "require": "./lib/time.cjs"
+      "import": "./dist/time.js",
+      "require": "./dist/time.cjs"
     },
     "./timers": {
-      "import": "./lib/timers.js",
-      "require": "./lib/timers.cjs"
+      "import": "./dist/timers.js",
+      "require": "./dist/timers.cjs"
     },
     "./tsResult": {
-      "import": "./lib/tsResult.js",
-      "require": "./lib/tsResult.cjs"
+      "import": "./dist/tsResult.js",
+      "require": "./dist/tsResult.cjs"
     },
     "./typeGuards": {
-      "import": "./lib/typeGuards.js",
-      "require": "./lib/typeGuards.cjs"
+      "import": "./dist/typeGuards.js",
+      "require": "./dist/typeGuards.cjs"
     },
     "./typeUtils": {
-      "import": "./lib/typeUtils.js",
-      "require": "./lib/typeUtils.cjs"
+      "import": "./dist/typeUtils.js",
+      "require": "./dist/typeUtils.cjs"
     },
     "./typeUtils.typesTest": {
-      "import": "./lib/typeUtils.typesTest.js",
-      "require": "./lib/typeUtils.typesTest.cjs"
+      "import": "./dist/typeUtils.typesTest.js",
+      "require": "./dist/typeUtils.typesTest.cjs"
     },
     "./typingFnUtils": {
-      "import": "./lib/typingFnUtils.js",
-      "require": "./lib/typingFnUtils.cjs"
+      "import": "./dist/typingFnUtils.js",
+      "require": "./dist/typingFnUtils.cjs"
     },
     "./typingTestUtils": {
-      "import": "./lib/typingTestUtils.js",
-      "require": "./lib/typingTestUtils.cjs"
+      "import": "./dist/typingTestUtils.js",
+      "require": "./dist/typingTestUtils.cjs"
     },
     "./typingUtils": {
-      "import": "./lib/typingUtils.js",
-      "require": "./lib/typingUtils.cjs"
+      "import": "./dist/typingUtils.js",
+      "require": "./dist/typingUtils.cjs"
     },
     "./yamlStringify": {
-      "import": "./lib/yamlStringify.js",
-      "require": "./lib/yamlStringify.cjs"
+      "import": "./dist/yamlStringify.js",
+      "require": "./dist/yamlStringify.cjs"
     }
   },
   "engines": {
