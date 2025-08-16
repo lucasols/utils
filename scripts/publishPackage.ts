@@ -105,7 +105,7 @@ async function publishPackage(packageName: PackageName, version: Version) {
 async function updatePackageExports(_packageName: string) {
   const packagePath = './package.json';
   const srcDir = './src';
-  const libDir = './lib';
+  const libDir = './dist';
   const mainFile = 'main';
   const excludeFiles = ['main', 'internalUtils'];
 

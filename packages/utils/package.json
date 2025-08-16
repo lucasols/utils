@@ -25,13 +25,13 @@
   "author": "Lucas Santos",
   "type": "module",
   "sideEffects": false,
-  "main": "./lib/main.cjs",
-  "module": "./lib/main.js",
-  "types": "./lib/main.d.ts",
+  "main": "./dist/main.cjs",
+  "module": "./dist/main.js",
+  "types": "./dist/main.d.ts",
   "exports": {
     ".": {
-      "import": "./lib/main.js",
-      "require": "./lib/main.cjs"
+      "import": "./dist/main.js",
+      "require": "./dist/main.cjs"
     },
     "./__snapshots__": {
       "import": "./lib/__snapshots__.js",
