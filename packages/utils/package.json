@@ -121,6 +121,10 @@
       "import": "./dist/interpolate.js",
       "require": "./dist/interpolate.cjs"
     },
+    "./keepPrevIfUnchanged": {
+      "import": "./dist/keepPrevIfUnchanged.js",
+      "require": "./dist/keepPrevIfUnchanged.cjs"
+    },
     "./levenshtein": {
       "import": "./dist/levenshtein.js",
       "require": "./dist/levenshtein.cjs"
@@ -128,6 +132,10 @@
     "./mathUtils": {
       "import": "./dist/mathUtils.js",
       "require": "./dist/mathUtils.cjs"
+    },
+    "./mutationUtils": {
+      "import": "./dist/mutationUtils.js",
+      "require": "./dist/mutationUtils.cjs"
     },
     "./objUtils": {
       "import": "./dist/objUtils.js",
