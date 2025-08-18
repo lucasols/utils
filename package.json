@@ -29,7 +29,6 @@
   "devDependencies": {
     "@eslint/js": "catalog:",
     "@ls-stack/extended-lint": "catalog:",
-    "eslint-plugin-jsdoc": "catalog:",
     "@types/eslint": "catalog:",
     "@types/eslint__js": "catalog:",
     "@types/node": "catalog:",
@@ -38,8 +37,10 @@
     "@vitest/ui": "catalog:",
     "dequal": "catalog:",
     "eslint": "catalog:",
+    "eslint-plugin-jsdoc": "catalog:",
     "eslint-plugin-unicorn": "catalog:",
     "eslint-plugin-vitest": "catalog:",
+    "immer": "^10.1.1",
     "jiti": "^2.5.1",
     "mitata": "catalog:",
     "prettier": "catalog:",
