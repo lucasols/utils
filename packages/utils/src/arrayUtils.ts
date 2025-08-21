@@ -272,7 +272,36 @@ type ArrayOps<T> = {
   filterAndMap: <R>(mapFilter: (item: T, index: number) => false | R) => R[];
   sortBy: (sortByValue: SortByValue<T>, props: SortByProps) => T[];
   rejectDuplicates: (getKey: (item: T) => unknown) => T[];
+  findAndMap: <R>(predicate: (value: T) => R | false) => R | undefined;
 };
+
+/**
+ * Finds the first item in an array where the predicate returns a non-false value and returns that mapped value.
+ *
+ * Combines find and map operations - applies the predicate to each item until one returns
+ * a value that is not `false`, then returns that mapped value. If no item matches, returns `undefined`.
+ *
+ * @param array - The array to search through
+ * @param predicate - Function that returns a mapped value or `false` to skip the item
+ * @returns The first mapped value that is not `false`, or `undefined` if no item matches
+ * @example
+ * const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
+ * 
+ * const foundName = findAndMap(users, (user) => 
+ *   user.id === 2 ? user.name.toUpperCase() : false
+ * );
+ * // foundName is 'BOB'
+ */
+export function findAndMap<T, R>(
+  array: T[],
+  predicate: (value: T) => R | false,
+): R | undefined {
+  for (const item of array) {
+    const value = predicate(item);
+    if (value !== false) return value;
+  }
+  return undefined;
+}
 
 /**
  * Enhance an array with extra methods
@@ -291,5 +320,6 @@ export function arrayOps<T>(array: T[]): ArrayOps<T> {
     filterAndMap: (mapFilter) => filterAndMap(array, mapFilter),
     sortBy: (sortByValue, props) => sortBy(array, sortByValue, props),
     rejectDuplicates: (getKey) => rejectDuplicates(array, getKey),
+    findAndMap: (predicate) => findAndMap(array, predicate),
   };
 }
