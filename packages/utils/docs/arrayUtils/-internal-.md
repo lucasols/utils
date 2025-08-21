@@ -63,6 +63,30 @@ const enhancedItems = arrayOps(items);
 enhancedItems.filterAndMap((item) => item === 2 ? false : item);
 ```
 
+##### findAndMap()
+
+```ts
+findAndMap: <R>(predicate) => R | undefined;
+```
+
+Defined in: [packages/utils/src/arrayUtils.ts:275](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L275)
+
+###### Type Parameters
+
+###### R
+
+`R`
+
+###### Parameters
+
+###### predicate
+
+(`value`) => `R` \| `false`
+
+###### Returns
+
+`R` \| `undefined`
+
 ##### rejectDuplicates()
 
 ```ts

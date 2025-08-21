@@ -34,7 +34,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:42](https://github.com/lucasols/ut
 function arrayOps<T>(array): ArrayOps<T>;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:289](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L289)
+Defined in: [packages/utils/src/arrayUtils.ts:318](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L318)
 
 Enhance an array with extra methods
 
@@ -206,6 +206,62 @@ Defined in: [packages/utils/src/arrayUtils.ts:165](https://github.com/lucasols/u
 #### Returns
 
 `undefined` \| `T`
+
+***
+
+### findAndMap()
+
+```ts
+function findAndMap<T, R>(array, predicate): undefined | R;
+```
+
+Defined in: [packages/utils/src/arrayUtils.ts:295](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L295)
+
+Finds the first item in an array where the predicate returns a non-false value and returns that mapped value.
+
+Combines find and map operations - applies the predicate to each item until one returns
+a value that is not `false`, then returns that mapped value. If no item matches, returns `undefined`.
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+##### R
+
+`R`
+
+#### Parameters
+
+##### array
+
+`T`[]
+
+The array to search through
+
+##### predicate
+
+(`value`) => `false` \| `R`
+
+Function that returns a mapped value or `false` to skip the item
+
+#### Returns
+
+`undefined` \| `R`
+
+The first mapped value that is not `false`, or `undefined` if no item matches
+
+#### Example
+
+```ts
+const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
+
+const foundName = findAndMap(users, (user) => 
+  user.id === 2 ? user.name.toUpperCase() : false
+);
+// foundName is 'BOB'
+```
 
 ***
 
