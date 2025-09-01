@@ -621,4 +621,240 @@ describe('compactSnapshot', () => {
         `);
     });
   });
+
+  describe('replaceValues functionality', () => {
+    test('should replace values based on path', () => {
+      const data = {
+        user: {
+          id: '123',
+          email: 'user@example.com',
+          password: 'secret123',
+        },
+        settings: {
+          apiKey: 'abc-def-123',
+          config: {
+            token: 'xyz-789',
+          },
+        },
+      };
+
+      const result = compactSnapshot(data, {
+        replaceValues: (_value, path) => {
+          if (path.includes('password') || path.includes('apiKey') || path.includes('token')) {
+            return { newValue: '[REDACTED]' };
+          }
+          return false;
+        },
+      });
+
+      expect(result).toMatchInlineSnapshot(`
+        "
+        user: { id: '123', email: 'user@example.com', password: '[REDACTED]' }
+        settings:
+          apiKey: '[REDACTED]'
+          config: { token: '[REDACTED]' }
+        "
+      `);
+    });
+
+    test('should replace array values based on path', () => {
+      const data = {
+        users: [
+          { name: 'John', secret: 'password1' },
+          { name: 'Jane', secret: 'password2' },
+        ],
+      };
+
+      const result = compactSnapshot(data, {
+        replaceValues: (_value, path) => {
+          if (path.endsWith('.secret')) {
+            return { newValue: '[HIDDEN]' };
+          }
+          return false;
+        },
+      });
+
+      expect(result).toMatchInlineSnapshot(`
+        "
+        users:
+          - { name: 'John', secret: '[HIDDEN]' }
+          - { name: 'Jane', secret: '[HIDDEN]' }
+        "
+      `);
+    });
+
+    test('should work with root array paths', () => {
+      const data = ['public', 'secret', 'public'];
+
+      const result = compactSnapshot(data, {
+        replaceValues: (value, _path) => {
+          if (value === 'secret') {
+            return { newValue: '[REDACTED]' };
+          }
+          return false;
+        },
+      });
+
+      expect(result).toMatchInlineSnapshot(`
+        "
+        ['public', '[REDACTED]', 'public']
+        "
+      `);
+    });
+
+    test('should generate correct paths for complex nested structures', () => {
+      const receivedPaths: string[] = [];
+      
+      const data = {
+        root: {
+          level1: {
+            level2: 'value',
+            array: [
+              { item: 'first' },
+              { item: 'second' }
+            ]
+          }
+        },
+        topArray: [
+          'item0',
+          { nested: 'value' },
+          ['subarray', 'item']
+        ]
+      };
+
+      compactSnapshot(data, {
+        replaceValues: (_value, path) => {
+          receivedPaths.push(path);
+          return false;
+        },
+      });
+
+      expect(receivedPaths).toMatchInlineSnapshot(`
+        [
+          "",
+          "root",
+          "root.level1",
+          "root.level1.level2",
+          "root.level1.array",
+          "root.level1.array[0]",
+          "root.level1.array[0].item",
+          "root.level1.array[1]",
+          "root.level1.array[1].item",
+          "topArray",
+          "topArray[0]",
+          "topArray[1]",
+          "topArray[1].nested",
+          "topArray[2]",
+          "topArray[2][0]",
+          "topArray[2][1]",
+        ]
+      `);
+    });
+
+    test('should handle root array path generation correctly', () => {
+      const receivedPaths: string[] = [];
+      
+      const data = [
+        'string',
+        { prop: 'value' },
+        ['nested', 'array'],
+        42
+      ];
+
+      compactSnapshot(data, {
+        replaceValues: (_value, path) => {
+          receivedPaths.push(path);
+          return false;
+        },
+      });
+
+      expect(receivedPaths).toMatchInlineSnapshot(`
+        [
+          "",
+          "[0]",
+          "[1]",
+          "[1].prop",
+          "[2]",
+          "[2][0]",
+          "[2][1]",
+          "[3]",
+        ]
+      `);
+    });
+
+    test('should handle empty objects and arrays correctly', () => {
+      const receivedPaths: string[] = [];
+      
+      const data = {
+        emptyObj: {},
+        emptyArray: [],
+        nested: {
+          emptyObj: {},
+          emptyArray: []
+        }
+      };
+
+      compactSnapshot(data, {
+        replaceValues: (_value, path) => {
+          receivedPaths.push(path);
+          return false;
+        },
+      });
+
+      expect(receivedPaths).toMatchInlineSnapshot(`
+        [
+          "",
+          "emptyObj",
+          "emptyArray",
+          "nested",
+          "nested.emptyObj",
+          "nested.emptyArray",
+        ]
+      `);
+    });
+
+    test('should replace values at specific paths accurately', () => {
+      const data = {
+        user: {
+          id: 123,
+          profile: {
+            name: 'John',
+            email: 'john@example.com'
+          }
+        },
+        items: [
+          { id: 1, secret: 'token1' },
+          { id: 2, secret: 'token2' }
+        ]
+      };
+
+      const result = compactSnapshot(data, {
+        replaceValues: (_value, path) => {
+          // Replace specific paths
+          if (path === 'user.profile.email') {
+            return { newValue: '[EMAIL_REDACTED]' };
+          }
+          if (path === 'items[0].secret') {
+            return { newValue: '[SECRET_0]' };
+          }
+          if (path === 'items[1].secret') {
+            return { newValue: '[SECRET_1]' };
+          }
+          return false;
+        },
+      });
+
+      expect(result).toMatchInlineSnapshot(`
+        "
+        user:
+          id: 123
+          profile: { name: 'John', email: '[EMAIL_REDACTED]' }
+
+        items:
+          - { id: 1, secret: '[SECRET_0]' }
+          - { id: 2, secret: '[SECRET_1]' }
+        "
+      `);
+    });
+  });
 });

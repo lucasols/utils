@@ -356,6 +356,7 @@ export function waitController(): {
  * @param options.rejectKeys - The keys to reject.
  * @param options.filterKeys - The keys to filter.
  * @param options.ignoreProps - The props to ignore.
+ * @param options.replaceValues - Function to replace values at specific paths. Returns `false` to keep original value or `{newValue}` to replace.
  * @param options.sortKeys - Sort all keys by a specific order (default: `simpleValuesFirst`).
  * @param options.sortPatterns - Sort specific keys by pattern. Use to control the order of specific properties. The same patterns as `filterKeys` are supported.
  * @returns The compact snapshot of the value.
@@ -367,6 +368,7 @@ export function compactSnapshot(
     maxLineLength = 100,
     showUndefined = false,
     showBooleansAs = true,
+    replaceValues,
     rejectKeys,
     filterKeys,
     sortKeys,
@@ -389,6 +391,11 @@ export function compactSnapshot(
           /* default false text */
           falseText?: string;
         };
+    /* replace values */
+    replaceValues?: (
+      value: unknown,
+      path: string,
+    ) => false | { newValue: unknown };
 
     rejectKeys?: string[] | string;
     filterKeys?: string[] | string;
@@ -410,6 +417,11 @@ export function compactSnapshot(
     }
   }
 
+  // Apply value replacement
+  if (replaceValues) {
+    processedValue = applyValueReplacements(processedValue, replaceValues);
+  }
+
   // Apply boolean emoji replacement
   processedValue =
     showBooleansAs ?
@@ -422,6 +434,58 @@ export function compactSnapshot(
     showUndefined,
     ...options,
   })}`;
+}
+
+function applyValueReplacements(
+  value: unknown,
+  replaceValues: (value: unknown, path: string) => false | { newValue: unknown },
+  visited: Set<object> = new Set(),
+  currentPath = '',
+): unknown {
+  function processValue(val: unknown, path: string): unknown {
+    // Call replaceValues for this value
+    const replacement = replaceValues(val, path);
+    if (replacement !== false) {
+      return replacement.newValue;
+    }
+
+    // If not replaced, process recursively based on type
+    if (Array.isArray(val)) {
+      if (visited.has(val)) {
+        throw new Error('Circular reference detected in array');
+      }
+      visited.add(val);
+      try {
+        return val.map((item, index) => {
+          const itemPath = path ? `${path}[${index}]` : `[${index}]`;
+          return processValue(item, itemPath);
+        });
+      } finally {
+        visited.delete(val);
+      }
+    }
+
+    if (isPlainObject(val)) {
+      if (visited.has(val)) {
+        throw new Error('Circular reference detected in object');
+      }
+      visited.add(val);
+      try {
+        const result: Record<string, unknown> = {};
+        for (const [key, itemValue] of Object.entries(val)) {
+          const itemPath = path ? `${path}.${key}` : key;
+          result[key] = processValue(itemValue, itemPath);
+        }
+        return result;
+      } finally {
+        visited.delete(val);
+      }
+    }
+
+    return val;
+  }
+
+  return processValue(value, currentPath);
 }
 
 function replaceBooleansWithEmoji(
