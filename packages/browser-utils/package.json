@@ -29,20 +29,24 @@
   "types": "./dist/main.d.ts",
   "exports": {
     ".": {
-      "import": "./lib/main.js",
-      "require": "./lib/main.cjs"
+      "import": "./dist/main.js",
+      "require": "./dist/main.cjs"
+    },
+    "./keyboardShortcuts": {
+      "import": "./dist/keyboardShortcuts.js",
+      "require": "./dist/keyboardShortcuts.cjs"
     },
     "./blockWindowClose": {
-      "import": "./lib/blockWindowClose.js",
-      "require": "./lib/blockWindowClose.cjs"
+      "import": "./dist/blockWindowClose.js",
+      "require": "./dist/blockWindowClose.cjs"
     },
     "./domEvents": {
-      "import": "./lib/domEvents.js",
-      "require": "./lib/domEvents.cjs"
+      "import": "./dist/domEvents.js",
+      "require": "./dist/domEvents.cjs"
     },
     "./window": {
-      "import": "./lib/window.js",
-      "require": "./lib/window.cjs"
+      "import": "./dist/window.js",
+      "require": "./dist/window.cjs"
     }
   },
   "engines": {

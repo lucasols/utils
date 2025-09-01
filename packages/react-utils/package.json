@@ -116,6 +116,7 @@
   },
   "dependencies": {
     "@ls-stack/utils": "workspace:*",
+    "@ls-stack/browser-utils": "workspace:*",
     "t-result": "catalog:",
     "evtmitter": "catalog:"
   }

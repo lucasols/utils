@@ -318,6 +318,9 @@ importers:
 
   packages/react-utils:
     dependencies:
+      '@ls-stack/browser-utils':
+        specifier: workspace:*
+        version: link:../browser-utils
       '@ls-stack/utils':
         specifier: workspace:*
         version: link:../utils

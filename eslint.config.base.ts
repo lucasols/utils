@@ -88,6 +88,10 @@ export function createBaseConfig({
               'Do not use vi.useFakeTimers use real timers with await sleep() instead',
             selector: 'CallExpression[callee.property.name="useFakeTimers"]',
           },
+          {
+            message: 'Do not use `it()` use `test()` instead',
+            selector: 'CallExpression[callee.name="it"]',
+          },
         ],
         'no-implicit-coercion': [
           ERROR_IN_CI,
@@ -194,6 +198,7 @@ export function createBaseConfig({
         'jsdoc/require-jsdoc': OFF,
         'jsdoc/require-param-description': OFF,
         'jsdoc/require-returns': OFF,
+        'jsdoc/require-param': OFF,
 
         ...globalRules,
       },
