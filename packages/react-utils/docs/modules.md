@@ -22,3 +22,5 @@
 - [useOnUnMount](useOnUnMount.md)
 - [usePrevious](usePrevious.md)
 - [useScheduleToNextRender](useScheduleToNextRender.md)
+- [useShortCut](useShortCut.md)
+- [useShortCut.test](useShortCut.test.md)

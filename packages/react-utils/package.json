@@ -78,6 +78,10 @@
     "./useScheduleToNextRender": {
       "import": "./dist/useScheduleToNextRender.js",
       "require": "./dist/useScheduleToNextRender.cjs"
+    },
+    "./useShortCut": {
+      "import": "./dist/useShortCut.js",
+      "require": "./dist/useShortCut.cjs"
     }
   },
   "engines": {
