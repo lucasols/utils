@@ -28,16 +28,64 @@
   "types": "./lib/main.d.ts",
   "exports": {
     ".": {
-      "import": "./lib/main.js",
-      "require": "./lib/main.cjs"
+      "import": "./dist/main.js",
+      "require": "./dist/main.cjs"
     },
     "./useActionFn": {
-      "import": "./lib/useActionFn.js",
-      "require": "./lib/useActionFn.cjs"
+      "import": "./dist/useActionFn.js",
+      "require": "./dist/useActionFn.cjs"
+    },
+    "./useAnimateMountUnmount": {
+      "import": "./dist/useAnimateMountUnmount.js",
+      "require": "./dist/useAnimateMountUnmount.cjs"
+    },
+    "./useAsyncResource": {
+      "import": "./dist/useAsyncResource.js",
+      "require": "./dist/useAsyncResource.cjs"
+    },
+    "./useComponentEvents.test.tsx": {
+      "import": "./dist/useComponentEvents.test.tsx.js",
+      "require": "./dist/useComponentEvents.test.tsx.cjs"
+    },
+    "./useComponentEvents": {
+      "import": "./dist/useComponentEvents.js",
+      "require": "./dist/useComponentEvents.cjs"
     },
     "./useConst": {
-      "import": "./lib/useConst.js",
-      "require": "./lib/useConst.cjs"
+      "import": "./dist/useConst.js",
+      "require": "./dist/useConst.cjs"
+    },
+    "./useLatestValue": {
+      "import": "./dist/useLatestValue.js",
+      "require": "./dist/useLatestValue.cjs"
+    },
+    "./useOnChange": {
+      "import": "./dist/useOnChange.js",
+      "require": "./dist/useOnChange.cjs"
+    },
+    "./useOnClickOutside.test.tsx": {
+      "import": "./dist/useOnClickOutside.test.tsx.js",
+      "require": "./dist/useOnClickOutside.test.tsx.cjs"
+    },
+    "./useOnClickOutside": {
+      "import": "./dist/useOnClickOutside.js",
+      "require": "./dist/useOnClickOutside.cjs"
+    },
+    "./useOnMount": {
+      "import": "./dist/useOnMount.js",
+      "require": "./dist/useOnMount.cjs"
+    },
+    "./useOnUnMount": {
+      "import": "./dist/useOnUnMount.js",
+      "require": "./dist/useOnUnMount.cjs"
+    },
+    "./usePrevious": {
+      "import": "./dist/usePrevious.js",
+      "require": "./dist/usePrevious.cjs"
+    },
+    "./useScheduleToNextRender": {
+      "import": "./dist/useScheduleToNextRender.js",
+      "require": "./dist/useScheduleToNextRender.cjs"
     }
   },
   "engines": {

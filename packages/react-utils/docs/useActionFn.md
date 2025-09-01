@@ -14,7 +14,7 @@
 function useActionFn<A, T>(action): object;
 ```
 
-Defined in: [useActionFn.ts:4](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L4)
+Defined in: [packages/react-utils/src/useActionFn.ts:5](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L5)
 
 #### Type Parameters
 
@@ -66,7 +66,7 @@ isInProgress: boolean;
 function useActionFnWithState<T, A, R>(action): object;
 ```
 
-Defined in: [useActionFn.ts:37](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L37)
+Defined in: [packages/react-utils/src/useActionFn.ts:38](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L38)
 
 #### Type Parameters
 
