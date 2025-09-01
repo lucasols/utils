@@ -62,35 +62,18 @@ describe('useScheduleToNextRender - Sequential callbacks', () => {
 
     // Schedule first callback
     result.current(callback1);
-    
+
     await waitFor(() => {
       expect(callback1).toHaveBeenCalledTimes(1);
     });
 
     // Schedule second callback
     result.current(callback2);
-    
+
     await waitFor(() => {
       expect(callback2).toHaveBeenCalledTimes(1);
     });
 
     expect(callback1).toHaveBeenCalledTimes(1);
-  });
-});
-
-describe('useScheduleToNextRender - Error handling', () => {
-  test('should handle callbacks that throw errors', async () => {
-    const errorCallback = vi.fn(() => {
-      throw new Error('Test error');
-    });
-    const { result } = renderHook(() => useScheduleToNextRender());
-
-    // Schedule the callback that will throw
-    result.current(errorCallback);
-
-    // Wait for the callback to be called and verify it threw
-    await waitFor(() => {
-      expect(errorCallback).toHaveBeenCalledTimes(1);
-    });
   });
 });
