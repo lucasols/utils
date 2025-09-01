@@ -14,7 +14,7 @@
 function compactSnapshot(value, options): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:363](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L363)
+Defined in: [packages/utils/src/testUtils.ts:364](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L364)
 
 Produces a more compact and readable snapshot of a value using yaml.
 By default booleans are shown as `✅` and `❌`, use `showBooleansAs` to disable/configure this.
