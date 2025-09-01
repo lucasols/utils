@@ -43,10 +43,6 @@
       "import": "./dist/useAsyncResource.js",
       "require": "./dist/useAsyncResource.cjs"
     },
-    "./useComponentEvents.test.tsx": {
-      "import": "./dist/useComponentEvents.test.tsx.js",
-      "require": "./dist/useComponentEvents.test.tsx.cjs"
-    },
     "./useComponentEvents": {
       "import": "./dist/useComponentEvents.js",
       "require": "./dist/useComponentEvents.cjs"
@@ -62,10 +58,6 @@
     "./useOnChange": {
       "import": "./dist/useOnChange.js",
       "require": "./dist/useOnChange.cjs"
-    },
-    "./useOnClickOutside.test.tsx": {
-      "import": "./dist/useOnClickOutside.test.tsx.js",
-      "require": "./dist/useOnClickOutside.test.tsx.cjs"
     },
     "./useOnClickOutside": {
       "import": "./dist/useOnClickOutside.js",
