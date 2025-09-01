@@ -114,7 +114,7 @@ async function updatePackageExports(_packageName: string) {
   const srcFiles = readdirSync(srcDir);
 
   for (const srcFile of srcFiles) {
-    if (srcFile.endsWith('.test.ts')) {
+    if (srcFile.endsWith('.test.ts') || srcFile.endsWith('.test.tsx')) {
       continue;
     }
 
