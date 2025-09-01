@@ -321,6 +321,12 @@ importers:
       '@ls-stack/utils':
         specifier: workspace:*
         version: link:../utils
+      evtmitter:
+        specifier: 'catalog:'
+        version: 0.3.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      t-result:
+        specifier: 'catalog:'
+        version: 0.3.0
     devDependencies:
       '@eslint/js':
         specifier: 'catalog:'
@@ -3373,6 +3379,11 @@ snapshots:
       '@types/estree': 1.0.6
 
   esutils@2.0.3: {}
+
+  evtmitter@0.3.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   evtmitter@0.3.3(react-dom@18.3.1(react@19.1.1))(react@19.1.1):
     dependencies:

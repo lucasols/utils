@@ -75,6 +75,8 @@
     "vitest": "catalog:"
   },
   "dependencies": {
-    "@ls-stack/utils": "workspace:*"
+    "@ls-stack/utils": "workspace:*",
+    "t-result": "catalog:",
+    "evtmitter": "catalog:"
   }
 }

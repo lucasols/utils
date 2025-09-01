@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { noopWithArgs } from './internalUtils/noopWithArgs';
 import { useConst } from './useConst';
 
 export function useActionFn<A extends unknown[], T>(
@@ -77,5 +78,3 @@ export function useActionFnWithState<
 type PartialRecord<K extends string | number | symbol, T> = Partial<
   Record<K, T>
 >;
-
-function noopWithArgs<T extends unknown[]>(..._args: T) {}

@@ -74,7 +74,7 @@ export function createBaseConfig({
           },
         ],
         'no-restricted-syntax': [
-          ERROR_IN_CI_ONLY,
+          ERROR_IN_CI,
           {
             selector: 'CallExpression[callee.property.name="only"]',
             message: 'No test.only',
@@ -82,6 +82,11 @@ export function createBaseConfig({
           {
             selector: 'CallExpression[callee.property.name="todo"]',
             message: 'No test.todo',
+          },
+          {
+            message:
+              'Do not use vi.useFakeTimers use real timers with await sleep() instead',
+            selector: 'CallExpression[callee.property.name="useFakeTimers"]',
           },
         ],
         'no-implicit-coercion': [
