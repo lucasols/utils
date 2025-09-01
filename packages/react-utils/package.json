@@ -122,6 +122,7 @@
     "@ls-stack/utils": "workspace:*",
     "@ls-stack/browser-utils": "workspace:*",
     "t-result": "catalog:",
-    "evtmitter": "catalog:"
+    "evtmitter": "catalog:",
+    "@evtmitter/react": "0.1.0"
   }
 }

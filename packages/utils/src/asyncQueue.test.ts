@@ -1,4 +1,3 @@
- 
 import { randomInt } from 'crypto';
 import { Result, resultify } from 't-result';
 import { assert, expect, test, vi } from 'vitest';
@@ -221,7 +220,7 @@ test.concurrent('queue timeout', async () => {
   const errors: Error[] = [];
 
   queue.events.on('error', (e) => {
-    errors.push(e.error);
+    errors.push(e.payload.error);
   });
 
   queue.resultifyAdd(async () => {
@@ -561,11 +560,11 @@ test.concurrent('queue should be cleared when signal is aborted', async () => {
   const errors: Error[] = [];
 
   queue.events.on('error', (e) => {
-    errors.push(e.error);
+    errors.push(e.payload.error);
   });
 
   queue.events.on('complete', (e) => {
-    completed.push(e.value);
+    completed.push(e.payload.value);
   });
 
   const waitAbort = waitController();

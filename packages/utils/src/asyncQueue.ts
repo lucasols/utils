@@ -64,11 +64,11 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
     this.#taskTimeout = taskTimeout;
 
     this.events.on('error', (e) => {
-      this.failures.push(e);
+      this.failures.push(e.payload);
     });
 
     this.events.on('complete', (e) => {
-      this.completions.push(e);
+      this.completions.push(e.payload);
     });
   }
 
