@@ -36,19 +36,28 @@ describe('useSendComponentEvents', () => {
     // Test event with object payload
     const userPayload = { id: 'test-123', timestamp: Date.now() };
     result.current.send('userAction', userPayload);
-    expect(callback).toHaveBeenCalledWith(userPayload, 'userAction');
+    expect(callback).toHaveBeenCalledWith({
+      payload: userPayload,
+      type: 'userAction',
+    });
 
     // Test event with string payload
     result.current.send('error', 'Something went wrong');
-    expect(callback).toHaveBeenCalledWith('Something went wrong', 'error');
+    expect(callback).toHaveBeenCalledWith({
+      payload: 'Something went wrong',
+      type: 'error',
+    });
 
     // Test event with number payload
     result.current.send('numberEvent', 42);
-    expect(callback).toHaveBeenCalledWith(42, 'numberEvent');
+    expect(callback).toHaveBeenCalledWith({ payload: 42, type: 'numberEvent' });
 
     // Test event with undefined payload
     result.current.send('simple');
-    expect(callback).toHaveBeenCalledWith(undefined, 'simple');
+    expect(callback).toHaveBeenCalledWith({
+      payload: undefined,
+      type: 'simple',
+    });
   });
 
   test('should maintain emitter instance across renders', () => {
@@ -69,7 +78,10 @@ describe('useSendComponentEvents', () => {
 
     // Events should still work
     result.current.send('error', 'test message');
-    expect(callback).toHaveBeenCalledWith('test message', 'error');
+    expect(callback).toHaveBeenCalledWith({
+      payload: 'test message',
+      type: 'error',
+    });
   });
 
   test('should support multiple event listeners', () => {
