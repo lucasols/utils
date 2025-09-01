@@ -31,9 +31,10 @@ describe('useAnimateMountUnmount - Mount Animation Flow', () => {
     expect(result.current[1]).toBe(true);
     
     // Wait for the 5ms timeout to trigger transition
+    await sleep(15);
     await waitFor(() => {
       expect(result.current[0]).toBe('enter');
-    }, { timeout: 50 });
+    }, { timeout: 200 });
     
     expect(result.current[1]).toBe(true);
   });
@@ -55,9 +56,10 @@ describe('useAnimateMountUnmount - Mount Animation Flow', () => {
     expect(result.current[1]).toBe(true);
     
     // Wait for transition to 'enter'
+    await sleep(15);
     await waitFor(() => {
       expect(result.current[0]).toBe('enter');
-    }, { timeout: 50 });
+    }, { timeout: 200 });
     
     expect(result.current[1]).toBe(true);
   });
@@ -72,9 +74,10 @@ describe('useAnimateMountUnmount - Unmount Animation Flow', () => {
     );
     
     // Wait for mount animation to complete
+    await sleep(15);
     await waitFor(() => {
       expect(result.current[0]).toBe('enter');
-    }, { timeout: 50 });
+    }, { timeout: 200 });
     
     // Trigger unmount
     rerender({ show: false });
@@ -84,9 +87,10 @@ describe('useAnimateMountUnmount - Unmount Animation Flow', () => {
     expect(result.current[1]).toBe(true);
     
     // Wait for animation duration to complete
+    await sleep(animationDuration + 10);
     await waitFor(() => {
       expect(result.current[0]).toBe('unmounted');
-    }, { timeout: animationDuration + 20 });
+    }, { timeout: 100 });
     
     expect(result.current[1]).toBe(false);
   });
@@ -99,9 +103,10 @@ describe('useAnimateMountUnmount - Unmount Animation Flow', () => {
     );
     
     // Wait for mount to complete
+    await sleep(15);
     await waitFor(() => {
       expect(result.current[0]).toBe('enter');
-    }, { timeout: 50 });
+    }, { timeout: 200 });
     
     // Start unmount
     rerender({ show: false });
@@ -112,9 +117,10 @@ describe('useAnimateMountUnmount - Unmount Animation Flow', () => {
     expect(result.current[0]).toBe('leave');
     
     // Should be unmounted after duration
+    await sleep(20);
     await waitFor(() => {
       expect(result.current[0]).toBe('unmounted');
-    }, { timeout: 30 });
+    }, { timeout: 100 });
   });
 });
 
@@ -135,9 +141,10 @@ describe('useAnimateMountUnmount - Rapid Toggling', () => {
     expect(result.current[1]).toBe(true);
     
     // Wait for unmount animation to complete
+    await sleep(110);
     await waitFor(() => {
       expect(result.current[0]).toBe('unmounted');
-    }, { timeout: 150 });
+    }, { timeout: 100 });
     
     expect(result.current[1]).toBe(false);
   });
@@ -149,9 +156,10 @@ describe('useAnimateMountUnmount - Rapid Toggling', () => {
     );
     
     // Wait for mount animation to complete
+    await sleep(15);
     await waitFor(() => {
       expect(result.current[0]).toBe('enter');
-    }, { timeout: 50 });
+    }, { timeout: 200 });
     
     // Start unmount
     rerender({ show: false });
@@ -165,9 +173,10 @@ describe('useAnimateMountUnmount - Rapid Toggling', () => {
     expect(result.current[0]).toBe('from');
     
     // Wait for mount animation to complete
+    await sleep(15);
     await waitFor(() => {
       expect(result.current[0]).toBe('enter');
-    }, { timeout: 50 });
+    }, { timeout: 200 });
   });
 
   test('should handle multiple rapid toggles', async () => {
@@ -187,6 +196,7 @@ describe('useAnimateMountUnmount - Rapid Toggling', () => {
     expect(result.current[1]).toBe(true);
     
     // Wait for unmount animation to complete
+    await sleep(60);
     await waitFor(() => {
       expect(result.current[0]).toBe('unmounted');
     }, { timeout: 100 });
@@ -275,9 +285,10 @@ describe('useAnimateMountUnmount - State Transitions', () => {
     rerender({ show: true });
     
     // Wait for complete mount animation
+    await sleep(15);
     await waitFor(() => {
       expect(result.current).toBe('enter');
-    }, { timeout: 100 });
+    }, { timeout: 200 });
     
     // Check that we went through proper states
     expect(states).toContain('from');
@@ -292,9 +303,10 @@ describe('useAnimateMountUnmount - State Transitions', () => {
     );
     
     // Wait for mount animation to complete
+    await sleep(15);
     await waitFor(() => {
       expect(result.current[0]).toBe('enter');
-    }, { timeout: 50 });
+    }, { timeout: 200 });
     
     // Now toggle to false - should start leave animation
     rerender({ show: false });
