@@ -17,12 +17,14 @@ export function useShortCut(
   });
 
   useEffect(() => {
-    const decoratedCb = ignoreInputTypingEvents(callbackRef);
+    const decoratedCb = ignoreInputTypingEvents({
+      current: (e) => callbackRef.current(e),
+    });
 
     const removeKeybindings = keyboardShortcuts(window, {
       [shortcut]:
         allowDuringTyping ?
-          (e) => {
+          (e: KeyboardEvent) => {
             callbackRef.current(e);
           }
         : decoratedCb,
@@ -47,7 +49,7 @@ export function useShortCuts(
     )) {
       shortcutsCbs[shortcut] =
         allowDuringTyping ?
-          (e) => {
+          (e: KeyboardEvent) => {
             callback(e);
           }
         : ignoreInputTypingEvents(callback);

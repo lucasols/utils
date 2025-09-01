@@ -29,12 +29,12 @@
   "types": "./dist/main.d.ts",
   "exports": {
     ".": {
-      "import": "./lib/main.js",
-      "require": "./lib/main.cjs"
+      "import": "./dist/main.js",
+      "require": "./dist/main.cjs"
     },
     "./runShellCmd": {
-      "import": "./lib/runShellCmd.js",
-      "require": "./lib/runShellCmd.cjs"
+      "import": "./dist/runShellCmd.js",
+      "require": "./dist/runShellCmd.cjs"
     }
   },
   "engines": {
