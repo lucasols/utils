@@ -318,6 +318,9 @@ importers:
 
   packages/react-utils:
     dependencies:
+      '@evtmitter/react':
+        specifier: 0.1.0
+        version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@ls-stack/browser-utils':
         specifier: workspace:*
         version: link:../browser-utils
@@ -719,6 +722,13 @@ packages:
   '@eslint/plugin-kit@0.2.5':
     resolution: {integrity: sha512-lB05FkqEdUg2AA0xEbUz0SnkXT1LcCTa438W4IWTUh4hdOnVbQyOJ81OrDXsJk/LSiJHubgGEFoR5EHq1NsH1A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@evtmitter/react@0.1.0':
+    resolution: {integrity: sha512-5k0IoI8MUHnfJ9VFw7yS2BuCHGATMVbU3Z6M1bKFAY81ug4JOOLAVK5QkRiBhWO2Rw9xshOrE/hvfWdx1im9Dg==}
+    engines: {node: '>=14.6.0'}
+    peerDependencies:
+      react: ^18.3.1 || ^19.0.0
+      react-dom: ^18.3.1 || ^19.0.0
 
   '@gerrit0/mini-shiki@3.4.2':
     resolution: {integrity: sha512-3jXo5bNjvvimvdbIhKGfFxSnKCX+MA8wzHv55ptzk/cx8wOzT+BRcYgj8aFN3yTiTs+zvQQiaZFr7Jce1ZG3fw==}
@@ -2618,6 +2628,12 @@ snapshots:
     dependencies:
       '@eslint/core': 0.10.0
       levn: 0.4.1
+
+  '@evtmitter/react@0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      evtmitter: 1.0.2
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   '@gerrit0/mini-shiki@3.4.2':
     dependencies:
