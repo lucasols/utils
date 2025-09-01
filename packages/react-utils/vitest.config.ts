@@ -7,11 +7,6 @@ export default defineConfig({
     include: ['src/*.test.{ts,tsx}'],
     testTimeout: 2_000,
     allowOnly: !isProd,
-    poolOptions: {
-      forks: {
-        execArgv: ['--expose-gc'],
-      },
-    },
     environment: 'happy-dom',
   },
 });
