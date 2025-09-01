@@ -4,6 +4,17 @@ import { useScheduleToNextRender } from './useScheduleToNextRender';
 
 export type MountAnimStates = 'from' | 'enter' | 'leave' | 'unmounted';
 
+/**
+ * React hook to manage mount/unmount animation states for a component.
+ *
+ * Returns the current animation state and a boolean indicating whether the element should be rendered.
+ *
+ * @param show - Whether the component should be shown (mounted)
+ * @param animationMaxDurationMs - Maximum duration (ms) for the leave animation before unmounting
+ * @returns [animState, renderElement]
+ *   - animState: 'from' | 'enter' | 'leave' | 'unmounted'
+ *   - renderElement: boolean (true if the element should be rendered)
+ */
 export function useAnimateMountUnmount(
   show: boolean,
   animationMaxDurationMs: number,
