@@ -1,5 +1,5 @@
 import { sleep } from '@ls-stack/utils/sleep';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { blockWindowClose } from './blockWindowClose';
 
 // Mock window and console
@@ -38,7 +38,7 @@ describe('blockWindowClose', () => {
     process.env.NODE_ENV = 'test';
   });
 
-  it('should set window.onbeforeunload when blocking', () => {
+  test('should set window.onbeforeunload when blocking', () => {
     expect(window.onbeforeunload).toBe(null);
 
     const blocker = blockWindowClose();
@@ -49,7 +49,7 @@ describe('blockWindowClose', () => {
     blocker.unblock();
   });
 
-  it('should return true from onbeforeunload handler', () => {
+  test('should return true from onbeforeunload handler', () => {
     const blocker = blockWindowClose();
 
     const result = window.onbeforeunload?.(new Event('beforeunload'));
@@ -58,7 +58,7 @@ describe('blockWindowClose', () => {
     blocker.unblock();
   });
 
-  it('should remove onbeforeunload when unblocking', () => {
+  test('should remove onbeforeunload when unblocking', () => {
     const blocker = blockWindowClose();
     expect(window.onbeforeunload).toBeDefined();
 
@@ -67,7 +67,7 @@ describe('blockWindowClose', () => {
     expect(window.onbeforeunload).toBe(null);
   });
 
-  it('should support multiple simultaneous blocks', () => {
+  test('should support multiple simultaneous blocks', () => {
     const blocker1 = blockWindowClose('ctx1');
     const blocker2 = blockWindowClose('ctx2');
 
@@ -82,7 +82,7 @@ describe('blockWindowClose', () => {
     expect(window.onbeforeunload).toBe(null);
   });
 
-  it('should work with custom context', () => {
+  test('should work with custom context', () => {
     const blocker = blockWindowClose('custom-context');
 
     expect(window.onbeforeunload).toBeDefined();
@@ -91,7 +91,7 @@ describe('blockWindowClose', () => {
     expect(window.onbeforeunload).toBe(null);
   });
 
-  it('should work with numeric context', () => {
+  test('should work with numeric context', () => {
     const blocker = blockWindowClose(12345);
 
     expect(window.onbeforeunload).toBeDefined();
@@ -100,7 +100,7 @@ describe('blockWindowClose', () => {
     expect(window.onbeforeunload).toBe(null);
   });
 
-  it('should support Symbol.dispose for cleanup', () => {
+  test('should support Symbol.dispose for cleanup', () => {
     const blocker = blockWindowClose('dispose-test');
 
     expect(window.onbeforeunload).toBeDefined();
@@ -110,7 +110,7 @@ describe('blockWindowClose', () => {
     expect(window.onbeforeunload).toBe(null);
   });
 
-  it('should handle multiple blocks with same context gracefully', () => {
+  test('should handle multiple blocks with same context gracefully', () => {
     const blocker1 = blockWindowClose('same-ctx');
     const blocker2 = blockWindowClose('same-ctx');
 
@@ -124,7 +124,7 @@ describe('blockWindowClose', () => {
     expect(() => blocker2.unblock()).not.toThrow();
   });
 
-  it('should set up development warning timeout', async () => {
+  test('should set up development warning timeout', async () => {
     process.env.NODE_ENV = 'development';
 
     const blocker = blockWindowClose('dev-warning', 100);
@@ -144,7 +144,7 @@ describe('blockWindowClose', () => {
     blocker.unblock();
   });
 
-  it('should not set up development warning in production', async () => {
+  test('should not set up development warning in production', async () => {
     process.env.NODE_ENV = 'production';
 
     const blocker = blockWindowClose('prod-test', 50);
@@ -157,7 +157,7 @@ describe('blockWindowClose', () => {
     blocker.unblock();
   });
 
-  it('should clean up timeout when unblocked before warning', async () => {
+  test('should clean up timeout when unblocked before warning', async () => {
     process.env.NODE_ENV = 'development';
 
     const blocker = blockWindowClose('cleanup-test', 100);
@@ -173,7 +173,7 @@ describe('blockWindowClose', () => {
     expect(mockAlert).not.toHaveBeenCalled();
   });
 
-  it('should use default timeout warning of 120 seconds', async () => {
+  test('should use default timeout warning of 120 seconds', async () => {
     process.env.NODE_ENV = 'development';
 
     const blocker = blockWindowClose('default-timeout', 50);
@@ -189,7 +189,7 @@ describe('blockWindowClose', () => {
     blocker.unblock();
   });
 
-  it('should handle rapid block/unblock cycles', () => {
+  test('should handle rapid block/unblock cycles', () => {
     const blockers = [];
 
     // Create many blockers rapidly
@@ -205,7 +205,7 @@ describe('blockWindowClose', () => {
     expect(window.onbeforeunload).toBe(null);
   });
 
-  it('should be safe to call unblock multiple times', () => {
+  test('should be safe to call unblock multiple times', () => {
     const blocker = blockWindowClose('multi-unblock');
 
     expect(window.onbeforeunload).toBeDefined();
@@ -218,7 +218,7 @@ describe('blockWindowClose', () => {
     expect(window.onbeforeunload).toBe(null);
   });
 
-  it('should be safe to call Symbol.dispose multiple times', () => {
+  test('should be safe to call Symbol.dispose multiple times', () => {
     const blocker = blockWindowClose('multi-dispose');
 
     expect(window.onbeforeunload).toBeDefined();
@@ -231,7 +231,7 @@ describe('blockWindowClose', () => {
     expect(window.onbeforeunload).toBe(null);
   });
 
-  it('should handle mixed unblock and dispose calls', () => {
+  test('should handle mixed unblock and dispose calls', () => {
     const blocker1 = blockWindowClose('mixed1');
     const blocker2 = blockWindowClose('mixed2');
 

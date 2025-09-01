@@ -1,10 +1,10 @@
 import { sleep } from '@ls-stack/utils/sleep';
 import { act, renderHook } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { useActionFn, useActionFnWithState } from './useActionFn';
 
 describe('useActionFn', () => {
-  it('should execute async action and return result', async () => {
+  test('should execute async action and return result', async () => {
     const action = vi.fn(async (value: string) => {
       await sleep(10);
       return `result-${value}`;
@@ -24,7 +24,7 @@ describe('useActionFn', () => {
     expect(result.current.isInProgress).toBe(false);
   });
 
-  it('should track isInProgress state during execution', async () => {
+  test('should track isInProgress state during execution', async () => {
     const action = vi.fn(async () => {
       await sleep(20);
       return 'done';
@@ -48,7 +48,7 @@ describe('useActionFn', () => {
     expect(result.current.isInProgress).toBe(false);
   });
 
-  it('should prevent concurrent calls and return null', async () => {
+  test('should prevent concurrent calls and return null', async () => {
     const action = vi.fn(async (id: number) => {
       await sleep(30);
       return `result-${id}`;
@@ -75,7 +75,7 @@ describe('useActionFn', () => {
     expect(action).toHaveBeenCalledWith(1);
   });
 
-  it('should handle errors and reset isInProgress state', async () => {
+  test('should handle errors and reset isInProgress state', async () => {
     const error = new Error('Test error');
     const action = vi.fn(async () => {
       await sleep(10);
@@ -95,7 +95,7 @@ describe('useActionFn', () => {
     expect(result.current.isInProgress).toBe(false);
   });
 
-  it('should work with synchronous actions', async () => {
+  test('should work with synchronous actions', async () => {
     const action = vi.fn((a: number, b: number) => a + b);
 
     const { result } = renderHook(() => useActionFn(action));
@@ -109,7 +109,7 @@ describe('useActionFn', () => {
     expect(action).toHaveBeenCalledWith(5, 3);
   });
 
-  it('should handle actions with no parameters', async () => {
+  test('should handle actions with no parameters', async () => {
     const action = vi.fn(async () => {
       await sleep(10);
       return 42;
@@ -126,7 +126,7 @@ describe('useActionFn', () => {
     expect(action).toHaveBeenCalledWith();
   });
 
-  it('should memoize properly when action changes', async () => {
+  test('should memoize properly when action changes', async () => {
     const action1 = vi.fn(() => Promise.resolve('action1'));
     const action2 = vi.fn(() => Promise.resolve('action2'));
 
@@ -150,7 +150,7 @@ describe('useActionFn', () => {
 });
 
 describe('useActionFnWithState', () => {
-  it('should execute action with state and return result', async () => {
+  test('should execute action with state and return result', async () => {
     const action = vi.fn(async (state: string, value: number) => {
       await sleep(10);
       return `${state}-${value}`;
@@ -170,7 +170,7 @@ describe('useActionFnWithState', () => {
     expect(result.current.isInProgress('state1')).toBe(false);
   });
 
-  it('should track isInProgress per state', async () => {
+  test('should track isInProgress per state', async () => {
     const action = vi.fn(async (state: string) => {
       await sleep(20);
       return `done-${state}`;
@@ -198,7 +198,7 @@ describe('useActionFnWithState', () => {
     expect(result.current.isInProgress('state2')).toBe(false);
   });
 
-  it('should prevent concurrent calls for same state', async () => {
+  test('should prevent concurrent calls for same state', async () => {
     const action = vi.fn(async (state: string, id: number) => {
       await sleep(30);
       return `${state}-${id}`;
@@ -230,7 +230,7 @@ describe('useActionFnWithState', () => {
     expect(action).toHaveBeenCalledWith('state2', 3);
   });
 
-  it('should handle errors and reset state-specific isInProgress', async () => {
+  test('should handle errors and reset state-specific isInProgress', async () => {
     const error = new Error('State error');
     const action = vi.fn(async (state: string) => {
       await sleep(10);
@@ -258,7 +258,7 @@ describe('useActionFnWithState', () => {
     expect(result.current.isInProgress('ok')).toBe(false);
   });
 
-  it('should work with numeric states', async () => {
+  test('should work with numeric states', async () => {
     const action = vi.fn(async (state: number, multiplier: number) => {
       await sleep(10);
       return state * multiplier;
@@ -280,7 +280,7 @@ describe('useActionFnWithState', () => {
     expect(action).toHaveBeenCalledWith(2, 20);
   });
 
-  it('should handle synchronous actions', async () => {
+  test('should handle synchronous actions', async () => {
     const action = vi.fn((state: string, value: string) => `${state}:${value}`);
 
     const { result } = renderHook(() => useActionFnWithState(action));
@@ -294,7 +294,7 @@ describe('useActionFnWithState', () => {
     expect(action).toHaveBeenCalledWith('sync', 'test');
   });
 
-  it('should memoize properly when action changes', async () => {
+  test('should memoize properly when action changes', async () => {
     const action1 = vi.fn((state: string) =>
       Promise.resolve(`action1-${state}`),
     );

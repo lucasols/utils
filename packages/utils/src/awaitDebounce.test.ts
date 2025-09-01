@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { awaitDebounce } from './awaitDebounce';
 import { sleep } from './sleep';
 
@@ -11,7 +11,7 @@ describe('awaitDebounce', () => {
     vi.restoreAllMocks();
   });
 
-  it('should resolve with "continue" after debounce delay', async () => {
+  test('should resolve with "continue" after debounce delay', async () => {
     const promise = awaitDebounce({ callId: 'test', debounce: 50 });
 
     await sleep(60);
@@ -20,7 +20,7 @@ describe('awaitDebounce', () => {
     expect(result).toBe('continue');
   });
 
-  it('should resolve previous calls with "skip" when new call is made', async () => {
+  test('should resolve previous calls with "skip" when new call is made', async () => {
     const promise1 = awaitDebounce({ callId: 'test', debounce: 50 });
     const promise2 = awaitDebounce({ callId: 'test', debounce: 50 });
 
@@ -32,7 +32,7 @@ describe('awaitDebounce', () => {
     expect(result2).toBe('continue');
   });
 
-  it('should handle multiple sequential calls with same callId', async () => {
+  test('should handle multiple sequential calls with same callId', async () => {
     const results: ('continue' | 'skip')[] = [];
 
     const promise1 = awaitDebounce({ callId: 'test', debounce: 50 });
@@ -56,7 +56,7 @@ describe('awaitDebounce', () => {
     expect(results).toEqual(['skip', 'skip', 'continue']);
   });
 
-  it('should handle different callIds independently', async () => {
+  test('should handle different callIds independently', async () => {
     const promise1 = awaitDebounce({ callId: 'test1', debounce: 50 });
     const promise2 = awaitDebounce({ callId: 'test2', debounce: 50 });
 
@@ -67,7 +67,7 @@ describe('awaitDebounce', () => {
     expect(result2).toBe('continue');
   });
 
-  it('should work with complex callId types', async () => {
+  test('should work with complex callId types', async () => {
     const promise1 = awaitDebounce({ callId: ['user', 123], debounce: 50 });
     const promise2 = awaitDebounce({
       callId: { type: 'search', query: 'test' },
@@ -81,7 +81,7 @@ describe('awaitDebounce', () => {
     expect(result2).toBe('continue');
   });
 
-  it('should treat equivalent complex callIds as the same', async () => {
+  test('should treat equivalent complex callIds as the same', async () => {
     const promise1 = awaitDebounce({ callId: ['user', 123], debounce: 50 });
     const promise2 = awaitDebounce({ callId: ['user', 123], debounce: 50 });
 
@@ -93,7 +93,7 @@ describe('awaitDebounce', () => {
     expect(result2).toBe('continue');
   });
 
-  it('should reset debounce timer on subsequent calls', async () => {
+  test('should reset debounce timer on subsequent calls', async () => {
     const promise1 = awaitDebounce({ callId: 'test', debounce: 80 });
 
     await sleep(30);
@@ -118,7 +118,7 @@ describe('awaitDebounce', () => {
     expect(result2).toBe('continue');
   });
 
-  it('should handle string, number, and boolean callIds', async () => {
+  test('should handle string, number, and boolean callIds', async () => {
     const stringPromise = awaitDebounce({ callId: 'string-id', debounce: 50 });
     const numberPromise = awaitDebounce({ callId: 42, debounce: 50 });
     const booleanPromise = awaitDebounce({ callId: true, debounce: 50 });
@@ -136,7 +136,7 @@ describe('awaitDebounce', () => {
     expect(booleanResult).toBe('continue');
   });
 
-  it('should handle null and undefined callIds', async () => {
+  test('should handle null and undefined callIds', async () => {
     const nullPromise = awaitDebounce({ callId: null, debounce: 50 });
     const undefinedPromise = awaitDebounce({ callId: undefined, debounce: 50 });
 
@@ -151,7 +151,7 @@ describe('awaitDebounce', () => {
     expect(undefinedResult).toBe('continue');
   });
 
-  it('should work with zero debounce time', async () => {
+  test('should work with zero debounce time', async () => {
     const promise = awaitDebounce({ callId: 'test', debounce: 0 });
 
     await sleep(10);
@@ -160,7 +160,7 @@ describe('awaitDebounce', () => {
     expect(result).toBe('continue');
   });
 
-  it('should handle rapid fire calls correctly', async () => {
+  test('should handle rapid fire calls correctly', async () => {
     const results: ('continue' | 'skip')[] = [];
     const promises: Promise<'continue' | 'skip'>[] = [];
 

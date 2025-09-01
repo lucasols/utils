@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { onWindowFocus, isWindowFocused } from './window';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { isWindowFocused, onWindowFocus } from './window';
 
 // Mock the throttle function
 vi.mock('@ls-stack/utils/throttle', () => ({
@@ -32,7 +32,7 @@ describe('onWindowFocus', () => {
     vi.clearAllMocks();
   });
 
-  it('should add event listeners for focus and visibilitychange', () => {
+  test('should add event listeners for focus and visibilitychange', () => {
     const handler = vi.fn();
 
     onWindowFocus(handler);
@@ -48,7 +48,7 @@ describe('onWindowFocus', () => {
     );
   });
 
-  it('should return a cleanup function', () => {
+  test('should return a cleanup function', () => {
     const handler = vi.fn();
 
     const cleanup = onWindowFocus(handler);
@@ -56,7 +56,7 @@ describe('onWindowFocus', () => {
     expect(typeof cleanup).toBe('function');
   });
 
-  it('should remove event listeners when cleanup is called', () => {
+  test('should remove event listeners when cleanup is called', () => {
     const handler = vi.fn();
 
     const cleanup = onWindowFocus(handler);
@@ -73,7 +73,7 @@ describe('onWindowFocus', () => {
     );
   });
 
-  it('should use the same handler reference for add and remove', () => {
+  test('should use the same handler reference for add and remove', () => {
     const handler = vi.fn();
 
     const cleanup = onWindowFocus(handler);
@@ -98,7 +98,7 @@ describe('onWindowFocus', () => {
     expect(addedVisibilityHandler).toBe(removedVisibilityHandler);
   });
 
-  it('should call the handler when focus event is triggered', () => {
+  test('should call the handler when focus event is triggered', () => {
     const handler = vi.fn();
 
     onWindowFocus(handler);
@@ -113,7 +113,7 @@ describe('onWindowFocus', () => {
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
-  it('should call the handler when visibilitychange event is triggered', () => {
+  test('should call the handler when visibilitychange event is triggered', () => {
     const handler = vi.fn();
 
     onWindowFocus(handler);
@@ -128,7 +128,7 @@ describe('onWindowFocus', () => {
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
-  it('should handle multiple registrations independently', () => {
+  test('should handle multiple registrations independently', () => {
     const handler1 = vi.fn();
     const handler2 = vi.fn();
 
@@ -144,7 +144,7 @@ describe('onWindowFocus', () => {
     expect(mockRemoveEventListener).toHaveBeenCalledTimes(4);
   });
 
-  it('should be safe to call cleanup multiple times', () => {
+  test('should be safe to call cleanup multiple times', () => {
     const handler = vi.fn();
 
     const cleanup = onWindowFocus(handler);
@@ -168,7 +168,7 @@ describe('isWindowFocused', () => {
     mockHasFocus.mockReturnValue(true);
   });
 
-  it('should return true when document is visible and has focus', () => {
+  test('should return true when document is visible and has focus', () => {
     (document as any).visibilityState = 'visible';
     mockHasFocus.mockReturnValue(true);
 
@@ -178,7 +178,7 @@ describe('isWindowFocused', () => {
     expect(mockHasFocus).toHaveBeenCalledTimes(1);
   });
 
-  it('should return false when document is not visible', () => {
+  test('should return false when document is not visible', () => {
     (document as any).visibilityState = 'hidden';
     mockHasFocus.mockReturnValue(true);
 
@@ -187,7 +187,7 @@ describe('isWindowFocused', () => {
     expect(result).toBe(false);
   });
 
-  it('should return false when document does not have focus', () => {
+  test('should return false when document does not have focus', () => {
     (document as any).visibilityState = 'visible';
     mockHasFocus.mockReturnValue(false);
 
@@ -196,7 +196,7 @@ describe('isWindowFocused', () => {
     expect(result).toBe(false);
   });
 
-  it('should return false when document is hidden and does not have focus', () => {
+  test('should return false when document is hidden and does not have focus', () => {
     (document as any).visibilityState = 'hidden';
     mockHasFocus.mockReturnValue(false);
 
@@ -205,7 +205,7 @@ describe('isWindowFocused', () => {
     expect(result).toBe(false);
   });
 
-  it('should handle prerender visibility state', () => {
+  test('should handle prerender visibility state', () => {
     (document as any).visibilityState = 'prerender';
     mockHasFocus.mockReturnValue(true);
 
@@ -214,7 +214,7 @@ describe('isWindowFocused', () => {
     expect(result).toBe(false);
   });
 
-  it('should handle unloaded visibility state', () => {
+  test('should handle unloaded visibility state', () => {
     (document as any).visibilityState = 'unloaded';
     mockHasFocus.mockReturnValue(true);
 
@@ -223,7 +223,7 @@ describe('isWindowFocused', () => {
     expect(result).toBe(false);
   });
 
-  it('should call document.hasFocus() every time', () => {
+  test('should call document.hasFocus() every time', () => {
     mockHasFocus.mockReturnValue(true);
 
     isWindowFocused();
@@ -233,7 +233,7 @@ describe('isWindowFocused', () => {
     expect(mockHasFocus).toHaveBeenCalledTimes(3);
   });
 
-  it('should handle when hasFocus throws an error', () => {
+  test('should handle when hasFocus throws an error', () => {
     (document as any).visibilityState = 'visible';
     mockHasFocus.mockImplementation(() => {
       throw new Error('hasFocus not available');
@@ -242,7 +242,7 @@ describe('isWindowFocused', () => {
     expect(() => isWindowFocused()).toThrow('hasFocus not available');
   });
 
-  it('should be consistent across multiple calls with same state', () => {
+  test('should be consistent across multiple calls with same state', () => {
     (document as any).visibilityState = 'visible';
     mockHasFocus.mockReturnValue(true);
 
@@ -255,7 +255,7 @@ describe('isWindowFocused', () => {
     expect(result3).toBe(true);
   });
 
-  it('should reflect changes in document state', () => {
+  test('should reflect changes in document state', () => {
     // Initially focused
     (document as any).visibilityState = 'visible';
     mockHasFocus.mockReturnValue(true);

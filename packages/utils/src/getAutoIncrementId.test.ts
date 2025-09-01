@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import {
   getAutoIncrementId,
   getLocalAutoIncrementIdGenerator,
@@ -8,7 +8,7 @@ describe('getAutoIncrementId', () => {
   // Note: Since getAutoIncrementId uses a global counter, we can't reset it between tests
   // So these tests are designed to work with the incrementing nature
 
-  it('should return incrementing numbers', () => {
+  test('should return incrementing numbers', () => {
     const id1 = getAutoIncrementId();
     const id2 = getAutoIncrementId();
     const id3 = getAutoIncrementId();
@@ -20,7 +20,7 @@ describe('getAutoIncrementId', () => {
     expect(id3).toBe(id2 + 1);
   });
 
-  it('should always return unique values', () => {
+  test('should always return unique values', () => {
     const ids = new Set();
 
     for (let i = 0; i < 100; i++) {
@@ -32,7 +32,7 @@ describe('getAutoIncrementId', () => {
     expect(ids.size).toBe(100);
   });
 
-  it('should return positive integers', () => {
+  test('should return positive integers', () => {
     const id1 = getAutoIncrementId();
     const id2 = getAutoIncrementId();
 
@@ -44,7 +44,7 @@ describe('getAutoIncrementId', () => {
 });
 
 describe('getLocalAutoIncrementIdGenerator', () => {
-  it('should create independent generators', () => {
+  test('should create independent generators', () => {
     const gen1 = getLocalAutoIncrementIdGenerator({ prefix: 'a-' });
     const gen2 = getLocalAutoIncrementIdGenerator({ prefix: 'b-' });
 
@@ -54,7 +54,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(gen2()).toBe('b-2');
   });
 
-  it('should work with prefix only', () => {
+  test('should work with prefix only', () => {
     const generator = getLocalAutoIncrementIdGenerator({ prefix: 'test-' });
 
     expect(generator()).toBe('test-1');
@@ -62,7 +62,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(generator()).toBe('test-3');
   });
 
-  it('should work with suffix only', () => {
+  test('should work with suffix only', () => {
     const generator = getLocalAutoIncrementIdGenerator({ suffix: '-end' });
 
     expect(generator()).toBe('1-end');
@@ -70,7 +70,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(generator()).toBe('3-end');
   });
 
-  it('should work with both prefix and suffix', () => {
+  test('should work with both prefix and suffix', () => {
     const generator = getLocalAutoIncrementIdGenerator({
       prefix: 'start-',
       suffix: '-end',
@@ -81,7 +81,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(generator()).toBe('start-3-end');
   });
 
-  it('should work without prefix or suffix', () => {
+  test('should work without prefix or suffix', () => {
     const generator = getLocalAutoIncrementIdGenerator({});
 
     expect(generator()).toBe('1');
@@ -89,7 +89,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(generator()).toBe('3');
   });
 
-  it('should handle empty strings for prefix and suffix', () => {
+  test('should handle empty strings for prefix and suffix', () => {
     const generator = getLocalAutoIncrementIdGenerator({
       prefix: '',
       suffix: '',
@@ -100,7 +100,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(generator()).toBe('3');
   });
 
-  it('should handle complex prefix and suffix strings', () => {
+  test('should handle complex prefix and suffix strings', () => {
     const generator = getLocalAutoIncrementIdGenerator({
       prefix: 'component-id-',
       suffix: '-instance-v1',
@@ -110,7 +110,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(generator()).toBe('component-id-2-instance-v1');
   });
 
-  it('should maintain separate counters for each generator instance', () => {
+  test('should maintain separate counters for each generator instance', () => {
     const userGen = getLocalAutoIncrementIdGenerator({ prefix: 'user-' });
     const postGen = getLocalAutoIncrementIdGenerator({ prefix: 'post-' });
     const errorGen = getLocalAutoIncrementIdGenerator({ prefix: 'ERR' });
@@ -125,7 +125,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(errorGen()).toBe('ERR2');
   });
 
-  it('should generate unique IDs across many calls', () => {
+  test('should generate unique IDs across many calls', () => {
     const generator = getLocalAutoIncrementIdGenerator({ prefix: 'item-' });
     const ids = new Set();
 
@@ -138,7 +138,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(ids.size).toBe(1000);
   });
 
-  it('should handle special characters in prefix and suffix', () => {
+  test('should handle special characters in prefix and suffix', () => {
     const generator = getLocalAutoIncrementIdGenerator({
       prefix: 'test@#$-',
       suffix: '-[special]',
@@ -148,7 +148,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(generator()).toBe('test@#$-2-[special]');
   });
 
-  it('should handle unicode characters in prefix and suffix', () => {
+  test('should handle unicode characters in prefix and suffix', () => {
     const generator = getLocalAutoIncrementIdGenerator({
       prefix: '🚀-',
       suffix: '-✨',
@@ -158,7 +158,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(generator()).toBe('🚀-2-✨');
   });
 
-  it('should work with very long prefix and suffix', () => {
+  test('should work with very long prefix and suffix', () => {
     const longPrefix = 'a'.repeat(100);
     const longSuffix = 'z'.repeat(100);
     const generator = getLocalAutoIncrementIdGenerator({
@@ -171,7 +171,7 @@ describe('getLocalAutoIncrementIdGenerator', () => {
     expect(result.length).toBe(201); // 100 + 1 + 100
   });
 
-  it('should continue incrementing after many calls', () => {
+  test('should continue incrementing after many calls', () => {
     const generator = getLocalAutoIncrementIdGenerator({ prefix: 'test-' });
 
     // Skip to a high number

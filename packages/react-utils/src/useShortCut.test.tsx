@@ -1,6 +1,6 @@
 import { sleep } from '@ls-stack/utils/sleep';
 import { cleanup, render } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import {
   preventShortcutDefault,
   useShortCut,
@@ -27,7 +27,7 @@ describe('useShortCut', () => {
     document.body.innerHTML = '';
   });
 
-  it('calls callback when shortcut is pressed', async () => {
+  test('calls callback when shortcut is pressed', async () => {
     const cb = vi.fn();
     function Cmp() {
       useShortCut('d', cb);
@@ -39,7 +39,7 @@ describe('useShortCut', () => {
     expect(cb).toHaveBeenCalledTimes(1);
   });
 
-  it('respects allowDuringTyping=false by default', async () => {
+  test('respects allowDuringTyping=false by default', async () => {
     const cb = vi.fn();
     function Cmp() {
       useShortCut('a', cb);
@@ -53,7 +53,7 @@ describe('useShortCut', () => {
     expect(cb).not.toHaveBeenCalled();
   });
 
-  it('allows during typing when allowDuringTyping is true', async () => {
+  test('allows during typing when allowDuringTyping is true', async () => {
     const cb = vi.fn();
     function Cmp() {
       useShortCut('a', cb, { allowDuringTyping: true });
@@ -67,7 +67,7 @@ describe('useShortCut', () => {
     expect(cb).toHaveBeenCalledTimes(1);
   });
 
-  it('works with modifier sequences like Shift+d', async () => {
+  test('works with modifier sequences like Shift+d', async () => {
     const cb = vi.fn();
     function Cmp() {
       useShortCut('Shift+d', cb);
@@ -79,7 +79,7 @@ describe('useShortCut', () => {
     expect(cb).toHaveBeenCalledTimes(1);
   });
 
-  it('preventShortcutDefault prevents default and calls callback', async () => {
+  test('preventShortcutDefault prevents default and calls callback', async () => {
     const cb = vi.fn();
     function Cmp() {
       useShortCut('z', preventShortcutDefault(cb));
@@ -99,7 +99,7 @@ describe('useShortCuts', () => {
     document.body.innerHTML = '';
   });
 
-  it('registers multiple shortcuts and calls respective callbacks', async () => {
+  test('registers multiple shortcuts and calls respective callbacks', async () => {
     const a = vi.fn();
     const b = vi.fn();
     function Cmp() {
@@ -114,7 +114,7 @@ describe('useShortCuts', () => {
     expect(b).toHaveBeenCalledTimes(1);
   });
 
-  it('respects allowDuringTyping in batch registration', async () => {
+  test('respects allowDuringTyping in batch registration', async () => {
     const a = vi.fn();
     function Cmp() {
       useShortCuts({ a }, { allowDuringTyping: true });

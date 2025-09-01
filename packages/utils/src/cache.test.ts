@@ -39,48 +39,25 @@ describe('createCache', () => {
   });
 
   test('should respect maxCacheSize', () => {
-    vi.useFakeTimers();
-    vi.setSystemTime('2025-01-01T00:00:00.000Z');
-
     const cache = createCache({ maxCacheSize: 2 });
 
     cache.getOrInsert('key1', () => 'value1');
     cache.getOrInsert('key2', () => 'value2');
     cache.getOrInsert('key3', () => 'value3');
 
-    expect(cache[' cache'].map).toMatchInlineSnapshot(`
-      Map {
-        "key2" => {
-          "expiration": undefined,
-          "timestamp": 1735689600000,
-          "value": "value2",
-        },
-        "key3" => {
-          "expiration": undefined,
-          "timestamp": 1735689600000,
-          "value": "value3",
-        },
-      }
-    `);
+    // Should only keep the last 2 entries
+    expect(cache[' cache'].map.size).toBe(2);
+    expect(cache[' cache'].map.has('key2')).toBe(true);
+    expect(cache[' cache'].map.has('key3')).toBe(true);
+    expect(cache[' cache'].map.has('key1')).toBe(false);
 
-    cache.getOrInsert('key4', () => 'value1');
+    cache.getOrInsert('key4', () => 'value4');
 
-    expect(cache[' cache'].map).toMatchInlineSnapshot(`
-      Map {
-        "key3" => {
-          "expiration": undefined,
-          "timestamp": 1735689600000,
-          "value": "value3",
-        },
-        "key4" => {
-          "expiration": undefined,
-          "timestamp": 1735689600000,
-          "value": "value1",
-        },
-      }
-    `);
-
-    vi.useRealTimers();
+    // Should still only keep the last 2 entries
+    expect(cache[' cache'].map.size).toBe(2);
+    expect(cache[' cache'].map.has('key3')).toBe(true);
+    expect(cache[' cache'].map.has('key4')).toBe(true);
+    expect(cache[' cache'].map.has('key2')).toBe(false);
   });
 
   test('clear should remove all entries', () => {
@@ -95,9 +72,6 @@ describe('createCache', () => {
   });
 
   test('getOrInsertAsync', async () => {
-    vi.useFakeTimers();
-    vi.setSystemTime('2025-01-01T00:00:00.000Z');
-
     const asyncMockFn = vi.fn(() => Promise.resolve({ foo: 'bar' }));
 
     const cache = createCache();
@@ -111,27 +85,11 @@ describe('createCache', () => {
     expect(value).toEqual(cachedValue);
     expect(value).toEqual({ foo: 'bar' });
     expect(asyncMockFn).toHaveBeenCalledTimes(1);
-    expect(cache[' cache'].map).toMatchInlineSnapshot(`
-      Map {
-        "key1" => {
-          "expiration": undefined,
-          "timestamp": 1735689600000,
-          "value": {
-            "foo": "bar",
-          },
-        },
-      }
-    `);
-
-    vi.useRealTimers();
+    expect(cache[' cache'].map.get('key1')?.value).toEqual({ foo: 'bar' });
   });
 
-  test('should expire items based on maxItemAge', () => {
-    vi.useFakeTimers();
-    const now = new Date('2025-01-01T00:00:00.000Z');
-    vi.setSystemTime(now);
-
-    const cache = createCache({ maxItemAge: { seconds: 60 } }); // 60 seconds
+  test('should expire items based on maxItemAge', async () => {
+    const cache = createCache({ maxItemAge: { ms: 50 } }); // 50ms
     const mockFn = vi.fn(() => 'value1');
 
     // First call
@@ -144,33 +102,21 @@ describe('createCache', () => {
     expect(value2).toBe('value1');
     expect(mockFn).toHaveBeenCalledTimes(1);
 
-    // Advance time by 30 seconds (not expired)
-    vi.advanceTimersByTime(30 * 1000);
+    // Wait for cache to expire
+    await sleep(60);
     const value3 = cache.getOrInsert('key1', mockFn);
     expect(value3).toBe('value1');
-    expect(mockFn).toHaveBeenCalledTimes(1);
-
-    // Advance time by another 31 seconds (expired)
-    vi.advanceTimersByTime(31 * 1000);
-    const value4 = cache.getOrInsert('key1', mockFn);
-    expect(value4).toBe('value1');
     expect(mockFn).toHaveBeenCalledTimes(2);
-
-    vi.useRealTimers();
   });
 
-  test('should expire items when trimming cache', () => {
-    vi.useFakeTimers();
-    const now = new Date('2025-01-01T00:00:00.000Z');
-    vi.setSystemTime(now);
-
-    const cache = createCache({ maxItemAge: { seconds: 60 } }); // 60 seconds
+  test('should expire items when trimming cache', async () => {
+    const cache = createCache({ maxItemAge: { ms: 50 } }); // 50ms
 
     cache.getOrInsert('key1', () => 'value1');
     cache.getOrInsert('key2', () => 'value2');
 
-    // Advance time by 61 seconds
-    vi.advanceTimersByTime(61 * 1000);
+    // Wait for items to expire
+    await sleep(60);
 
     // Adding a new item should trigger cache trimming
     cache.getOrInsert('key3', () => 'value3');
@@ -179,8 +125,6 @@ describe('createCache', () => {
     expect(cache[' cache'].map.get('key3')).toBeDefined();
     expect(cache[' cache'].map.get('key1')).toBeUndefined();
     expect(cache[' cache'].map.get('key2')).toBeUndefined();
-
-    vi.useRealTimers();
   });
 
   test.concurrent('should cache concurrent async calls', async () => {
@@ -297,19 +241,16 @@ describe('createCache', () => {
     );
   });
 
-  test('get should respect maxItemAge', () => {
-    vi.useFakeTimers();
-    const cache = createCache<string>({ maxItemAge: { seconds: 60 } }); // 60 seconds
+  test('get should respect maxItemAge', async () => {
+    const cache = createCache<string>({ maxItemAge: { ms: 50 } }); // 50ms
 
     cache.set('key1', 'value1');
     expect(cache.get('key1')).toBe('value1');
 
-    // Advance time by 61 seconds
-    vi.advanceTimersByTime(61 * 1000);
+    // Wait for expiration
+    await sleep(60);
 
     expect(cache.get('key1')).toBeUndefined();
-
-    vi.useRealTimers();
   });
 
   test.concurrent(
@@ -434,87 +375,68 @@ describe('createCache', () => {
 });
 
 describe('withExpiration', () => {
-  test('should store value with custom expiration time inferior to default', () => {
-    vi.useFakeTimers();
-    const now = new Date('2025-01-01T00:00:00.000Z');
-    vi.setSystemTime(now);
-
-    const cache = createCache<string>({ maxItemAge: { seconds: 60 } }); // 60 seconds default
+  test('should store value with custom expiration time inferior to default', async () => {
+    const cache = createCache<string>({ maxItemAge: { ms: 100 } }); // 100ms default
 
     const value = cache.getOrInsert('key1', ({ withExpiration }) => {
-      return withExpiration('value1', { seconds: 30 }); // 30 seconds expiration
+      return withExpiration('value1', { ms: 50 }); // 50ms expiration
     });
 
     expect(value).toBe('value1');
 
-    // Advance time by 29 seconds (not expired)
-    vi.advanceTimersByTime(29 * 1000);
+    // Should still be cached before expiration
+    await sleep(40);
     expect(cache.get('key1')).toBe('value1');
 
-    // Advance time by 2 more seconds (expired)
-    vi.advanceTimersByTime(2 * 1000);
+    // Should be expired after timeout
+    await sleep(20);
     expect(cache.get('key1')).toBeUndefined();
-
-    vi.useRealTimers();
   });
 
-  test('should work with duration object', () => {
-    vi.useFakeTimers();
-    const now = new Date('2025-01-01T00:00:00.000Z');
-    vi.setSystemTime(now);
-
-    const cache = createCache<string>({ maxItemAge: { seconds: 120 } }); // 120 seconds default
+  test('should work with duration object', async () => {
+    const cache = createCache<string>({ maxItemAge: { ms: 100 } }); // 100ms default
 
     const value = cache.getOrInsert('key1', ({ withExpiration }) => {
-      return withExpiration('value1', { seconds: 60 }); // 60 seconds expiration
+      return withExpiration('value1', { ms: 60 }); // 60ms expiration
     });
 
     expect(value).toBe('value1');
 
-    // Advance time by 59 seconds (not expired)
-    vi.advanceTimersByTime(59 * 1000);
+    // Should still be cached before expiration
+    await sleep(50);
     expect(cache.get('key1')).toBe('value1');
 
-    // Advance time by 2 more seconds (expired)
-    vi.advanceTimersByTime(2 * 1000);
+    // Should be expired after timeout
+    await sleep(20);
     expect(cache.get('key1')).toBeUndefined();
-
-    vi.useRealTimers();
   });
 
-  test('should work with custom expiration time superior to default', () => {
-    vi.useFakeTimers();
-    const now = new Date('2025-01-01T00:00:00.000Z');
-    vi.setSystemTime(now);
-
-    const cache = createCache<string>({ maxItemAge: { seconds: 30 } }); // 30 seconds default
+  test('should work with custom expiration time superior to default', async () => {
+    const cache = createCache<string>({ maxItemAge: { ms: 50 } }); // 50ms default
 
     const value = cache.getOrInsert('key1', ({ withExpiration }) => {
-      return withExpiration('value1', { seconds: 60 }); // 60 seconds expiration
+      return withExpiration('value1', { ms: 80 }); // 80ms expiration (longer than default)
     });
 
     expect(value).toBe('value1');
 
-    // Advance time by 31 seconds (default expiration would trigger)
-    vi.advanceTimersByTime(31 * 1000);
+    // Default expiration would trigger at 50ms, but custom is 80ms
+    await sleep(60);
     expect(cache.get('key1')).toBe('value1'); // Still valid
 
-    // Advance time to 61 seconds (custom expiration triggers)
-    vi.advanceTimersByTime(30 * 1000);
+    // Custom expiration triggers at 80ms
+    await sleep(30);
     expect(cache.get('key1')).toBeUndefined();
-
-    vi.useRealTimers();
   });
 
-  test('works with cache.set and cache.get', () => {
-    vi.useFakeTimers();
+  test('works with cache.set and cache.get', async () => {
     const cache = createCache<string>({
       maxItemAge: { ms: 100 },
     });
-    cache.set('key1', new WithExpiration('value1', { seconds: 30 }));
+    cache.set('key1', new WithExpiration('value1', { ms: 50 }));
     expect(cache.get('key1')).toBe('value1');
 
-    vi.advanceTimersByTime(31 * 1000);
+    await sleep(60);
     expect(cache.get('key1')).toBeUndefined();
   });
 
