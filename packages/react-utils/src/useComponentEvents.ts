@@ -57,6 +57,6 @@ export function useComponentEvents<E extends Record<string, unknown>>(
   callback: { [T in keyof E]: (payload: E[T]) => void },
 ) {
   useOnEvtmitterEvent(emitter, '*', ({ payload, type }) => {
-    callback[type](payload as E[keyof E]);
+    callback[type](payload);
   });
 }
