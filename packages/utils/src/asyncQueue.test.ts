@@ -413,7 +413,10 @@ test('should emit error event when a task throws an error', async () => {
 
   await queue.onIdle();
 
-  expect(onError).toHaveBeenCalledWith({ id: undefined, error }, 'error');
+  expect(onError).toHaveBeenCalledWith({
+    payload: { meta: undefined, error },
+    type: 'error',
+  });
 });
 
 test('should emit complete event when a task completes', async () => {
@@ -426,10 +429,10 @@ test('should emit complete event when a task completes', async () => {
 
   await queue.onIdle();
 
-  expect(onComplete).toHaveBeenCalledWith(
-    { id: undefined, value: 'ok' },
-    'complete',
-  );
+  expect(onComplete).toHaveBeenCalledWith({
+    type: 'complete',
+    payload: { meta: undefined, value: 'ok' },
+  });
 });
 
 test.concurrent('queue signal', async () => {
