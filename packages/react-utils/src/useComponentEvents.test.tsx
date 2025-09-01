@@ -1,8 +1,9 @@
-import { render } from '@testing-library/react';
-import { renderHook } from '@testing-library/react';
-import React from 'react';
+import { render, renderHook } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
-import { useComponentEvents, useSendComponentEvents } from './useComponentEvents';
+import {
+  useComponentEvents,
+  useSendComponentEvents,
+} from './useComponentEvents';
 
 type TestEvents = {
   userAction: { id: string; timestamp: number };
@@ -13,7 +14,9 @@ type TestEvents = {
 
 describe('useSendComponentEvents', () => {
   test('should return stable emitter and send function across renders', () => {
-    const { result, rerender } = renderHook(() => useSendComponentEvents<TestEvents>());
+    const { result, rerender } = renderHook(() =>
+      useSendComponentEvents<TestEvents>(),
+    );
 
     const firstResult = result.current;
 
@@ -51,7 +54,7 @@ describe('useSendComponentEvents', () => {
   test('should maintain emitter instance across renders', () => {
     const { result, rerender } = renderHook(
       ({ _prop }) => useSendComponentEvents<TestEvents>(),
-      { initialProps: { _prop: 'initial' } }
+      { initialProps: { _prop: 'initial' } },
     );
 
     const originalBind = result.current.bind;
@@ -79,14 +82,22 @@ describe('useSendComponentEvents', () => {
 
     result.current.send('error', 'broadcast message');
 
-    expect(listener1).toHaveBeenCalledWith('broadcast message', 'error');
-    expect(listener2).toHaveBeenCalledWith('broadcast message', 'error');
+    expect(listener1).toHaveBeenCalledWith({
+      payload: 'broadcast message',
+      type: 'error',
+    });
+    expect(listener2).toHaveBeenCalledWith({
+      payload: 'broadcast message',
+      type: 'error',
+    });
   });
 });
 
 describe('useComponentEvents', () => {
   test('should call appropriate callback when events are emitted', () => {
-    const { result: senderResult } = renderHook(() => useSendComponentEvents<TestEvents>());
+    const { result: senderResult } = renderHook(() =>
+      useSendComponentEvents<TestEvents>(),
+    );
     const callbacks = {
       userAction: vi.fn(),
       error: vi.fn(),
@@ -129,21 +140,21 @@ describe('useComponentEvents', () => {
   });
 
   test('should update callbacks when they change', () => {
-    const { result: senderResult } = renderHook(() => useSendComponentEvents<TestEvents>());
+    const { result: senderResult } = renderHook(() =>
+      useSendComponentEvents<TestEvents>(),
+    );
     const callback1 = vi.fn();
     const callback2 = vi.fn();
 
     const { rerender } = renderHook(
-      ({ errorCallback }) => useComponentEvents(
-        senderResult.current.bind, 
-        { 
+      ({ errorCallback }) =>
+        useComponentEvents(senderResult.current.bind, {
           userAction: vi.fn(),
           error: errorCallback,
           simple: vi.fn(),
           numberEvent: vi.fn(),
-        }
-      ),
-      { initialProps: { errorCallback: callback1 } }
+        }),
+      { initialProps: { errorCallback: callback1 } },
     );
 
     senderResult.current.send('error', 'first message');
@@ -159,18 +170,19 @@ describe('useComponentEvents', () => {
   });
 
   test('should cleanup listeners when component unmounts', () => {
-    const { result: senderResult } = renderHook(() => useSendComponentEvents<TestEvents>());
+    const { result: senderResult } = renderHook(() =>
+      useSendComponentEvents<TestEvents>(),
+    );
     const callback = vi.fn();
-    
-    const { unmount } = renderHook(() => useComponentEvents(
-      senderResult.current.bind,
-      {
+
+    const { unmount } = renderHook(() =>
+      useComponentEvents(senderResult.current.bind, {
         userAction: vi.fn(),
         error: callback,
         simple: vi.fn(),
         numberEvent: vi.fn(),
-      }
-    ));
+      }),
+    );
 
     // Verify listener is working
     senderResult.current.send('error', 'before unmount');
@@ -186,18 +198,23 @@ describe('useComponentEvents', () => {
   });
 
   test('should handle emitter changes', () => {
-    const { result: sender1 } = renderHook(() => useSendComponentEvents<TestEvents>());
-    const { result: sender2 } = renderHook(() => useSendComponentEvents<TestEvents>());
+    const { result: sender1 } = renderHook(() =>
+      useSendComponentEvents<TestEvents>(),
+    );
+    const { result: sender2 } = renderHook(() =>
+      useSendComponentEvents<TestEvents>(),
+    );
     const callback = vi.fn();
 
     const { rerender } = renderHook(
-      ({ emitter }) => useComponentEvents(emitter, {
-        userAction: vi.fn(),
-        error: callback,
-        simple: vi.fn(),
-        numberEvent: vi.fn(),
-      }),
-      { initialProps: { emitter: sender1.current.bind } }
+      ({ emitter }) =>
+        useComponentEvents(emitter, {
+          userAction: vi.fn(),
+          error: callback,
+          simple: vi.fn(),
+          numberEvent: vi.fn(),
+        }),
+      { initialProps: { emitter: sender1.current.bind } },
     );
 
     // Test with first emitter
@@ -231,7 +248,9 @@ describe('integration tests', () => {
     const formSubmitHandler = vi.fn();
     const notificationHandler = vi.fn();
 
-    let eventSender: ReturnType<typeof useSendComponentEvents<ComponentEvents>>['send'] = () => {};
+    let eventSender: ReturnType<
+      typeof useSendComponentEvents<ComponentEvents>
+    >['send'] = () => {};
 
     function ParentComponent() {
       const { bind, send } = useSendComponentEvents<ComponentEvents>();
@@ -244,7 +263,13 @@ describe('integration tests', () => {
       );
     }
 
-    function ChildComponent({ emitter }: { emitter: ReturnType<typeof useSendComponentEvents<ComponentEvents>>['bind'] }) {
+    function ChildComponent({
+      emitter,
+    }: {
+      emitter: ReturnType<
+        typeof useSendComponentEvents<ComponentEvents>
+      >['bind'];
+    }) {
       useComponentEvents(emitter, {
         buttonClick: buttonClickHandler,
         formSubmit: formSubmitHandler,
@@ -258,20 +283,32 @@ describe('integration tests', () => {
 
     // Simulate various interactions
     eventSender('buttonClick', { buttonId: 'submit-btn', x: 100, y: 200 });
-    expect(buttonClickHandler).toHaveBeenCalledWith({ buttonId: 'submit-btn', x: 100, y: 200 });
+    expect(buttonClickHandler).toHaveBeenCalledWith({
+      buttonId: 'submit-btn',
+      x: 100,
+      y: 200,
+    });
 
-    eventSender('formSubmit', { formData: { name: 'John', email: 'john@example.com' } });
-    expect(formSubmitHandler).toHaveBeenCalledWith({ formData: { name: 'John', email: 'john@example.com' } });
+    eventSender('formSubmit', {
+      formData: { name: 'John', email: 'john@example.com' },
+    });
+    expect(formSubmitHandler).toHaveBeenCalledWith({
+      formData: { name: 'John', email: 'john@example.com' },
+    });
 
     eventSender('notification', 'Form submitted successfully!');
-    expect(notificationHandler).toHaveBeenCalledWith('Form submitted successfully!');
+    expect(notificationHandler).toHaveBeenCalledWith(
+      'Form submitted successfully!',
+    );
   });
 
   test('should support multiple listeners on the same emitter using JSX components', () => {
     const listener1 = vi.fn();
     const listener2 = vi.fn();
 
-    let eventSender: ReturnType<typeof useSendComponentEvents<TestEvents>>['send'] = () => {};
+    let eventSender: ReturnType<
+      typeof useSendComponentEvents<TestEvents>
+    >['send'] = () => {};
 
     function ParentComponent() {
       const { bind, send } = useSendComponentEvents<TestEvents>();
@@ -285,7 +322,11 @@ describe('integration tests', () => {
       );
     }
 
-    function ListenerComponent1({ emitter }: { emitter: ReturnType<typeof useSendComponentEvents<TestEvents>>['bind'] }) {
+    function ListenerComponent1({
+      emitter,
+    }: {
+      emitter: ReturnType<typeof useSendComponentEvents<TestEvents>>['bind'];
+    }) {
       useComponentEvents(emitter, {
         userAction: listener1,
         error: vi.fn(),
@@ -296,7 +337,11 @@ describe('integration tests', () => {
       return <div>Listener 1</div>;
     }
 
-    function ListenerComponent2({ emitter }: { emitter: ReturnType<typeof useSendComponentEvents<TestEvents>>['bind'] }) {
+    function ListenerComponent2({
+      emitter,
+    }: {
+      emitter: ReturnType<typeof useSendComponentEvents<TestEvents>>['bind'];
+    }) {
       useComponentEvents(emitter, {
         userAction: listener2,
         error: vi.fn(),
@@ -334,7 +379,9 @@ describe('integration tests', () => {
     const statusChangeHandler = vi.fn();
     const multiParamHandler = vi.fn();
 
-    let eventSender: ReturnType<typeof useSendComponentEvents<ComplexEvents>>['send'] = () => {};
+    let eventSender: ReturnType<
+      typeof useSendComponentEvents<ComplexEvents>
+    >['send'] = () => {};
 
     function DataProvider() {
       const { bind, send } = useSendComponentEvents<ComplexEvents>();
@@ -347,7 +394,11 @@ describe('integration tests', () => {
       );
     }
 
-    function DataConsumer({ emitter }: { emitter: ReturnType<typeof useSendComponentEvents<ComplexEvents>>['bind'] }) {
+    function DataConsumer({
+      emitter,
+    }: {
+      emitter: ReturnType<typeof useSendComponentEvents<ComplexEvents>>['bind'];
+    }) {
       useComponentEvents(emitter, {
         dataUpdate: dataUpdateHandler,
         statusChange: statusChangeHandler,
@@ -363,7 +414,10 @@ describe('integration tests', () => {
     const complexData = {
       id: 'data-123',
       data: {
-        users: [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }],
+        users: [
+          { id: 1, name: 'Alice' },
+          { id: 2, name: 'Bob' },
+        ],
         metadata: { lastUpdated: new Date(), version: 2 },
       },
     };
@@ -377,6 +431,10 @@ describe('integration tests', () => {
 
     // Test multiple parameter types
     eventSender('multiParam', { a: 42, b: 'test', c: true });
-    expect(multiParamHandler).toHaveBeenCalledWith({ a: 42, b: 'test', c: true });
+    expect(multiParamHandler).toHaveBeenCalledWith({
+      a: 42,
+      b: 'test',
+      c: true,
+    });
   });
 });
