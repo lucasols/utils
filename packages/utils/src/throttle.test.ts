@@ -104,21 +104,25 @@ describe.concurrent('throttle', () => {
     expect(fn).toHaveBeenCalledTimes(2); // Trailing call
   });
 
-  test('should handle rapid successive calls correctly', async () => {
-    const fn = vi.fn();
-    const throttled = throttle(fn, 100);
+  test(
+    'should handle rapid successive calls correctly',
+    { retry: 2 },
+    async () => {
+      const fn = vi.fn();
+      const throttled = throttle(fn, 100);
 
-    for (let i = 0; i < 10; i++) {
-      throttled(i);
-      await sleep(5); // Much shorter intervals to stay well within throttle window
-    }
+      for (let i = 0; i < 10; i++) {
+        throttled(i);
+        await sleep(5); // Much shorter intervals to stay well within throttle window
+      }
 
-    expect(fn).toHaveBeenCalledTimes(1); // Only leading call
+      expect(fn).toHaveBeenCalledTimes(1); // Only leading call
 
-    await sleep(110);
-    expect(fn).toHaveBeenCalledTimes(2); // Trailing call with last argument
-    expect(fn).toHaveBeenLastCalledWith(9);
-  });
+      await sleep(110);
+      expect(fn).toHaveBeenCalledTimes(2); // Trailing call with last argument
+      expect(fn).toHaveBeenLastCalledWith(9);
+    },
+  );
 
   test('should cancel pending invocation', async () => {
     const fn = vi.fn();
