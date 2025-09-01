@@ -1,1 +1,3 @@
-export { useConst } from './useConst';
+export const _doNotUseThis = () => {
+  throw new Error('do not use this file');
+};
