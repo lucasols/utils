@@ -213,6 +213,10 @@
       "import": "./dist/typeUtils.typesTest.js",
       "require": "./dist/typeUtils.typesTest.cjs"
     },
+    "./typedStrings": {
+      "import": "./dist/typedStrings.js",
+      "require": "./dist/typedStrings.cjs"
+    },
     "./typingFnUtils": {
       "import": "./dist/typingFnUtils.js",
       "require": "./dist/typingFnUtils.cjs"

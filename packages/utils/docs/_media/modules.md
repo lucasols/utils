@@ -48,6 +48,7 @@
 - [time](time.md)
 - [timers](timers.md)
 - [tsResult](tsResult/README.md)
+- [typedStrings](typedStrings.md)
 - [typeGuards](typeGuards.md)
 - [typeUtils](typeUtils/README.md)
 - [typeUtils.typesTest](typeUtils.typesTest.md)

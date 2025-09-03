@@ -18,7 +18,7 @@
 const isSubTypeOf: <BaseType, SubType>() => unknown = typeOnRightExtendsLeftType;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L78)
+Defined in: [packages/utils/src/typingFnUtils.ts:79](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L79)
 
 Type helper to check if a type is a subtype of another type.
 
@@ -54,7 +54,7 @@ use typeOnRightExtendsLeftType instead
 function asNonPartial<T>(obj): NonPartial<T>;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:3](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L3)
+Defined in: [packages/utils/src/typingFnUtils.ts:4](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L4)
 
 #### Type Parameters
 
@@ -74,13 +74,39 @@ Defined in: [packages/utils/src/typingFnUtils.ts:3](https://github.com/lucasols/
 
 ***
 
+### asPartialUndefinedValues()
+
+```ts
+function asPartialUndefinedValues<T>(value): T;
+```
+
+Defined in: [packages/utils/src/typingFnUtils.ts:110](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L110)
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `Record`\<`string`, `unknown`\>
+
+#### Parameters
+
+##### value
+
+\{ \[P in string \| number \| symbol\]: (Partial\<Pick\<T, KeysWithUndefinedValues\<T\>\>\> & Omit\<T, KeysWithUndefinedValues\<T\>\>)\[P\] \}
+
+#### Returns
+
+`T`
+
+***
+
 ### asType()
 
 ```ts
 function asType<T>(value): T;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L37)
+Defined in: [packages/utils/src/typingFnUtils.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L38)
 
 a safe way to cast types, use to substitute the `as Type`
 
@@ -108,7 +134,7 @@ a safe way to cast types, use to substitute the `as Type`
 function isObjKey<T>(key, obj): key is keyof T;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:85](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L85)
+Defined in: [packages/utils/src/typingFnUtils.ts:86](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L86)
 
 Type helper to narrow a string to a key of an object.
 
@@ -140,7 +166,7 @@ Type helper to narrow a string to a key of an object.
 function narrowStringToUnion<T>(key, union): undefined | T;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L46)
+Defined in: [packages/utils/src/typingFnUtils.ts:47](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L47)
 
 narrow a string to a union of strings
 
@@ -172,7 +198,7 @@ narrow a string to a union of strings
 function typedObjectEntries<T>(obj): NonNullable<{ [K in string | number | symbol]: [K, T[K]] }[keyof T]>[];
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L13)
+Defined in: [packages/utils/src/typingFnUtils.ts:14](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L14)
 
 a wrapper to Object.entries with a better typing inference
 
@@ -200,7 +226,7 @@ a wrapper to Object.entries with a better typing inference
 function typedObjectKeys<T>(obj): keyof T[];
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L27)
+Defined in: [packages/utils/src/typingFnUtils.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L28)
 
 a wrapper to Object.keys with a better typing inference
 
@@ -228,7 +254,7 @@ keyof `T`[]
 function typeOnRightExtendsLeftType<BaseType, SubType>(): unknown;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L70)
+Defined in: [packages/utils/src/typingFnUtils.ts:71](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L71)
 
 Type helper to check if a type is a subtype of another type.
 
@@ -260,7 +286,7 @@ Returns undefined, only used for type checking
 function unionsAreTheSame<T, U>(_diff): void;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:107](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L107)
+Defined in: [packages/utils/src/typingFnUtils.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L108)
 
 Type helper to compare two union types and determine their relationship.
 

@@ -142,6 +142,24 @@ Defined in: [packages/utils/src/typeUtils.ts:7](https://github.com/lucasols/util
 
 ***
 
+### PartialPossiblyUndefinedValues\<T\>
+
+```ts
+type PartialPossiblyUndefinedValues<T> = Prettify<Partial<Pick<T, KeysWithUndefinedValues<T>>> & Omit<T, KeysWithUndefinedValues<T>>>;
+```
+
+Defined in: [packages/utils/src/typeUtils.ts:156](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L156)
+
+Marks all possible undefined values as partial at the root level of the object.
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `Record`\<`string`, `unknown`\>
+
+***
+
 ### PartialRecord\<K, T\>
 
 ```ts
