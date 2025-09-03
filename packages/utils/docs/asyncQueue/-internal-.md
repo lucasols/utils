@@ -6,522 +6,6 @@
 
 # \<internal\>
 
-## Classes
-
-### AsyncQueue\<T, E, I\>
-
-Defined in: [packages/utils/src/asyncQueue.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L39)
-
-#### Extended by
-
-- [`AsyncQueueWithMeta`](#asyncqueuewithmeta)
-
-#### Type Parameters
-
-##### T
-
-`T`
-
-##### E
-
-`E` *extends* `ResultValidErrors` = `Error`
-
-##### I
-
-`I` = `unknown`
-
-#### Constructors
-
-##### Constructor
-
-```ts
-new AsyncQueue<T, E, I>(__namedParameters): AsyncQueue<T, E, I>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:57](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L57)
-
-###### Parameters
-
-###### \_\_namedParameters
-
-[`AsyncQueueOptions`](#asyncqueueoptions) = `{}`
-
-###### Returns
-
-[`AsyncQueue`](#asyncqueue)\<`T`, `E`, `I`\>
-
-#### Properties
-
-##### completions
-
-```ts
-completions: object[] = [];
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L55)
-
-###### meta
-
-```ts
-meta: I;
-```
-
-###### value
-
-```ts
-value: T;
-```
-
-##### events
-
-```ts
-events: Emitter<{
-  complete: {
-     meta: I;
-     value: T;
-  };
-  error: {
-     error: Error | E;
-     meta: I;
-  };
-  start: {
-     meta: I;
-  };
-}>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:47](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L47)
-
-##### failures
-
-```ts
-failures: object[] = [];
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L54)
-
-###### error
-
-```ts
-error: Error | E;
-```
-
-###### meta
-
-```ts
-meta: I;
-```
-
-#### Accessors
-
-##### completed
-
-###### Get Signature
-
-```ts
-get completed(): number;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:282](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L282)
-
-###### Returns
-
-`number`
-
-##### failed
-
-###### Get Signature
-
-```ts
-get failed(): number;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:286](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L286)
-
-###### Returns
-
-`number`
-
-##### pending
-
-###### Get Signature
-
-```ts
-get pending(): number;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:290](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L290)
-
-###### Returns
-
-`number`
-
-##### size
-
-###### Get Signature
-
-```ts
-get size(): number;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:294](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L294)
-
-###### Returns
-
-`number`
-
-#### Methods
-
-##### add()
-
-```ts
-add(fn, options?): Promise<Result<T, Error | E>>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:80](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L80)
-
-###### Parameters
-
-###### fn
-
-(`ctx`) => `Result`\<`T`, `E`\> \| `Promise`\<`Result`\<`T`, `E`\>\>
-
-###### options?
-
-[`AddOptions`](#addoptions)\<`I`, `T`, `E`\>
-
-###### Returns
-
-`Promise`\<`Result`\<`T`, `Error` \| `E`\>\>
-
-##### clear()
-
-```ts
-clear(): void;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:272](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L272)
-
-###### Returns
-
-`void`
-
-##### onIdle()
-
-```ts
-onIdle(): Promise<void>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:263](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L263)
-
-###### Returns
-
-`Promise`\<`void`\>
-
-##### resultifyAdd()
-
-```ts
-resultifyAdd(fn, options?): Promise<Result<T, Error | E>>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:121](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L121)
-
-###### Parameters
-
-###### fn
-
-(`ctx`) => `T` \| `Promise`\<`T`\>
-
-###### options?
-
-[`AddOptions`](#addoptions)\<`I`, `T`, `E`\>
-
-###### Returns
-
-`Promise`\<`Result`\<`T`, `Error` \| `E`\>\>
-
-***
-
-### AsyncQueueWithMeta\<T, I, E\>
-
-Defined in: [packages/utils/src/asyncQueue.ts:304](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L304)
-
-#### Extends
-
-- [`AsyncQueue`](#asyncqueue)\<`T`, `E`, `I`\>
-
-#### Type Parameters
-
-##### T
-
-`T`
-
-##### I
-
-`I`
-
-##### E
-
-`E` *extends* `ResultValidErrors` = `Error`
-
-#### Constructors
-
-##### Constructor
-
-```ts
-new AsyncQueueWithMeta<T, I, E>(options?): AsyncQueueWithMeta<T, I, E>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:309](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L309)
-
-###### Parameters
-
-###### options?
-
-[`AsyncQueueOptions`](#asyncqueueoptions)
-
-###### Returns
-
-[`AsyncQueueWithMeta`](#asyncqueuewithmeta)\<`T`, `I`, `E`\>
-
-###### Overrides
-
-[`AsyncQueue`](#asyncqueue).[`constructor`](#constructor)
-
-#### Properties
-
-##### completions
-
-```ts
-completions: object[] = [];
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L55)
-
-###### meta
-
-```ts
-meta: I;
-```
-
-###### value
-
-```ts
-value: T;
-```
-
-###### Inherited from
-
-[`AsyncQueue`](#asyncqueue).[`completions`](#completions)
-
-##### events
-
-```ts
-events: Emitter<{
-  complete: {
-     meta: I;
-     value: T;
-  };
-  error: {
-     error: Error | E;
-     meta: I;
-  };
-  start: {
-     meta: I;
-  };
-}>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:47](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L47)
-
-###### Inherited from
-
-[`AsyncQueue`](#asyncqueue).[`events`](#events)
-
-##### failures
-
-```ts
-failures: object[] = [];
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L54)
-
-###### error
-
-```ts
-error: Error | E;
-```
-
-###### meta
-
-```ts
-meta: I;
-```
-
-###### Inherited from
-
-[`AsyncQueue`](#asyncqueue).[`failures`](#failures)
-
-#### Accessors
-
-##### completed
-
-###### Get Signature
-
-```ts
-get completed(): number;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:282](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L282)
-
-###### Returns
-
-`number`
-
-###### Inherited from
-
-[`AsyncQueue`](#asyncqueue).[`completed`](#completed)
-
-##### failed
-
-###### Get Signature
-
-```ts
-get failed(): number;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:286](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L286)
-
-###### Returns
-
-`number`
-
-###### Inherited from
-
-[`AsyncQueue`](#asyncqueue).[`failed`](#failed)
-
-##### pending
-
-###### Get Signature
-
-```ts
-get pending(): number;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:290](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L290)
-
-###### Returns
-
-`number`
-
-###### Inherited from
-
-[`AsyncQueue`](#asyncqueue).[`pending`](#pending)
-
-##### size
-
-###### Get Signature
-
-```ts
-get size(): number;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:294](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L294)
-
-###### Returns
-
-`number`
-
-###### Inherited from
-
-[`AsyncQueue`](#asyncqueue).[`size`](#size)
-
-#### Methods
-
-##### add()
-
-```ts
-add(fn, options): Promise<Result<T, Error | E>>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:313](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L313)
-
-###### Parameters
-
-###### fn
-
-(`ctx`) => `Result`\<`T`, `E`\> \| `Promise`\<`Result`\<`T`, `E`\>\>
-
-###### options
-
-[`AddOptionsWithId`](#addoptionswithid)\<`I`, `T`, `E`\>
-
-###### Returns
-
-`Promise`\<`Result`\<`T`, `Error` \| `E`\>\>
-
-###### Overrides
-
-[`AsyncQueue`](#asyncqueue).[`add`](#add)
-
-##### clear()
-
-```ts
-clear(): void;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:272](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L272)
-
-###### Returns
-
-`void`
-
-###### Inherited from
-
-[`AsyncQueue`](#asyncqueue).[`clear`](#clear)
-
-##### onIdle()
-
-```ts
-onIdle(): Promise<void>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:263](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L263)
-
-###### Returns
-
-`Promise`\<`void`\>
-
-###### Inherited from
-
-[`AsyncQueue`](#asyncqueue).[`onIdle`](#onidle)
-
-##### resultifyAdd()
-
-```ts
-resultifyAdd(fn, options): Promise<Result<T, Error | E>>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:320](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L320)
-
-###### Parameters
-
-###### fn
-
-(`ctx`) => `T` \| `Promise`\<`T`\>
-
-###### options
-
-[`AddOptionsWithId`](#addoptionswithid)\<`I`, `T`, `E`\>
-
-###### Returns
-
-`Promise`\<`Result`\<`T`, `Error` \| `E`\>\>
-
-###### Overrides
-
-[`AsyncQueue`](#asyncqueue).[`resultifyAdd`](#resultifyadd)
-
 ## Type Aliases
 
 ### AddOptions\<I, T, E\>
@@ -530,7 +14,9 @@ Defined in: [packages/utils/src/asyncQueue.ts:320](https://github.com/lucasols/u
 type AddOptions<I, T, E> = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:17](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L17)
+Defined in: [packages/utils/src/asyncQueue.ts:96](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L96)
+
+Options for adding individual tasks to the queue
 
 #### Type Parameters
 
@@ -554,7 +40,9 @@ Defined in: [packages/utils/src/asyncQueue.ts:17](https://github.com/lucasols/ut
 optional meta: I;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L20)
+Defined in: [packages/utils/src/asyncQueue.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L102)
+
+Metadata to associate with this task
 
 ##### onComplete()?
 
@@ -562,7 +50,9 @@ Defined in: [packages/utils/src/asyncQueue.ts:20](https://github.com/lucasols/ut
 optional onComplete: (value) => void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L21)
+Defined in: [packages/utils/src/asyncQueue.ts:104](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L104)
+
+Callback invoked when task completes successfully
 
 ###### Parameters
 
@@ -580,7 +70,9 @@ Defined in: [packages/utils/src/asyncQueue.ts:21](https://github.com/lucasols/ut
 optional onError: (error) => void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:22](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L22)
+Defined in: [packages/utils/src/asyncQueue.ts:106](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L106)
+
+Callback invoked when task fails
 
 ###### Parameters
 
@@ -598,7 +90,9 @@ Defined in: [packages/utils/src/asyncQueue.ts:22](https://github.com/lucasols/ut
 optional signal: AbortSignal;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:18](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L18)
+Defined in: [packages/utils/src/asyncQueue.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L98)
+
+AbortSignal to cancel this specific task
 
 ##### timeout?
 
@@ -606,7 +100,9 @@ Defined in: [packages/utils/src/asyncQueue.ts:18](https://github.com/lucasols/ut
 optional timeout: number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:19](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L19)
+Defined in: [packages/utils/src/asyncQueue.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L100)
+
+Timeout for this specific task in milliseconds
 
 ***
 
@@ -616,7 +112,9 @@ Defined in: [packages/utils/src/asyncQueue.ts:19](https://github.com/lucasols/ut
 type AddOptionsWithId<I, T, E> = Omit<AddOptions<I, T, E>, "meta"> & object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:299](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L299)
+Defined in: [packages/utils/src/asyncQueue.ts:918](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L918)
+
+AddOptions variant that requires metadata to be provided
 
 #### Type declaration
 
@@ -648,9 +146,21 @@ meta: I;
 type AsyncQueueOptions = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L11)
+Defined in: [packages/utils/src/asyncQueue.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L76)
+
+Configuration options for AsyncQueue initialization
 
 #### Properties
+
+##### autoStart?
+
+```ts
+optional autoStart: boolean;
+```
+
+Defined in: [packages/utils/src/asyncQueue.ts:88](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L88)
+
+Start processing tasks immediately when added (default: true)
 
 ##### concurrency?
 
@@ -658,7 +168,29 @@ Defined in: [packages/utils/src/asyncQueue.ts:11](https://github.com/lucasols/ut
 optional concurrency: number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L12)
+Defined in: [packages/utils/src/asyncQueue.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L78)
+
+Maximum number of tasks to run concurrently (default: 1)
+
+##### rateLimit?
+
+```ts
+optional rateLimit: RateLimit;
+```
+
+Defined in: [packages/utils/src/asyncQueue.ts:90](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L90)
+
+Rate limit configuration to limit tasks per time interval
+
+##### rejectPendingOnError?
+
+```ts
+optional rejectPendingOnError: boolean;
+```
+
+Defined in: [packages/utils/src/asyncQueue.ts:86](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L86)
+
+Reject all pending tasks when stopping on error (default: false)
 
 ##### signal?
 
@@ -666,7 +198,19 @@ Defined in: [packages/utils/src/asyncQueue.ts:12](https://github.com/lucasols/ut
 optional signal: AbortSignal;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L13)
+Defined in: [packages/utils/src/asyncQueue.ts:80](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L80)
+
+AbortSignal to cancel the entire queue
+
+##### stopOnError?
+
+```ts
+optional stopOnError: boolean;
+```
+
+Defined in: [packages/utils/src/asyncQueue.ts:84](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L84)
+
+Stop processing new tasks when any task fails (default: false)
 
 ##### timeout?
 
@@ -674,7 +218,43 @@ Defined in: [packages/utils/src/asyncQueue.ts:13](https://github.com/lucasols/ut
 optional timeout: number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:14](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L14)
+Defined in: [packages/utils/src/asyncQueue.ts:82](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L82)
+
+Default timeout for all tasks in milliseconds
+
+***
+
+### RateLimit
+
+```ts
+type RateLimit = object;
+```
+
+Defined in: [packages/utils/src/asyncQueue.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L66)
+
+Configuration for rate limiting task execution
+
+#### Properties
+
+##### interval
+
+```ts
+interval: DurationObj | number;
+```
+
+Defined in: [packages/utils/src/asyncQueue.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L70)
+
+Time interval in milliseconds or as a duration object
+
+##### maxTasks
+
+```ts
+maxTasks: number;
+```
+
+Defined in: [packages/utils/src/asyncQueue.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L68)
+
+Maximum number of tasks to execute within the interval
 
 ***
 
@@ -684,7 +264,9 @@ Defined in: [packages/utils/src/asyncQueue.ts:14](https://github.com/lucasols/ut
 type RunCtx<I> = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L25)
+Defined in: [packages/utils/src/asyncQueue.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L112)
+
+Runtime context passed to task functions
 
 #### Type Parameters
 
@@ -700,7 +282,9 @@ Defined in: [packages/utils/src/asyncQueue.ts:25](https://github.com/lucasols/ut
 optional meta: I;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L27)
+Defined in: [packages/utils/src/asyncQueue.ts:116](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L116)
+
+Metadata associated with this task
 
 ##### signal?
 
@@ -708,108 +292,6 @@ Defined in: [packages/utils/src/asyncQueue.ts:27](https://github.com/lucasols/ut
 optional signal: AbortSignal;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L26)
+Defined in: [packages/utils/src/asyncQueue.ts:114](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L114)
 
-***
-
-### Task\<T, E, I\>
-
-```ts
-type Task<T, E, I> = object;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L30)
-
-#### Type Parameters
-
-##### T
-
-`T`
-
-##### E
-
-`E` *extends* `ResultValidErrors`
-
-##### I
-
-`I`
-
-#### Properties
-
-##### meta
-
-```ts
-meta: I;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L35)
-
-##### reject()
-
-```ts
-reject: (reason?) => void;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L33)
-
-###### Parameters
-
-###### reason?
-
-`Result`\<`T`, `E`\>
-
-###### Returns
-
-`void`
-
-##### resolve()
-
-```ts
-resolve: (value) => void;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L32)
-
-###### Parameters
-
-###### value
-
-`Result`\<`T`, `E` \| `Error`\>
-
-###### Returns
-
-`void`
-
-##### run()
-
-```ts
-run: (ctx) => Promise<Result<T, E>>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L31)
-
-###### Parameters
-
-###### ctx
-
-[`RunCtx`](#runctx)\<`I`\>
-
-###### Returns
-
-`Promise`\<`Result`\<`T`, `E`\>\>
-
-##### signal
-
-```ts
-signal: AbortSignal | undefined;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L34)
-
-##### timeout
-
-```ts
-timeout: number | undefined;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L36)
+Combined AbortSignal from task, queue, and timeout signals
