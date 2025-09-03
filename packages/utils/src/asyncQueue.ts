@@ -58,6 +58,17 @@ import {
   type ResultValidErrors,
 } from 't-result';
 import { defer } from './promiseUtils';
+import { type DurationObj, durationObjToMs } from './time';
+
+/**
+ * Configuration for rate limiting task execution
+ */
+type RateLimit = {
+  /** Maximum number of tasks to execute within the interval */
+  maxTasks: number;
+  /** Time interval in milliseconds or as a duration object */
+  interval: DurationObj | number;
+};
 
 /**
  * Configuration options for AsyncQueue initialization
@@ -75,6 +86,8 @@ type AsyncQueueOptions = {
   rejectPendingOnError?: boolean;
   /** Start processing tasks immediately when added (default: true) */
   autoStart?: boolean;
+  /** Rate limit configuration to limit tasks per time interval */
+  rateLimit?: RateLimit;
 };
 
 /**
@@ -231,6 +244,9 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   #rejectPendingOnError = false;
   #autoStart = true;
   #stoppedReason?: Error;
+  #rateLimit?: RateLimit;
+  #taskExecutionTimes: number[] = [];
+  #rateLimitTimeouts: Set<ReturnType<typeof setTimeout>> = new Set();
   /** Array of all task failures with metadata for debugging and analysis */
   failures: Array<{ meta: I; error: E | Error }> = [];
   
@@ -244,6 +260,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
     stopOnError = false,
     rejectPendingOnError = false,
     autoStart = true,
+    rateLimit,
   }: AsyncQueueOptions = {}) {
     this.#concurrency = concurrency;
     this.#signal = signal;
@@ -252,6 +269,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
     this.#rejectPendingOnError = rejectPendingOnError;
     this.#autoStart = autoStart;
     this.#started = autoStart;
+    this.#rateLimit = rateLimit;
 
     this.events.on('error', (e) => {
       this.failures.push(e.payload);
@@ -260,6 +278,51 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
     this.events.on('complete', (e) => {
       this.completions.push(e.payload);
     });
+  }
+
+  #getRateLimitIntervalMs(): number {
+    if (!this.#rateLimit) return 0;
+    
+    return typeof this.#rateLimit.interval === 'number' 
+      ? this.#rateLimit.interval 
+      : durationObjToMs(this.#rateLimit.interval);
+  }
+
+  #cleanupExpiredExecutionTimes(now: number) {
+    if (!this.#rateLimit) return;
+    
+    const intervalMs = this.#getRateLimitIntervalMs();
+    const cutoff = now - intervalMs;
+    this.#taskExecutionTimes = this.#taskExecutionTimes.filter(time => time > cutoff);
+  }
+
+  #isRateLimited(): boolean {
+    if (!this.#rateLimit) return false;
+    
+    const now = Date.now();
+    this.#cleanupExpiredExecutionTimes(now);
+    
+    return this.#taskExecutionTimes.length >= this.#rateLimit.maxTasks;
+  }
+
+  #getRateLimitDelay(): number {
+    if (!this.#rateLimit || this.#taskExecutionTimes.length === 0) return 0;
+    
+    const oldestExecution = this.#taskExecutionTimes[0];
+    if (oldestExecution === undefined) return 0;
+    
+    const intervalMs = this.#getRateLimitIntervalMs();
+    const timeUntilSlotOpens = (oldestExecution + intervalMs) - Date.now();
+    
+    return Math.max(0, timeUntilSlotOpens);
+  }
+
+  #recordTaskExecution() {
+    if (!this.#rateLimit) return;
+    
+    const now = Date.now();
+    this.#taskExecutionTimes.push(now);
+    this.#cleanupExpiredExecutionTimes(now);
   }
 
   #enqueue(task: Task<T, E, I>) {
@@ -412,6 +475,19 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
       return;
     }
 
+    // Check rate limiting before processing a task
+    if (this.#isRateLimited()) {
+      const delay = this.#getRateLimitDelay();
+      if (delay > 0) {
+        const timeoutId = setTimeout(() => {
+          this.#rateLimitTimeouts.delete(timeoutId);
+          this.#processQueue();
+        }, delay);
+        this.#rateLimitTimeouts.add(timeoutId);
+        return;
+      }
+    }
+
     const task = this.#queue.shift();
     if (!task) {
       // Should not happen if queue.length > 0, but good for type safety
@@ -420,6 +496,9 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
 
     this.#pending++;
     this.#size--;
+
+    // Record the task execution for rate limiting
+    this.#recordTaskExecution();
 
     const signals: AbortSignal[] = [];
     if (task.signal) {
@@ -520,7 +599,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
       this.#pending--;
       this.#processQueue(); // Try to process next task
 
-      if (this.#pending === 0 && this.#size === 0) {
+      if (this.#pending === 0 && this.#size === 0 && this.#rateLimitTimeouts.size === 0) {
         this.#resolveIdleWaiters();
       }
     }
@@ -583,7 +662,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
    * ```
    */
   async onIdle(): Promise<void> {
-    if (this.#stopped || (this.#pending === 0 && this.#size === 0)) {
+    if (this.#stopped || (this.#pending === 0 && this.#size === 0 && this.#rateLimitTimeouts.size === 0)) {
       return Promise.resolve();
     }
     return new Promise<void>((resolve) => {
@@ -616,6 +695,12 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   clear() {
     this.#queue = [];
     this.#size = 0;
+
+    // Clear any pending rate limit timeouts
+    for (const timeoutId of this.#rateLimitTimeouts) {
+      clearTimeout(timeoutId);
+    }
+    this.#rateLimitTimeouts.clear();
 
     // If no tasks were pending, and queue is now clear, it's idle.
     if (this.#pending === 0) {
