@@ -83,6 +83,15 @@ Each package follows a flat module structure:
 - prefer `toThrowErrorMatchingInlineSnapshot` over `toThrowError`
 - use `test` instead of `it`
 
+- **Creating tests that reflect real-world usage**:
+  - Don't create tests that don't use properly the feature/utility you are testing
+
+# IMPORTANT GUIDELINES FOR TESTS
+
+- NEVER workaround bug you found in tests. IN NO CIRCUMSTANCES workaround bugs you found in tests. Fix the bug instead!
+- NEVER DO THIS:
+  - change the test to make it pass just because you found a bug
+
 # Documentation Guidelines
 
 - **JSDoc Best Practices**:
