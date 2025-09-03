@@ -1,6 +1,7 @@
 {
   "@ls-stack/utils": {
     "3.37.0": "f2aac56f4efccbd0eca48847520363d971df84d294df259137a3e74b985eade9",
-    "3.38.0": "4f05620d27ae07df5dfb9b17fa7e073026b41d434ff41fd82127864b8d5ef1ed"
+    "3.38.0": "4f05620d27ae07df5dfb9b17fa7e073026b41d434ff41fd82127864b8d5ef1ed",
+    "3.39.0": "babf5d5a83417cf07b58e3177ab2b093f4a3d973acb3ae89e2c7bbfec0c2ba4d"
   }
 }
