@@ -256,8 +256,14 @@ test.concurrent('queue timeout', async () => {
   expect(queue.completed).toBe(3);
   expect(queue.failed).toBe(2);
   expect(errors).toEqual([
-    new DOMException('This operation was aborted', 'AbortError'),
-    new DOMException('This operation was aborted', 'AbortError'),
+    new DOMException(
+      'The operation was aborted due to timeout',
+      'TimeoutError',
+    ),
+    new DOMException(
+      'The operation was aborted due to timeout',
+      'TimeoutError',
+    ),
   ]);
 });
 
@@ -1148,7 +1154,9 @@ test.concurrent('per-task timeout aborts task with AbortError', async () => {
 
   assert(r.error);
   expect(r.error).toBeInstanceOf(DOMException);
-  expect((r.error as DOMException).message).toBe('This operation was aborted');
+  expect((r.error as DOMException).message).toBe(
+    'The operation was aborted due to timeout',
+  );
   expect(queue.failed).toBe(1);
 });
 
@@ -1168,7 +1176,7 @@ test.concurrent(
     assert(r.error);
     expect(r.error).toBeInstanceOf(DOMException);
     expect((r.error as DOMException).message).toBe(
-      'This operation was aborted',
+      'The operation was aborted due to timeout',
     );
   },
 );
@@ -1290,69 +1298,75 @@ test('add errors immediately when queue signal already aborted with specific mes
 });
 
 // Rate limiting tests
-test.concurrent('rate limiting should limit tasks per time interval', async () => {
-  const queue = createAsyncQueue<string>({
-    rateLimit: { maxTasks: 2, interval: 200 },
-  });
-  
-  const startTime = Date.now();
-  const results: string[] = [];
-  
-  // Add 4 tasks - first 2 should run immediately, next 2 should wait
-  for (let i = 0; i < 4; i++) {
-    queue.resultifyAdd(async () => {
-      const result = `task-${i}`;
-      results.push(result);
-      return result;
+test.concurrent(
+  'rate limiting should limit tasks per time interval',
+  async () => {
+    const queue = createAsyncQueue<string>({
+      rateLimit: { maxTasks: 2, interval: 200 },
     });
-  }
-  
-  await queue.onIdle();
-  
-  const duration = Date.now() - startTime;
-  
-  expect(results).toHaveLength(4);
-  expect(results).toEqual(['task-0', 'task-1', 'task-2', 'task-3']);
-  // Should take at least 200ms (one interval) to complete all tasks
-  expect(duration).toBeGreaterThanOrEqual(190);
-});
 
-test.concurrent('rate limiting should work with concurrency control', async () => {
-  const queue = createAsyncQueue<string>({
-    concurrency: 1, // Only 1 task at a time
-    rateLimit: { maxTasks: 2, interval: 200 }, // 2 tasks per 200ms
-  });
-  
-  const startTime = Date.now();
-  const results: string[] = [];
-  
-  // Add 3 tasks - should be limited by both concurrency and rate limit
-  for (let i = 0; i < 3; i++) {
-    queue.resultifyAdd(async () => {
-      await sleep(50); // Each task takes 50ms
-      const result = `task-${i}`;
-      results.push(result);
-      return result;
+    const startTime = Date.now();
+    const results: string[] = [];
+
+    // Add 4 tasks - first 2 should run immediately, next 2 should wait
+    for (let i = 0; i < 4; i++) {
+      queue.resultifyAdd(async () => {
+        const result = `task-${i}`;
+        results.push(result);
+        return result;
+      });
+    }
+
+    await queue.onIdle();
+
+    const duration = Date.now() - startTime;
+
+    expect(results).toHaveLength(4);
+    expect(results).toEqual(['task-0', 'task-1', 'task-2', 'task-3']);
+    // Should take at least 200ms (one interval) to complete all tasks
+    expect(duration).toBeGreaterThanOrEqual(190);
+  },
+);
+
+test.concurrent(
+  'rate limiting should work with concurrency control',
+  async () => {
+    const queue = createAsyncQueue<string>({
+      concurrency: 1, // Only 1 task at a time
+      rateLimit: { maxTasks: 2, interval: 200 }, // 2 tasks per 200ms
     });
-  }
-  
-  await queue.onIdle();
-  
-  const duration = Date.now() - startTime;
-  
-  expect(results).toHaveLength(3);
-  expect(results).toEqual(['task-0', 'task-1', 'task-2']);
-  // Should take at least 200ms (rate limit interval) since third task must wait
-  expect(duration).toBeGreaterThanOrEqual(240); // 200ms wait + some processing time
-});
+
+    const startTime = Date.now();
+    const results: string[] = [];
+
+    // Add 3 tasks - should be limited by both concurrency and rate limit
+    for (let i = 0; i < 3; i++) {
+      queue.resultifyAdd(async () => {
+        await sleep(50); // Each task takes 50ms
+        const result = `task-${i}`;
+        results.push(result);
+        return result;
+      });
+    }
+
+    await queue.onIdle();
+
+    const duration = Date.now() - startTime;
+
+    expect(results).toHaveLength(3);
+    expect(results).toEqual(['task-0', 'task-1', 'task-2']);
+    // Should take at least 200ms (rate limit interval) since third task must wait
+    expect(duration).toBeGreaterThanOrEqual(240); // 200ms wait + some processing time
+  },
+);
 
 test.concurrent('onIdle should wait for rate-limited tasks', async () => {
   const queue = createAsyncQueue<string>({
     rateLimit: { maxTasks: 1, interval: 100 },
   });
-  
+
   let completed = 0;
-  
+
   // Add 3 tasks that will be rate limited
   for (let i = 0; i < 3; i++) {
     queue.resultifyAdd(async () => {
@@ -1360,10 +1374,10 @@ test.concurrent('onIdle should wait for rate-limited tasks', async () => {
       return `task-${i}`;
     });
   }
-  
+
   // onIdle should wait for all tasks including rate-limited ones
   await queue.onIdle();
-  
+
   expect(completed).toBe(3);
   expect(queue.pending).toBe(0);
   expect(queue.size).toBe(0);
@@ -1373,9 +1387,9 @@ test.concurrent('pause and resume should work with rate limiting', async () => {
   const queue = createAsyncQueue<string>({
     rateLimit: { maxTasks: 2, interval: 100 },
   });
-  
+
   const results: string[] = [];
-  
+
   // Add 4 tasks
   for (let i = 0; i < 4; i++) {
     queue.resultifyAdd(async () => {
@@ -1384,23 +1398,23 @@ test.concurrent('pause and resume should work with rate limiting', async () => {
       return result;
     });
   }
-  
+
   // Wait a bit for first batch to start
   await sleep(10);
-  
+
   // Pause the queue
   queue.pause();
-  
+
   // Wait longer than the rate limit interval
   await sleep(150);
-  
+
   // Should only have processed the first 2 tasks (before pause)
   expect(results.length).toBeLessThanOrEqual(2);
-  
+
   // Resume and wait for completion
   queue.resume();
   await queue.onIdle();
-  
+
   // All tasks should now be completed
   expect(results).toHaveLength(4);
   expect(results).toEqual(['task-0', 'task-1', 'task-2', 'task-3']);
@@ -1410,9 +1424,9 @@ test.concurrent('clear should cancel rate limit timeouts', async () => {
   const queue = createAsyncQueue<string>({
     rateLimit: { maxTasks: 1, interval: 100 },
   });
-  
+
   let executed = 0;
-  
+
   // Add 3 tasks that will be rate limited
   for (let i = 0; i < 3; i++) {
     queue.resultifyAdd(async () => {
@@ -1420,93 +1434,164 @@ test.concurrent('clear should cancel rate limit timeouts', async () => {
       return `task-${i}`;
     });
   }
-  
+
   // Wait a bit for first task to start
   await sleep(10);
-  
+
   // Clear the queue (should cancel pending rate limit timeouts)
   queue.clear();
-  
+
   // Wait longer than the rate limit interval
   await sleep(150);
-  
+
   // Should only have executed the first task (before clear)
   expect(executed).toBe(1);
   expect(queue.size).toBe(0);
   expect(queue.pending).toBe(0);
 });
 
-test.concurrent('rate limiting should handle edge case with zero interval gracefully', async () => {
-  const queue = createAsyncQueue<string>({
-    rateLimit: { maxTasks: 2, interval: 0 },
-  });
-  
-  const results: string[] = [];
-  
-  // Add tasks - should all run immediately with 0 interval
-  for (let i = 0; i < 3; i++) {
-    queue.resultifyAdd(async () => {
-      const result = `task-${i}`;
-      results.push(result);
-      return result;
+test.concurrent(
+  'rate limiting should handle edge case with zero interval gracefully',
+  async () => {
+    const queue = createAsyncQueue<string>({
+      rateLimit: { maxTasks: 2, interval: 0 },
     });
-  }
-  
-  await queue.onIdle();
-  
-  expect(results).toHaveLength(3);
-});
 
-test.concurrent('rate limiting without configuration should not affect queue behavior', async () => {
-  const queue = createAsyncQueue<string>(); // No rate limit configured
-  
-  const startTime = Date.now();
-  const results: string[] = [];
-  
-  // Add multiple tasks - should all run without delay
-  for (let i = 0; i < 5; i++) {
-    queue.resultifyAdd(async () => {
-      const result = `task-${i}`;
-      results.push(result);
-      return result;
+    const results: string[] = [];
+
+    // Add tasks - should all run immediately with 0 interval
+    for (let i = 0; i < 3; i++) {
+      queue.resultifyAdd(async () => {
+        const result = `task-${i}`;
+        results.push(result);
+        return result;
+      });
+    }
+
+    await queue.onIdle();
+
+    expect(results).toHaveLength(3);
+  },
+);
+
+test.concurrent(
+  'rate limiting without configuration should not affect queue behavior',
+  async () => {
+    const queue = createAsyncQueue<string>(); // No rate limit configured
+
+    const startTime = Date.now();
+    const results: string[] = [];
+
+    // Add multiple tasks - should all run without delay
+    for (let i = 0; i < 5; i++) {
+      queue.resultifyAdd(async () => {
+        const result = `task-${i}`;
+        results.push(result);
+        return result;
+      });
+    }
+
+    await queue.onIdle();
+
+    const duration = Date.now() - startTime;
+
+    expect(results).toHaveLength(5);
+    // Should complete quickly without rate limiting delays
+    expect(duration).toBeLessThan(100);
+  },
+);
+
+test.concurrent(
+  'rate limiting should support DurationObj for interval',
+  async () => {
+    const queue = createAsyncQueue<string>({
+      rateLimit: {
+        maxTasks: 2,
+        interval: { seconds: 0, ms: 200 }, // Using DurationObj instead of number
+      },
     });
-  }
-  
-  await queue.onIdle();
-  
-  const duration = Date.now() - startTime;
-  
-  expect(results).toHaveLength(5);
-  // Should complete quickly without rate limiting delays
-  expect(duration).toBeLessThan(100);
-});
 
-test.concurrent('rate limiting should support DurationObj for interval', async () => {
-  const queue = createAsyncQueue<string>({
-    rateLimit: { 
-      maxTasks: 2, 
-      interval: { seconds: 0, ms: 200 } // Using DurationObj instead of number
+    const startTime = Date.now();
+    const results: string[] = [];
+
+    // Add 4 tasks - first 2 should run immediately, next 2 should wait
+    for (let i = 0; i < 4; i++) {
+      queue.resultifyAdd(async () => {
+        const result = `task-${i}`;
+        results.push(result);
+        return result;
+      });
+    }
+
+    await queue.onIdle();
+
+    const duration = Date.now() - startTime;
+
+    expect(results).toHaveLength(4);
+    expect(results).toEqual(['task-0', 'task-1', 'task-2', 'task-3']);
+    // Should take at least 200ms (one interval) to complete all tasks
+    expect(duration).toBeGreaterThanOrEqual(190);
+  },
+);
+
+test.concurrent(
+  'per-task timeout 0 aborts immediately with AbortError',
+  async () => {
+    const queue = createAsyncQueue<string>({ concurrency: 1 });
+
+    const r = await queue.add(
+      async () => {
+        await sleep(50);
+        return Result.ok('ok');
+      },
+      { timeout: 0 },
+    );
+
+    assert(r.error);
+    expect(r.error).toBeInstanceOf(DOMException);
+    expect((r.error as DOMException).message).toBe(
+      'The operation was aborted due to timeout',
+    );
+    expect(queue.failed).toBe(1);
+  },
+);
+
+test.concurrent(
+  'queue-level timeout 0 aborts immediately with AbortError',
+  async () => {
+    const queue = createAsyncQueue<string>({ concurrency: 1, timeout: 0 });
+
+    const r = await queue.add(async () => {
+      await sleep(50);
+      return Result.ok('ok');
+    });
+
+    assert(r.error);
+    expect(r.error).toBeInstanceOf(DOMException);
+    expect((r.error as DOMException).message).toBe(
+      'The operation was aborted due to timeout',
+    );
+  },
+);
+
+test.concurrent('abort uses provided reason when available', async () => {
+  const queue = createAsyncQueue<string>({ concurrency: 1 });
+  const controller = new AbortController();
+
+  const promise = queue.add(
+    async () => {
+      await sleep(1000);
+      return Result.ok('ok');
     },
-  });
-  
-  const startTime = Date.now();
-  const results: string[] = [];
-  
-  // Add 4 tasks - first 2 should run immediately, next 2 should wait
-  for (let i = 0; i < 4; i++) {
-    queue.resultifyAdd(async () => {
-      const result = `task-${i}`;
-      results.push(result);
-      return result;
-    });
-  }
-  
-  await queue.onIdle();
-  
-  const duration = Date.now() - startTime;
-  
-  expect(results).toHaveLength(4);
-  expect(results).toEqual(['task-0', 'task-1', 'task-2', 'task-3']);
-  // Should take at least 200ms (one interval) to complete all tasks
-  expect(duration).toBeGreaterThanOrEqual(190);
+    { signal: controller.signal },
+  );
+
+  setTimeout(() => {
+    controller.abort(new Error('custom abort'));
+  }, 10);
+
+  const r = await promise;
+  assert(r.error);
+  expect(r.error).toBeInstanceOf(Error);
+  expect(r.error.message).toBe('custom abort');
 });
