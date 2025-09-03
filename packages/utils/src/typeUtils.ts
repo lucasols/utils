@@ -145,3 +145,16 @@ export type DeepReplaceValue<
   SkipPaths extends string | undefined = undefined,
   SkipTypes = DefaultSkipTransverseDeepReplace,
 > = DeepReplaceValueImpl<T, ReplaceType, NewType, SkipPaths, SkipTypes>;
+
+type KeysWithUndefinedValues<T extends Record<string, unknown>> = {
+  [K in keyof T]: undefined extends T[K] ? K : never;
+}[keyof T];
+
+/**
+ * Marks all possible undefined values as partial at the root level of the object.
+ */
+export type PartialPossiblyUndefinedValues<T extends Record<string, unknown>> =
+  Prettify<
+    Partial<Pick<T, KeysWithUndefinedValues<T>>> &
+      Omit<T, KeysWithUndefinedValues<T>>
+  >;

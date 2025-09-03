@@ -1,3 +1,4 @@
+import type { PartialPossiblyUndefinedValues } from './typeUtils.ts';
 import type { NonPartial } from './typingUtils.ts';
 
 export function asNonPartial<T extends Record<string, unknown>>(
@@ -105,3 +106,9 @@ type UnionDiff<T, U> =
  * @param _diff - null if unions are identical, or an object describing the errors
  */
 export function unionsAreTheSame<T, U>(_diff: UnionDiff<T, U>): void {}
+
+export function asPartialUndefinedValues<T extends Record<string, unknown>>(
+  value: PartialPossiblyUndefinedValues<T>,
+): T {
+  return value as T;
+}
