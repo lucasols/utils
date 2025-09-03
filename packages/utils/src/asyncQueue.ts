@@ -207,6 +207,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   #completed: number = 0;
   #failed: number = 0;
   #idleResolvers: Array<() => void> = [];
+  #sizeLessThanWaiters: Array<{ limit: number; resolve: () => void }> = [];
   /**
    * Event emitter for tracking task lifecycle
    *
@@ -330,6 +331,41 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   #enqueue(task: Task<T, E, I>) {
     this.#queue.push(task);
     this.#size++;
+  }
+
+  static #createTimeoutSignal(ms: number): AbortSignal {
+    const controller = new AbortController();
+    const id = setTimeout(() => {
+      controller.abort(
+        new DOMException(
+          'The operation was aborted due to timeout',
+          'TimeoutError',
+        ),
+      );
+    }, ms);
+    controller.signal.addEventListener(
+      'abort',
+      () => {
+        clearTimeout(id);
+      },
+      { once: true },
+    );
+    return controller.signal;
+  }
+
+  // removed: onEmpty-related waiters
+
+  #resolveSizeLessThanWaiters() {
+    if (this.#sizeLessThanWaiters.length === 0) return;
+    const remaining: Array<{ limit: number; resolve: () => void }> = [];
+    for (const waiter of this.#sizeLessThanWaiters) {
+      if (this.#size < waiter.limit) {
+        waiter.resolve();
+      } else {
+        remaining.push(waiter);
+      }
+    }
+    this.#sizeLessThanWaiters = remaining;
   }
 
   /**
@@ -498,6 +534,8 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
 
     this.#pending++;
     this.#size--;
+    // No onEmpty resolution; only size and sizeLessThan waiters depend on size.
+    this.#resolveSizeLessThanWaiters();
 
     // Record the task execution for rate limiting
     this.#recordTaskExecution();
@@ -510,7 +548,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
       signals.push(this.#signal);
     }
     if (task.timeout !== undefined) {
-      signals.push(AbortSignal.timeout(task.timeout));
+      signals.push(AsyncQueue.#createTimeoutSignal(task.timeout));
     }
 
     const signal = signals.length > 1 ? AbortSignal.any(signals) : signals[0];
@@ -607,6 +645,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
         this.#size === 0 &&
         this.#rateLimitTimeouts.size === 0
       ) {
+        // When everything is finished, resolve idle waiters
         this.#resolveIdleWaiters();
       }
     }
@@ -637,6 +676,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
         }
       }
       this.#size = 0;
+      this.#resolveSizeLessThanWaiters();
     }
 
     // Always resolve idle waiters when stopping
@@ -644,12 +684,12 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   }
 
   /**
-   * Wait for the queue to become idle (no pending tasks and no queued tasks)
+   * Wait for the queue to become idle (no pending tasks, no queued tasks, and no rate-limit timers)
    *
    * This method resolves when:
    * - All tasks have completed (success or failure)
-   * - The queue is stopped due to error (even with remaining tasks)
-   * - The queue is empty and not processing anything
+   * - The queue is stopped due to error (stopOnError), even with remaining tasks
+   * - There are no queued tasks, no running tasks, and no pending rate-limit timers
    *
    * @returns Promise that resolves when the queue is idle
    *
@@ -679,6 +719,26 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
     }
     return new Promise<void>((resolve) => {
       this.#idleResolvers.push(resolve);
+    });
+  }
+
+  // removed: onEmpty()
+
+  /**
+   * Wait until the queued task count is below a limit
+   *
+   * Resolves immediately if `size < limit` at the moment of calling. This only
+   * considers queued (not yet started) tasks; running tasks are tracked by
+   * `pending`.
+   *
+   * @param limit Threshold that `size` must be below to resolve
+   */
+  onSizeLessThan(limit: number): Promise<void> {
+    if (this.#size < limit) {
+      return Promise.resolve();
+    }
+    return new Promise<void>((resolve) => {
+      this.#sizeLessThanWaiters.push({ limit, resolve });
     });
   }
 
@@ -714,10 +774,11 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
     }
     this.#rateLimitTimeouts.clear();
 
-    // If no tasks were pending, and queue is now clear, it's idle.
+    // If no tasks are pending and queue is now clear, it's idle.
     if (this.#pending === 0) {
       this.#resolveIdleWaiters();
     }
+    this.#resolveSizeLessThanWaiters();
   }
 
   /** Number of tasks that have completed successfully */
@@ -949,6 +1010,8 @@ export function createAsyncQueue<T, E extends ResultValidErrors = Error>(
   return new AsyncQueue<T, E>(options);
 }
 
+export type { AsyncQueue };
+
 /**
  * Create a new AsyncQueueWithMeta instance that requires metadata for all tasks
  *
@@ -985,3 +1048,5 @@ export function createAsyncQueueWithMeta<
 >(options?: AsyncQueueOptions): AsyncQueueWithMeta<T, I, E> {
   return new AsyncQueueWithMeta<T, I, E>(options);
 }
+
+export type { AsyncQueueWithMeta };
