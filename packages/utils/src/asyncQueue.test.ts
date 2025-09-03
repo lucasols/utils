@@ -4,6 +4,7 @@ import { assert, expect, test, vi } from 'vitest';
 import { createAsyncQueue, createAsyncQueueWithMeta } from './asyncQueue';
 import { sleep } from './sleep';
 import { waitController } from './testUtils';
+import { typingTest } from './typingTestUtils';
 
 const fixture = Symbol('fixture');
 
@@ -1598,36 +1599,39 @@ test.concurrent('abort uses provided reason when available', async () => {
 
 // onEmpty() removed: tests dropped
 
-test('onSizeLessThan waits until size is below threshold', async () => {
-  const queue = createAsyncQueue({ concurrency: 1 });
+test.concurrent(
+  'onSizeLessThan waits until size is below threshold',
+  async () => {
+    const queue = createAsyncQueue({ concurrency: 1 });
 
-  queue.resultifyAdd(async () => sleep(100));
-  queue.resultifyAdd(async () => sleep(100));
-  queue.resultifyAdd(async () => sleep(100));
-  queue.resultifyAdd(async () => sleep(100));
-  queue.resultifyAdd(async () => sleep(100));
+    queue.resultifyAdd(async () => sleep(100));
+    queue.resultifyAdd(async () => sleep(100));
+    queue.resultifyAdd(async () => sleep(100));
+    queue.resultifyAdd(async () => sleep(100));
+    queue.resultifyAdd(async () => sleep(100));
 
-  await queue.onSizeLessThan(4);
-  expect(queue.size).toBe(3);
-  expect(queue.pending).toBe(1);
+    await queue.onSizeLessThan(4);
+    expect(queue.size).toBe(3);
+    expect(queue.pending).toBe(1);
 
-  await queue.onSizeLessThan(2);
-  expect(queue.size).toBe(1);
-  expect(queue.pending).toBe(1);
+    await queue.onSizeLessThan(2);
+    expect(queue.size).toBe(1);
+    expect(queue.pending).toBe(1);
 
-  await queue.onSizeLessThan(10); // Already below
-  expect(queue.size).toBe(1);
-  expect(queue.pending).toBe(1);
+    await queue.onSizeLessThan(10); // Already below
+    expect(queue.size).toBe(1);
+    expect(queue.pending).toBe(1);
 
-  await queue.onSizeLessThan(1);
-  expect(queue.size).toBe(0);
-  expect(queue.pending).toBe(1);
+    await queue.onSizeLessThan(1);
+    expect(queue.size).toBe(0);
+    expect(queue.pending).toBe(1);
 
-  await queue.onIdle();
-  expect(queue.pending).toBe(0);
-});
+    await queue.onIdle();
+    expect(queue.pending).toBe(0);
+  },
+);
 
-test('per-task AbortSignal is passed to job context', async () => {
+test.concurrent('per-task AbortSignal is passed to job context', async () => {
   const queue = createAsyncQueue<string>();
   const controller = new AbortController();
 
@@ -1641,4 +1645,17 @@ test('per-task AbortSignal is passed to job context', async () => {
 
   assert(r.ok);
   await queue.onIdle();
+});
+
+test('custom error type', async () => {
+  const queue = createAsyncQueue<string, { error: string }>();
+
+  const r = await queue.add(async () => {
+    return Result.err({ error: 'error' });
+  });
+
+  assert(r.error);
+  expect(r.error).toBeInstanceOf(Error);
+
+  typingTest.expectTypesAre<typeof r.error, Error | { error: string }>('equal');
 });
