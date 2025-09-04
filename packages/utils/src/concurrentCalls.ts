@@ -317,7 +317,7 @@ class ConcurrentCallsWithMetadata<
           const value =
             isPromise(valueOrPromise) ? await valueOrPromise : valueOrPromise;
           return value;
-        });
+        }) as Promise<Result<R, E>>;
 
       return {
         fn: cb,
