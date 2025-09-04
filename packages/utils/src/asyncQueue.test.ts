@@ -1655,7 +1655,7 @@ test('custom error type', async () => {
   });
 
   assert(r.error);
-  expect(r.error).toBeInstanceOf(Error);
+  expect(r.error).toEqual({ error: 'error' });
 
   typingTest.expectTypesAre<typeof r.error, Error | { error: string }>('equal');
 });
