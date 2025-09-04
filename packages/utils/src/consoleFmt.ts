@@ -17,14 +17,17 @@ const colorToCodeASCII = {
   brightWhite: '\x1b[97m',
 };
 
+/** @deprecated Use `styleText` from `node:util` instead. */
 function consoleColors(color: keyof typeof colorToCodeASCII, text: string) {
   return `${colorToCodeASCII[color]}${text}\x1b[0m`;
 }
 
+/** @deprecated Use `styleText` from `node:util` instead. */
 function bold(text: string) {
   return `\x1b[1m${text}\x1b[0m`;
 }
 
+/** @deprecated Use `styleText` from `node:util` instead. */
 function underline(text: string) {
   return `\x1b[4m${text}\x1b[0m`;
 }
@@ -48,12 +51,15 @@ const bgColorToCodeASCII = {
   brightWhite: '\x1b[107m',
 };
 
+/** @deprecated Use `styleText` from `node:util` instead. */
 function bgColor(color: keyof typeof bgColorToCodeASCII, text: string) {
   const resetBgColor = '\x1b[49m';
   return `${bgColorToCodeASCII[color]}${text}${resetBgColor}\x1b[0m`;
 }
 
+/** @deprecated Use `styleText` from `node:util` instead. */
 export const consoleFmt = {
+  /** @deprecated Use `styleText` from `node:util` instead. */
   color: consoleColors,
   bold,
   underline,
