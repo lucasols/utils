@@ -8,17 +8,17 @@
 
 ## Variables
 
-### consoleFmt
+### ~~consoleFmt~~
 
 ```ts
 const consoleFmt: object;
 ```
 
-Defined in: [packages/utils/src/consoleFmt.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/consoleFmt.ts#L56)
+Defined in: [packages/utils/src/consoleFmt.ts:61](https://github.com/lucasols/utils/blob/main/packages/utils/src/consoleFmt.ts#L61)
 
 #### Type declaration
 
-##### bgColor()
+##### ~~bgColor()~~
 
 ```ts
 bgColor: (color, text) => string;
@@ -38,7 +38,11 @@ bgColor: (color, text) => string;
 
 `string`
 
-##### bold()
+###### Deprecated
+
+Use `styleText` from `node:util` instead.
+
+##### ~~bold()~~
 
 ```ts
 bold: (text) => string;
@@ -54,7 +58,11 @@ bold: (text) => string;
 
 `string`
 
-##### color()
+###### Deprecated
+
+Use `styleText` from `node:util` instead.
+
+##### ~~color()~~
 
 ```ts
 color: (color, text) => string = consoleColors;
@@ -74,7 +82,15 @@ color: (color, text) => string = consoleColors;
 
 `string`
 
-##### underline()
+###### Deprecated
+
+Use `styleText` from `node:util` instead.
+
+###### Deprecated
+
+Use `styleText` from `node:util` instead.
+
+##### ~~underline()~~
 
 ```ts
 underline: (text) => string;
@@ -89,3 +105,11 @@ underline: (text) => string;
 ###### Returns
 
 `string`
+
+###### Deprecated
+
+Use `styleText` from `node:util` instead.
+
+#### Deprecated
+
+Use `styleText` from `node:util` instead.
