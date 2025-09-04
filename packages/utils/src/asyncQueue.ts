@@ -494,7 +494,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
       (ctx) =>
         resultify(async () => {
           return fn(ctx);
-        }),
+        }) as Promise<Result<T, E>>,
       options,
     );
   }
