@@ -19,7 +19,7 @@ catalog:
   mitata: '^1.0.32'
   prettier: '3.4.2'
   prettier-plugin-organize-imports: '^4.1.0'
-  't-result': '^0.3.0'
+  't-result': '^0.6.1'
   tsm: '^2.3.0'
   tsup: '^8.3.5'
   typedoc: '^0.28.4'
