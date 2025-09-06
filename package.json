@@ -23,8 +23,8 @@
     "publish-package": "node ./scripts/publishPackage.ts",
     "sync-ai": "node ./scripts/syncAi.ts",
     "docs:vitepress:dev": "vitepress dev docs",
-    "docs:dev": "pnpm docs:typedoc && vitepress dev docs",
-    "docs:build": "pnpm docs:typedoc && vitepress build docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
   "repository": "github:lucasols/utils",

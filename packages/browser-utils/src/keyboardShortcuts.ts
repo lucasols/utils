@@ -95,12 +95,12 @@ function getModifierState(event: KeyboardEvent, mod: string) {
 /**
  * Parses a "Key Binding String" into its parts
  *
- * grammar    = `<sequence>`
- * <sequence> = `<press> <press> <press> ...`
- * <press>    = `<key>` or `<mods>+<key>`
- * <mods>     = `<mod>+<mod>+...`
- * <key>      = `<KeyboardEvent.key>` or `<KeyboardEvent.code>` (case-insensitive)
- * <key>      = `(<regex>)` -> `/^<regex>$/` (case-sensitive)
+ * grammar    = `{sequence}`
+ * {sequence} = `{press} {press} {press} ...`
+ * {press}    = `{key}` or `{mods}+{key}`
+ * {mods}     = `{mod}+{mod}+...`
+ * {key}      = `{KeyboardEvent.key}` or `{KeyboardEvent.code}` (case-insensitive)
+ * {key}      = `({regex})` -> `/^{regex}$/` (case-sensitive)
  */
 export function parseKeybinding(str: string): KeyBindingPress[] {
   return str
