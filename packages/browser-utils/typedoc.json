@@ -1,8 +1,8 @@
 {
   "entryPoints": ["src"],
   "entryPointStrategy": "expand",
-  "out": "docs",
-  "plugin": ["typedoc-plugin-markdown", "typedoc-plugin-missing-exports"],
+  "out": "../../docs/api/browser-utils",
+  "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme", "typedoc-plugin-missing-exports"],
   "readme": "./README.md",
   "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/node_modules/**"],
   "excludePrivate": true,
@@ -10,10 +10,12 @@
   "excludeInternal": true,
   "excludeExternals": true,
   "hideBreadcrumbs": false,
-  "hidePageHeader": false,
+  "hidePageHeader": true,
   "hidePageTitle": false,
+  "entryFileName": "index.md",
   "outputFileStrategy": "modules",
   "gitRevision": "main",
   "useCodeBlocks": true,
-  "theme": "default"
+  "docsRoot": "../../docs",
+  "tsconfig": "./tsconfig.json"
 }

@@ -9,3 +9,5 @@ v8*.log
 last-build-version.txt
 .quokka.ts
 lib
+docs/.vitepress/dist
+docs/.vitepress/cache

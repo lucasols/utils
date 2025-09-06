@@ -19,7 +19,10 @@
     "docs:watch": "pnpm -r --parallel docs:watch",
     "build-lint-test-all": "pnpm build && pnpm lint && pnpm test",
     "publish-package": "node ./scripts/publishPackage.ts",
-    "sync-ai": "node ./scripts/syncAi.ts"
+    "sync-ai": "node ./scripts/syncAi.ts",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "repository": "github:lucasols/utils",
   "author": "Lucas Santos",
@@ -50,9 +53,11 @@
     "typedoc": "catalog:",
     "typedoc-plugin-markdown": "catalog:",
     "typedoc-plugin-missing-exports": "catalog:",
+    "typedoc-vitepress-theme": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "vite": "catalog:",
+    "vitepress": "2.0.0-alpha.12",
     "vitest": "catalog:"
   }
 }
