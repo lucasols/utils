@@ -15,6 +15,8 @@ export default defineConfig({
     plugins: [llmstxtPlugin()],
   },
 
+  base: '/utils/',
+
   ignoreDeadLinks: true,
 
   themeConfig: {
