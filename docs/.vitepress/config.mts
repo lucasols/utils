@@ -1,14 +1,20 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from 'vitepress';
 // Import TypeDoc-generated sidebars
-import browserUtilsSidebar from '../api/browser-utils/typedoc-sidebar.json'
-import nodeUtilsSidebar from '../api/node-utils/typedoc-sidebar.json'
-import reactUtilsSidebar from '../api/react-utils/typedoc-sidebar.json'
-import utilsSidebar from '../api/utils/typedoc-sidebar.json'
+import llmstxtPlugin from 'vitepress-plugin-llmstxt';
+import browserUtilsSidebar from '../api/browser-utils/typedoc-sidebar.json';
+import nodeUtilsSidebar from '../api/node-utils/typedoc-sidebar.json';
+import reactUtilsSidebar from '../api/react-utils/typedoc-sidebar.json';
+import utilsSidebar from '../api/utils/typedoc-sidebar.json';
+
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "ls-stack utils",
   description: "Docs for @ls-stack utils packages",
+  vite: {
+    plugins: [llmstxtPlugin()],
+  },
+
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -74,6 +80,10 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/lucasols/utils' }
-    ]
+    ],
+
+    search: {
+      provider: 'local',
+    },
   }
 })
