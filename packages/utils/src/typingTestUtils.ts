@@ -44,10 +44,54 @@ function expectTypesAre<X, Y>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   result: TestTypeIsEqual<X, Y> extends true ? 'equal' : 'notEqual',
 ) {}
+/**
+ * Helper function for type testing that ensures two types are equal.
+ * If types are not equal, it will show a compile-time error with details about the mismatch.
+ *
+ * @template X First type to compare
+ * @template Y Second type to compare
+ * @param result Optional error parameter that appears only when types don't match
+ *
+ * @example
+ * expectTypesAreEqual<string, string>(); // OK
+ * expectTypesAreEqual<string, number>(); // Compile error with details
+ */
+function expectTypesAreEqual<X, Y>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ...result: TestTypeIsEqual<X, Y> extends true ? []
+  : [
+      {
+        'error: type assertion failed, should be equal but': {
+          typeOnLeft: X;
+          isNotEqualTo: Y;
+        };
+      },
+    ]
+) {}
+
+/**
+ * Helper function for type testing that ensures two types are not equal.
+ * If types are equal, it will show a compile-time error.
+ *
+ * @template X First type to compare
+ * @template Y Second type to compare
+ * @param result Optional error parameter that appears only when types match
+ *
+ * @example
+ * expectTypesAreNotEqual<string, number>(); // OK
+ * expectTypesAreNotEqual<string, string>(); // Compile error
+ */
+function expectTypesAreNotEqual<X, Y>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ...result: TestTypeIsEqual<X, Y> extends false ? []
+  : ['error: type assertion failed, types should be NOT equal']
+) {}
 
 export const typingTest = {
   test,
   describe,
   expectType,
   expectTypesAre,
+  expectTypesAreEqual,
+  expectTypesAreNotEqual,
 };
