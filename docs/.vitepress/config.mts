@@ -18,6 +18,12 @@ export default defineConfig({
 
   base: '/utils/',
 
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/utils/favicon.svg' }],
+    ['link', { rel: 'alternate icon', href: '/utils/favicon.svg' }],
+    ['link', { rel: 'mask-icon', href: '/utils/favicon.svg', color: '#3178c6' }]
+  ],
+
   ignoreDeadLinks: true,
 
   markdown: {

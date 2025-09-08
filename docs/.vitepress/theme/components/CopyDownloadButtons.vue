@@ -47,7 +47,7 @@ const getMarkdownContent = async (): Promise<string> => {
     // Convert the route path to markdown file path
     let markdownPath = currentPath
     if (markdownPath.endsWith('/')) {
-      markdownPath += 'index'
+      markdownPath = markdownPath.replace(/\/$/, '')
     }
     markdownPath += '.md'
     
