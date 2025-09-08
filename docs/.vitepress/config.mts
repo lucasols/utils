@@ -5,6 +5,7 @@ import browserUtilsSidebar from '../api/browser-utils/typedoc-sidebar.json';
 import nodeUtilsSidebar from '../api/node-utils/typedoc-sidebar.json';
 import reactUtilsSidebar from '../api/react-utils/typedoc-sidebar.json';
 import utilsSidebar from '../api/utils/typedoc-sidebar.json';
+import { copyDownloadButtonsPlugin } from './plugins/markdownButtons';
 
 
 // https://vitepress.dev/reference/site-config
@@ -18,6 +19,12 @@ export default defineConfig({
   base: '/utils/',
 
   ignoreDeadLinks: true,
+
+  markdown: {
+    config(md) {
+      md.use(copyDownloadButtonsPlugin)
+    }
+  },
 
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
