@@ -61,7 +61,6 @@
     "typescript-eslint": "catalog:",
     "vite": "catalog:",
     "vitepress": "2.0.0-alpha.12",
-    "vitepress-plugin-llms": "^1.7.4",
     "vitest": "catalog:",
     "vitepress-plugin-llmstxt": "^0.4.2"
   }
