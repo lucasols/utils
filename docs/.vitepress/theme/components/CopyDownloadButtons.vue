@@ -15,17 +15,18 @@
     </button>
 
     <button
-      @click="downloadMarkdown"
-      class="button download-button"
+      @click="copyMarkdownLink"
+      class="button link-button"
       :disabled="isLoading"
     >
-      <svg v-if="!showDownloadSuccess" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M7 10L12 15M12 15L17 10M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg v-if="!showLinkSuccess" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 13C10.4295 13.5741 10.9774 14.0491 11.6066 14.3929C12.2357 14.7367 12.9315 14.9411 13.6467 14.9923C14.3618 15.0435 15.0796 14.9403 15.7513 14.6897C16.4231 14.4392 17.0331 14.047 17.54 13.54L20.54 10.54C21.4508 9.59695 21.9548 8.33394 21.9434 7.02296C21.932 5.71198 21.4061 4.45791 20.4791 3.53087C19.5521 2.60383 18.298 2.07799 16.987 2.0666C15.676 2.0552 14.413 2.55918 13.47 3.47L11.75 5.18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 11C13.5705 10.4259 13.0226 9.95085 12.3934 9.60706C11.7643 9.26327 11.0685 9.05885 10.3533 9.00771C9.63818 8.95656 8.92041 9.05977 8.24866 9.31035C7.5769 9.56094 6.9669 9.95303 6.46 10.46L3.46 13.46C2.54918 14.403 2.04520 15.6661 2.05660 16.977C2.068 18.288 2.59384 19.5421 3.52088 20.4691C4.44792 21.3962 5.70199 21.922 7.01297 21.9334C8.32395 21.9448 9.58696 21.4408 10.53 20.53L12.24 18.82" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M20 6L9 17L4 12" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      Download as Markdown
+      Copy Markdown Link
     </button>
   </div>
 </template>
@@ -37,7 +38,7 @@ import { useRoute } from 'vitepress'
 const route = useRoute()
 const isLoading = ref(false)
 const showCopySuccess = ref(false)
-const showDownloadSuccess = ref(false)
+const showLinkSuccess = ref(false)
 
 const getMarkdownContent = async (): Promise<string> => {
   try {
@@ -94,40 +95,42 @@ const copyMarkdown = async () => {
   }
 }
 
-const downloadMarkdown = async () => {
+const copyMarkdownLink = async () => {
   if (isLoading.value) return
   
   try {
     isLoading.value = true
-    const markdownContent = await getMarkdownContent()
     
-    // Create filename from current path
+    // Get the current page path and convert to markdown URL
     const currentPath = route.path
-    let filename = currentPath.split('/').filter(Boolean).join('-')
-    if (!filename) {
-      filename = 'index'
+    let markdownPath = currentPath
+    if (markdownPath.endsWith('/')) {
+      markdownPath = markdownPath.replace(/\/$/, '')
     }
-    filename += '.md'
+    markdownPath += '.md'
     
-    // Create blob and download
-    const blob = new Blob([markdownContent], { type: 'text/markdown' })
-    const url = URL.createObjectURL(blob)
+    // Get the base URL and construct the full markdown URL
+    const baseUrl = window.location.origin
+    const markdownUrl = baseUrl + markdownPath
     
-    const link = document.createElement('a')
-    link.href = url
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(markdownUrl)
+    } else {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea')
+      textArea.value = markdownUrl
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+    }
     
-    URL.revokeObjectURL(url)
-    
-    showDownloadSuccess.value = true
+    showLinkSuccess.value = true
     setTimeout(() => {
-      showDownloadSuccess.value = false
+      showLinkSuccess.value = false
     }, 2000)
   } catch (error) {
-    console.error('Failed to download markdown:', error)
+    console.error('Failed to copy markdown link:', error)
   } finally {
     isLoading.value = false
   }
