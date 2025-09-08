@@ -76,6 +76,9 @@ export function convertToCamelCase(str: string) {
 
 export function convertToSentenceCase(str: string) {
   return str
+    .replace(/[\s\-.]+/g, ' ') // Convert spaces, dashes, dots to spaces
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2') // Add space between lowercase and uppercase
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2') // Add space between consecutive caps
     .split(/[\s_-]+/)
     .map((word) => word.toLowerCase())
     .join(' ')
@@ -84,6 +87,9 @@ export function convertToSentenceCase(str: string) {
 
 export function convertToTitleCase(str: string) {
   return str
+    .replace(/[\s\-.]+/g, ' ') // Convert spaces, dashes, dots to spaces
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2') // Add space between lowercase and uppercase
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2') // Add space between consecutive caps
     .split(/[\s_-]+/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');

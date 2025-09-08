@@ -5,6 +5,7 @@ import {
   convertToPascalCase,
   convertToSentenceCase,
   convertToSnakeCase,
+  convertToTitleCase,
   formatNum,
   isSnakeCase,
   truncateString,
@@ -184,9 +185,9 @@ test('convertToSentenceCase', () => {
   );
 
   // CamelCase and PascalCase input
-  expect(convertToSentenceCase('camelCaseInput')).toBe('Camelcaseinput');
-  expect(convertToSentenceCase('PascalCaseInput')).toBe('Pascalcaseinput');
-  expect(convertToSentenceCase('XMLHttpRequest')).toBe('Xmlhttprequest');
+  expect(convertToSentenceCase('camelCaseInput')).toBe('Camel case input');
+  expect(convertToSentenceCase('PascalCaseInput')).toBe('Pascal case input');
+  expect(convertToSentenceCase('XMLHttpRequest')).toBe('Xml http request');
 
   // With numbers
   expect(convertToSentenceCase('version_2_update')).toBe('Version 2 update');
@@ -213,6 +214,60 @@ test('convertToSentenceCase', () => {
     'Already sentence case',
   );
   expect(convertToSentenceCase('UPPERCASE WORDS')).toBe('Uppercase words');
+});
+
+test('convertToTitleCase', () => {
+  // Basic snake_case conversion
+  expect(convertToTitleCase('snake_case')).toBe('Snake Case');
+  expect(convertToTitleCase('some_variable_name')).toBe('Some Variable Name');
+
+  // kebab-case conversion
+  expect(convertToTitleCase('kebab-case')).toBe('Kebab Case');
+  expect(convertToTitleCase('some-component-name')).toBe('Some Component Name');
+
+  // Space-separated words
+  expect(convertToTitleCase('hello world')).toBe('Hello World');
+  expect(convertToTitleCase('the quick brown fox')).toBe('The Quick Brown Fox');
+
+  // Mixed separators
+  expect(convertToTitleCase('mixed_case-with spaces')).toBe(
+    'Mixed Case With Spaces',
+  );
+  expect(convertToTitleCase('api_key-value test')).toBe('Api Key Value Test');
+
+  // CamelCase and PascalCase input
+  expect(convertToTitleCase('camelCaseInput')).toBe('Camel Case Input');
+  expect(convertToTitleCase('PascalCaseInput')).toBe('Pascal Case Input');
+  expect(convertToTitleCase('XMLHttpRequest')).toBe('Xml Http Request');
+
+  // With numbers
+  expect(convertToTitleCase('version_2_update')).toBe('Version 2 Update');
+  expect(convertToTitleCase('api-3-version')).toBe('Api 3 Version');
+  expect(convertToTitleCase('test 123 abc')).toBe('Test 123 Abc');
+
+  // Edge cases
+  expect(convertToTitleCase('')).toBe('');
+  expect(convertToTitleCase('a')).toBe('A');
+  expect(convertToTitleCase('single')).toBe('Single');
+  expect(convertToTitleCase('_')).toBe(' ');
+  expect(convertToTitleCase('___')).toBe(' ');
+  expect(convertToTitleCase('   ')).toBe(' ');
+
+  // Multiple consecutive separators
+  expect(convertToTitleCase('multiple___underscores')).toBe(
+    'Multiple Underscores',
+  );
+  expect(convertToTitleCase('multiple---dashes')).toBe('Multiple Dashes');
+  expect(convertToTitleCase('multiple   spaces')).toBe('Multiple Spaces');
+
+  // Already title case
+  expect(convertToTitleCase('Already Title Case')).toBe('Already Title Case');
+  expect(convertToTitleCase('UPPERCASE WORDS')).toBe('Uppercase Words');
+
+  // Complex camelCase with numbers and abbreviations
+  expect(convertToTitleCase('getUserID')).toBe('Get User Id');
+  expect(convertToTitleCase('parseHTMLString')).toBe('Parse Html String');
+  expect(convertToTitleCase('handleAPI2Response')).toBe('Handle Api2 Response');
 });
 
 test('isSnakeCase', () => {
