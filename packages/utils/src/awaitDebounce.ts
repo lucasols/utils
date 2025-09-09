@@ -9,34 +9,37 @@ const debouncers: Record<string, ReturnType<typeof setTimeout> | undefined> =
   {};
 
 /**
- * Creates an awaitable debounce mechanism that allows you to debounce async operations.
- * When called multiple times with the same `callId`, only the last call will resolve with 'continue',
- * while all previous calls resolve with 'skip'.
+ * Creates an awaitable debounce mechanism that allows you to debounce async
+ * operations. When called multiple times with the same `callId`, only the last
+ * call will resolve with 'continue', while all previous calls resolve with
+ * 'skip'.
  *
- * This is useful for debouncing API calls, search operations, or any async work where you want
- * to ensure only the most recent request is processed.
- *
- * @param options - Configuration object
- * @param options.callId - Unique identifier for the debounce group. Calls with the same ID are debounced together
- * @param options.debounce - Debounce delay in milliseconds
- * @returns Promise that resolves to 'continue' if this call should proceed, or 'skip' if it was superseded
+ * This is useful for debouncing API calls, search operations, or any async work
+ * where you want to ensure only the most recent request is processed.
  *
  * @example
- * ```ts
- * async function searchUsers(query: string) {
- *   const result = await awaitDebounce({ callId: 'search', debounce: 300 });
- *   if (result === 'skip') return; // This search was superseded
+ *   ```ts
+ *   async function searchUsers(query: string) {
+ *     const result = await awaitDebounce({ callId: 'search', debounce: 300 });
+ *     if (result === 'skip') return; // This search was superseded
  *
- *   // Only the most recent search will reach here
- *   const users = await fetchUsers(query);
- *   updateUI(users);
- * }
+ *     // Only the most recent search will reach here
+ *     const users = await fetchUsers(query);
+ *     updateUI(users);
+ *   }
  *
- * // Called rapidly - only the last call will execute
- * searchUsers('a');
- * searchUsers('ab');
- * searchUsers('abc'); // Only this one will continue
- * ```
+ *   // Called rapidly - only the last call will execute
+ *   searchUsers('a');
+ *   searchUsers('ab');
+ *   searchUsers('abc'); // Only this one will continue
+ *   ```;
+ *
+ * @param options - Configuration object
+ * @param options.callId - Unique identifier for the debounce group. Calls with
+ *   the same ID are debounced together
+ * @param options.debounce - Debounce delay in milliseconds
+ * @returns Promise that resolves to 'continue' if this call should proceed, or
+ *   'skip' if it was superseded
  */
 export async function awaitDebounce({
   callId: _callId,

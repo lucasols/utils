@@ -18,7 +18,7 @@ describe('array filtering by value', () => {
         { name: 'Alice', age: 28, role: 'admin' },
       ],
     };
-    
+
     // Filter users with name="John"
     expect(
       getSnapshot(
@@ -43,7 +43,7 @@ describe('array filtering by value', () => {
         { name: 'Alice', age: 28, role: 'admin' },
       ],
     };
-    
+
     // Filter users with name="John" or "Jane"
     expect(
       getSnapshot(
@@ -69,7 +69,7 @@ describe('array filtering by value', () => {
         { name: 'Alice', age: 30, role: 'admin' },
       ],
     };
-    
+
     // Filter users with age=30 AND role="admin"
     expect(
       getSnapshot(
@@ -94,7 +94,7 @@ describe('array filtering by value', () => {
         { name: 'Bob', config: { theme: 'dark', lang: 'de' } },
       ],
     };
-    
+
     // Filter users with config.theme="dark"
     expect(
       getSnapshot(
@@ -122,7 +122,7 @@ describe('array filtering by value', () => {
         { name: 'Bob', email: 'bob@example.com' },
       ],
     };
-    
+
     // Filter users where name contains "oh"
     expect(
       getSnapshot(
@@ -137,7 +137,7 @@ describe('array filtering by value', () => {
         - { email: 'johnny@example.com', name: 'Johnny' }
       "
     `);
-    
+
     // Filter users where email contains "example"
     expect(
       getSnapshot(
@@ -164,7 +164,7 @@ describe('array filtering by value', () => {
         { name: 'Bob', role: 'user' },
       ],
     };
-    
+
     // Filter users where name starts with "Jo"
     expect(
       getSnapshot(
@@ -190,7 +190,7 @@ describe('array filtering by value', () => {
         { name: 'photo.png', size: 512 },
       ],
     };
-    
+
     // Filter files where name ends with ".pdf"
     expect(
       getSnapshot(
@@ -216,7 +216,7 @@ describe('array filtering by value', () => {
         { name: 'Alice', role: 'admin' },
       ],
     };
-    
+
     // Filter users where role is not "admin"
     expect(
       getSnapshot(
@@ -241,7 +241,7 @@ describe('array filtering by value', () => {
         { name: 'Bob', email: 'bob@example.com' },
       ],
     };
-    
+
     // Filter users where email doesn't contain "example"
     expect(
       getSnapshot(
@@ -266,7 +266,7 @@ describe('array filtering by value', () => {
         { name: 'Alice', status: 'active' },
       ],
     };
-    
+
     // Filter users where status doesn't start with "in"
     expect(
       getSnapshot(
@@ -293,7 +293,7 @@ describe('array filtering by value', () => {
         { name: 'style.css', type: 'style' },
       ],
     };
-    
+
     // Filter files where name doesn't end with ".js"
     expect(
       getSnapshot(
@@ -320,7 +320,7 @@ describe('array filtering by value', () => {
         { name: 'Alice', email: 'alice@test.com' },
       ],
     };
-    
+
     // Case-insensitive filter for name="john"
     expect(
       getSnapshot(
@@ -334,7 +334,7 @@ describe('array filtering by value', () => {
         - { email: 'JOHN@example.com', name: 'John' }
       "
     `);
-    
+
     // Case-insensitive filter for email containing "EXAMPLE"
     expect(
       getSnapshot(
@@ -349,7 +349,7 @@ describe('array filtering by value', () => {
         - { email: 'Bob@Example.COM', name: 'bob' }
       "
     `);
-    
+
     // Case-insensitive filter for name starting with "JA"
     expect(
       getSnapshot(
@@ -373,12 +373,15 @@ describe('array filtering by value', () => {
         { name: 'Bob', age: 35, role: 'user', email: 'bob@example.com' },
       ],
     };
-    
+
     // Filter users with role="admin" and only get name and email fields
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          filterKeys: ['users[%role="admin"].name', 'users[%role="admin"].email'],
+          filterKeys: [
+            'users[%role="admin"].name',
+            'users[%role="admin"].email',
+          ],
         }),
       ),
     ).toMatchInlineSnapshot(`
@@ -395,7 +398,7 @@ describe('array filtering by value', () => {
       { name: 'Jane', age: 25, role: 'user' },
       { name: 'Bob', age: 35, role: 'user' },
     ];
-    
+
     // Filter root array items with role="user"
     expect(
       getSnapshot(
@@ -420,12 +423,14 @@ describe('array filtering by value', () => {
         { name: 'Shoes', category: 'Clothing', price: 100, inStock: true },
       ],
     };
-    
+
     // Filter products with category="Electronics" OR "Clothing" (value-level OR) AND inStock=true
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
-          filterKeys: ['products[%category="Electronics" | "Clothing" && %inStock=true]'],
+          filterKeys: [
+            'products[%category="Electronics" | "Clothing" && %inStock=true]',
+          ],
         }),
       ),
     ).toMatchInlineSnapshot(`
@@ -446,7 +451,7 @@ describe('array filtering by value', () => {
         { id: 3, value: 100 },
       ],
     };
-    
+
     // Filter items with value=100
     expect(
       getSnapshot(
@@ -482,7 +487,7 @@ describe('array filtering by value', () => {
         },
       ],
     };
-    
+
     // Filter employees with role="manager" in all departments
     expect(
       getSnapshot(
@@ -504,14 +509,34 @@ describe('array filtering by value', () => {
   test('should handle complex filtering with multiple operators', () => {
     const data = {
       logs: [
-        { level: 'ERROR', message: 'Database connection failed', timestamp: '2024-01-01T10:00:00Z' },
-        { level: 'INFO', message: 'Server started', timestamp: '2024-01-01T10:01:00Z' },
-        { level: 'WARNING', message: 'High memory usage', timestamp: '2024-01-01T10:02:00Z' },
-        { level: 'ERROR', message: 'Authentication failed', timestamp: '2024-01-01T10:03:00Z' },
-        { level: 'DEBUG', message: 'Request received', timestamp: '2024-01-01T10:04:00Z' },
+        {
+          level: 'ERROR',
+          message: 'Database connection failed',
+          timestamp: '2024-01-01T10:00:00Z',
+        },
+        {
+          level: 'INFO',
+          message: 'Server started',
+          timestamp: '2024-01-01T10:01:00Z',
+        },
+        {
+          level: 'WARNING',
+          message: 'High memory usage',
+          timestamp: '2024-01-01T10:02:00Z',
+        },
+        {
+          level: 'ERROR',
+          message: 'Authentication failed',
+          timestamp: '2024-01-01T10:03:00Z',
+        },
+        {
+          level: 'DEBUG',
+          message: 'Request received',
+          timestamp: '2024-01-01T10:04:00Z',
+        },
       ],
     };
-    
+
     // Filter logs where level starts with "ERR" or message contains "failed"
     expect(
       getSnapshot(
@@ -537,7 +562,7 @@ describe('array filtering by value', () => {
         { name: 'Alice', age: 28, role: 'admin' },
       ],
     };
-    
+
     // Filter users where name="Alice" OR age=35
     expect(
       getSnapshot(
@@ -563,7 +588,7 @@ describe('array filtering by value', () => {
         { name: 'Alice', age: 28, role: 'admin' },
       ],
     };
-    
+
     // Filter users where name="John" OR name="Jane" OR age=35
     expect(
       getSnapshot(
@@ -590,7 +615,7 @@ describe('array filtering by value', () => {
         { name: 'Alice', age: 28, role: 'admin' },
       ],
     };
-    
+
     // Filter users where name contains "o" OR age=30
     expect(
       getSnapshot(
@@ -618,7 +643,7 @@ describe('array filtering by value', () => {
         { name: 'Bob', age: 35, status: 'pending' },
       ],
     };
-    
+
     // Filter users where name="john" (case-insensitive) OR status="inactive" (case-insensitive)
     // Note: Mixed case-insensitive conditions with || may not work as expected
     expect(

@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
-/** forked from https://github.com/lukeed/dequal to consider invalid dates as equal */
+/**
+ * Forked from https://github.com/lukeed/dequal to consider invalid dates as
+ * equal
+ */
 
 const has = Object.prototype.hasOwnProperty;
 
@@ -12,19 +15,20 @@ function find(iter: any[], tar: any, maxDepth: number): any {
 
 /**
  * Deep equality comparison between two values
+ *
+ * @example
+ *   ```ts
+ *   deepEqual({a: 1}, {a: 1}) // true
+ *   deepEqual({a: 1}, {a: 2}) // false
+ *   deepEqual([1, {b: 2}], [1, {b: 2}]) // true
+ *   deepEqual(new Map([['a', 1]]), new Map([['a', 1]])) // true
+ *   deepEqual(new Set([1, 2]), new Set([1, 2])) // true
+ *   ```;
+ *
  * @param foo First value to compare
  * @param bar Second value to compare
  * @param maxDepth Maximum comparison depth (default: 20)
  * @returns True if values are deeply equal, false otherwise
- *
- * @example
- * ```ts
- * deepEqual({a: 1}, {a: 1}) // true
- * deepEqual({a: 1}, {a: 2}) // false
- * deepEqual([1, {b: 2}], [1, {b: 2}]) // true
- * deepEqual(new Map([['a', 1]]), new Map([['a', 1]])) // true
- * deepEqual(new Set([1, 2]), new Set([1, 2])) // true
- * ```
  */
 
 export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {

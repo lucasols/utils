@@ -1,6 +1,7 @@
 /**
- * @deprecated This package is for Node.js-specific utilities only.
- * Import utilities directly instead: import { runCmd } from '@ls-stack/node-utils/runShellCmd'
+ * @deprecated This package is for Node.js-specific utilities only. Import
+ *   utilities directly instead: import { runCmd } from
+ *   '@ls-stack/node-utils/runShellCmd'
  */
 export function deprecated() {
   throw new Error(

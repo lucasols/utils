@@ -19,6 +19,14 @@ type RunCmdOptions = {
 };
 
 /**
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please
+ *   update your imports:
+ *
+ *       // Old (deprecated)
+ *       import { runCmd } from '@ls-stack/utils/runShellCmd';
+ *
+ *       // New (preferred)
+ *       import { runCmd } from '@ls-stack/node-utils/runShellCmd';
  * @param label
  * @param command
  * @param root0
@@ -27,14 +35,6 @@ type RunCmdOptions = {
  * @param root0.throwOnError
  * @param root0.cwd
  * @param root0.noCiColorForce
- * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
- * ```
- * // Old (deprecated)
- * import { runCmd } from '@ls-stack/utils/runShellCmd';
- *
- * // New (preferred)
- * import { runCmd } from '@ls-stack/node-utils/runShellCmd';
- * ```
  */
 export function runCmd(
   label: string | null,
@@ -118,17 +118,17 @@ export function runCmd(
 }
 
 /**
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please
+ *   update your imports:
+ *
+ *       // Old (deprecated)
+ *       import { concurrentCmd } from '@ls-stack/utils/runShellCmd';
+ *
+ *       // New (preferred)
+ *       import { concurrentCmd } from '@ls-stack/node-utils/runShellCmd';
  * @param label
  * @param cmd
  * @param onResult
- * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
- * ```
- * // Old (deprecated)
- * import { concurrentCmd } from '@ls-stack/utils/runShellCmd';
- *
- * // New (preferred)
- * import { concurrentCmd } from '@ls-stack/node-utils/runShellCmd';
- * ```
  */
 export async function concurrentCmd(
   label: string,
@@ -159,18 +159,18 @@ export async function concurrentCmd(
 }
 
 /**
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please
+ *   update your imports:
+ *
+ *       // Old (deprecated)
+ *       import { runCmdUnwrap } from '@ls-stack/utils/runShellCmd';
+ *
+ *       // New (preferred)
+ *       import { runCmdUnwrap } from '@ls-stack/node-utils/runShellCmd';
  * @param label
  * @param command
  * @param root0
  * @param root0.silent
- * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
- * ```
- * // Old (deprecated)
- * import { runCmdUnwrap } from '@ls-stack/utils/runShellCmd';
- *
- * // New (preferred)
- * import { runCmdUnwrap } from '@ls-stack/node-utils/runShellCmd';
- * ```
  */
 export async function runCmdUnwrap(
   label: string | null,
@@ -185,30 +185,30 @@ export async function runCmdUnwrap(
 }
 
 /**
- * @param command
- * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
- * ```
- * // Old (deprecated)
- * import { runCmdSilent } from '@ls-stack/utils/runShellCmd';
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please
+ *   update your imports:
  *
- * // New (preferred)
- * import { runCmdSilent } from '@ls-stack/node-utils/runShellCmd';
- * ```
+ *       // Old (deprecated)
+ *       import { runCmdSilent } from '@ls-stack/utils/runShellCmd';
+ *
+ *       // New (preferred)
+ *       import { runCmdSilent } from '@ls-stack/node-utils/runShellCmd';
+ * @param command
  */
 export function runCmdSilent(command: string | string[]) {
   return runCmd(null, command, { silent: true });
 }
 
 /**
- * @param command
- * @deprecated This utility has been moved to @ls-stack/node-utils. Please update your imports:
- * ```
- * // Old (deprecated)
- * import { runCmdSilentUnwrap } from '@ls-stack/utils/runShellCmd';
+ * @deprecated This utility has been moved to @ls-stack/node-utils. Please
+ *   update your imports:
  *
- * // New (preferred)
- * import { runCmdSilentUnwrap } from '@ls-stack/node-utils/runShellCmd';
- * ```
+ *       // Old (deprecated)
+ *       import { runCmdSilentUnwrap } from '@ls-stack/utils/runShellCmd';
+ *
+ *       // New (preferred)
+ *       import { runCmdSilentUnwrap } from '@ls-stack/node-utils/runShellCmd';
+ * @param command
  */
 export function runCmdSilentUnwrap(command: string | string[]) {
   return runCmdUnwrap(null, command, { silent: true });

@@ -7,7 +7,7 @@ function find(iter: any[], tar: any, key?: any) {
   }
 }
 
-/** shallow equal version of https://github.com/lukeed/dequal */
+/** Shallow equal version of https://github.com/lukeed/dequal */
 export function shallowEqual(foo: any, bar: any): boolean {
   var ctor, len, tmp;
   if (foo === bar) return true;

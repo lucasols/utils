@@ -1,8 +1,8 @@
 import { keepPrevIfUnchanged } from './keepPrevIfUnchanged';
 
 /**
- * Updates an object with a new set of values. undefined values are ignored in the updates object
- * and deep equal values are not updated.
+ * Updates an object with a new set of values. undefined values are ignored in
+ * the updates object and deep equal values are not updated.
  *
  * @param object - The object to update.
  * @param updates - The new values to update the object with.

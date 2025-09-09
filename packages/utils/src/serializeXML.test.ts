@@ -140,9 +140,7 @@ test('does not escape XML characters in text content by default', () => {
   };
 
   const result = serializeXML(node);
-  expect(result).toBe(
-    '<p>Text with <tags> & "quotes" and \'apostrophes\'</p>',
-  );
+  expect(result).toBe('<p>Text with <tags> & "quotes" and \'apostrophes\'</p>');
 });
 
 test('escapes XML characters when escapeText is explicitly enabled', () => {

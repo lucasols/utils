@@ -15,15 +15,15 @@ export function cachedGetter<T>(getter: () => T): {
 type Options = {
   /**
    * The maximum number of items in the cache.
+   *
    * @default 1000
    */
   maxCacheSize?: number;
-  /**
-   * The maximum age of items in the cache.
-   */
+  /** The maximum age of items in the cache. */
   maxItemAge?: DurationObj;
   /**
    * The throttle for checking expired items in milliseconds.
+   *
    * @default
    * 10_000
    */
@@ -44,7 +44,8 @@ export class WithExpiration<T> {
 
   /**
    * @param value - The value to store in the cache.
-   * @param expiration - The expiration time of the value in seconds or a duration object.
+   * @param expiration - The expiration time of the value in seconds or a
+   *   duration object.
    */
   constructor(value: T, expiration: DurationObj) {
     this.value = value;
@@ -55,19 +56,24 @@ export class WithExpiration<T> {
 type Utils<T> = {
   skipCaching: (value: T) => SkipCaching<T>;
   /**
-   * Create a new WithExpiration object with the given value and expiration time.
+   * Create a new WithExpiration object with the given value and expiration
+   * time.
+   *
    * @param value - The value to store in the cache.
-   * @param expiration - The expiration time of the value in seconds or a duration object.
+   * @param expiration - The expiration time of the value in seconds or a
+   *   duration object.
    */
   withExpiration: (value: T, expiration: DurationObj) => WithExpiration<T>;
 };
 
 type GetOptions<T> = {
   /**
-   * A function that determines whether a value should be rejected from being cached.
-   * If the function returns true, the value will be returned but not cached.
+   * A function that determines whether a value should be rejected from being
+   * cached. If the function returns true, the value will be returned but not
+   * cached.
+   *
    * @param value The value to check
-   * @returns true if the value should be rejected, false otherwise
+   * @returns True if the value should be rejected, false otherwise
    */
   skipCachingWhen?: (value: T) => boolean;
 };

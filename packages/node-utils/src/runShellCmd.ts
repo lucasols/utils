@@ -25,7 +25,8 @@ type RunCmdOptions = {
  * @param command - The command to run (string or array of strings)
  * @param options - Configuration options
  * @param options.mock - Mock result for testing
- * @param options.silent - Whether to suppress output (true, false, or 'timeOnly')
+ * @param options.silent - Whether to suppress output (true, false, or
+ *   'timeOnly')
  * @param options.throwOnError - Whether to throw/exit on error
  * @param options.cwd - Working directory for the command
  * @param options.noCiColorForce - Whether to disable CI color forcing

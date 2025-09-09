@@ -1,5 +1,7 @@
 /**
- * JSON.stringify can throw if the value is circular or contains functions, this function catches those errors and returns undefined
+ * JSON.stringify can throw if the value is circular or contains functions, this
+ * function catches those errors and returns undefined
+ *
  * @param value
  */
 export function safeJsonStringify(value: unknown) {
@@ -11,7 +13,9 @@ export function safeJsonStringify(value: unknown) {
 }
 
 /**
- * JSON.parse can throw if the value is not valid JSON, this function catches those errors and returns undefined
+ * JSON.parse can throw if the value is not valid JSON, this function catches
+ * those errors and returns undefined
+ *
  * @param value
  */
 export function safeJsonParse(value: string): unknown {

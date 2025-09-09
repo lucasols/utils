@@ -640,7 +640,11 @@ describe('compactSnapshot', () => {
 
       const result = compactSnapshot(data, {
         replaceValues: (_value, path) => {
-          if (path.includes('password') || path.includes('apiKey') || path.includes('token')) {
+          if (
+            path.includes('password') ||
+            path.includes('apiKey') ||
+            path.includes('token')
+          ) {
             return { newValue: '[REDACTED]' };
           }
           return false;
@@ -704,22 +708,15 @@ describe('compactSnapshot', () => {
 
     test('should generate correct paths for complex nested structures', () => {
       const receivedPaths: string[] = [];
-      
+
       const data = {
         root: {
           level1: {
             level2: 'value',
-            array: [
-              { item: 'first' },
-              { item: 'second' }
-            ]
-          }
+            array: [{ item: 'first' }, { item: 'second' }],
+          },
         },
-        topArray: [
-          'item0',
-          { nested: 'value' },
-          ['subarray', 'item']
-        ]
+        topArray: ['item0', { nested: 'value' }, ['subarray', 'item']],
       };
 
       compactSnapshot(data, {
@@ -753,13 +750,8 @@ describe('compactSnapshot', () => {
 
     test('should handle root array path generation correctly', () => {
       const receivedPaths: string[] = [];
-      
-      const data = [
-        'string',
-        { prop: 'value' },
-        ['nested', 'array'],
-        42
-      ];
+
+      const data = ['string', { prop: 'value' }, ['nested', 'array'], 42];
 
       compactSnapshot(data, {
         replaceValues: (_value, path) => {
@@ -784,14 +776,14 @@ describe('compactSnapshot', () => {
 
     test('should handle empty objects and arrays correctly', () => {
       const receivedPaths: string[] = [];
-      
+
       const data = {
         emptyObj: {},
         emptyArray: [],
         nested: {
           emptyObj: {},
-          emptyArray: []
-        }
+          emptyArray: [],
+        },
       };
 
       compactSnapshot(data, {
@@ -819,13 +811,13 @@ describe('compactSnapshot', () => {
           id: 123,
           profile: {
             name: 'John',
-            email: 'john@example.com'
-          }
+            email: 'john@example.com',
+          },
         },
         items: [
           { id: 1, secret: 'token1' },
-          { id: 2, secret: 'token2' }
-        ]
+          { id: 2, secret: 'token2' },
+        ],
       };
 
       const result = compactSnapshot(data, {

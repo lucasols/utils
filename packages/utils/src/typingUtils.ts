@@ -6,7 +6,10 @@ export type PartialRecord<K extends keyof any, T> = {
 /** @deprecated Use `NonPartial` from `@ls-stack/utils/typeUtils` instead */
 export type NonPartial<T> = { [K in keyof Required<T>]: T[K] };
 
-/** @deprecated Use `ObjKeysWithValuesOfType` from `@ls-stack/utils/typeUtils` instead */
+/**
+ * @deprecated Use `ObjKeysWithValuesOfType` from `@ls-stack/utils/typeUtils`
+ *   instead
+ */
 export type ObjKeysWithValuesOfType<
   Obj extends Record<PropertyKey, unknown>,
   ValueType,

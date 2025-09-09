@@ -60,7 +60,8 @@ class ParallelAsyncResultCalls<
   }
 
   /**
-   * adds calls return tuples with inferred results
+   * Adds calls return tuples with inferred results
+   *
    * @param calls
    */
   addTuple<
@@ -207,12 +208,12 @@ class ParallelAsyncResultCalls<
 }
 
 /**
- * Executes multiple asynchronous calls in parallel and collects the results in a easier to use format.
- *
- * @template R - The type of the result value.
- * @template M - The type of the call metadata.
+ * Executes multiple asynchronous calls in parallel and collects the results in
+ * a easier to use format.
  *
  * @deprecated Use concurrentAsyncCalls instead.
+ * @template R - The type of the result value.
+ * @template M - The type of the call metadata.
  */
 export function parallelAsyncCalls<
   M extends ValidMetadata | undefined = undefined,

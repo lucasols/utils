@@ -1071,15 +1071,15 @@ describe('collapseObjects', () => {
           // Objects as direct properties should still collapse when they have one property
           singleProp: { key: 'value' },
           multipleProps: { a: 1, b: 2 },
-          
-          // Objects in arrays should NOT collapse when they have one property  
+
+          // Objects in arrays should NOT collapse when they have one property
           arrayWithSingleProps: [
             { key: 'value' },
             { count: 42 },
             { active: true },
             { data: null },
           ],
-          
+
           // Objects in arrays with multiple props can still collapse
           arrayWithMultipleProps: [
             { a: 1, b: 2 },

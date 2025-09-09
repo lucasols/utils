@@ -1,13 +1,14 @@
 import { unknownToError, type Result, type ResultValidErrors } from 't-result';
 import { sleep } from './sleep';
 
-/**
- * Configuration options for retryOnError function.
- */
+/** Configuration options for retryOnError function. */
 type RetryOptions = {
   /** Delay between retries in milliseconds or function returning delay */
   delayBetweenRetriesMs?: number | ((retry: number) => number);
-  /** Function to determine if retry should happen, receives error and duration of last attempt */
+  /**
+   * Function to determine if retry should happen, receives error and duration
+   * of last attempt
+   */
   retryCondition?: (
     error: Error,
     lastAttempt: { duration: number; retry: number },
@@ -26,22 +27,23 @@ type RetryOptions = {
 /**
  * Retries a function on error with configurable retry logic.
  *
+ * @example
+ *   await retryOnError(
+ *     async (ctx) => {
+ *       console.log(`Attempt ${ctx.retry + 1}`);
+ *       return await fetchData();
+ *     },
+ *     3,
+ *     { delayBetweenRetriesMs: 1000 },
+ *   );
+ *
  * @param fn - Function to retry that receives context with retry count
  * @param maxRetries - Maximum number of retries
  * @param options - Configuration options
- * @param retry - internal use only
- * @param originalMaxRetries - internal use only
- * @returns Promise resolving to the function result or rejecting with the final error
- *
- * @example
- * await retryOnError(
- *   async (ctx) => {
- *     console.log(`Attempt ${ctx.retry + 1}`);
- *     return await fetchData();
- *   },
- *   3,
- *   { delayBetweenRetriesMs: 1000 }
- * );
+ * @param retry - Internal use only
+ * @param originalMaxRetries - Internal use only
+ * @returns Promise resolving to the function result or rejecting with the final
+ *   error
  */
 export async function retryOnError<T>(
   fn: (ctx: {
@@ -125,9 +127,10 @@ export async function retryOnError<T>(
  * @param options.debugId
  * @param options.disableRetries
  * @param options.onRetry
- * @param __retry - internal use only
- * @param __originalMaxRetries - internal use only
- * @returns Promise resolving to the function result or rejecting with the final error
+ * @param __retry - Internal use only
+ * @param __originalMaxRetries - Internal use only
+ * @returns Promise resolving to the function result or rejecting with the final
+ *   error
  */
 export async function retryResultOnError<T, E extends ResultValidErrors>(
   fn: (ctx: {

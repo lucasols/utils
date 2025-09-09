@@ -123,13 +123,13 @@ function errOnErr<T, E extends ResultValidErrors>(
 /** @deprecated Use `t-result` library instead. */
 export function ok(): Ok<void>;
 /**
- * @param value
  * @deprecated Use `t-result` library instead.
+ * @param value
  */
 export function ok<T>(value: T): Ok<T>;
 /**
- * @param value
  * @deprecated Use `t-result` library instead.
+ * @param value
  */
 export function ok(value: any = undefined): Ok<any> {
   const methods: ResultMethods<any, any> = {
@@ -152,8 +152,8 @@ export function ok(value: any = undefined): Ok<any> {
 }
 
 /**
- * @param error
  * @deprecated Use `t-result` library instead.
+ * @param error
  */
 export function err<E extends ResultValidErrors>(error: E): Err<E> {
   const methods: ResultMethods<any, any> = {
@@ -189,6 +189,7 @@ function unknownToResultError(error: unknown) {
 
 /**
  * Unwraps a promise result
+ *
  * @param result
  */
 async function asyncUnwrap<T>(
@@ -247,27 +248,27 @@ export const Result = {
 };
 
 /**
+ * @deprecated Use `t-result` library instead.
  * @param fn
  * @param errorNormalizer
- * @deprecated Use `t-result` library instead.
  */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => T extends Promise<any> ? never : T,
   errorNormalizer?: (err: unknown) => E,
 ): Result<T, E>;
 /**
+ * @deprecated Use `t-result` library instead.
  * @param fn
  * @param errorNormalizer
- * @deprecated Use `t-result` library instead.
  */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: () => Promise<T>,
   errorNormalizer?: (err: unknown) => E,
 ): Promise<Result<Awaited<T>, E>>;
 /**
+ * @deprecated Use `t-result` library instead.
  * @param fn
  * @param errorNormalizer
- * @deprecated Use `t-result` library instead.
  */
 export function resultify<T, E extends ResultValidErrors = Error>(
   fn: Promise<T>,
@@ -317,8 +318,8 @@ export function resultify(
 }
 
 /**
- * @param error
  * @deprecated Use `t-result` library instead.
+ * @param error
  */
 export function unknownToError(error: unknown): Error {
   if (error instanceof Error) return error;

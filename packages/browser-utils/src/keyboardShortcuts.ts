@@ -1,13 +1,9 @@
 // forked from https://github.com/jamiebuilds/tinykeys/blob/main/src/tinykeys.ts
 
-/**
- * A single press of a keybinding sequence
- */
+/** A single press of a keybinding sequence */
 export type KeyBindingPress = [mods: string[], key: string | RegExp];
 
-/**
- * A map of keybinding strings to event handlers.
- */
+/** A map of keybinding strings to event handlers. */
 export interface KeyBindingMap {
   [keybinding: string]: (event: KeyboardEvent) => void;
 }
@@ -23,18 +19,12 @@ export interface KeyBindingHandlerOptions {
   timeout?: number;
 }
 
-/**
- * Options to configure the behavior of keybindings.
- */
+/** Options to configure the behavior of keybindings. */
 export interface KeyBindingOptions extends KeyBindingHandlerOptions {
-  /**
-   * Key presses will listen to this event (default: "keydown").
-   */
+  /** Key presses will listen to this event (default: "keydown"). */
   event?: 'keydown' | 'keyup';
 
-  /**
-   * Key presses will use a capture listener (default: false)
-   */
+  /** Key presses will use a capture listener (default: false) */
   capture?: boolean;
 }
 
@@ -51,29 +41,28 @@ const KEYBINDING_MODIFIER_KEYS = ['Shift', 'Meta', 'Alt', 'Control'];
  */
 const DEFAULT_TIMEOUT = 1000;
 
-/**
- * Keybinding sequences should bind to this event by default.
- */
+/** Keybinding sequences should bind to this event by default. */
 const DEFAULT_EVENT = 'keydown';
 
 /**
  * Platform detection code.
+ *
  * @see https://github.com/jamiebuilds/tinykeys/issues/184
  */
 const PLATFORM = typeof navigator === 'object' ? navigator.platform : '';
 const APPLE_DEVICE = /Mac|iPod|iPhone|iPad/.test(PLATFORM);
 
-/**
- * An alias for creating platform-specific keybinding aliases.
- */
+/** An alias for creating platform-specific keybinding aliases. */
 const MOD = APPLE_DEVICE ? 'Meta' : 'Control';
 
 /**
  * Meaning of `AltGraph`, from MDN:
+ *
  * - Windows: Both Alt and Ctrl keys are pressed, or AltGr key is pressed
  * - Mac: ⌥ Option key pressed
  * - Linux: Level 3 Shift key (or Level 5 Shift key) pressed
  * - Android: Not supported
+ *
  * @see https://github.com/jamiebuilds/tinykeys/issues/185
  */
 const ALT_GRAPH_ALIASES =
@@ -95,12 +84,10 @@ function getModifierState(event: KeyboardEvent, mod: string) {
 /**
  * Parses a "Key Binding String" into its parts
  *
- * grammar    = `{sequence}`
- * {sequence} = `{press} {press} {press} ...`
- * {press}    = `{key}` or `{mods}+{key}`
- * {mods}     = `{mod}+{mod}+...`
- * {key}      = `{KeyboardEvent.key}` or `{KeyboardEvent.code}` (case-insensitive)
- * {key}      = `({regex})` -> `/^{regex}$/` (case-sensitive)
+ * Grammar = `{sequence}` {sequence} = `{press} {press} {press} ...` {press} =
+ * `{key}` or `{mods}+{key}` {mods} = `{mod}+{mod}+...` {key} =
+ * `{KeyboardEvent.key}` or `{KeyboardEvent.code}` (case-insensitive) {key} =
+ * `({regex})` -> `/^{regex}$/` (case-sensitive)
  */
 export function parseKeybinding(str: string): KeyBindingPress[] {
   return str
@@ -118,9 +105,7 @@ export function parseKeybinding(str: string): KeyBindingPress[] {
     });
 }
 
-/**
- * This tells us if a single keyboard event matches a single keybinding press.
- */
+/** This tells us if a single keyboard event matches a single keybinding press. */
 export function matchKeyBindingPress(
   event: KeyboardEvent,
   [mods, key]: KeyBindingPress,
@@ -154,23 +139,23 @@ export function matchKeyBindingPress(
  * Creates an event listener for handling keybindings.
  *
  * @example
- * ```js
- * import { createKeybindingsHandler } from "../src/keybindings"
+ *   ```js
+ *   import { createKeybindingsHandler } from "../src/keybindings"
  *
- * let handler = createKeybindingsHandler({
- * 	"Shift+d": () => {
- * 		alert("The 'Shift' and 'd' keys were pressed at the same time")
- * 	},
- * 	"y e e t": () => {
- * 		alert("The keys 'y', 'e', 'e', and 't' were pressed in order")
- * 	},
- * 	"$mod+d": () => {
- * 		alert("Either 'Control+d' or 'Meta+d' were pressed")
- * 	},
- * })
+ *   let handler = createKeybindingsHandler({
+ *   	"Shift+d": () => {
+ *   		alert("The 'Shift' and 'd' keys were pressed at the same time")
+ *   	},
+ *   	"y e e t": () => {
+ *   		alert("The keys 'y', 'e', 'e', and 't' were pressed in order")
+ *   	},
+ *   	"$mod+d": () => {
+ *   		alert("Either 'Control+d' or 'Meta+d' were pressed")
+ *   	},
+ *   })
  *
- * window.addEvenListener("keydown", handler)
- * ```
+ *   window.addEvenListener("keydown", handler)
+ *   ```;
  */
 export function createKeybindingsHandler(
   keyBindingMap: KeyBindingMap,
@@ -232,21 +217,21 @@ export function createKeybindingsHandler(
  * Returns an unsubscribe method.
  *
  * @example
- * ```js
- * import { keyboardShortcuts } from "@ls-stack/browser-utils/keyboardShortcuts"
+ *   ```js
+ *   import { keyboardShortcuts } from "@ls-stack/browser-utils/keyboardShortcuts"
  *
- * tinykeys(window, {
- * 	"Shift+d": () => {
- * 		alert("The 'Shift' and 'd' keys were pressed at the same time")
- * 	},
- * 	"y e e t": () => {
- * 		alert("The keys 'y', 'e', 'e', and 't' were pressed in order")
- * 	},
- * 	"$mod+d": () => {
- * 		alert("Either 'Control+d' or 'Meta+d' were pressed")
- * 	},
- * })
- * ```
+ *   tinykeys(window, {
+ *   	"Shift+d": () => {
+ *   		alert("The 'Shift' and 'd' keys were pressed at the same time")
+ *   	},
+ *   	"y e e t": () => {
+ *   		alert("The keys 'y', 'e', 'e', and 't' were pressed in order")
+ *   	},
+ *   	"$mod+d": () => {
+ *   		alert("Either 'Control+d' or 'Meta+d' were pressed")
+ *   	},
+ *   })
+ *   ```;
  */
 export function keyboardShortcuts(
   target: Window | HTMLElement,

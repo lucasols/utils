@@ -1,5 +1,5 @@
+import { err, ok, type Result } from 't-result';
 import { describe, expect, test, vi } from 'vitest';
-import { ok, err, type Result } from 't-result';
 import { retryOnError, retryResultOnError } from './retryOnError';
 import { sleep } from './sleep';
 
@@ -109,30 +109,34 @@ test.concurrent('delay between retries', { retry: 3 }, async () => {
   expect(Date.now() - startTime).toBeGreaterThan(10);
 });
 
-test.concurrent('retry condition with duration and error', { retry: 3 }, async () => {
-  const fn = vi.fn(async (maxErrorDurationMs: number) => {
-    await sleep(10);
-    throw new Error(String(maxErrorDurationMs));
-  });
+test.concurrent(
+  'retry condition with duration and error',
+  { retry: 3 },
+  async () => {
+    const fn = vi.fn(async (maxErrorDurationMs: number) => {
+      await sleep(10);
+      throw new Error(String(maxErrorDurationMs));
+    });
 
-  await expect(
-    retryOnError((_ctx) => fn(5), 3, {
-      retryCondition: (error, ctx) =>
-        error instanceof Error && ctx.duration < Number(error.message),
-    }),
-  ).rejects.toThrow('5');
+    await expect(
+      retryOnError((_ctx) => fn(5), 3, {
+        retryCondition: (error, ctx) =>
+          error instanceof Error && ctx.duration < Number(error.message),
+      }),
+    ).rejects.toThrow('5');
 
-  expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledTimes(1);
 
-  await expect(
-    retryOnError((_ctx) => fn(20), 2, {
-      retryCondition: (error, ctx) =>
-        error instanceof Error && ctx.duration < Number(error.message),
-    }),
-  ).rejects.toThrow('20');
+    await expect(
+      retryOnError((_ctx) => fn(20), 2, {
+        retryCondition: (error, ctx) =>
+          error instanceof Error && ctx.duration < Number(error.message),
+      }),
+    ).rejects.toThrow('20');
 
-  expect(fn).toHaveBeenCalledTimes(4);
-});
+    expect(fn).toHaveBeenCalledTimes(4);
+  },
+);
 
 test('maxRetries of 0 should not retry', async () => {
   const fn = vi.fn(() => Promise.reject(new Error('fail')));
@@ -142,16 +146,15 @@ test('maxRetries of 0 should not retry', async () => {
   expect(fn).toHaveBeenCalledTimes(1);
 });
 
-
 test('delayBetweenRetriesMs as function', { retry: 3 }, async () => {
   const fn = vi.fn(() => Promise.reject(new Error('fail')));
   const delayFn = vi.fn((retry: number) => retry * 10);
-  
+
   const startTime = Date.now();
 
   await expect(
-    retryOnError((_ctx) => fn(), 2, { 
-      delayBetweenRetriesMs: delayFn 
+    retryOnError((_ctx) => fn(), 2, {
+      delayBetweenRetriesMs: delayFn,
     }),
   ).rejects.toThrow('fail');
 
@@ -161,10 +164,9 @@ test('delayBetweenRetriesMs as function', { retry: 3 }, async () => {
   expect(Date.now() - startTime).toBeGreaterThan(10); // 0 + 10 = 10ms minimum
 });
 
-
 test('debug logging with debugId', async () => {
   const consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
-  
+
   try {
     const fn = vi.fn(() => Promise.reject(new Error('fail')));
 
@@ -172,16 +174,17 @@ test('debug logging with debugId', async () => {
       retryOnError((_ctx) => fn(), 2, { debugId: 'test-operation' }),
     ).rejects.toThrow('fail');
 
-    expect(consoleSpy).toHaveBeenCalledWith('Retrying test-operation (retry 1/2) after error');
-    expect(consoleSpy).toHaveBeenCalledWith('Retrying test-operation (retry 2/2) after error');
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Retrying test-operation (retry 1/2) after error',
+    );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Retrying test-operation (retry 2/2) after error',
+    );
     expect(consoleSpy).toHaveBeenCalledTimes(2);
   } finally {
     consoleSpy.mockRestore();
   }
 });
-
-
-
 
 test('retryCondition with changing behavior', async () => {
   const fn = vi.fn(() => Promise.reject(new Error('fail')));
@@ -198,8 +201,6 @@ test('retryCondition with changing behavior', async () => {
   expect(fn).toHaveBeenCalledTimes(3); // original + 2 retries
   expect(retryCondition).toHaveBeenCalledTimes(3);
 });
-
-
 
 test('success after retries', async () => {
   let attemptCount = 0;
@@ -223,11 +224,16 @@ test('retryCondition receives correct context', async () => {
     throw new Error('fail');
   });
 
-  const retryConditions: Array<{ error: unknown; ctx: { duration: number; retry: number } }> = [];
-  const retryCondition = vi.fn((error: unknown, ctx: { duration: number; retry: number }) => {
-    retryConditions.push({ error, ctx });
-    return ctx.retry < 2;
-  });
+  const retryConditions: Array<{
+    error: unknown;
+    ctx: { duration: number; retry: number };
+  }> = [];
+  const retryCondition = vi.fn(
+    (error: unknown, ctx: { duration: number; retry: number }) => {
+      retryConditions.push({ error, ctx });
+      return ctx.retry < 2;
+    },
+  );
 
   await expect(
     retryOnError((_ctx) => fn(), 5, { retryCondition }),
@@ -237,7 +243,7 @@ test('retryCondition receives correct context', async () => {
   expect(retryConditions[0]?.ctx.retry).toBe(0);
   expect(retryConditions[1]?.ctx.retry).toBe(1);
   expect(retryConditions[2]?.ctx.retry).toBe(2);
-  
+
   // All should have reasonable durations
   for (const { ctx } of retryConditions) {
     expect(ctx.duration).toBeGreaterThan(5);
@@ -250,19 +256,24 @@ test('onRetry callback is called with error and context', async () => {
     throw new Error('fail');
   });
 
-  const onRetryCalls: Array<{ error: Error; ctx: { duration: number; retry: number } }> = [];
-  const onRetry = vi.fn((error: Error, ctx: { duration: number; retry: number }) => {
-    onRetryCalls.push({ error, ctx });
-  });
+  const onRetryCalls: Array<{
+    error: Error;
+    ctx: { duration: number; retry: number };
+  }> = [];
+  const onRetry = vi.fn(
+    (error: Error, ctx: { duration: number; retry: number }) => {
+      onRetryCalls.push({ error, ctx });
+    },
+  );
 
-  await expect(
-    retryOnError((_ctx) => fn(), 2, { onRetry }),
-  ).rejects.toThrow('fail');
+  await expect(retryOnError((_ctx) => fn(), 2, { onRetry })).rejects.toThrow(
+    'fail',
+  );
 
   expect(fn).toHaveBeenCalledTimes(3); // initial + 2 retries
   expect(onRetry).toHaveBeenCalledTimes(2); // called on each retry
   expect(onRetryCalls).toHaveLength(2);
-  
+
   expect(onRetryCalls[0]?.error.message).toBe('fail');
   expect(onRetryCalls[0]?.ctx.retry).toBe(0);
   expect(onRetryCalls[1]?.error.message).toBe('fail');
@@ -277,7 +288,9 @@ describe('retryResultOnError', () => {
       throw new Error('function rejected');
     });
 
-    await expect(retryResultOnError((_ctx) => fn(), 3)).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: function rejected]`);
+    await expect(
+      retryResultOnError((_ctx) => fn(), 3),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: function rejected]`);
 
     expect(fn).toHaveBeenCalledTimes(1); // Should not retry on rejection
   });
@@ -291,7 +304,7 @@ describe('retryResultOnError', () => {
       retryResultOnError((_ctx) => fn(), 5, {
         delayBetweenRetriesMs: 1,
         retryCondition: () => true,
-      })
+      }),
     ).rejects.toThrowErrorMatchingInlineSnapshot(`[TypeError: type error]`);
 
     expect(fn).toHaveBeenCalledTimes(1); // Should not retry on rejection
@@ -344,10 +357,12 @@ describe('retryResultOnError', () => {
 
   test('passes context with retry count', async () => {
     const contexts: Array<{ retry: number }> = [];
-    const fn = vi.fn(async (ctx: { retry: number }): Promise<Result<string, Error>> => {
-      contexts.push({ ...ctx });
-      return err(new Error(`attempt ${ctx.retry}`));
-    });
+    const fn = vi.fn(
+      async (ctx: { retry: number }): Promise<Result<string, Error>> => {
+        contexts.push({ ...ctx });
+        return err(new Error(`attempt ${ctx.retry}`));
+      },
+    );
 
     const result = await retryResultOnError(fn, 2);
 
@@ -371,18 +386,20 @@ describe('retryResultOnError', () => {
   });
 
   test('with retry condition', async () => {
-    const fn = vi.fn(async (errorMsg: string): Promise<Result<string, Error>> => {
-      return err(new Error(errorMsg));
-    });
+    const fn = vi.fn(
+      async (errorMsg: string): Promise<Result<string, Error>> => {
+        return err(new Error(errorMsg));
+      },
+    );
 
-    const retryCondition = vi.fn((error: Error) => error.message === 'retryable');
+    const retryCondition = vi.fn(
+      (error: Error) => error.message === 'retryable',
+    );
 
     // Should retry when condition is true
-    const result1 = await retryResultOnError(
-      (_ctx) => fn('retryable'),
-      3,
-      { retryCondition }
-    );
+    const result1 = await retryResultOnError((_ctx) => fn('retryable'), 3, {
+      retryCondition,
+    });
 
     expect(result1.ok).toBe(false);
     if (!result1.ok) {
@@ -394,11 +411,9 @@ describe('retryResultOnError', () => {
     fn.mockClear();
     retryCondition.mockClear();
 
-    const result2 = await retryResultOnError(
-      (_ctx) => fn('not-retryable'),
-      3,
-      { retryCondition }
-    );
+    const result2 = await retryResultOnError((_ctx) => fn('not-retryable'), 3, {
+      retryCondition,
+    });
 
     expect(result2.ok).toBe(false);
     if (!result2.ok) {
@@ -415,11 +430,9 @@ describe('retryResultOnError', () => {
 
     const startTime = Date.now();
 
-    const result = await retryResultOnError(
-      (_ctx) => fn(),
-      2,
-      { delayBetweenRetriesMs: 10 }
-    );
+    const result = await retryResultOnError((_ctx) => fn(), 2, {
+      delayBetweenRetriesMs: 10,
+    });
 
     expect(result.ok).toBe(false);
     expect(fn).toHaveBeenCalledTimes(3);
@@ -434,11 +447,9 @@ describe('retryResultOnError', () => {
 
     const startTime = Date.now();
 
-    const result = await retryResultOnError(
-      (_ctx) => fn(),
-      2,
-      { delayBetweenRetriesMs: delayFn }
-    );
+    const result = await retryResultOnError((_ctx) => fn(), 2, {
+      delayBetweenRetriesMs: delayFn,
+    });
 
     expect(result.ok).toBe(false);
     expect(fn).toHaveBeenCalledTimes(3);
@@ -449,21 +460,23 @@ describe('retryResultOnError', () => {
 
   test('with debugId logging', async () => {
     const consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
-    
+
     try {
       const fn = vi.fn(async (): Promise<Result<string, Error>> => {
         return err(new Error('fail'));
       });
 
-      const result = await retryResultOnError(
-        (_ctx) => fn(),
-        2,
-        { debugId: 'test-result-operation' }
-      );
+      const result = await retryResultOnError((_ctx) => fn(), 2, {
+        debugId: 'test-result-operation',
+      });
 
       expect(result.ok).toBe(false);
-      expect(consoleSpy).toHaveBeenCalledWith('Retrying test-result-operation (retry 1/2) after error');
-      expect(consoleSpy).toHaveBeenCalledWith('Retrying test-result-operation (retry 2/2) after error');
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Retrying test-result-operation (retry 1/2) after error',
+      );
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Retrying test-result-operation (retry 2/2) after error',
+      );
       expect(consoleSpy).toHaveBeenCalledTimes(2);
     } finally {
       consoleSpy.mockRestore();
@@ -490,23 +503,26 @@ describe('retryResultOnError', () => {
       return err(new Error('fail'));
     });
 
-    const retryConditions: Array<{ error: Error; ctx: { duration: number; retry: number } }> = [];
-    const retryCondition = vi.fn((error: Error, ctx: { duration: number; retry: number }) => {
-      retryConditions.push({ error, ctx });
-      return ctx.retry < 1;
-    });
-
-    const result = await retryResultOnError(
-      (_ctx) => fn(),
-      3,
-      { retryCondition }
+    const retryConditions: Array<{
+      error: Error;
+      ctx: { duration: number; retry: number };
+    }> = [];
+    const retryCondition = vi.fn(
+      (error: Error, ctx: { duration: number; retry: number }) => {
+        retryConditions.push({ error, ctx });
+        return ctx.retry < 1;
+      },
     );
+
+    const result = await retryResultOnError((_ctx) => fn(), 3, {
+      retryCondition,
+    });
 
     expect(result.ok).toBe(false);
     expect(retryConditions).toHaveLength(2);
     expect(retryConditions[0]?.ctx.retry).toBe(0);
     expect(retryConditions[1]?.ctx.retry).toBe(1);
-    
+
     // All should have reasonable durations
     for (const { ctx } of retryConditions) {
       expect(ctx.duration).toBeGreaterThan(5);
@@ -541,10 +557,15 @@ describe('retryResultOnError', () => {
       return err(new Error('fail'));
     });
 
-    const onRetryCalls: Array<{ error: Error; ctx: { duration: number; retry: number } }> = [];
-    const onRetry = vi.fn((error: Error, ctx: { duration: number; retry: number }) => {
-      onRetryCalls.push({ error, ctx });
-    });
+    const onRetryCalls: Array<{
+      error: Error;
+      ctx: { duration: number; retry: number };
+    }> = [];
+    const onRetry = vi.fn(
+      (error: Error, ctx: { duration: number; retry: number }) => {
+        onRetryCalls.push({ error, ctx });
+      },
+    );
 
     const result = await retryResultOnError((_ctx) => fn(), 2, { onRetry });
 
@@ -552,7 +573,7 @@ describe('retryResultOnError', () => {
     expect(fn).toHaveBeenCalledTimes(3); // initial + 2 retries
     expect(onRetry).toHaveBeenCalledTimes(2); // called on each retry
     expect(onRetryCalls).toHaveLength(2);
-    
+
     expect(onRetryCalls[0]?.error.message).toBe('fail');
     expect(onRetryCalls[0]?.ctx.retry).toBe(0);
     expect(onRetryCalls[1]?.error.message).toBe('fail');

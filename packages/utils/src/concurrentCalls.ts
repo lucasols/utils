@@ -266,7 +266,8 @@ class ConcurrentCalls<R = unknown, E extends ResultValidErrors = Error> {
 }
 
 /**
- * Executes multiple asynchronous calls concurrently and collects the results in a easier to use format.
+ * Executes multiple asynchronous calls concurrently and collects the results in
+ * a easier to use format.
  *
  * @template R - The type of the result value.
  */
@@ -464,7 +465,8 @@ class ConcurrentCallsWithMetadata<
 }
 
 /**
- * Executes multiple asynchronous calls concurrently with metadata for each call and collects the results in a easier to use format.
+ * Executes multiple asynchronous calls concurrently with metadata for each call
+ * and collects the results in a easier to use format.
  *
  * @template M - The type of the call metadata.
  * @template R - The type of the result value.
@@ -480,7 +482,8 @@ type ValueFromResult<R> = R extends Result<infer T, any> ? T : never;
 type ErrorFromResult<R> = R extends Result<any, infer E> ? E : never;
 
 /**
- * Executes multiple asynchronous result calls concurrently and collects the results in a easier to use format.
+ * Executes multiple asynchronous result calls concurrently and collects the
+ * results in a easier to use format.
  *
  * @template R - The type of the result function that will be called.
  */
@@ -497,7 +500,8 @@ export function concurrentResultCalls<
 }
 
 /**
- * Executes multiple asynchronous result calls concurrently with metadata for each call and collects the results in a easier to use format.
+ * Executes multiple asynchronous result calls concurrently with metadata for
+ * each call and collects the results in a easier to use format.
  *
  * @template ResultFn - The type of the result function that will be called.
  */

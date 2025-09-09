@@ -5,9 +5,11 @@ export function exhaustiveMatch<T extends string>(value: T) {
 
   /**
    * The pattern can be:
-   * - a function that returns the result
+   *
+   * - A function that returns the result
    * - '_nxt' to try the next pattern
    * - '_never' to indicate that this pattern should never be matched
+   *
    * @param pattern
    */
   function matchWith<R>(pattern: Pattern<R>): R {
@@ -35,7 +37,8 @@ export function exhaustiveMatch<T extends string>(value: T) {
   }
 
   /**
-   * match with early evaluation of the values
+   * Match with early evaluation of the values
+   *
    * @param pattern
    */
   function withObject<R>(pattern: Record<T, R>): R {

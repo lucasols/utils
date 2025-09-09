@@ -151,29 +151,31 @@ describe('truncateArray', () => {
 describe('findAndMap', () => {
   test('should find and map the first matching item', () => {
     const array = [1, 2, 3, 4];
-    const result = findAndMap(array, (item) => item > 2 ? item * 10 : false);
-    
+    const result = findAndMap(array, (item) => (item > 2 ? item * 10 : false));
+
     expect(result).toMatchInlineSnapshot(`30`);
   });
 
   test('should return undefined when no items match', () => {
     const array = [1, 2, 3];
-    const result = findAndMap(array, (item) => item > 5 ? item : false);
-    
+    const result = findAndMap(array, (item) => (item > 5 ? item : false));
+
     expect(result).toMatchInlineSnapshot(`undefined`);
   });
 
   test('should return undefined for empty array', () => {
     const array: number[] = [];
     const result = findAndMap(array, (item) => item);
-    
+
     expect(result).toMatchInlineSnapshot(`undefined`);
   });
 
   test('should return the first matching result when multiple items could match', () => {
     const array = [1, 2, 3, 4];
-    const result = findAndMap(array, (item) => item > 1 ? `item-${item}` : false);
-    
+    const result = findAndMap(array, (item) =>
+      item > 1 ? `item-${item}` : false,
+    );
+
     expect(result).toMatchInlineSnapshot(`"item-2"`);
   });
 
@@ -183,34 +185,34 @@ describe('findAndMap', () => {
       { id: 2, name: 'Bob', age: 30 },
       { id: 3, name: 'Charlie', age: 35 },
     ];
-    
-    const result = findAndMap(users, (user) => 
-      user.age >= 30 ? user.name.toUpperCase() : false
+
+    const result = findAndMap(users, (user) =>
+      user.age >= 30 ? user.name.toUpperCase() : false,
     );
-    
+
     expect(result).toMatchInlineSnapshot(`"BOB"`);
   });
 
   test('should handle mixed return types', () => {
     const array = ['apple', 'banana', 'cherry'];
-    const result = findAndMap(array, (item) => 
-      item.startsWith('b') ? item.length : false
+    const result = findAndMap(array, (item) =>
+      item.startsWith('b') ? item.length : false,
     );
-    
+
     expect(result).toMatchInlineSnapshot(`6`);
   });
 
   test('should handle truthy values that are not false', () => {
     const array = [0, 1, 2];
-    const result = findAndMap(array, (item) => item === 0 ? 'zero' : false);
-    
+    const result = findAndMap(array, (item) => (item === 0 ? 'zero' : false));
+
     expect(result).toMatchInlineSnapshot(`"zero"`);
   });
 
   test('should distinguish false from other falsy values', () => {
     const array = [1, 2, 3];
-    const result = findAndMap(array, (item) => item === 2 ? 0 : false);
-    
+    const result = findAndMap(array, (item) => (item === 2 ? 0 : false));
+
     expect(result).toMatchInlineSnapshot(`0`);
   });
 
@@ -220,11 +222,11 @@ describe('findAndMap', () => {
       { status: 'completed', value: 20 },
       { status: 'failed', value: 30 },
     ];
-    
-    const result = findAndMap(data, (item) => 
-      item.status === 'completed' ? { processed: item.value * 2 } : false
+
+    const result = findAndMap(data, (item) =>
+      item.status === 'completed' ? { processed: item.value * 2 } : false,
     );
-    
+
     expect(result).toMatchInlineSnapshot(`
       {
         "processed": 40,
@@ -236,8 +238,10 @@ describe('findAndMap', () => {
 describe('arrayOps', () => {
   test('should provide filterAndMap method', () => {
     const array = [1, 2, 3, 4];
-    const result = arrayOps(array).filterAndMap((item) => item % 2 === 0 ? item * 2 : false);
-    
+    const result = arrayOps(array).filterAndMap((item) =>
+      item % 2 === 0 ? item * 2 : false,
+    );
+
     typingTest.expectTypesAre<typeof result, number[]>('equal');
     expect(result).toMatchInlineSnapshot(`
       [
@@ -250,7 +254,7 @@ describe('arrayOps', () => {
   test('should provide sortBy method', () => {
     const array = [3, 1, 4, 2];
     const result = arrayOps(array).sortBy((item) => item, 'asc');
-    
+
     typingTest.expectTypesAre<typeof result, number[]>('equal');
     expect(result).toMatchInlineSnapshot(`
       [
@@ -265,7 +269,7 @@ describe('arrayOps', () => {
   test('should provide rejectDuplicates method', () => {
     const array = [1, 2, 2, 3, 1];
     const result = arrayOps(array).rejectDuplicates((item) => item);
-    
+
     typingTest.expectTypesAre<typeof result, number[]>('equal');
     expect(result).toMatchInlineSnapshot(`
       [
@@ -278,10 +282,11 @@ describe('arrayOps', () => {
 
   test('should provide findAndMap method', () => {
     const array = [1, 2, 3, 4];
-    const result = arrayOps(array).findAndMap((item) => item > 2 ? `found-${item}` : false);
-    
+    const result = arrayOps(array).findAndMap((item) =>
+      item > 2 ? `found-${item}` : false,
+    );
+
     typingTest.expectTypesAre<typeof result, string | undefined>('equal');
     expect(result).toMatchInlineSnapshot(`"found-3"`);
   });
-
 });

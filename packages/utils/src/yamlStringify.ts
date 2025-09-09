@@ -56,22 +56,23 @@ function stringifyValue(
       const entries = Object.entries(value).filter(
         ([, val]) => val !== undefined || showUndefined,
       );
-      const isSimpleObject = entries.every(
-        ([, val]) => {
-          if (typeof val === 'string') {
-            // Don't collapse objects if strings contain quotes or escape sequences
-            return !val.includes("'") && !val.includes('"') && !val.includes('\\');
-          }
+      const isSimpleObject = entries.every(([, val]) => {
+        if (typeof val === 'string') {
+          // Don't collapse objects if strings contain quotes or escape sequences
           return (
-            typeof val === 'number' ||
-            typeof val === 'boolean' ||
-            val === null ||
-            val === undefined
+            !val.includes("'") && !val.includes('"') && !val.includes('\\')
           );
-        },
-      );
+        }
+        return (
+          typeof val === 'number' ||
+          typeof val === 'boolean' ||
+          val === null ||
+          val === undefined
+        );
+      });
 
-      const shouldCollapse = isArrayItem ? entries.length > 1 : entries.length > 0;
+      const shouldCollapse =
+        isArrayItem ? entries.length > 1 : entries.length > 0;
       if (isSimpleObject && shouldCollapse) {
         let line = '{ ';
 
@@ -141,20 +142,32 @@ function stringifyValue(
           (collapseObjects &&
             depth + 1 > 0 &&
             (() => {
-              const filteredEntries = Object.entries(objVal).filter(([, val]) => val !== undefined || showUndefined);
-              const shouldCollapseThis = isArrayItem ? filteredEntries.length > 1 : filteredEntries.length > 0;
-              return shouldCollapseThis && filteredEntries.every(([, val]) => {
-                if (typeof val === 'string') {
-                  // Don't collapse objects if strings contain quotes or escape sequences
-                  return !val.includes("'") && !val.includes('"') && !val.includes('\\');
-                }
-                return (
-                  typeof val === 'number' ||
-                  typeof val === 'boolean' ||
-                  val === null ||
-                  val === undefined
-                );
-              });
+              const filteredEntries = Object.entries(objVal).filter(
+                ([, val]) => val !== undefined || showUndefined,
+              );
+              const shouldCollapseThis =
+                isArrayItem ?
+                  filteredEntries.length > 1
+                : filteredEntries.length > 0;
+              return (
+                shouldCollapseThis &&
+                filteredEntries.every(([, val]) => {
+                  if (typeof val === 'string') {
+                    // Don't collapse objects if strings contain quotes or escape sequences
+                    return (
+                      !val.includes("'") &&
+                      !val.includes('"') &&
+                      !val.includes('\\')
+                    );
+                  }
+                  return (
+                    typeof val === 'number' ||
+                    typeof val === 'boolean' ||
+                    val === null ||
+                    val === undefined
+                  );
+                })
+              );
             })()));
 
       // Check if the previous value was a collapsed object
@@ -165,20 +178,32 @@ function stringifyValue(
           (collapseObjects &&
             depth + 1 > 0 &&
             (() => {
-              const filteredEntries = Object.entries(prevValue).filter(([, val]) => val !== undefined || showUndefined);
-              const shouldCollapseThis = isArrayItem ? filteredEntries.length > 1 : filteredEntries.length > 0;
-              return shouldCollapseThis && filteredEntries.every(([, val]) => {
-                if (typeof val === 'string') {
-                  // Don't collapse objects if strings contain quotes or escape sequences
-                  return !val.includes("'") && !val.includes('"') && !val.includes('\\');
-                }
-                return (
-                  typeof val === 'number' ||
-                  typeof val === 'boolean' ||
-                  val === null ||
-                  val === undefined
-                );
-              });
+              const filteredEntries = Object.entries(prevValue).filter(
+                ([, val]) => val !== undefined || showUndefined,
+              );
+              const shouldCollapseThis =
+                isArrayItem ?
+                  filteredEntries.length > 1
+                : filteredEntries.length > 0;
+              return (
+                shouldCollapseThis &&
+                filteredEntries.every(([, val]) => {
+                  if (typeof val === 'string') {
+                    // Don't collapse objects if strings contain quotes or escape sequences
+                    return (
+                      !val.includes("'") &&
+                      !val.includes('"') &&
+                      !val.includes('\\')
+                    );
+                  }
+                  return (
+                    typeof val === 'number' ||
+                    typeof val === 'boolean' ||
+                    val === null ||
+                    val === undefined
+                  );
+                })
+              );
             })()));
 
       if (
