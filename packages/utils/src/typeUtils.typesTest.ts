@@ -1,7 +1,7 @@
 import { DeepReplaceValue } from './typeUtils';
 import { typingTest } from './typingTestUtils';
 
-const { describe, test, expectTypesAre, expectTypesAreEqual } = typingTest;
+const { describe, test, expectTypesAre } = typingTest;
 
 describe('typeUtils', () => {
   test('DeepReplaceValue', () => {
