@@ -1,24 +1,23 @@
 import { isFunction } from './assertions';
 
 /**
- * allow to filter and map with better typing ergonomics
+ * Allow to filter and map with better typing ergonomics
  *
  * In the `mapFilter` function return `false` to reject the item, or any other
  * value to map it.
  *
+ * @example
+ *   // Filter reject and turn value into `value mapped`
+ *   const items = ['value', 'value', 'reject', 'reject'];
+ *
+ *   const mappedItems = filterAndMap(items, (item) =>
+ *     item === 'reject' ? false : `${item} mapped`,
+ *   );
+ *
+ *   mappedItems; // ['value mapped', 'value mapped']
+ *
  * @param array
  * @param mapFilter
- * @example
- * // Filter reject and turn value into `value mapped`
- * const items = ['value', 'value', 'reject', 'reject'];
- *
- * const mappedItems = filterAndMap(items, (item) =>
- *   item === 'reject'
- *     ? false
- *     : `${item} mapped`,
- * );
- *
- * mappedItems; // ['value mapped', 'value mapped']
  */
 export function filterAndMap<T, R>(
   array: IterableIterator<T> | readonly T[],
@@ -43,9 +42,11 @@ export type FilterAndMapReturn<T> = false | T;
 
 type SortOrder = 'desc' | 'asc';
 
-type SortByValue<T> = (item: T) => (number | string)[] | number | string;
+export type SortByValueFn<T> = (
+  item: T,
+) => (number | string)[] | number | string;
 
-type SortByProps =
+export type SortByProps =
   | {
       order?: SortOrder | SortOrder[];
     }
@@ -59,23 +60,28 @@ type SortByProps =
  *
  * Use `Infinity` as as wildcard to absolute max and min values
  *
+ * @example
+ *   const items = [1, 3, 2, 4];
+ *
+ *   const sortedItems = sortBy(items, (item) => item);
+ *   // [1, 2, 3, 4]
+ *
+ *   const items2 = [
+ *     { a: 1, b: 2 },
+ *     { a: 2, b: 1 },
+ *     { a: 1, b: 1 },
+ *   ];
+ *
+ *   // return a array to sort by multiple values
+ *   const sortedItems = sortBy(items, (item) => [item.a, item.b]);
+ *
  * @param arr
  * @param sortByValue
  * @param props
- * @example
- * const items = [1, 3, 2, 4];
- *
- * const sortedItems = sortBy(items, (item) => item);
- * // [1, 2, 3, 4]
- *
- * const items2 = [{ a: 1, b: 2 }, { a: 2, b: 1 }, { a: 1, b: 1}]
- *
- * // return a array to sort by multiple values
- * const sortedItems = sortBy(items, (item) => [item.a, item.b]);
  */
 export function sortBy<T>(
   arr: T[],
-  sortByValue: SortByValue<T>,
+  sortByValue: SortByValueFn<T>,
   props: SortByProps = 'asc',
 ) {
   const order =
@@ -117,19 +123,19 @@ export function sortBy<T>(
 /**
  * Get the correct 0 based value for sync with other array in ascending order
  *
- * @param index
- *
  * @example
- * ```ts
- * const items = [1, 2, 3];
+ *   ```ts
+ *   const items = [1, 2, 3];
  *
- * const index = sortBy(
- *   items,
- *   (item) => getAscIndexOrder(
- *     followOrder.findIndex((order) => order === item)
- *   )
- * );
- * ```
+ *   const index = sortBy(
+ *     items,
+ *     (item) => getAscIndexOrder(
+ *       followOrder.findIndex((order) => order === item)
+ *     )
+ *   );
+ *   ```;
+ *
+ * @param index
  */
 export function getAscIndexOrder(index: number | undefined): number {
   return index === -1 ? Infinity : (index ?? Infinity);
@@ -260,37 +266,46 @@ type ArrayOps<T> = {
   /**
    * Filter and map an array
    *
-   * @param mapFilter - A function that takes an item and returns a value or `false`
-   * to reject the item.
    * @example
-   * const items = [1, 2, 3];
+   *   const items = [1, 2, 3];
    *
-   * const enhancedItems = arrayOps(items);
+   *   const enhancedItems = arrayOps(items);
    *
-   * enhancedItems.filterAndMap((item) => item === 2 ? false : item);
+   *   enhancedItems.filterAndMap((item) => (item === 2 ? false : item));
+   *
+   * @param mapFilter - A function that takes an item and returns a value or
+   *   `false` to reject the item.
    */
   filterAndMap: <R>(mapFilter: (item: T, index: number) => false | R) => R[];
-  sortBy: (sortByValue: SortByValue<T>, props: SortByProps) => T[];
+  sortBy: (sortByValue: SortByValueFn<T>, props: SortByProps) => T[];
   rejectDuplicates: (getKey: (item: T) => unknown) => T[];
   findAndMap: <R>(predicate: (value: T) => R | false) => R | undefined;
 };
 
 /**
- * Finds the first item in an array where the predicate returns a non-false value and returns that mapped value.
+ * Finds the first item in an array where the predicate returns a non-false
+ * value and returns that mapped value.
  *
- * Combines find and map operations - applies the predicate to each item until one returns
- * a value that is not `false`, then returns that mapped value. If no item matches, returns `undefined`.
+ * Combines find and map operations - applies the predicate to each item until
+ * one returns a value that is not `false`, then returns that mapped value. If
+ * no item matches, returns `undefined`.
+ *
+ * @example
+ *   const users = [
+ *     { id: 1, name: 'Alice' },
+ *     { id: 2, name: 'Bob' },
+ *   ];
+ *
+ *   const foundName = findAndMap(users, (user) =>
+ *     user.id === 2 ? user.name.toUpperCase() : false,
+ *   );
+ *   // foundName is 'BOB'
  *
  * @param array - The array to search through
- * @param predicate - Function that returns a mapped value or `false` to skip the item
- * @returns The first mapped value that is not `false`, or `undefined` if no item matches
- * @example
- * const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
- * 
- * const foundName = findAndMap(users, (user) => 
- *   user.id === 2 ? user.name.toUpperCase() : false
- * );
- * // foundName is 'BOB'
+ * @param predicate - Function that returns a mapped value or `false` to skip
+ *   the item
+ * @returns The first mapped value that is not `false`, or `undefined` if no
+ *   item matches
  */
 export function findAndMap<T, R>(
   array: T[],
@@ -306,14 +321,14 @@ export function findAndMap<T, R>(
 /**
  * Enhance an array with extra methods
  *
- * @param array
  * @example
+ *   const enhancedItems = arrayOps(array);
  *
- * const enhancedItems = arrayOps(array);
+ *   enhancedItems.filterAndMap((item) => (item === 2 ? false : item));
+ *   enhancedItems.sortBy((item) => item);
+ *   enhancedItems.rejectDuplicates((item) => item);
  *
- * enhancedItems.filterAndMap((item) => item === 2 ? false : item);
- * enhancedItems.sortBy((item) => item);
- * enhancedItems.rejectDuplicates((item) => item);
+ * @param array
  */
 export function arrayOps<T>(array: T[]): ArrayOps<T> {
   return {

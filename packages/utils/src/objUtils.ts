@@ -1,6 +1,10 @@
+import { sortBy, type SortByProps, type SortByValueFn } from './arrayUtils';
+import type { MakeUndefinedKeysOptional } from './typeUtils';
+import { typedObjectEntries } from './typingFnUtils';
+
 /**
+ * @deprecated Use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
  * @param obj
- * @deprecated use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
  */
 export function objectTypedEntries<T extends Record<string, unknown>>(obj: T) {
   return Object.entries(obj) as [Extract<keyof T, string>, T[keyof T]][];
@@ -59,8 +63,8 @@ export function looseGetObjectProperty<T extends Record<string, unknown>>(
 
 export function rejectObjUndefinedValues<T extends Record<string, unknown>>(
   obj: T,
-): T {
-  const result: T = {} as T;
+): MakeUndefinedKeysOptional<T> {
+  const result: any = {};
 
   for (const key in obj) {
     if (obj[key] !== undefined) {
@@ -69,4 +73,25 @@ export function rejectObjUndefinedValues<T extends Record<string, unknown>>(
   }
 
   return result;
+}
+
+export function filterObjectKeys<T extends Record<string, unknown>>(
+  obj: T,
+  predicate: (key: keyof T, value: T[keyof T]) => boolean,
+): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key, value]) =>
+      predicate(key as keyof T, value as T[keyof T]),
+    ),
+  ) as Partial<T>;
+}
+
+export function sortObjectKeys<T extends Record<string, unknown>>(
+  obj: T,
+  sortByFn: SortByValueFn<[key: keyof T, value: T[keyof T]]>,
+  options?: SortByProps,
+): T {
+  return Object.fromEntries(
+    sortBy(typedObjectEntries(obj), sortByFn, options),
+  ) as T;
 }

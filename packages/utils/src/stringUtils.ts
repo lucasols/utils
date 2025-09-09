@@ -3,11 +3,12 @@ type Arg = string | false | undefined | null;
 /**
  * A util to create more legible conditional concatenated strings
  *
- * @param args
  * @example
- * joinStrings('a', 'b', 'c') // 'abc'
- * joinStrings('a', false, 'c') // 'ac'
- * joinStrings('a', addBString ? 'b' : null, 'c') // 'ac' if addBString is false, 'abc' if addBString is true
+ *   joinStrings('a', 'b', 'c'); // 'abc'
+ *   joinStrings('a', false, 'c'); // 'ac'
+ *   joinStrings('a', addBString ? 'b' : null, 'c'); // 'ac' if addBString is false, 'abc' if addBString is true
+ *
+ * @param args
  */
 export function concatStrings(...args: (Arg | Arg[])[]) {
   const strings: string[] = [];
@@ -28,9 +29,7 @@ export function concatStrings(...args: (Arg | Arg[])[]) {
   return strings.join('');
 }
 
-/**
- * @deprecated Use {@link concatStrings} instead
- */
+/** @deprecated Use {@link concatStrings} instead */
 export const joinStrings = concatStrings;
 
 export function formatNum(

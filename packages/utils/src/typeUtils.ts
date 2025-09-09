@@ -4,6 +4,10 @@ export type PartialRecord<K extends keyof any, T> = {
 
 export type NonPartial<T> = { [K in keyof Required<T>]: T[K] };
 
+/**
+ * @deprecated Use `ObjKeysWithValuesOfType` from `@ls-stack/utils/typeUtils`
+ *   instead
+ */
 export type ObjKeysWithValuesOfType<
   Obj extends Record<PropertyKey, unknown>,
   ValueType,
@@ -130,12 +134,14 @@ type DeepReplaceValueImpl<
   : T;
 
 /**
- * Replaces all values that extends `ReplaceType` with `NewType` in a deeply nested object or array.
+ * Replaces all values that extends `ReplaceType` with `NewType` in a deeply
+ * nested object or array.
  *
  * @template T - The object or array to replace values in.
  * @template ReplaceType - The type to replace.
  * @template NewType - The new type to replace with.
- * @template SkipPaths - The paths to skip in transverse. e.g. 'a.b.c' | 'array[*].b'
+ * @template SkipPaths - The paths to skip in transverse. e.g. 'a.b.c' |
+ *   'array[*].b'
  * @template SkipTypes - The types to skip in transverse and replace.
  */
 export type DeepReplaceValue<
@@ -151,10 +157,23 @@ type KeysWithUndefinedValues<T extends Record<string, unknown>> = {
 }[keyof T];
 
 /**
- * Marks all possible undefined values as partial at the root level of the object.
+ * Marks all possible undefined values as partial at the root level of the
+ * object.
  */
 export type PartialPossiblyUndefinedValues<T extends Record<string, unknown>> =
   Prettify<
     Partial<Pick<T, KeysWithUndefinedValues<T>>> &
       Omit<T, KeysWithUndefinedValues<T>>
   >;
+
+type PickUndefinedKeys<T> = {
+  [K in keyof T]: undefined extends T[K] ? K : never;
+}[keyof T];
+
+type PickRequiredKeys<T> = {
+  [K in keyof T]: undefined extends T[K] ? never : K;
+}[keyof T];
+
+export type MakeUndefinedKeysOptional<T> = Prettify<
+  Partial<Pick<T, PickUndefinedKeys<T>>> & Pick<T, PickRequiredKeys<T>>
+>;
