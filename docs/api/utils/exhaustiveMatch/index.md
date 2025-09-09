@@ -37,7 +37,8 @@ with: <R>(pattern) => R = matchWith;
 ```
 
 The pattern can be:
-- a function that returns the result
+
+- A function that returns the result
 - '_nxt' to try the next pattern
 - '_never' to indicate that this pattern should never be matched
 
@@ -63,7 +64,7 @@ The pattern can be:
 withObject: <R>(pattern) => R;
 ```
 
-match with early evaluation of the values
+Match with early evaluation of the values
 
 ###### Type Parameters
 
@@ -89,7 +90,7 @@ match with early evaluation of the values
 function exhaustiveMatchObjUnion<T, D, K>(obj, key): object;
 ```
 
-Defined in: [packages/utils/src/exhaustiveMatch.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/exhaustiveMatch.ts#L51)
+Defined in: [packages/utils/src/exhaustiveMatch.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/exhaustiveMatch.ts#L54)
 
 #### Type Parameters
 

@@ -10,7 +10,7 @@
 function getCompositeKey(input, maxSortingDepth): string;
 ```
 
-Defined in: [packages/utils/src/getCompositeKey.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L10)
+Defined in: [packages/utils/src/getCompositeKey.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L11)
 
 Returns a stable key for the input value.
 
@@ -26,7 +26,8 @@ The value to get a stable key for.
 
 `number` = `3`
 
-The maximum depth to sort the input value. Default is 3.
+The maximum depth to sort the input value. Default
+  is 3.
 
 #### Returns
 

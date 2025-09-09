@@ -24,13 +24,13 @@ Defined in: [packages/utils/src/timers.ts:1](https://github.com/lucasols/utils/b
 function createDebouncedTimeout(ms, callback): object;
 ```
 
-Defined in: [packages/utils/src/timers.ts:94](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L94)
+Defined in: [packages/utils/src/timers.ts:95](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L95)
 
 Creates a timeout that prevents concurrent executions.
 
-Each call to the `call` function will cancel any previous pending timeout
-and start a new one. This is useful for debouncing or ensuring only the
-last call executes after a delay.
+Each call to the `call` function will cancel any previous pending timeout and
+start a new one. This is useful for debouncing or ensuring only the last call
+executes after a delay.
 
 #### Parameters
 
@@ -50,7 +50,8 @@ The function to execute when the timeout completes
 
 `object`
 
-An object with `call` to trigger the timeout and `clean` to cancel it
+An object with `call` to trigger the timeout and `clean` to cancel
+  it
 
 ##### call()
 
@@ -71,17 +72,17 @@ clean: CleanupTimer;
 #### Example
 
 ```typescript
-const { call, clean } = createDebouncedTimeout(1000, () => {
-  console.log('Only the last call executes');
-});
+  const { call, clean } = createDebouncedTimeout(1000, () => {
+    console.log('Only the last call executes');
+  });
 
-call(); // This will be cancelled
-call(); // This will be cancelled
-call(); // Only this one will execute after 1000ms
+  call(); // This will be cancelled
+  call(); // This will be cancelled
+  call(); // Only this one will execute after 1000ms
 
-// Or cancel all pending timeouts
-clean();
-```
+  // Or cancel all pending timeouts
+  clean();
+  ```;
 
 ***
 
@@ -95,8 +96,8 @@ Defined in: [packages/utils/src/timers.ts:56](https://github.com/lucasols/utils/
 
 Creates an interval with automatic cleanup capability.
 
-Returns a cleanup function that can be called to cancel the interval.
-The cleanup function is idempotent - calling it multiple times is safe.
+Returns a cleanup function that can be called to cancel the interval. The
+cleanup function is idempotent - calling it multiple times is safe.
 
 #### Parameters
 
@@ -121,13 +122,13 @@ A cleanup function that cancels the interval when called
 #### Example
 
 ```typescript
-const cleanup = createInterval(1000, () => {
-  console.log('Interval tick');
-});
+  const cleanup = createInterval(1000, () => {
+    console.log('Interval tick');
+  });
 
-// Stop the interval
-cleanup();
-```
+  // Stop the interval
+  cleanup();
+  ```;
 
 ***
 
@@ -141,8 +142,8 @@ Defined in: [packages/utils/src/timers.ts:23](https://github.com/lucasols/utils/
 
 Creates a timeout with automatic cleanup capability.
 
-Returns a cleanup function that can be called to cancel the timeout.
-The cleanup function is idempotent - calling it multiple times is safe.
+Returns a cleanup function that can be called to cancel the timeout. The
+cleanup function is idempotent - calling it multiple times is safe.
 
 #### Parameters
 
@@ -167,13 +168,13 @@ A cleanup function that cancels the timeout when called
 #### Example
 
 ```typescript
-const cleanup = createTimeout(1000, () => {
-  console.log('Timeout completed');
-});
+  const cleanup = createTimeout(1000, () => {
+    console.log('Timeout completed');
+  });
 
-// Cancel the timeout before it completes
-cleanup();
-```
+  // Cancel the timeout before it completes
+  cleanup();
+  ```;
 
 ***
 
@@ -183,13 +184,14 @@ cleanup();
 function createWaitUntil<T>(options): CleanupTimer;
 ```
 
-Defined in: [packages/utils/src/timers.ts:144](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L144)
+Defined in: [packages/utils/src/timers.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L149)
 
 Creates a timeout that waits for a condition to become true.
 
-Polls the condition function at regular intervals until it returns a truthy value,
-then calls the callback with that value. If the condition doesn't become true
-within the maximum wait time, the timeout expires without calling the callback.
+Polls the condition function at regular intervals until it returns a truthy
+value, then calls the callback with that value. If the condition doesn't
+become true within the maximum wait time, the timeout expires without calling
+the callback.
 
 #### Type Parameters
 
@@ -215,19 +217,22 @@ Function to call when the condition becomes true
 
 `number` = `20`
 
-How often to check the condition in milliseconds (default: 20)
+How often to check the condition in
+  milliseconds (default: 20)
 
 ###### condition
 
 () => `false` \| `T`
 
-Function that returns false or a truthy value when the condition is met
+Function that returns false or a truthy value when
+  the condition is met
 
 ###### maxWaitMs
 
 `number`
 
-Maximum time to wait for the condition in milliseconds
+Maximum time to wait for the condition in
+  milliseconds
 
 #### Returns
 
@@ -238,15 +243,15 @@ A cleanup function that cancels the condition timeout
 #### Example
 
 ```typescript
-const cleanup = createWaitUntil({
-  condition: () => document.getElementById('myElement'),
-  maxWaitMs: 5000,
-  callback: (element) => {
-    console.log('Element found:', element);
-  },
-  checkIntervalMs: 50
-});
+  const cleanup = createWaitUntil({
+    condition: () => document.getElementById('myElement'),
+    maxWaitMs: 5000,
+    callback: (element) => {
+      console.log('Element found:', element);
+    },
+    checkIntervalMs: 50
+  });
 
-// Cancel the condition check
-cleanup();
-```
+  // Cancel the condition check
+  cleanup();
+  ```;

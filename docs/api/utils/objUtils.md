@@ -4,13 +4,43 @@
 
 ## Functions
 
+### filterObjectKeys()
+
+```ts
+function filterObjectKeys<T>(obj, predicate): Partial<T>;
+```
+
+Defined in: [packages/utils/src/objUtils.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L78)
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `Record`\<`string`, `unknown`\>
+
+#### Parameters
+
+##### obj
+
+`T`
+
+##### predicate
+
+(`key`, `value`) => `boolean`
+
+#### Returns
+
+`Partial`\<`T`\>
+
+***
+
 ### looseGetObjectProperty()
 
 ```ts
 function looseGetObjectProperty<T>(obj, key): undefined | T[keyof T];
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L53)
+Defined in: [packages/utils/src/objUtils.ts:57](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L57)
 
 #### Type Parameters
 
@@ -40,7 +70,7 @@ Defined in: [packages/utils/src/objUtils.ts:53](https://github.com/lucasols/util
 function mapArrayToObject<T, K, O>(array, mapper): Record<K, O>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L21)
+Defined in: [packages/utils/src/objUtils.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L25)
 
 #### Type Parameters
 
@@ -78,7 +108,7 @@ Defined in: [packages/utils/src/objUtils.ts:21](https://github.com/lucasols/util
 function mapObjectToObject<I, K, O>(obj, mapper): Record<K, O>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L28)
+Defined in: [packages/utils/src/objUtils.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L32)
 
 #### Type Parameters
 
@@ -116,7 +146,7 @@ Defined in: [packages/utils/src/objUtils.ts:28](https://github.com/lucasols/util
 function objectTypedEntries<T>(obj): [Extract<keyof T, string>, T[keyof T]][];
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L5)
+Defined in: [packages/utils/src/objUtils.ts:9](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L9)
 
 #### Type Parameters
 
@@ -136,7 +166,7 @@ Defined in: [packages/utils/src/objUtils.ts:5](https://github.com/lucasols/utils
 
 #### Deprecated
 
-use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
+Use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
 
 ***
 
@@ -146,7 +176,7 @@ use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
 function omit<T, K>(obj, keys): Omit<T, K>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L38)
+Defined in: [packages/utils/src/objUtils.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L42)
 
 #### Type Parameters
 
@@ -180,7 +210,7 @@ Defined in: [packages/utils/src/objUtils.ts:38](https://github.com/lucasols/util
 function pick<T, K>(obj, keys): Pick<T, K>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:9](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L9)
+Defined in: [packages/utils/src/objUtils.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L13)
 
 #### Type Parameters
 
@@ -211,10 +241,10 @@ Defined in: [packages/utils/src/objUtils.ts:9](https://github.com/lucasols/utils
 ### rejectObjUndefinedValues()
 
 ```ts
-function rejectObjUndefinedValues<T>(obj): T;
+function rejectObjUndefinedValues<T>(obj): { [P in string | number | symbol]: (Partial<Pick<T, PickUndefinedKeys<T>>> & Pick<T, PickRequiredKeys<T>>)[P] };
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:60](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L60)
+Defined in: [packages/utils/src/objUtils.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L64)
 
 #### Type Parameters
 
@@ -227,6 +257,43 @@ Defined in: [packages/utils/src/objUtils.ts:60](https://github.com/lucasols/util
 ##### obj
 
 `T`
+
+#### Returns
+
+\{ \[P in string \| number \| symbol\]: (Partial\<Pick\<T, PickUndefinedKeys\<T\>\>\> & Pick\<T, PickRequiredKeys\<T\>\>)\[P\] \}
+
+***
+
+### sortObjectKeys()
+
+```ts
+function sortObjectKeys<T>(
+   obj, 
+   sortByFn, 
+   options?): T;
+```
+
+Defined in: [packages/utils/src/objUtils.ts:89](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L89)
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `Record`\<`string`, `unknown`\>
+
+#### Parameters
+
+##### obj
+
+`T`
+
+##### sortByFn
+
+[`SortByValueFn`](arrayUtils/index.md#sortbyvaluefn)\<\[keyof `T`, `T`\[keyof `T`\]\]\>
+
+##### options?
+
+[`SortByProps`](arrayUtils/index.md#sortbyprops)
 
 #### Returns
 

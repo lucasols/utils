@@ -39,14 +39,14 @@ Defined in: [packages/utils/src/runShellCmd.ts:133](https://github.com/lucasols/
 
 #### Deprecated
 
-This utility has been moved to @ls-stack/node-utils. Please update your imports:
-```
-// Old (deprecated)
-import { concurrentCmd } from '@ls-stack/utils/runShellCmd';
+This utility has been moved to @ls-stack/node-utils. Please
+  update your imports:
 
-// New (preferred)
-import { concurrentCmd } from '@ls-stack/node-utils/runShellCmd';
-```
+      // Old (deprecated)
+      import { concurrentCmd } from '@ls-stack/utils/runShellCmd';
+
+      // New (preferred)
+      import { concurrentCmd } from '@ls-stack/node-utils/runShellCmd';
 
 ***
 
@@ -81,14 +81,14 @@ Defined in: [packages/utils/src/runShellCmd.ts:39](https://github.com/lucasols/u
 
 #### Deprecated
 
-This utility has been moved to @ls-stack/node-utils. Please update your imports:
-```
-// Old (deprecated)
-import { runCmd } from '@ls-stack/utils/runShellCmd';
+This utility has been moved to @ls-stack/node-utils. Please
+  update your imports:
 
-// New (preferred)
-import { runCmd } from '@ls-stack/node-utils/runShellCmd';
-```
+      // Old (deprecated)
+      import { runCmd } from '@ls-stack/utils/runShellCmd';
+
+      // New (preferred)
+      import { runCmd } from '@ls-stack/node-utils/runShellCmd';
 
 ***
 
@@ -112,14 +112,14 @@ Defined in: [packages/utils/src/runShellCmd.ts:198](https://github.com/lucasols/
 
 #### Deprecated
 
-This utility has been moved to @ls-stack/node-utils. Please update your imports:
-```
-// Old (deprecated)
-import { runCmdSilent } from '@ls-stack/utils/runShellCmd';
+This utility has been moved to @ls-stack/node-utils. Please
+  update your imports:
 
-// New (preferred)
-import { runCmdSilent } from '@ls-stack/node-utils/runShellCmd';
-```
+      // Old (deprecated)
+      import { runCmdSilent } from '@ls-stack/utils/runShellCmd';
+
+      // New (preferred)
+      import { runCmdSilent } from '@ls-stack/node-utils/runShellCmd';
 
 ***
 
@@ -143,14 +143,14 @@ Defined in: [packages/utils/src/runShellCmd.ts:213](https://github.com/lucasols/
 
 #### Deprecated
 
-This utility has been moved to @ls-stack/node-utils. Please update your imports:
-```
-// Old (deprecated)
-import { runCmdSilentUnwrap } from '@ls-stack/utils/runShellCmd';
+This utility has been moved to @ls-stack/node-utils. Please
+  update your imports:
 
-// New (preferred)
-import { runCmdSilentUnwrap } from '@ls-stack/node-utils/runShellCmd';
-```
+      // Old (deprecated)
+      import { runCmdSilentUnwrap } from '@ls-stack/utils/runShellCmd';
+
+      // New (preferred)
+      import { runCmdSilentUnwrap } from '@ls-stack/node-utils/runShellCmd';
 
 ***
 
@@ -187,11 +187,11 @@ Defined in: [packages/utils/src/runShellCmd.ts:175](https://github.com/lucasols/
 
 #### Deprecated
 
-This utility has been moved to @ls-stack/node-utils. Please update your imports:
-```
-// Old (deprecated)
-import { runCmdUnwrap } from '@ls-stack/utils/runShellCmd';
+This utility has been moved to @ls-stack/node-utils. Please
+  update your imports:
 
-// New (preferred)
-import { runCmdUnwrap } from '@ls-stack/node-utils/runShellCmd';
-```
+      // Old (deprecated)
+      import { runCmdUnwrap } from '@ls-stack/utils/runShellCmd';
+
+      // New (preferred)
+      import { runCmdUnwrap } from '@ls-stack/node-utils/runShellCmd';

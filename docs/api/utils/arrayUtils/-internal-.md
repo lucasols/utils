@@ -10,7 +10,7 @@
 type ArrayOps<T> = object;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:259](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L259)
+Defined in: [packages/utils/src/arrayUtils.ts:265](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L265)
 
 #### Type Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:259](https://github.com/lucasols/u
 filterAndMap: <R>(mapFilter) => R[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:272](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L272)
+Defined in: [packages/utils/src/arrayUtils.ts:279](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L279)
 
 Filter and map an array
 
@@ -42,8 +42,8 @@ Filter and map an array
 
 (`item`, `index`) => `false` \| `R`
 
-A function that takes an item and returns a value or `false`
-to reject the item.
+A function that takes an item and returns a value or
+  `false` to reject the item.
 
 ###### Returns
 
@@ -54,9 +54,9 @@ to reject the item.
 ```ts
 const items = [1, 2, 3];
 
-const enhancedItems = arrayOps(items);
+  const enhancedItems = arrayOps(items);
 
-enhancedItems.filterAndMap((item) => item === 2 ? false : item);
+  enhancedItems.filterAndMap((item) => (item === 2 ? false : item));
 ```
 
 ##### findAndMap()
@@ -65,7 +65,7 @@ enhancedItems.filterAndMap((item) => item === 2 ? false : item);
 findAndMap: <R>(predicate) => R | undefined;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:275](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L275)
+Defined in: [packages/utils/src/arrayUtils.ts:282](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L282)
 
 ###### Type Parameters
 
@@ -89,7 +89,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:275](https://github.com/lucasols/u
 rejectDuplicates: (getKey) => T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:274](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L274)
+Defined in: [packages/utils/src/arrayUtils.ts:281](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L281)
 
 ###### Parameters
 
@@ -107,62 +107,21 @@ Defined in: [packages/utils/src/arrayUtils.ts:274](https://github.com/lucasols/u
 sortBy: (sortByValue, props) => T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:273](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L273)
+Defined in: [packages/utils/src/arrayUtils.ts:280](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L280)
 
 ###### Parameters
 
 ###### sortByValue
 
-[`SortByValue`](#sortbyvalue)\<`T`\>
+[`SortByValueFn`](index.md#sortbyvaluefn)\<`T`\>
 
 ###### props
 
-[`SortByProps`](#sortbyprops)
+[`SortByProps`](index.md#sortbyprops)
 
 ###### Returns
 
 `T`[]
-
-***
-
-### SortByProps
-
-```ts
-type SortByProps = 
-  | {
-  order?: SortOrder | SortOrder[];
-}
-  | SortOrder
-  | SortOrder[];
-```
-
-Defined in: [packages/utils/src/arrayUtils.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L48)
-
-***
-
-### SortByValue()\<T\>
-
-```ts
-type SortByValue<T> = (item) => (number | string)[] | number | string;
-```
-
-Defined in: [packages/utils/src/arrayUtils.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L46)
-
-#### Type Parameters
-
-##### T
-
-`T`
-
-#### Parameters
-
-##### item
-
-`T`
-
-#### Returns
-
-(`number` \| `string`)[] \| `number` \| `string`
 
 ***
 
@@ -172,4 +131,4 @@ Defined in: [packages/utils/src/arrayUtils.ts:46](https://github.com/lucasols/ut
 type SortOrder = "desc" | "asc";
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L44)
+Defined in: [packages/utils/src/arrayUtils.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L43)

@@ -14,12 +14,12 @@
 const isFunction: (value) => value is (args: any[]) => any = isFunctionFromTypeGuards;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:240](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L240)
+Defined in: [packages/utils/src/assertions.ts:251](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L251)
 
 Type guard to check if a value is a function.
 
-Returns true if the value is a function of any kind (regular function,
-arrow function, method, constructor, etc.).
+Returns true if the value is a function of any kind (regular function, arrow
+function, method, constructor, etc.).
 
 #### Parameters
 
@@ -38,21 +38,21 @@ True if the value is a function, false otherwise
 #### Example
 
 ```typescript
-if (isFunction(value)) {
-  // TypeScript knows value is (...args: any[]) => any
-  const result = value();
-}
+  if (isFunction(value)) {
+    // TypeScript knows value is (...args: any[]) => any
+    const result = value();
+  }
 
-isFunction(() => {});           // true
-isFunction(function() {});      // true
-isFunction(Math.max);           // true
-isFunction('string');           // false
-isFunction({});                 // false
-```
+  isFunction(() => {});           // true
+  isFunction(function() {});      // true
+  isFunction(Math.max);           // true
+  isFunction('string');           // false
+  isFunction({});                 // false
+  ```;
 
 #### Deprecated
 
-use import from `@ls-stack/typeGuards` instead
+Use import from `@ls-stack/typeGuards` instead
 
 ***
 
@@ -62,7 +62,7 @@ use import from `@ls-stack/typeGuards` instead
 const isObject: (value) => value is Record<string, unknown> = isObjectFromTypeGuards;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:242](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L242)
+Defined in: [packages/utils/src/assertions.ts:253](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L253)
 
 Type guard to check if a value is a plain object (not null, not an array).
 
@@ -86,21 +86,21 @@ True if the value is a plain object, false otherwise
 #### Example
 
 ```typescript
-if (isObject(value)) {
-  // TypeScript knows value is Record<string, unknown>
-  console.log(value.someProperty);
-}
+  if (isObject(value)) {
+    // TypeScript knows value is Record<string, unknown>
+    console.log(value.someProperty);
+  }
 
-isObject({});           // true
-isObject({ a: 1 });     // true
-isObject(null);         // false
-isObject([]);           // false
-isObject('string');     // false
-```
+  isObject({});           // true
+  isObject({ a: 1 });     // true
+  isObject(null);         // false
+  isObject([]);           // false
+  isObject('string');     // false
+  ```;
 
 #### Deprecated
 
-use import from `@ls-stack/typeGuards` instead
+Use import from `@ls-stack/typeGuards` instead
 
 ***
 
@@ -110,9 +110,10 @@ use import from `@ls-stack/typeGuards` instead
 const isPlainObject: (value) => value is Record<string, unknown> = isPlainObjectFromTypeGuards;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:244](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L244)
+Defined in: [packages/utils/src/assertions.ts:255](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L255)
 
-Type guard to check if a value is a plain object (created by Object literal or Object constructor).
+Type guard to check if a value is a plain object (created by Object literal
+or Object constructor).
 
 Returns true if the value is a plain object - an object created by the Object
 constructor or object literal syntax. This excludes instances of classes,
@@ -135,23 +136,23 @@ True if the value is a plain object, false otherwise
 #### Example
 
 ```typescript
-if (isPlainObject(value)) {
-  // TypeScript knows value is Record<string, unknown>
-  console.log(Object.keys(value));
-}
+  if (isPlainObject(value)) {
+    // TypeScript knows value is Record<string, unknown>
+    console.log(Object.keys(value));
+  }
 
-isPlainObject({});                    // true
-isPlainObject({ a: 1 });              // true
-isPlainObject(Object.create(null));   // true
-isPlainObject(new Date());            // false
-isPlainObject(/regex/);               // false
-isPlainObject(new MyClass());         // false
-isPlainObject([]);                    // false
-```
+  isPlainObject({});                    // true
+  isPlainObject({ a: 1 });              // true
+  isPlainObject(Object.create(null));   // true
+  isPlainObject(new Date());            // false
+  isPlainObject(/regex/);               // false
+  isPlainObject(new MyClass());         // false
+  isPlainObject([]);                    // false
+  ```;
 
 #### Deprecated
 
-use import from `@ls-stack/typeGuards` instead
+Use import from `@ls-stack/typeGuards` instead
 
 ***
 
@@ -161,13 +162,13 @@ use import from `@ls-stack/typeGuards` instead
 const isPromise: (value) => value is Promise<unknown> = isPromiseFromTypeGuards;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:246](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L246)
+Defined in: [packages/utils/src/assertions.ts:257](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L257)
 
 Type guard to check if a value is a Promise or thenable object.
 
-Returns true if the value is an object with a `then` method that is a function.
-This covers both native Promises and thenable objects that implement the
-Promise interface.
+Returns true if the value is an object with a `then` method that is a
+function. This covers both native Promises and thenable objects that
+implement the Promise interface.
 
 #### Parameters
 
@@ -186,21 +187,21 @@ True if the value is a Promise or thenable, false otherwise
 #### Example
 
 ```typescript
-if (isPromise(value)) {
-  // TypeScript knows value is Promise<unknown>
-  const result = await value;
-}
+  if (isPromise(value)) {
+    // TypeScript knows value is Promise<unknown>
+    const result = await value;
+  }
 
-isPromise(Promise.resolve());           // true
-isPromise(new Promise(() => {}));       // true
-isPromise({ then: () => {} });          // true
-isPromise({ then: 'not a function' });  // false
-isPromise('string');                    // false
-```
+  isPromise(Promise.resolve());           // true
+  isPromise(new Promise(() => {}));       // true
+  isPromise({ then: () => {} });          // true
+  isPromise({ then: 'not a function' });  // false
+  isPromise('string');                    // false
+  ```;
 
 #### Deprecated
 
-use import from `@ls-stack/typeGuards` instead
+Use import from `@ls-stack/typeGuards` instead
 
 ## Functions
 
@@ -210,11 +211,13 @@ use import from `@ls-stack/typeGuards` instead
 function assertIsNotNullish<T>(value, error): asserts value is StrictNonNullable<T, never>;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:111](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L111)
+Defined in: [packages/utils/src/assertions.ts:119](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L119)
 
-Asserts that a value is not null or undefined using TypeScript's assertion signature.
+Asserts that a value is not null or undefined using TypeScript's assertion
+signature.
 
-Throws an error if the value is null or undefined. Use it instead of `!` operator for better type safety.
+Throws an error if the value is null or undefined. Use it instead of `!`
+operator for better type safety.
 
 #### Type Parameters
 
@@ -234,7 +237,8 @@ The value to assert is not null or undefined
 
 ##### error
 
-Error message string or function that returns an Error to throw if value is nullish
+Error message string or function that returns an Error to
+  throw if value is nullish
 
 `string` | () => `Error`
 
@@ -242,22 +246,22 @@ Error message string or function that returns an Error to throw if value is null
 
 `asserts value is StrictNonNullable<T, never>`
 
-#### Throws
-
-When the value is null or undefined
-
 #### Example
 
 ```typescript
-function processValue(input: string | null | undefined) {
-  assertIsNotNullish(input);
-  // TypeScript now knows input is string
-  console.log(input.toUpperCase());
-}
+  function processValue(input: string | null | undefined) {
+    assertIsNotNullish(input);
+    // TypeScript now knows input is string
+    console.log(input.toUpperCase());
+  }
 
-// With custom error
-assertIsNotNullish(value, 'Value is required for processing');
-```
+  // With custom error
+  assertIsNotNullish(value, 'Value is required for processing');
+  ```;
+
+#### Throws
+
+When the value is null or undefined
 
 ***
 
@@ -267,11 +271,12 @@ assertIsNotNullish(value, 'Value is required for processing');
 function assertIsNotUndefined<T>(value, error): asserts value is StrictNonUndefined<T, never>;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:142](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L142)
+Defined in: [packages/utils/src/assertions.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L152)
 
 Asserts that a value is not undefined using TypeScript's assertion signature.
 
-Throws an error if the value is undefined. Use it instead of `!` operator for better type safety.
+Throws an error if the value is undefined. Use it instead of `!` operator for
+better type safety.
 
 #### Type Parameters
 
@@ -291,7 +296,8 @@ The value to assert is not undefined
 
 ##### error
 
-Error message string or function that returns an Error to throw if value is undefined
+Error message string or function that returns an Error to
+  throw if value is undefined
 
 `string` | () => `Error`
 
@@ -299,22 +305,22 @@ Error message string or function that returns an Error to throw if value is unde
 
 `asserts value is StrictNonUndefined<T, never>`
 
-#### Throws
-
-When the value is undefined
-
 #### Example
 
 ```typescript
-function processValue(input: string | undefined) {
-  assertIsNotUndefined(input);
-  // TypeScript now knows input is string
-  console.log(input.toUpperCase());
-}
+  function processValue(input: string | undefined) {
+    assertIsNotUndefined(input);
+    // TypeScript now knows input is string
+    console.log(input.toUpperCase());
+  }
 
-// With custom error
-assertIsNotUndefined(value, 'Value must be defined');
-```
+  // With custom error
+  assertIsNotUndefined(value, 'Value must be defined');
+  ```;
+
+#### Throws
+
+When the value is undefined
 
 ***
 
@@ -324,14 +330,14 @@ assertIsNotUndefined(value, 'Value must be defined');
 function exhaustiveCheck<Except>(narrowedType): Error;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:232](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L232)
+Defined in: [packages/utils/src/assertions.ts:243](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L243)
 
 Ensures exhaustive type checking in switch statements or conditional logic.
 
-This function should be used in the default case of switch statements or
-the final else branch of conditional logic to ensure all possible cases
-are handled. It helps catch missing cases at compile time when new union
-members are added.
+This function should be used in the default case of switch statements or the
+final else branch of conditional logic to ensure all possible cases are
+handled. It helps catch missing cases at compile time when new union members
+are added.
 
 #### Type Parameters
 
@@ -358,32 +364,32 @@ An Error object (this function should never actually execute)
 #### Example
 
 ```typescript
-type Status = 'pending' | 'success' | 'error';
+  type Status = 'pending' | 'success' | 'error';
 
-function handleStatus(status: Status) {
-  switch (status) {
-    case 'pending':
-      return 'Loading...';
-    case 'success':
-      return 'Done!';
-    case 'error':
-      return 'Failed!';
-    default:
-      throw exhaustiveCheck(status); // TypeScript error if Status gains new members
+  function handleStatus(status: Status) {
+    switch (status) {
+      case 'pending':
+        return 'Loading...';
+      case 'success':
+        return 'Done!';
+      case 'error':
+        return 'Failed!';
+      default:
+        throw exhaustiveCheck(status); // TypeScript error if Status gains new members
+    }
   }
-}
 
-// In conditional logic
-function processValue(value: string | number) {
-  if (typeof value === 'string') {
-    return value.toUpperCase();
-  } else if (typeof value === 'number') {
-    return value.toString();
-  } else {
-    throw exhaustiveCheck(value); // Ensures all cases are covered
+  // In conditional logic
+  function processValue(value: string | number) {
+    if (typeof value === 'string') {
+      return value.toUpperCase();
+    } else if (typeof value === 'number') {
+      return value.toString();
+    } else {
+      throw exhaustiveCheck(value); // Ensures all cases are covered
+    }
   }
-}
-```
+  ```;
 
 ***
 
@@ -393,13 +399,13 @@ function processValue(value: string | number) {
 function invariant(condition, error): asserts condition;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:180](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L180)
+Defined in: [packages/utils/src/assertions.ts:191](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L191)
 
 Asserts that a condition is always true, throwing an error if it's falsy.
 
-This function is useful for enforcing invariants in your code - conditions that
-should always be true. It uses TypeScript's assertion signature to narrow types
-based on the condition.
+This function is useful for enforcing invariants in your code - conditions
+that should always be true. It uses TypeScript's assertion signature to
+narrow types based on the condition.
 
 #### Parameters
 
@@ -411,7 +417,8 @@ The condition to check (any truthy/falsy value)
 
 ##### error
 
-Error message string or function that returns an Error to throw if condition is falsy
+Error message string or function that returns an Error to
+  throw if condition is falsy
 
 `string` | () => `Error`
 
@@ -419,28 +426,28 @@ Error message string or function that returns an Error to throw if condition is 
 
 `asserts condition`
 
-#### Throws
-
-When the condition is falsy
-
 #### Example
 
 ```typescript
-function divide(a: number, b: number) {
-  invariant(b !== 0, 'Division by zero is not allowed');
-  return a / b;
-}
+  function divide(a: number, b: number) {
+    invariant(b !== 0, 'Division by zero is not allowed');
+    return a / b;
+  }
 
-// Type narrowing example
-function processUser(user: User | null) {
-  invariant(user, 'User must be logged in');
-  // TypeScript now knows user is User, not null
-  console.log(user.name);
-}
+  // Type narrowing example
+  function processUser(user: User | null) {
+    invariant(user, 'User must be logged in');
+    // TypeScript now knows user is User, not null
+    console.log(user.name);
+  }
 
-// With custom error function
-invariant(isValid, () => new ValidationError('Invalid state detected'));
-```
+  // With custom error function
+  invariant(isValid, () => new ValidationError('Invalid state detected'));
+  ```;
+
+#### Throws
+
+When the condition is falsy
 
 ***
 
@@ -450,11 +457,13 @@ invariant(isValid, () => new ValidationError('Invalid state detected'));
 function notNullish<T>(value, error): StrictNonNullable<T>;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L78)
+Defined in: [packages/utils/src/assertions.ts:83](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L83)
 
-Ensures a value is not null or undefined and returns it with the correct type.
+Ensures a value is not null or undefined and returns it with the correct
+type.
 
-Throws an error if the value is null or undefined. Use it instead of `!` operator for better type safety.
+Throws an error if the value is null or undefined. Use it instead of `!`
+operator for better type safety.
 
 #### Type Parameters
 
@@ -474,7 +483,8 @@ The value to check for null or undefined
 
 ##### error
 
-Error message string or function that returns an Error to throw if value is nullish
+Error message string or function that returns an Error to
+  throw if value is nullish
 
 `string` | () => `Error`
 
@@ -484,22 +494,22 @@ Error message string or function that returns an Error to throw if value is null
 
 The input value with null and undefined excluded from its type
 
-#### Throws
-
-When the value is null or undefined
-
 #### Example
 
 ```typescript
-const maybeString: string | null | undefined = getValue();
-const definiteString = notNullish(maybeString); // Type: string
+  const maybeString: string | null | undefined = getValue();
+  const definiteString = notNullish(maybeString); // Type: string
 
-// With custom error message
-const value = notNullish(maybeValue, 'Value cannot be null or undefined');
+  // With custom error message
+  const value = notNullish(maybeValue, 'Value cannot be null or undefined');
 
-// With custom error function
-const value = notNullish(maybeValue, () => new ValidationError('Required field'));
-```
+  // With custom error function
+  const value = notNullish(maybeValue, () => new ValidationError('Required field'));
+  ```;
+
+#### Throws
+
+When the value is null or undefined
 
 ***
 
@@ -509,11 +519,12 @@ const value = notNullish(maybeValue, () => new ValidationError('Required field')
 function notUndefined<T>(value, error): StrictNonUndefined<T>;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L39)
+Defined in: [packages/utils/src/assertions.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L41)
 
 Ensures a value is not undefined and returns it with the correct type.
 
-Throws an error if the value is undefined. Use it instead of `!` operator for better type safety.
+Throws an error if the value is undefined. Use it instead of `!` operator for
+better type safety.
 
 #### Type Parameters
 
@@ -533,7 +544,8 @@ The value to check for undefined
 
 ##### error
 
-Error message string or function that returns an Error to throw if value is undefined
+Error message string or function that returns an Error to
+  throw if value is undefined
 
 `string` | () => `Error`
 
@@ -543,19 +555,19 @@ Error message string or function that returns an Error to throw if value is unde
 
 The input value with undefined excluded from its type
 
-#### Throws
-
-When the value is undefined
-
 #### Example
 
 ```typescript
-const maybeString: string | undefined = getValue();
-const definiteString = notUndefined(maybeString); // Type: string
+  const maybeString: string | undefined = getValue();
+  const definiteString = notUndefined(maybeString); // Type: string
 
-// With custom error message
-const value = notUndefined(maybeValue, 'Value must be defined');
+  // With custom error message
+  const value = notUndefined(maybeValue, 'Value must be defined');
 
-// With custom error function
-const value = notUndefined(maybeValue, () => new ValidationError('Required field'));
-```
+  // With custom error function
+  const value = notUndefined(maybeValue, () => new ValidationError('Required field'));
+  ```;
+
+#### Throws
+
+When the value is undefined

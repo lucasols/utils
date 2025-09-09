@@ -14,7 +14,7 @@
 type GetTypedResult<R> = TypedResult<R extends Result<infer T, any> ? T : never, R extends Result<any, infer E> ? E : never>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:355](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L355)
+Defined in: [packages/utils/src/tsResult.ts:356](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L356)
 
 #### Type Parameters
 
@@ -79,7 +79,7 @@ Use `t-result` library instead.
 type TypedResult<T, E> = object;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:345](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L345)
+Defined in: [packages/utils/src/tsResult.ts:346](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L346)
 
 #### Deprecated
 
@@ -103,7 +103,7 @@ Use `t-result` library instead.
 _type: Result<T, E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:351](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L351)
+Defined in: [packages/utils/src/tsResult.ts:352](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L352)
 
 ###### Deprecated
 
@@ -115,7 +115,7 @@ Use `t-result` library instead.
 err: (error) => Err<E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:349](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L349)
+Defined in: [packages/utils/src/tsResult.ts:350](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L350)
 
 ###### Parameters
 
@@ -137,7 +137,7 @@ Use `t-result` library instead.
 ok: (value) => Ok<T>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:347](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L347)
+Defined in: [packages/utils/src/tsResult.ts:348](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L348)
 
 ###### Parameters
 
@@ -499,11 +499,11 @@ Use `t-result` library instead.
 
 ### ~~ok()~~
 
-#### Param
-
 #### Deprecated
 
 Use `t-result` library instead.
+
+#### Param
 
 #### Call Signature
 
@@ -517,11 +517,11 @@ Defined in: [packages/utils/src/tsResult.ts:124](https://github.com/lucasols/uti
 
 [`Ok`](-internal-.md#ok)\<`void`\>
 
-##### Param
-
 ##### Deprecated
 
 Use `t-result` library instead.
+
+##### Param
 
 ##### Deprecated
 
@@ -551,11 +551,11 @@ Defined in: [packages/utils/src/tsResult.ts:129](https://github.com/lucasols/uti
 
 [`Ok`](-internal-.md#ok)\<`T`\>
 
-##### Param
-
 ##### Deprecated
 
 Use `t-result` library instead.
+
+##### Param
 
 ##### Deprecated
 
@@ -571,7 +571,7 @@ Use `t-result` library instead.
 function resultify<T, E>(fn, errorNormalizer?): Result<T, E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:254](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L254)
+Defined in: [packages/utils/src/tsResult.ts:255](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L255)
 
 ##### Type Parameters
 
@@ -607,7 +607,7 @@ Use `t-result` library instead.
 function resultify<T, E>(fn, errorNormalizer?): Promise<Result<Awaited<T>, E>>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:263](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L263)
+Defined in: [packages/utils/src/tsResult.ts:264](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L264)
 
 ##### Type Parameters
 
@@ -643,7 +643,7 @@ Use `t-result` library instead.
 function resultify<T, E>(fn, errorNormalizer?): Promise<Result<T, E>>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:272](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L272)
+Defined in: [packages/utils/src/tsResult.ts:273](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L273)
 
 ##### Type Parameters
 
@@ -681,7 +681,7 @@ Use `t-result` library instead.
 function unknownToError(error): Error;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:323](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L323)
+Defined in: [packages/utils/src/tsResult.ts:324](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L324)
 
 #### Parameters
 

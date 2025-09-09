@@ -10,9 +10,10 @@
 
 ### Dedent()
 
-Defined in: [packages/utils/src/dedent.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L35)
+Defined in: [packages/utils/src/dedent.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L39)
 
-Dedent function interface that can be used both as a template tag and a regular function
+Dedent function interface that can be used both as a template tag and a
+regular function
 
 #### Call Signature
 
@@ -20,9 +21,10 @@ Dedent function interface that can be used both as a template tag and a regular 
 Dedent(literals): string;
 ```
 
-Defined in: [packages/utils/src/dedent.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L39)
+Defined in: [packages/utils/src/dedent.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L41)
 
-Dedent function interface that can be used both as a template tag and a regular function
+Dedent function interface that can be used both as a template tag and a
+regular function
 
 ##### Parameters
 
@@ -40,9 +42,10 @@ Dedent function interface that can be used both as a template tag and a regular 
 Dedent(strings, ...values): string;
 ```
 
-Defined in: [packages/utils/src/dedent.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L43)
+Defined in: [packages/utils/src/dedent.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L46)
 
-Dedent function interface that can be used both as a template tag and a regular function
+Dedent function interface that can be used both as a template tag and a
+regular function
 
 ##### Parameters
 
@@ -66,7 +69,7 @@ Dedent function interface that can be used both as a template tag and a regular 
 withOptions: CreateDedent;
 ```
 
-Defined in: [packages/utils/src/dedent.ts:47](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L47)
+Defined in: [packages/utils/src/dedent.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L48)
 
 Create a new dedent function with custom options
 
@@ -74,7 +77,7 @@ Create a new dedent function with custom options
 
 ### DedentOptions
 
-Defined in: [packages/utils/src/dedent.ts:4](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L4)
+Defined in: [packages/utils/src/dedent.ts:2](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L2)
 
 Configuration options for the dedent function behavior
 
@@ -86,10 +89,10 @@ Configuration options for the dedent function behavior
 optional escapeSpecialCharacters: boolean;
 ```
 
-Defined in: [packages/utils/src/dedent.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L10)
+Defined in: [packages/utils/src/dedent.ts:9](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L9)
 
-Whether to process escape sequences like \n, `, \$, and {
-When true, allows using escaped characters in template literals
+Whether to process escape sequences like \n, `, $, and { When true, allows
+using escaped characters in template literals
 
 ###### Default
 
@@ -103,10 +106,11 @@ true for template literals, false for plain strings
 optional identInterpolations: boolean;
 ```
 
-Defined in: [packages/utils/src/dedent.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L21)
+Defined in: [packages/utils/src/dedent.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L23)
 
 Whether to preserve relative indentation of interpolated multi-line values
-When true, multi-line interpolations are re-indented to match the surrounding context
+When true, multi-line interpolations are re-indented to match the
+surrounding context
 
 ###### Default
 
@@ -120,10 +124,10 @@ true
 optional showNullishOrFalseValues: boolean;
 ```
 
-Defined in: [packages/utils/src/dedent.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L27)
+Defined in: [packages/utils/src/dedent.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L30)
 
-Whether to display nullish or false values (false, null, undefined) in interpolations
-When false, nullish or false values are skipped entirely
+Whether to display nullish or false values (false, null, undefined) in
+interpolations When false, nullish or false values are skipped entirely
 
 ###### Default
 
@@ -155,7 +159,7 @@ true
 type CreateDedent = (options) => Dedent;
 ```
 
-Defined in: [packages/utils/src/dedent.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L53)
+Defined in: [packages/utils/src/dedent.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L52)
 
 Factory function type for creating dedent functions with custom options
 
@@ -179,22 +183,23 @@ const dedent: Dedent;
 
 Defined in: [packages/utils/src/dedent.ts:75](https://github.com/lucasols/utils/blob/main/packages/utils/src/dedent.ts#L75)
 
-Remove common leading indentation from multi-line strings while preserving relative indentation.
-Can be used as a tagged template literal or called with a plain string.
+Remove common leading indentation from multi-line strings while preserving
+relative indentation. Can be used as a tagged template literal or called with
+a plain string.
 
-By default, it will dedent interpolated multi-line strings to match the surrounding context.
-And it will not show falsy values.
+By default, it will dedent interpolated multi-line strings to match the
+surrounding context. And it will not show falsy values.
 
 #### Example
 
 ```typescript
-const text = dedent`
+  const text = dedent`;
   function hello() {
     console.log('world');
   }
-`;
-// Result:
-"function hello() {
-  console.log('world');
-}"
-```
+  `;
+  // Result:
+  "function hello() {
+    console.log('world');
+  }"
+  ```;

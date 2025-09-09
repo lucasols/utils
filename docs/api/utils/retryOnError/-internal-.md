@@ -10,7 +10,7 @@
 type RetryOptions = object;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L7)
+Defined in: [packages/utils/src/retryOnError.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L5)
 
 Configuration options for retryOnError function.
 
@@ -22,7 +22,7 @@ Configuration options for retryOnError function.
 optional debugId: string;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:16](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L16)
+Defined in: [packages/utils/src/retryOnError.ts:17](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L17)
 
 Optional ID for debug logging
 
@@ -32,7 +32,7 @@ Optional ID for debug logging
 optional delayBetweenRetriesMs: number | (retry) => number;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:9](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L9)
+Defined in: [packages/utils/src/retryOnError.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L7)
 
 Delay between retries in milliseconds or function returning delay
 
@@ -42,7 +42,7 @@ Delay between retries in milliseconds or function returning delay
 optional disableRetries: boolean;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:18](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L18)
+Defined in: [packages/utils/src/retryOnError.ts:19](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L19)
 
 Disable retries
 
@@ -52,7 +52,7 @@ Disable retries
 optional onRetry: (error, lastAttempt) => void;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L20)
+Defined in: [packages/utils/src/retryOnError.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L21)
 
 Function to call when retry happens
 
@@ -82,9 +82,10 @@ Function to call when retry happens
 optional retryCondition: (error, lastAttempt) => boolean;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L11)
+Defined in: [packages/utils/src/retryOnError.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L12)
 
-Function to determine if retry should happen, receives error and duration of last attempt
+Function to determine if retry should happen, receives error and duration
+of last attempt
 
 ###### Parameters
 

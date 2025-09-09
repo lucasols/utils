@@ -10,7 +10,7 @@
 type AddOptions<I, T, E> = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:96](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L96)
+Defined in: [packages/utils/src/asyncQueue.ts:94](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L94)
 
 Options for adding individual tasks to the queue
 
@@ -36,7 +36,7 @@ Options for adding individual tasks to the queue
 optional meta: I;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L102)
+Defined in: [packages/utils/src/asyncQueue.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L100)
 
 Metadata to associate with this task
 
@@ -46,7 +46,7 @@ Metadata to associate with this task
 optional onComplete: (value) => void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:104](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L104)
+Defined in: [packages/utils/src/asyncQueue.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L102)
 
 Callback invoked when task completes successfully
 
@@ -66,7 +66,7 @@ Callback invoked when task completes successfully
 optional onError: (error) => void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:106](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L106)
+Defined in: [packages/utils/src/asyncQueue.ts:104](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L104)
 
 Callback invoked when task fails
 
@@ -86,7 +86,7 @@ Callback invoked when task fails
 optional signal: AbortSignal;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L98)
+Defined in: [packages/utils/src/asyncQueue.ts:96](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L96)
 
 AbortSignal to cancel this specific task
 
@@ -96,7 +96,7 @@ AbortSignal to cancel this specific task
 optional timeout: number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L100)
+Defined in: [packages/utils/src/asyncQueue.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L98)
 
 Timeout for this specific task in milliseconds
 
@@ -108,7 +108,7 @@ Timeout for this specific task in milliseconds
 type AddOptionsWithId<I, T, E> = Omit<AddOptions<I, T, E>, "meta"> & object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:918](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L918)
+Defined in: [packages/utils/src/asyncQueue.ts:922](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L922)
 
 AddOptions variant that requires metadata to be provided
 
@@ -226,7 +226,7 @@ Default timeout for all tasks in milliseconds
 type RateLimit = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L66)
+Defined in: [packages/utils/src/asyncQueue.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L68)
 
 Configuration for rate limiting task execution
 
@@ -238,7 +238,7 @@ Configuration for rate limiting task execution
 interval: DurationObj | number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L70)
+Defined in: [packages/utils/src/asyncQueue.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L72)
 
 Time interval in milliseconds or as a duration object
 
@@ -248,7 +248,7 @@ Time interval in milliseconds or as a duration object
 maxTasks: number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L68)
+Defined in: [packages/utils/src/asyncQueue.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L70)
 
 Maximum number of tasks to execute within the interval
 
@@ -260,7 +260,7 @@ Maximum number of tasks to execute within the interval
 type RunCtx<I> = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L112)
+Defined in: [packages/utils/src/asyncQueue.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L108)
 
 Runtime context passed to task functions
 
@@ -278,7 +278,7 @@ Runtime context passed to task functions
 optional meta: I;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:116](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L116)
+Defined in: [packages/utils/src/asyncQueue.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L112)
 
 Metadata associated with this task
 
@@ -288,6 +288,6 @@ Metadata associated with this task
 optional signal: AbortSignal;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:114](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L114)
+Defined in: [packages/utils/src/asyncQueue.ts:110](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L110)
 
 Combined AbortSignal from task, queue, and timeout signals

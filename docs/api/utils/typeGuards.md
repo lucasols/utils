@@ -10,7 +10,7 @@
 type NonEmptyArray<T> = [T, ...T[]];
 ```
 
-Defined in: [packages/utils/src/typeGuards.ts:128](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L128)
+Defined in: [packages/utils/src/typeGuards.ts:129](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L129)
 
 #### Type Parameters
 
@@ -28,7 +28,7 @@ Defined in: [packages/utils/src/typeGuards.ts:128](https://github.com/lucasols/u
 function arrayHasAtLeastXItems<T>(array, minLength): array is [T, ...T[]];
 ```
 
-Defined in: [packages/utils/src/typeGuards.ts:136](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L136)
+Defined in: [packages/utils/src/typeGuards.ts:137](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L137)
 
 ##### Type Parameters
 
@@ -56,7 +56,7 @@ Defined in: [packages/utils/src/typeGuards.ts:136](https://github.com/lucasols/u
 function arrayHasAtLeastXItems<T>(array, minLength): array is [T, T, ...T[]];
 ```
 
-Defined in: [packages/utils/src/typeGuards.ts:140](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L140)
+Defined in: [packages/utils/src/typeGuards.ts:141](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L141)
 
 ##### Type Parameters
 
@@ -84,7 +84,7 @@ Defined in: [packages/utils/src/typeGuards.ts:140](https://github.com/lucasols/u
 function arrayHasAtLeastXItems<T>(array, minLength): array is [T, T, T, ...T[]];
 ```
 
-Defined in: [packages/utils/src/typeGuards.ts:144](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L144)
+Defined in: [packages/utils/src/typeGuards.ts:145](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L145)
 
 ##### Type Parameters
 
@@ -112,7 +112,7 @@ Defined in: [packages/utils/src/typeGuards.ts:144](https://github.com/lucasols/u
 function arrayHasAtLeastXItems<T>(array, minLength): array is [T, T, T, T, ...T[]];
 ```
 
-Defined in: [packages/utils/src/typeGuards.ts:148](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L148)
+Defined in: [packages/utils/src/typeGuards.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L149)
 
 ##### Type Parameters
 
@@ -140,7 +140,7 @@ Defined in: [packages/utils/src/typeGuards.ts:148](https://github.com/lucasols/u
 function arrayHasAtLeastXItems<T>(array, minLength): array is [T, T, T, T, T, ...T[]];
 ```
 
-Defined in: [packages/utils/src/typeGuards.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L152)
+Defined in: [packages/utils/src/typeGuards.ts:153](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L153)
 
 ##### Type Parameters
 
@@ -174,8 +174,8 @@ Defined in: [packages/utils/src/typeGuards.ts:51](https://github.com/lucasols/ut
 
 Type guard to check if a value is a function.
 
-Returns true if the value is a function of any kind (regular function,
-arrow function, method, constructor, etc.).
+Returns true if the value is a function of any kind (regular function, arrow
+function, method, constructor, etc.).
 
 #### Parameters
 
@@ -194,17 +194,17 @@ True if the value is a function, false otherwise
 #### Example
 
 ```typescript
-if (isFunction(value)) {
-  // TypeScript knows value is (...args: any[]) => any
-  const result = value();
-}
+  if (isFunction(value)) {
+    // TypeScript knows value is (...args: any[]) => any
+    const result = value();
+  }
 
-isFunction(() => {});           // true
-isFunction(function() {});      // true
-isFunction(Math.max);           // true
-isFunction('string');           // false
-isFunction({});                 // false
-```
+  isFunction(() => {});           // true
+  isFunction(function() {});      // true
+  isFunction(Math.max);           // true
+  isFunction('string');           // false
+  isFunction({});                 // false
+  ```;
 
 ***
 
@@ -214,7 +214,7 @@ isFunction({});                 // false
 function isNonEmptyArray<T>(value): value is NonEmptyArray<T>;
 ```
 
-Defined in: [packages/utils/src/typeGuards.ts:130](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L130)
+Defined in: [packages/utils/src/typeGuards.ts:131](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L131)
 
 #### Type Parameters
 
@@ -264,17 +264,17 @@ True if the value is a plain object, false otherwise
 #### Example
 
 ```typescript
-if (isObject(value)) {
-  // TypeScript knows value is Record<string, unknown>
-  console.log(value.someProperty);
-}
+  if (isObject(value)) {
+    // TypeScript knows value is Record<string, unknown>
+    console.log(value.someProperty);
+  }
 
-isObject({});           // true
-isObject({ a: 1 });     // true
-isObject(null);         // false
-isObject([]);           // false
-isObject('string');     // false
-```
+  isObject({});           // true
+  isObject({ a: 1 });     // true
+  isObject(null);         // false
+  isObject([]);           // false
+  isObject('string');     // false
+  ```;
 
 ***
 
@@ -284,9 +284,10 @@ isObject('string');     // false
 function isPlainObject(value): value is Record<string, unknown>;
 ```
 
-Defined in: [packages/utils/src/typeGuards.ts:109](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L109)
+Defined in: [packages/utils/src/typeGuards.ts:110](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L110)
 
-Type guard to check if a value is a plain object (created by Object literal or Object constructor).
+Type guard to check if a value is a plain object (created by Object literal
+or Object constructor).
 
 Returns true if the value is a plain object - an object created by the Object
 constructor or object literal syntax. This excludes instances of classes,
@@ -309,19 +310,19 @@ True if the value is a plain object, false otherwise
 #### Example
 
 ```typescript
-if (isPlainObject(value)) {
-  // TypeScript knows value is Record<string, unknown>
-  console.log(Object.keys(value));
-}
+  if (isPlainObject(value)) {
+    // TypeScript knows value is Record<string, unknown>
+    console.log(Object.keys(value));
+  }
 
-isPlainObject({});                    // true
-isPlainObject({ a: 1 });              // true
-isPlainObject(Object.create(null));   // true
-isPlainObject(new Date());            // false
-isPlainObject(/regex/);               // false
-isPlainObject(new MyClass());         // false
-isPlainObject([]);                    // false
-```
+  isPlainObject({});                    // true
+  isPlainObject({ a: 1 });              // true
+  isPlainObject(Object.create(null));   // true
+  isPlainObject(new Date());            // false
+  isPlainObject(/regex/);               // false
+  isPlainObject(new MyClass());         // false
+  isPlainObject([]);                    // false
+  ```;
 
 ***
 
@@ -335,9 +336,9 @@ Defined in: [packages/utils/src/typeGuards.ts:79](https://github.com/lucasols/ut
 
 Type guard to check if a value is a Promise or thenable object.
 
-Returns true if the value is an object with a `then` method that is a function.
-This covers both native Promises and thenable objects that implement the
-Promise interface.
+Returns true if the value is an object with a `then` method that is a
+function. This covers both native Promises and thenable objects that
+implement the Promise interface.
 
 #### Parameters
 
@@ -356,17 +357,17 @@ True if the value is a Promise or thenable, false otherwise
 #### Example
 
 ```typescript
-if (isPromise(value)) {
-  // TypeScript knows value is Promise<unknown>
-  const result = await value;
-}
+  if (isPromise(value)) {
+    // TypeScript knows value is Promise<unknown>
+    const result = await value;
+  }
 
-isPromise(Promise.resolve());           // true
-isPromise(new Promise(() => {}));       // true
-isPromise({ then: () => {} });          // true
-isPromise({ then: 'not a function' });  // false
-isPromise('string');                    // false
-```
+  isPromise(Promise.resolve());           // true
+  isPromise(new Promise(() => {}));       // true
+  isPromise({ then: () => {} });          // true
+  isPromise({ then: 'not a function' });  // false
+  isPromise('string');                    // false
+  ```;
 
 ***
 
@@ -376,7 +377,7 @@ isPromise('string');                    // false
 function isTruthy<T>(value): value is Exclude<T, undefined | null | false | "" | 0 | 0n>;
 ```
 
-Defined in: [packages/utils/src/typeGuards.ts:163](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L163)
+Defined in: [packages/utils/src/typeGuards.ts:164](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L164)
 
 #### Type Parameters
 

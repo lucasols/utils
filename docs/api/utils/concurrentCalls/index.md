@@ -198,9 +198,10 @@ Defined in: [packages/utils/src/concurrentCalls.ts:67](https://github.com/lucaso
 function concurrentCalls<R>(): ConcurrentCalls<R, Error>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:273](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L273)
+Defined in: [packages/utils/src/concurrentCalls.ts:274](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L274)
 
-Executes multiple asynchronous calls concurrently and collects the results in a easier to use format.
+Executes multiple asynchronous calls concurrently and collects the results in
+a easier to use format.
 
 #### Type Parameters
 
@@ -222,9 +223,10 @@ The type of the result value.
 function concurrentCallsWithMetadata<M, R>(): ConcurrentCallsWithMetadata<M, R, Error>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:472](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L472)
+Defined in: [packages/utils/src/concurrentCalls.ts:474](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L474)
 
-Executes multiple asynchronous calls concurrently with metadata for each call and collects the results in a easier to use format.
+Executes multiple asynchronous calls concurrently with metadata for each call
+and collects the results in a easier to use format.
 
 #### Type Parameters
 
@@ -252,9 +254,10 @@ The type of the result value.
 function concurrentResultCalls<ResultFn>(): ConcurrentCalls<ValueFromResult<Awaited<ReturnType<ResultFn>>>, ErrorFromResult<Awaited<ReturnType<ResultFn>>>>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:487](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L487)
+Defined in: [packages/utils/src/concurrentCalls.ts:490](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L490)
 
-Executes multiple asynchronous result calls concurrently and collects the results in a easier to use format.
+Executes multiple asynchronous result calls concurrently and collects the
+results in a easier to use format.
 
 #### Type Parameters
 
@@ -274,9 +277,10 @@ Executes multiple asynchronous result calls concurrently and collects the result
 function concurrentResultsWithMetadata<M, ResultFn>(): ConcurrentCallsWithMetadata<M, ValueFromResult<Awaited<ReturnType<ResultFn>>>, ErrorFromResult<Awaited<ReturnType<ResultFn>>>>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:504](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L504)
+Defined in: [packages/utils/src/concurrentCalls.ts:508](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L508)
 
-Executes multiple asynchronous result calls concurrently with metadata for each call and collects the results in a easier to use format.
+Executes multiple asynchronous result calls concurrently with metadata for
+each call and collects the results in a easier to use format.
 
 #### Type Parameters
 

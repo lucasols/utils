@@ -225,6 +225,10 @@
       "import": "./dist/typingTestUtils.js",
       "require": "./dist/typingTestUtils.cjs"
     },
+    "./typingTestUtils.typesTest": {
+      "import": "./dist/typingTestUtils.typesTest.js",
+      "require": "./dist/typingTestUtils.typesTest.cjs"
+    },
     "./typingUtils": {
       "import": "./dist/typingUtils.js",
       "require": "./dist/typingUtils.cjs"

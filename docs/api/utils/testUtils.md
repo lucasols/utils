@@ -10,28 +10,34 @@
 function compactSnapshot(value, options): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:364](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L364)
+Defined in: [packages/utils/src/testUtils.ts:382](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L382)
 
-Produces a more compact and readable snapshot of a value using yaml.
-By default booleans are shown as `✅` and `❌`, use `showBooleansAs` to disable/configure this.
+Produces a more compact and readable snapshot of a value using yaml. By
+default booleans are shown as `✅` and `❌`, use `showBooleansAs` to
+disable/configure this.
 
 Filtering patterns in `rejectKeys` and `filterKeys`:
+
 - `'prop'` - Only root-level properties named 'prop'
 - `'**prop'` - Any property named exactly 'prop' at any level (root or nested)
-- `'*.prop'` - Any nested property named 'prop' at second level (excludes root-level matches)
+- `'*.prop'` - Any nested property named 'prop' at second level (excludes
+  root-level matches)
 - `'test.*.prop'` - Any property named 'prop' at second level of 'test'
 - `'test.*.test.**prop'` - Any property named 'prop' inside of 'test.*.test'
 - `'prop.nested'` - Exact nested property paths like `obj.prop.nested`
-- `'prop.**nested'` - All nested properties inside root `prop` with name `nested`
+- `'prop.**nested'` - All nested properties inside root `prop` with name
+  `nested`
 - `'prop[0]'` - The first item of the `prop` array
 - `'prop[*]'` - All items of the `prop` array
 - `'prop[0].nested'` - `nested` prop of the first item of the `prop` array
 - `'prop[*].nested'` - `nested` prop of all items of the `prop` array
 - `'prop[*]**nested'` - all `nested` props of all items of the `prop` array
 - `'prop[0-2]'` - The first three items of the `prop` array
-- `'prop[4-*]'` - All items of the `prop` array from the fourth index to the end
+- `'prop[4-*]'` - All items of the `prop` array from the fourth index to the
+  end
 - `'prop[0-2].nested.**prop'` - Combining multiple nested patterns is supported
 - Root array:
+
   - `'[0]'` - The first item of the root array
   - `'[*]'` - All items of the array
   - `'[0].nested'` - `nested` prop of the first item of the array
@@ -40,11 +46,17 @@ Filtering patterns in `rejectKeys` and `filterKeys`:
   - `'[0-2]'` - The first three items of the array
   - `'[4-*]'` - All items of the array from the fourth index to the end
 - Expanding the patterns with parentheses:
-  - `'prop.test.(prop1|prop2|prop3.prop4)'` - Will produce `prop.test.prop1`, `prop.test.prop2`, and `prop.test.prop3.prop4`
+
+  - `'prop.test.(prop1|prop2|prop3.prop4)'` - Will produce `prop.test.prop1`,
+      `prop.test.prop2`, and `prop.test.prop3.prop4`
 - Array filtering by value:
-  - `'users[%name="John"]'` - Filters the `users` with the `name` property equal to `John`
-  - `'users[%name="John" | "Jane"]'` - Filters the `users` with the `name` property equal to `John` or `Jane`
-  - `'users[%name="John" | "Jane" && %age=20]'` - AND and OR are supported by using `&&` and `||`, nesting logical operators is not supported yet
+
+  - `'users[%name="John"]'` - Filters the `users` with the `name` property equal
+      to `John`
+  - `'users[%name="John" | "Jane"]'` - Filters the `users` with the `name`
+      property equal to `John` or `Jane`
+  - `'users[%name="John" | "Jane" && %age=20]'` - AND and OR are supported by
+      using `&&` and `||`, nesting logical operators is not supported yet
   - `'users[%config.name="John" | "Jane"]'` - Dot notation is supported
 
 Check more supported patterns in [filterObjectOrArrayKeys](filterObjectOrArrayKeys.md#filterobjectorarraykeys) docs.

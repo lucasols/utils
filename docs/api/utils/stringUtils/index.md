@@ -14,7 +14,7 @@
 const joinStrings: (...args) => string = concatStrings;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L34)
+Defined in: [packages/utils/src/stringUtils.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L33)
 
 A util to create more legible conditional concatenated strings
 
@@ -31,9 +31,9 @@ A util to create more legible conditional concatenated strings
 #### Example
 
 ```ts
-joinStrings('a', 'b', 'c') // 'abc'
-joinStrings('a', false, 'c') // 'ac'
-joinStrings('a', addBString ? 'b' : null, 'c') // 'ac' if addBString is false, 'abc' if addBString is true
+joinStrings('a', 'b', 'c'); // 'abc'
+  joinStrings('a', false, 'c'); // 'ac'
+  joinStrings('a', addBString ? 'b' : null, 'c'); // 'ac' if addBString is false, 'abc' if addBString is true
 ```
 
 #### Deprecated
@@ -48,7 +48,7 @@ Use [concatStrings](#concatstrings) instead
 function concatStrings(...args): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L12)
+Defined in: [packages/utils/src/stringUtils.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L13)
 
 A util to create more legible conditional concatenated strings
 
@@ -65,9 +65,9 @@ A util to create more legible conditional concatenated strings
 #### Example
 
 ```ts
-joinStrings('a', 'b', 'c') // 'abc'
-joinStrings('a', false, 'c') // 'ac'
-joinStrings('a', addBString ? 'b' : null, 'c') // 'ac' if addBString is false, 'abc' if addBString is true
+joinStrings('a', 'b', 'c'); // 'abc'
+  joinStrings('a', false, 'c'); // 'ac'
+  joinStrings('a', addBString ? 'b' : null, 'c'); // 'ac' if addBString is false, 'abc' if addBString is true
 ```
 
 ***
@@ -78,7 +78,7 @@ joinStrings('a', addBString ? 'b' : null, 'c') // 'ac' if addBString is false, '
 function convertToCamelCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L72)
+Defined in: [packages/utils/src/stringUtils.ts:71](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L71)
 
 #### Parameters
 
@@ -98,7 +98,7 @@ Defined in: [packages/utils/src/stringUtils.ts:72](https://github.com/lucasols/u
 function convertToPascalCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L65)
+Defined in: [packages/utils/src/stringUtils.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L64)
 
 #### Parameters
 
@@ -118,7 +118,7 @@ Defined in: [packages/utils/src/stringUtils.ts:65](https://github.com/lucasols/u
 function convertToSentenceCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:77](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L77)
+Defined in: [packages/utils/src/stringUtils.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L76)
 
 #### Parameters
 
@@ -138,7 +138,7 @@ Defined in: [packages/utils/src/stringUtils.ts:77](https://github.com/lucasols/u
 function convertToSnakeCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L54)
+Defined in: [packages/utils/src/stringUtils.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L53)
 
 #### Parameters
 
@@ -158,7 +158,7 @@ Defined in: [packages/utils/src/stringUtils.ts:54](https://github.com/lucasols/u
 function convertToTitleCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:85](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L85)
+Defined in: [packages/utils/src/stringUtils.ts:87](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L87)
 
 #### Parameters
 
@@ -178,7 +178,7 @@ Defined in: [packages/utils/src/stringUtils.ts:85](https://github.com/lucasols/u
 function formatNum(num, maxDecimalsOrOptions): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L36)
+Defined in: [packages/utils/src/stringUtils.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L35)
 
 #### Parameters
 
@@ -202,7 +202,7 @@ Defined in: [packages/utils/src/stringUtils.ts:36](https://github.com/lucasols/u
 function isSnakeCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L50)
+Defined in: [packages/utils/src/stringUtils.ts:49](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L49)
 
 #### Parameters
 
@@ -222,7 +222,7 @@ Defined in: [packages/utils/src/stringUtils.ts:50](https://github.com/lucasols/u
 function removeANSIColors(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L98)
+Defined in: [packages/utils/src/stringUtils.ts:103](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L103)
 
 #### Parameters
 
@@ -245,7 +245,7 @@ function truncateString(
    ellipsis): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:92](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L92)
+Defined in: [packages/utils/src/stringUtils.ts:97](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L97)
 
 #### Parameters
 

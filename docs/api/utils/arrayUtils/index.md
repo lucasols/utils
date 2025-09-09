@@ -14,13 +14,55 @@
 type FilterAndMapReturn<T> = false | T;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L42)
+Defined in: [packages/utils/src/arrayUtils.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L41)
 
 #### Type Parameters
 
 ##### T
 
 `T`
+
+***
+
+### SortByProps
+
+```ts
+type SortByProps = 
+  | {
+  order?:   | SortOrder
+     | SortOrder[];
+}
+  | SortOrder
+  | SortOrder[];
+```
+
+Defined in: [packages/utils/src/arrayUtils.ts:49](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L49)
+
+***
+
+### SortByValueFn()\<T\>
+
+```ts
+type SortByValueFn<T> = (item) => (number | string)[] | number | string;
+```
+
+Defined in: [packages/utils/src/arrayUtils.ts:45](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L45)
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+#### Parameters
+
+##### item
+
+`T`
+
+#### Returns
+
+(`number` \| `string`)[] \| `number` \| `string`
 
 ## Functions
 
@@ -30,7 +72,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:42](https://github.com/lucasols/ut
 function arrayOps<T>(array): ArrayOps<T>;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:318](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L318)
+Defined in: [packages/utils/src/arrayUtils.ts:333](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L333)
 
 Enhance an array with extra methods
 
@@ -55,9 +97,9 @@ Enhance an array with extra methods
 ```ts
 const enhancedItems = arrayOps(array);
 
-enhancedItems.filterAndMap((item) => item === 2 ? false : item);
-enhancedItems.sortBy((item) => item);
-enhancedItems.rejectDuplicates((item) => item);
+  enhancedItems.filterAndMap((item) => (item === 2 ? false : item));
+  enhancedItems.sortBy((item) => item);
+  enhancedItems.rejectDuplicates((item) => item);
 ```
 
 ***
@@ -68,7 +110,7 @@ enhancedItems.rejectDuplicates((item) => item);
 function arrayWithPrev<T>(array): [T, null | T][];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:138](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L138)
+Defined in: [packages/utils/src/arrayUtils.ts:144](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L144)
 
 #### Type Parameters
 
@@ -94,7 +136,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:138](https://github.com/lucasols/u
 function arrayWithPrevAndIndex<T>(array): object[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:142](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L142)
+Defined in: [packages/utils/src/arrayUtils.ts:148](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L148)
 
 #### Type Parameters
 
@@ -120,9 +162,9 @@ Defined in: [packages/utils/src/arrayUtils.ts:142](https://github.com/lucasols/u
 function filterAndMap<T, R>(array, mapFilter): R[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L23)
+Defined in: [packages/utils/src/arrayUtils.ts:22](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L22)
 
-allow to filter and map with better typing ergonomics
+Allow to filter and map with better typing ergonomics
 
 In the `mapFilter` function return `false` to reject the item, or any other
 value to map it.
@@ -155,15 +197,13 @@ value to map it.
 
 ```ts
 // Filter reject and turn value into `value mapped`
-const items = ['value', 'value', 'reject', 'reject'];
+  const items = ['value', 'value', 'reject', 'reject'];
 
-const mappedItems = filterAndMap(items, (item) =>
-  item === 'reject'
-    ? false
-    : `${item} mapped`,
-);
+  const mappedItems = filterAndMap(items, (item) =>
+    item === 'reject' ? false : `${item} mapped`,
+  );
 
-mappedItems; // ['value mapped', 'value mapped']
+  mappedItems; // ['value mapped', 'value mapped']
 ```
 
 ***
@@ -177,7 +217,7 @@ function findAfterIndex<T>(
    predicate): undefined | T;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:165](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L165)
+Defined in: [packages/utils/src/arrayUtils.ts:171](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L171)
 
 #### Type Parameters
 
@@ -211,12 +251,14 @@ Defined in: [packages/utils/src/arrayUtils.ts:165](https://github.com/lucasols/u
 function findAndMap<T, R>(array, predicate): undefined | R;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:295](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L295)
+Defined in: [packages/utils/src/arrayUtils.ts:310](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L310)
 
-Finds the first item in an array where the predicate returns a non-false value and returns that mapped value.
+Finds the first item in an array where the predicate returns a non-false
+value and returns that mapped value.
 
-Combines find and map operations - applies the predicate to each item until one returns
-a value that is not `false`, then returns that mapped value. If no item matches, returns `undefined`.
+Combines find and map operations - applies the predicate to each item until
+one returns a value that is not `false`, then returns that mapped value. If
+no item matches, returns `undefined`.
 
 #### Type Parameters
 
@@ -240,23 +282,28 @@ The array to search through
 
 (`value`) => `false` \| `R`
 
-Function that returns a mapped value or `false` to skip the item
+Function that returns a mapped value or `false` to skip
+  the item
 
 #### Returns
 
 `undefined` \| `R`
 
-The first mapped value that is not `false`, or `undefined` if no item matches
+The first mapped value that is not `false`, or `undefined` if no
+  item matches
 
 #### Example
 
 ```ts
-const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
+const users = [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' },
+  ];
 
-const foundName = findAndMap(users, (user) => 
-  user.id === 2 ? user.name.toUpperCase() : false
-);
-// foundName is 'BOB'
+  const foundName = findAndMap(users, (user) =>
+    user.id === 2 ? user.name.toUpperCase() : false,
+  );
+  // foundName is 'BOB'
 ```
 
 ***
@@ -270,7 +317,7 @@ function findBeforeIndex<T>(
    predicate): undefined | T;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:179](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L179)
+Defined in: [packages/utils/src/arrayUtils.ts:185](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L185)
 
 #### Type Parameters
 
@@ -304,7 +351,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:179](https://github.com/lucasols/u
 function getAscIndexOrder(index): number;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:134](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L134)
+Defined in: [packages/utils/src/arrayUtils.ts:140](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L140)
 
 Get the correct 0 based value for sync with other array in ascending order
 
@@ -321,15 +368,15 @@ Get the correct 0 based value for sync with other array in ascending order
 #### Example
 
 ```ts
-const items = [1, 2, 3];
+  const items = [1, 2, 3];
 
-const index = sortBy(
-  items,
-  (item) => getAscIndexOrder(
-    followOrder.findIndex((order) => order === item)
-  )
-);
-```
+  const index = sortBy(
+    items,
+    (item) => getAscIndexOrder(
+      followOrder.findIndex((order) => order === item)
+    )
+  );
+  ```;
 
 ***
 
@@ -339,7 +386,7 @@ const index = sortBy(
 function hasDuplicates<T>(array, getKey): boolean;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:203](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L203)
+Defined in: [packages/utils/src/arrayUtils.ts:209](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L209)
 
 #### Type Parameters
 
@@ -369,7 +416,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:203](https://github.com/lucasols/u
 function isInArray<T, U>(value, oneOf): value is U;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L152)
+Defined in: [packages/utils/src/arrayUtils.ts:158](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L158)
 
 #### Type Parameters
 
@@ -403,7 +450,7 @@ readonly `U`[]
 function rejectArrayUndefinedValues<T>(array): T;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:199](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L199)
+Defined in: [packages/utils/src/arrayUtils.ts:205](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L205)
 
 #### Type Parameters
 
@@ -429,7 +476,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:199](https://github.com/lucasols/u
 function rejectDuplicates<T>(array, getKey): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:220](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L220)
+Defined in: [packages/utils/src/arrayUtils.ts:226](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L226)
 
 #### Type Parameters
 
@@ -462,7 +509,7 @@ function sortBy<T>(
    props): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L76)
+Defined in: [packages/utils/src/arrayUtils.ts:82](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L82)
 
 Sort an array based on a value
 
@@ -484,11 +531,11 @@ Use `Infinity` as as wildcard to absolute max and min values
 
 ##### sortByValue
 
-[`SortByValue`](-internal-.md#sortbyvalue)\<`T`\>
+[`SortByValueFn`](#sortbyvaluefn)\<`T`\>
 
 ##### props
 
-[`SortByProps`](-internal-.md#sortbyprops) = `'asc'`
+[`SortByProps`](#sortbyprops) = `'asc'`
 
 #### Returns
 
@@ -499,13 +546,17 @@ Use `Infinity` as as wildcard to absolute max and min values
 ```ts
 const items = [1, 3, 2, 4];
 
-const sortedItems = sortBy(items, (item) => item);
-// [1, 2, 3, 4]
+  const sortedItems = sortBy(items, (item) => item);
+  // [1, 2, 3, 4]
 
-const items2 = [{ a: 1, b: 2 }, { a: 2, b: 1 }, { a: 1, b: 1}]
+  const items2 = [
+    { a: 1, b: 2 },
+    { a: 2, b: 1 },
+    { a: 1, b: 1 },
+  ];
 
-// return a array to sort by multiple values
-const sortedItems = sortBy(items, (item) => [item.a, item.b]);
+  // return a array to sort by multiple values
+  const sortedItems = sortBy(items, (item) => [item.a, item.b]);
 ```
 
 ***
@@ -519,7 +570,7 @@ function truncateArray<T>(
    appendIfTruncated?): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:240](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L240)
+Defined in: [packages/utils/src/arrayUtils.ts:246](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L246)
 
 #### Type Parameters
 

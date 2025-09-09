@@ -10,11 +10,11 @@
 type NonEmptyString = string & object;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:171](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L171)
+Defined in: [packages/utils/src/typedStrings.ts:180](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L180)
 
-A branded type representing a string that is guaranteed to be non-empty (length > 0).
-This type provides compile-time safety by preventing empty strings from being 
-assigned without proper validation.
+A branded type representing a string that is guaranteed to be non-empty
+(length > 0). This type provides compile-time safety by preventing empty
+strings from being assigned without proper validation.
 
 #### Type declaration
 
@@ -27,11 +27,11 @@ __nonEmptyString: true;
 #### Example
 
 ```ts
-function processName(name: NonEmptyString) {
-  // name is guaranteed to be non-empty
-  return name.toUpperCase();
-}
-```
+  function processName(name: NonEmptyString) {
+    // name is guaranteed to be non-empty
+    return name.toUpperCase();
+  }
+  ```;
 
 ***
 
@@ -41,10 +41,10 @@ function processName(name: NonEmptyString) {
 type StringContaining<T> = string extends T ? never : `${string}${T}${string}`;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L12)
+Defined in: [packages/utils/src/typedStrings.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L13)
 
-A type representing a string that contains a specific substring.
-Uses template literal types to ensure type safety at compile time.
+A type representing a string that contains a specific substring. Uses
+template literal types to ensure type safety at compile time.
 
 #### Type Parameters
 
@@ -57,9 +57,9 @@ The substring that must be contained within the string
 #### Example
 
 ```ts
-type EmailString = StringContaining<'@'>; // string that contains '@'
-const email: EmailString = 'user@example.com'; // ✓ valid
-```
+  type EmailString = StringContaining<'@'>; // string that contains '@'
+  const email: EmailString = 'user@example.com'; // ✓ valid
+  ```;
 
 ***
 
@@ -69,10 +69,10 @@ const email: EmailString = 'user@example.com'; // ✓ valid
 type StringEndingWith<T> = string extends T ? never : `${string}${T}`;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:40](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L40)
+Defined in: [packages/utils/src/typedStrings.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L44)
 
-A type representing a string that ends with a specific substring.
-Uses template literal types to ensure the string ends with the specified suffix.
+A type representing a string that ends with a specific substring. Uses
+template literal types to ensure the string ends with the specified suffix.
 
 #### Type Parameters
 
@@ -85,9 +85,9 @@ The substring that the string must end with
 #### Example
 
 ```ts
-type JavaFile = StringEndingWith<'.java'>; // string ending with '.java'
-const filename: JavaFile = 'HelloWorld.java'; // ✓ valid
-```
+  type JavaFile = StringEndingWith<'.java'>; // string ending with '.java'
+  const filename: JavaFile = 'HelloWorld.java'; // ✓ valid
+  ```;
 
 ***
 
@@ -97,10 +97,11 @@ const filename: JavaFile = 'HelloWorld.java'; // ✓ valid
 type StringStartingWith<T> = string extends T ? never : `${T}${string}`;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L26)
+Defined in: [packages/utils/src/typedStrings.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L29)
 
-A type representing a string that starts with a specific substring.
-Uses template literal types to ensure the string begins with the specified prefix.
+A type representing a string that starts with a specific substring. Uses
+template literal types to ensure the string begins with the specified
+prefix.
 
 #### Type Parameters
 
@@ -113,9 +114,9 @@ The substring that the string must start with
 #### Example
 
 ```ts
-type HttpUrl = StringStartingWith<'http'>; // string starting with 'http'
-const url: HttpUrl = 'https://example.com'; // ✓ valid
-```
+  type HttpUrl = StringStartingWith<'http'>; // string starting with 'http'
+  const url: HttpUrl = 'https://example.com'; // ✓ valid
+  ```;
 
 ## Functions
 
@@ -125,10 +126,11 @@ const url: HttpUrl = 'https://example.com'; // ✓ valid
 function asNonEmptyStringOrNull(str): null | NonEmptyString;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:208](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L208)
+Defined in: [packages/utils/src/typedStrings.ts:219](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L219)
 
-Converts a string to `NonEmptyString` or returns `null` if the string is empty.
-Use this when empty strings should be handled gracefully rather than throwing errors.
+Converts a string to `NonEmptyString` or returns `null` if the string is
+empty. Use this when empty strings should be handled gracefully rather than
+throwing errors.
 
 #### Parameters
 
@@ -152,10 +154,11 @@ The string as `NonEmptyString` or `null` if empty
 function asNonEmptyStringOrThrow(str): NonEmptyString;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:194](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L194)
+Defined in: [packages/utils/src/typedStrings.ts:204](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L204)
 
-Converts a string to `NonEmptyString` or throws an error if the string is empty.
-Use this when you need to ensure a string is non-empty and want to fail fast.
+Converts a string to `NonEmptyString` or throws an error if the string is
+empty. Use this when you need to ensure a string is non-empty and want to
+fail fast.
 
 #### Parameters
 
@@ -183,10 +186,10 @@ Error if the string is empty
 function assertStringIsNonEmpty(str): asserts str is NonEmptyString;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:222](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L222)
+Defined in: [packages/utils/src/typedStrings.ts:233](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L233)
 
-Assertion function that ensures a string is non-empty.
-Throws an error if the string is empty, otherwise narrows the type to `NonEmptyString`.
+Assertion function that ensures a string is non-empty. Throws an error if the
+string is empty, otherwise narrows the type to `NonEmptyString`.
 
 #### Parameters
 
@@ -212,10 +215,10 @@ Error if the string is empty
 function isNonEmptyString(str): str is NonEmptyString;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:182](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L182)
+Defined in: [packages/utils/src/typedStrings.ts:191](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L191)
 
-Type guard function that checks if a string is non-empty.
-Narrows the type to `NonEmptyString` when the check passes.
+Type guard function that checks if a string is non-empty. Narrows the type to
+`NonEmptyString` when the check passes.
 
 #### Parameters
 
@@ -239,11 +242,12 @@ The string to check
 function splitTypedString<T>(str, separator): [string, string, ...string[]];
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:103](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L103)
+Defined in: [packages/utils/src/typedStrings.ts:109](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L109)
 
-Splits a typed string by a separator that is guaranteed to exist in the string.
-Returns an array with at least two elements: the parts before and after the first separator,
-plus any additional parts if there are multiple separators.
+Splits a typed string by a separator that is guaranteed to exist in the
+string. Returns an array with at least two elements: the parts before and
+after the first separator, plus any additional parts if there are multiple
+separators.
 
 #### Type Parameters
 
@@ -274,10 +278,10 @@ An array with at least two string elements
 #### Example
 
 ```ts
-const path: StringContaining<'/'> = 'src/utils/types.ts';
-const [first, second, ...rest] = splitTypedString(path, '/');
-// first: 'src', second: 'utils', rest: ['types.ts']
-```
+  const path: StringContaining<'/'> = 'src/utils/types.ts';
+  const [first, second, ...rest] = splitTypedString(path, '/');
+  // first: 'src', second: 'utils', rest: ['types.ts']
+  ```;
 
 ***
 
@@ -290,11 +294,11 @@ function splitTypedStringAt<T>(
    splitAtNSeparatorPos): [string, string];
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:129](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L129)
+Defined in: [packages/utils/src/typedStrings.ts:137](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L137)
 
-Splits a typed string at a specific occurrence of the separator.
-Unlike `splitTypedString`, this returns exactly two parts: everything before 
-the nth separator and everything after it.
+Splits a typed string at a specific occurrence of the separator. Unlike
+`splitTypedString`, this returns exactly two parts: everything before the nth
+separator and everything after it.
 
 #### Type Parameters
 
@@ -320,7 +324,8 @@ The separator to split by
 
 `number` = `1`
 
-The position of the separator to split at (1-based)
+The position of the separator to split at
+  (1-based)
 
 #### Returns
 
@@ -331,10 +336,10 @@ A tuple with exactly two string elements
 #### Example
 
 ```ts
-const path: StringContaining<'.'> = 'file.name.ext';
-const [name, ext] = splitTypedStringAt(path, '.', 2);
-// name: 'file.name', ext: 'ext'
-```
+  const path: StringContaining<'.'> = 'file.name.ext';
+  const [name, ext] = splitTypedStringAt(path, '.', 2);
+  // name: 'file.name', ext: 'ext'
+  ```;
 
 ***
 
@@ -344,7 +349,7 @@ const [name, ext] = splitTypedStringAt(path, '.', 2);
 function stringContains<T>(str, substring): str is StringContaining<T>;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L51)
+Defined in: [packages/utils/src/typedStrings.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L55)
 
 Type guard function that checks if a string contains a specific substring.
 Narrows the type to `StringContaining<T>` when the check passes.
@@ -383,7 +388,7 @@ The substring to search for
 function stringEndsWith<T>(str, substring): str is StringEndingWith<T>;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:81](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L81)
+Defined in: [packages/utils/src/typedStrings.ts:85](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L85)
 
 Type guard function that checks if a string ends with a specific substring.
 Narrows the type to `StringEndingWith<T>` when the check passes.
@@ -422,7 +427,7 @@ The substring to check for at the end
 function stringStartsWith<T>(str, substring): str is StringStartingWith<T>;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L66)
+Defined in: [packages/utils/src/typedStrings.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L70)
 
 Type guard function that checks if a string starts with a specific substring.
 Narrows the type to `StringStartingWith<T>` when the check passes.

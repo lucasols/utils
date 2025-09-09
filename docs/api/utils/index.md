@@ -24,7 +24,7 @@ import { debounce } from '@ls-stack/utils/debounce';
 
 ## Documentation
 
-For a complete list of available utilities and their APIs, see the auto-generated documentation in the [`docs/`](docs/) folder. Start with the [modules overview](_media/modules.md) to explore all available utilities.
+For a complete list of available utilities and their APIs, see the auto-generated documentation in the [`docs/`](docs/) folder. Start with the [modules overview](docs/modules.md) to explore all available utilities.
 
 ### Generating Documentation
 

@@ -140,7 +140,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:211](https://github.com/lucas
 
 ### ConcurrentCallsWithMetadata\<M, R, E\>
 
-Defined in: [packages/utils/src/concurrentCalls.ts:277](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L277)
+Defined in: [packages/utils/src/concurrentCalls.ts:278](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L278)
 
 #### Type Parameters
 
@@ -164,7 +164,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:277](https://github.com/lucas
 new ConcurrentCallsWithMetadata<M, R, E>(allowResultify): ConcurrentCallsWithMetadata<M, R, E>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:286](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L286)
+Defined in: [packages/utils/src/concurrentCalls.ts:287](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L287)
 
 ###### Parameters
 
@@ -184,7 +184,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:286](https://github.com/lucas
 allowResultify: boolean = true;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:284](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L284)
+Defined in: [packages/utils/src/concurrentCalls.ts:285](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L285)
 
 #### Methods
 
@@ -194,7 +194,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:284](https://github.com/lucas
 add(...calls): this;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:290](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L290)
+Defined in: [packages/utils/src/concurrentCalls.ts:291](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L291)
 
 ###### Parameters
 
@@ -212,7 +212,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:290](https://github.com/lucas
 resultifyAdd(...items): this;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:304](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L304)
+Defined in: [packages/utils/src/concurrentCalls.ts:305](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L305)
 
 ###### Parameters
 
@@ -230,7 +230,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:304](https://github.com/lucas
 runAll(__namedParameters): Promise<Result<SucceededCall<R, M>[], FailedCall<M, E>>>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:330](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L330)
+Defined in: [packages/utils/src/concurrentCalls.ts:331](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L331)
 
 ###### Parameters
 
@@ -257,7 +257,7 @@ runAllSettled(__namedParameters): Promise<{
 }>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:377](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L377)
+Defined in: [packages/utils/src/concurrentCalls.ts:378](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L378)
 
 ###### Parameters
 
@@ -310,7 +310,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:134](https://github.com/lucas
 type ErrorFromResult<R> = R extends Result<any, infer E> ? E : never;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:480](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L480)
+Defined in: [packages/utils/src/concurrentCalls.ts:482](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L482)
 
 #### Type Parameters
 
@@ -477,7 +477,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:118](https://github.com/lucas
 type ValueFromResult<R> = R extends Result<infer T, any> ? T : never;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:479](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L479)
+Defined in: [packages/utils/src/concurrentCalls.ts:481](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L481)
 
 #### Type Parameters
 

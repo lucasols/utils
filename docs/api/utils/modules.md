@@ -50,5 +50,6 @@
 - [typeUtils.typesTest](typeUtils.typesTest.md)
 - [typingFnUtils](typingFnUtils/index.md)
 - [typingTestUtils](typingTestUtils.md)
+- [typingTestUtils.typesTest](typingTestUtils.typesTest.md)
 - [typingUtils](typingUtils.md)
 - [yamlStringify](yamlStringify.md)

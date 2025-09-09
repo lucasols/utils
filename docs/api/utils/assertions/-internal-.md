@@ -26,7 +26,7 @@ Defined in: [packages/utils/src/assertions.ts:11](https://github.com/lucasols/ut
 type StrictNonNullable<T, N> = undefined extends T ? NonNullable<T> : null extends T ? NonNullable<T> : N;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L50)
+Defined in: [packages/utils/src/assertions.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L52)
 
 #### Type Parameters
 

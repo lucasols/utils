@@ -10,7 +10,7 @@
 type DeepPrettify<T> = { [K in keyof T]: T[K] extends Record<string, unknown> ? DeepPrettify<T[K]> : T[K] } & object;
 ```
 
-Defined in: [packages/utils/src/typingUtils.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L31)
+Defined in: [packages/utils/src/typingUtils.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L34)
 
 #### Type Parameters
 
@@ -30,7 +30,7 @@ Use `DeepPrettify` from `@ls-stack/utils/typeUtils` instead
 type IsAny<T> = unknown extends T ? [keyof T] extends [never] ? false : true : false;
 ```
 
-Defined in: [packages/utils/src/typingUtils.ts:18](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L18)
+Defined in: [packages/utils/src/typingUtils.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L21)
 
 #### Type Parameters
 
@@ -70,7 +70,7 @@ Use `NonPartial` from `@ls-stack/utils/typeUtils` instead
 type ObjKeysWithValuesOfType<Obj, ValueType> = { [K in keyof Obj]: Obj[K] extends ValueType ? K : never }[keyof Obj];
 ```
 
-Defined in: [packages/utils/src/typingUtils.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L10)
+Defined in: [packages/utils/src/typingUtils.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L13)
 
 #### Type Parameters
 
@@ -84,7 +84,8 @@ Defined in: [packages/utils/src/typingUtils.ts:10](https://github.com/lucasols/u
 
 #### Deprecated
 
-Use `ObjKeysWithValuesOfType` from `@ls-stack/utils/typeUtils` instead
+Use `ObjKeysWithValuesOfType` from `@ls-stack/utils/typeUtils`
+  instead
 
 ***
 
@@ -118,7 +119,7 @@ Use `PartialRecord` from `@ls-stack/utils/typeUtils` instead
 type Prettify<T> = { [P in keyof T]: T[P] } & object;
 ```
 
-Defined in: [packages/utils/src/typingUtils.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L26)
+Defined in: [packages/utils/src/typingUtils.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L29)
 
 #### Type Parameters
 

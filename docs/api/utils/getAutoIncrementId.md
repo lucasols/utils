@@ -10,13 +10,15 @@
 function getAutoIncrementId(): number;
 ```
 
-Defined in: [packages/utils/src/getAutoIncrementId.ts:19](https://github.com/lucasols/utils/blob/main/packages/utils/src/getAutoIncrementId.ts#L19)
+Defined in: [packages/utils/src/getAutoIncrementId.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/getAutoIncrementId.ts#L21)
 
-Returns a unique auto-incrementing number each time it's called.
-This is useful for generating simple unique identifiers within a single session/process.
+Returns a unique auto-incrementing number each time it's called. This is
+useful for generating simple unique identifiers within a single
+session/process.
 
 **Note:** This is not suitable for distributed systems or persistent storage.
-For cryptographically secure or collision-resistant IDs, use `nanoid()` instead.
+For cryptographically secure or collision-resistant IDs, use `nanoid()`
+instead.
 
 #### Returns
 
@@ -27,10 +29,10 @@ A unique incrementing number starting from 1
 #### Example
 
 ```ts
-const id1 = getAutoIncrementId(); // 1
-const id2 = getAutoIncrementId(); // 2
-const id3 = getAutoIncrementId(); // 3
-```
+  const id1 = getAutoIncrementId(); // 1
+  const id2 = getAutoIncrementId(); // 2
+  const id3 = getAutoIncrementId(); // 3
+  ```;
 
 ***
 
@@ -40,11 +42,11 @@ const id3 = getAutoIncrementId(); // 3
 function getLocalAutoIncrementIdGenerator(options): () => string;
 ```
 
-Defined in: [packages/utils/src/getAutoIncrementId.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/getAutoIncrementId.ts#L44)
+Defined in: [packages/utils/src/getAutoIncrementId.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/getAutoIncrementId.ts#L46)
 
 Creates a local auto-increment ID generator with optional prefix and suffix.
-Each generator maintains its own independent counter starting from 1.
-This is useful when you need multiple independent ID sequences or formatted IDs.
+Each generator maintains its own independent counter starting from 1. This is
+useful when you need multiple independent ID sequences or formatted IDs.
 
 #### Parameters
 
@@ -79,11 +81,11 @@ A function that generates formatted auto-increment IDs
 #### Example
 
 ```ts
-const userIdGen = getLocalAutoIncrementIdGenerator({ prefix: 'user-' });
-const postIdGen = getLocalAutoIncrementIdGenerator({ prefix: 'post-', suffix: '-draft' });
+  const userIdGen = getLocalAutoIncrementIdGenerator({ prefix: 'user-' });
+  const postIdGen = getLocalAutoIncrementIdGenerator({ prefix: 'post-', suffix: '-draft' });
 
-console.log(userIdGen()); // "user-1"
-console.log(userIdGen()); // "user-2"
-console.log(postIdGen()); // "post-1-draft"
-console.log(postIdGen()); // "post-2-draft"
-```
+  console.log(userIdGen()); // "user-1"
+  console.log(userIdGen()); // "user-2"
+  console.log(postIdGen()); // "post-1-draft"
+  console.log(postIdGen()); // "post-2-draft"
+  ```;

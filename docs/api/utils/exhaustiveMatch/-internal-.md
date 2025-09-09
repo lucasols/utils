@@ -26,7 +26,7 @@ Defined in: [packages/utils/src/exhaustiveMatch.ts:2](https://github.com/lucasol
 type Pattern<R> = { [P in K]: ((props: Extract<T, Record<D, P>>) => R) | "_never" };
 ```
 
-Defined in: [packages/utils/src/exhaustiveMatch.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/exhaustiveMatch.ts#L56)
+Defined in: [packages/utils/src/exhaustiveMatch.ts:59](https://github.com/lucasols/utils/blob/main/packages/utils/src/exhaustiveMatch.ts#L59)
 
 #### Type Parameters
 

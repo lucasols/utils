@@ -6,7 +6,7 @@
 
 ### DebouncedFunc()\<T\>
 
-Defined in: [packages/utils/src/debounce.ts:16](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L16)
+Defined in: [packages/utils/src/debounce.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L10)
 
 #### Type Parameters
 
@@ -18,15 +18,15 @@ Defined in: [packages/utils/src/debounce.ts:16](https://github.com/lucasols/util
 DebouncedFunc(...args): undefined | ReturnType<T>;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L26)
+Defined in: [packages/utils/src/debounce.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L20)
 
 Call the original function, but applying the debounce rules.
 
-If the debounced function can be run immediately, this calls it and returns its return
-value.
+If the debounced function can be run immediately, this calls it and returns
+its return value.
 
-Otherwise, it returns the return value of the last invocation, or undefined if the debounced
-function was not invoked yet.
+Otherwise, it returns the return value of the last invocation, or undefined
+if the debounced function was not invoked yet.
 
 #### Parameters
 
@@ -46,7 +46,7 @@ function was not invoked yet.
 cancel: () => void;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L31)
+Defined in: [packages/utils/src/debounce.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L23)
 
 Throw away any pending invocation of the debounced function.
 
@@ -60,13 +60,13 @@ Throw away any pending invocation of the debounced function.
 flush: () => undefined | ReturnType<T>;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:40](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L40)
+Defined in: [packages/utils/src/debounce.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L32)
 
-If there is a pending invocation of the debounced function, invoke it immediately and return
-its return value.
+If there is a pending invocation of the debounced function, invoke it
+immediately and return its return value.
 
-Otherwise, return the value from the last invocation, or undefined if the debounced function
-was never invoked.
+Otherwise, return the value from the last invocation, or undefined if the
+debounced function was never invoked.
 
 ###### Returns
 
@@ -90,7 +90,7 @@ Defined in: [packages/utils/src/debounce.ts:1](https://github.com/lucasols/utils
 optional leading: boolean;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L5)
+Defined in: [packages/utils/src/debounce.ts:3](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L3)
 
 ###### See
 
@@ -102,7 +102,7 @@ _.leading
 optional maxWait: number;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:9](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L9)
+Defined in: [packages/utils/src/debounce.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L5)
 
 ###### See
 
@@ -114,7 +114,7 @@ _.maxWait
 optional trailing: boolean;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L13)
+Defined in: [packages/utils/src/debounce.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L7)
 
 ###### See
 
@@ -131,7 +131,7 @@ function debounce<T>(
 options?): DebouncedFunc<T>;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L44)
+Defined in: [packages/utils/src/debounce.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L36)
 
 #### Type Parameters
 
@@ -165,7 +165,7 @@ Defined in: [packages/utils/src/debounce.ts:44](https://github.com/lucasols/util
 function isDebouncedFn<T>(fn): fn is T & { cancel: () => void; flush: () => undefined | ReturnType<T> };
 ```
 
-Defined in: [packages/utils/src/debounce.ts:176](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L176)
+Defined in: [packages/utils/src/debounce.ts:168](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L168)
 
 #### Type Parameters
 

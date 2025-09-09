@@ -13,7 +13,7 @@ function deepEqual(
    maxDepth): boolean;
 ```
 
-Defined in: [packages/utils/src/deepEqual.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L30)
+Defined in: [packages/utils/src/deepEqual.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L34)
 
 Deep equality comparison between two values
 
@@ -46,12 +46,12 @@ True if values are deeply equal, false otherwise
 #### Example
 
 ```ts
-deepEqual({a: 1}, {a: 1}) // true
-deepEqual({a: 1}, {a: 2}) // false
-deepEqual([1, {b: 2}], [1, {b: 2}]) // true
-deepEqual(new Map([['a', 1]]), new Map([['a', 1]])) // true
-deepEqual(new Set([1, 2]), new Set([1, 2])) // true
-```
+  deepEqual({a: 1}, {a: 1}) // true
+  deepEqual({a: 1}, {a: 2}) // false
+  deepEqual([1, {b: 2}], [1, {b: 2}]) // true
+  deepEqual(new Map([['a', 1]]), new Map([['a', 1]])) // true
+  deepEqual(new Set([1, 2]), new Set([1, 2])) // true
+  ```;
 
 ***
 
@@ -61,7 +61,7 @@ deepEqual(new Set([1, 2]), new Set([1, 2])) // true
 function deepEqualWithMaxDepth(maxDepth): (foo, bar) => boolean;
 ```
 
-Defined in: [packages/utils/src/deepEqual.ts:94](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L94)
+Defined in: [packages/utils/src/deepEqual.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L98)
 
 #### Parameters
 

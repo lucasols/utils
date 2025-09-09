@@ -10,65 +10,68 @@
 
 ### AsyncQueue\<T, E, I\>
 
-Defined in: [packages/utils/src/asyncQueue.ts:202](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L202)
+Defined in: [packages/utils/src/asyncQueue.ts:203](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L203)
 
 A powerful async task queue with advanced error handling and flow control
 
 #### Examples
 
-```typescript
-const queue = createAsyncQueue<string>({ concurrency: 2 });
+Basic Usage
+  ```typescript
+  const queue = createAsyncQueue<string>({ concurrency: 2 });
 
-const processedItems: string[] = [];
+  const processedItems: string[] = [];
 
-queue.resultifyAdd(async () => {
+  queue.resultifyAdd(async () => {
   await delay(100);
   return 'task completed';
-}).then(result => {
+  }).then(result => {
   if (result.ok) processedItems.push(result.value);
-});
+  });
 
-await queue.onIdle();
-console.log('Processed:', processedItems);
-```
+  await queue.onIdle();
+  console.log('Processed:', processedItems);
+  ```
 
-```typescript
-const queue = createAsyncQueue<string>({
+Error Recovery
+  ```typescript
+  const queue = createAsyncQueue<string>({
   stopOnError: true,
   rejectPendingOnError: false
-});
-
-// Add batch of tasks
-const items = ['item1', 'item2', 'bad-item', 'item3'];
-items.forEach(item => {
-  queue.resultifyAdd(async () => {
-    if (item === 'bad-item') throw new Error('Processing failed');
-    return item.toUpperCase();
   });
-});
 
-await queue.onIdle();
+  // Add batch of tasks
+  const items = ['item1', 'item2', 'bad-item', 'item3'];
+  items.forEach(item => {
+  queue.resultifyAdd(async () => {
+  if (item === 'bad-item') throw new Error('Processing failed');
+  return item.toUpperCase();
+  });
+  });
 
-if (queue.isStopped) {
+  await queue.onIdle();
+
+  if (queue.isStopped) {
   console.log(`Stopped at ${queue.failed} failures, ${queue.size} remaining`);
   // Reset and continue with remaining tasks
   queue.reset();
   await queue.onIdle();
-}
-```
+  }
+  ```
 
-```typescript
-const queue = createAsyncQueue<string>({ autoStart: false });
+Lazy Start
+  ```typescript
+  const queue = createAsyncQueue<string>({ autoStart: false });
 
-// Prepare all tasks without starting
-queue.resultifyAdd(() => processTask1());
-queue.resultifyAdd(() => processTask2());
-queue.resultifyAdd(() => processTask3());
+  // Prepare all tasks without starting
+  queue.resultifyAdd(() => processTask1());
+  queue.resultifyAdd(() => processTask2());
+  queue.resultifyAdd(() => processTask3());
 
-// Start processing when ready
-queue.start();
-await queue.onIdle();
-```
+  // Start processing when ready
+  queue.start();
+  await queue.onIdle();
+  ```
 
 #### Extended by
 
@@ -92,7 +95,8 @@ The type of errors that tasks can produce (defaults to Error)
 
 `I` = `unknown`
 
-The type of metadata associated with tasks (defaults to unknown)
+The type of metadata associated with tasks (defaults to
+  unknown)
 
 #### Constructors
 
@@ -102,7 +106,7 @@ The type of metadata associated with tasks (defaults to unknown)
 new AsyncQueue<T, E, I>(__namedParameters): AsyncQueue<T, E, I>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:257](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L257)
+Defined in: [packages/utils/src/asyncQueue.ts:259](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L259)
 
 ###### Parameters
 
@@ -122,7 +126,7 @@ Defined in: [packages/utils/src/asyncQueue.ts:257](https://github.com/lucasols/u
 completions: object[] = [];
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:255](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L255)
+Defined in: [packages/utils/src/asyncQueue.ts:257](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L257)
 
 Array of all task completions with metadata for debugging and analysis
 
@@ -156,27 +160,28 @@ events: Emitter<{
 }>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:231](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L231)
+Defined in: [packages/utils/src/asyncQueue.ts:233](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L233)
 
 Event emitter for tracking task lifecycle
 
 ###### Example
 
-```typescript
-const queue = createAsyncQueue<string>();
+Listening to Events
+  ```typescript
+  const queue = createAsyncQueue<string>();
 
-queue.events.on('start', (event) => {
+  queue.events.on('start', (event) => {
   console.log('Task started:', event.payload.meta);
-});
+  });
 
-queue.events.on('complete', (event) => {
+  queue.events.on('complete', (event) => {
   console.log('Task completed:', event.payload.value);
-});
+  });
 
-queue.events.on('error', (event) => {
+  queue.events.on('error', (event) => {
   console.error('Task failed:', event.payload.error);
-});
-```
+  });
+  ```
 
 ##### failures
 
@@ -184,7 +189,7 @@ queue.events.on('error', (event) => {
 failures: object[] = [];
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:252](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L252)
+Defined in: [packages/utils/src/asyncQueue.ts:254](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L254)
 
 Array of all task failures with metadata for debugging and analysis
 
@@ -210,7 +215,7 @@ meta: I;
 get completed(): number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:785](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L785)
+Defined in: [packages/utils/src/asyncQueue.ts:793](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L793)
 
 Number of tasks that have completed successfully
 
@@ -226,7 +231,7 @@ Number of tasks that have completed successfully
 get failed(): number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:790](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L790)
+Defined in: [packages/utils/src/asyncQueue.ts:798](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L798)
 
 Number of tasks that have failed
 
@@ -242,7 +247,7 @@ Number of tasks that have failed
 get isPaused(): boolean;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:900](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L900)
+Defined in: [packages/utils/src/asyncQueue.ts:906](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L906)
 
 Whether the queue is currently paused
 
@@ -258,7 +263,7 @@ Whether the queue is currently paused
 get isStarted(): boolean;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:905](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L905)
+Defined in: [packages/utils/src/asyncQueue.ts:911](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L911)
 
 Whether the queue has been started (relevant for autoStart: false)
 
@@ -274,7 +279,7 @@ Whether the queue has been started (relevant for autoStart: false)
 get isStopped(): boolean;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:895](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L895)
+Defined in: [packages/utils/src/asyncQueue.ts:901](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L901)
 
 Whether the queue is stopped due to an error
 
@@ -290,7 +295,7 @@ Whether the queue is stopped due to an error
 get pending(): number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:795](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L795)
+Defined in: [packages/utils/src/asyncQueue.ts:803](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L803)
 
 Number of tasks currently being processed
 
@@ -306,7 +311,7 @@ Number of tasks currently being processed
 get size(): number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:800](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L800)
+Defined in: [packages/utils/src/asyncQueue.ts:808](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L808)
 
 Number of tasks waiting in the queue to be processed
 
@@ -322,7 +327,7 @@ Number of tasks waiting in the queue to be processed
 get stoppedReason(): undefined | Error;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:910](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L910)
+Defined in: [packages/utils/src/asyncQueue.ts:916](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L916)
 
 The error that caused the queue to stop (if any)
 
@@ -338,12 +343,13 @@ The error that caused the queue to stop (if any)
 add(fn, options?): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:401](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L401)
+Defined in: [packages/utils/src/asyncQueue.ts:404](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L404)
 
 Add a task that returns a Result to the queue
 
-Use this method when your task function already returns a Result type.
-For functions that throw errors or return plain values, use `resultifyAdd` instead.
+Use this method when your task function already returns a Result type. For
+functions that throw errors or return plain values, use `resultifyAdd`
+instead.
 
 ###### Parameters
 
@@ -368,23 +374,23 @@ Promise that resolves with the task result
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue<string>();
+  const queue = createAsyncQueue<string>();
 
-const result = await queue.add(async () => {
-  try {
-    const data = await fetchData();
-    return Result.ok(data);
-  } catch (error) {
-    return Result.err(error);
+  const result = await queue.add(async () => {
+    try {
+      const data = await fetchData();
+      return Result.ok(data);
+    } catch (error) {
+      return Result.err(error);
+    }
+  });
+
+  if (result.ok) {
+    console.log('Success:', result.value);
+  } else {
+    console.log('Error:', result.error);
   }
-});
-
-if (result.ok) {
-  console.log('Success:', result.value);
-} else {
-  console.log('Error:', result.error);
-}
-```
+  ```;
 
 ##### clear()
 
@@ -392,12 +398,12 @@ if (result.ok) {
 clear(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:767](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L767)
+Defined in: [packages/utils/src/asyncQueue.ts:775](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L775)
 
 Clear all queued tasks (does not affect currently running tasks)
 
-This removes all tasks waiting in the queue but allows currently
-executing tasks to complete normally.
+This removes all tasks waiting in the queue but allows currently executing
+tasks to complete normally.
 
 ###### Returns
 
@@ -406,19 +412,19 @@ executing tasks to complete normally.
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue({ concurrency: 1 });
+  const queue = createAsyncQueue({ concurrency: 1 });
 
-// Add multiple tasks
-queue.resultifyAdd(async () => longRunningTask()); // Will start immediately
-queue.resultifyAdd(async () => task2()); // Queued
-queue.resultifyAdd(async () => task3()); // Queued
+  // Add multiple tasks
+  queue.resultifyAdd(async () => longRunningTask()); // Will start immediately
+  queue.resultifyAdd(async () => task2()); // Queued
+  queue.resultifyAdd(async () => task3()); // Queued
 
-// Clear remaining queued tasks
-queue.clear();
+  // Clear remaining queued tasks
+  queue.clear();
 
-// Only the first task will complete
-await queue.onIdle();
-```
+  // Only the first task will complete
+  await queue.onIdle();
+  ```;
 
 ##### onIdle()
 
@@ -426,14 +432,17 @@ await queue.onIdle();
 onIdle(): Promise<void>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:711](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L711)
+Defined in: [packages/utils/src/asyncQueue.ts:719](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L719)
 
-Wait for the queue to become idle (no pending tasks, no queued tasks, and no rate-limit timers)
+Wait for the queue to become idle (no pending tasks, no queued tasks, and
+no rate-limit timers)
 
 This method resolves when:
+
 - All tasks have completed (success or failure)
 - The queue is stopped due to error (stopOnError), even with remaining tasks
-- There are no queued tasks, no running tasks, and no pending rate-limit timers
+- There are no queued tasks, no running tasks, and no pending rate-limit
+  timers
 
 ###### Returns
 
@@ -444,18 +453,18 @@ Promise that resolves when the queue is idle
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue<string>();
+  const queue = createAsyncQueue<string>();
 
-// Add multiple tasks
-for (let i = 0; i < 10; i++) {
+  // Add multiple tasks
+  for (let i = 0; i < 10; i++) {
   queue.resultifyAdd(async () => `task ${i}`);
-}
+  }
 
-// Wait for all tasks to complete
-await queue.onIdle();
+  // Wait for all tasks to complete
+  await queue.onIdle();
 
-console.log(`Completed: ${queue.completed}, Failed: ${queue.failed}`);
-```
+  console.log(`Completed: ${queue.completed}, Failed: ${queue.failed}`);
+  ```
 
 ##### onSizeLessThan()
 
@@ -463,7 +472,7 @@ console.log(`Completed: ${queue.completed}, Failed: ${queue.failed}`);
 onSizeLessThan(limit): Promise<void>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:736](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L736)
+Defined in: [packages/utils/src/asyncQueue.ts:744](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L744)
 
 Wait until the queued task count is below a limit
 
@@ -489,7 +498,7 @@ Threshold that `size` must be below to resolve
 pause(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:846](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L846)
+Defined in: [packages/utils/src/asyncQueue.ts:854](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L854)
 
 Pause processing new tasks (currently running tasks continue)
 
@@ -500,18 +509,18 @@ Pause processing new tasks (currently running tasks continue)
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue();
+  const queue = createAsyncQueue();
 
-// Start some tasks
-queue.resultifyAdd(async () => longRunningTask1());
-queue.resultifyAdd(async () => longRunningTask2());
+  // Start some tasks
+  queue.resultifyAdd(async () => longRunningTask1());
+  queue.resultifyAdd(async () => longRunningTask2());
 
-// Pause before more tasks are picked up
-queue.pause();
+  // Pause before more tasks are picked up
+  queue.pause();
 
-// Later, resume processing
-queue.resume();
-```
+  // Later, resume processing
+  queue.resume();
+  ```;
 
 ##### reset()
 
@@ -519,12 +528,12 @@ queue.resume();
 reset(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:885](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L885)
+Defined in: [packages/utils/src/asyncQueue.ts:891](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L891)
 
 Reset the queue after being stopped, allowing new tasks to be processed
 
-This clears the stopped state and error reason, and resumes processing
-any remaining queued tasks if autoStart was enabled.
+This clears the stopped state and error reason, and resumes processing any
+remaining queued tasks if autoStart was enabled.
 
 ###### Returns
 
@@ -533,22 +542,22 @@ any remaining queued tasks if autoStart was enabled.
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue({ stopOnError: true });
+  const queue = createAsyncQueue({ stopOnError: true });
 
-// Add tasks that will cause the queue to stop
-queue.resultifyAdd(async () => { throw new Error('fail'); });
-queue.resultifyAdd(async () => 'remaining task');
+  // Add tasks that will cause the queue to stop
+  queue.resultifyAdd(async () => { throw new Error('fail'); });
+  queue.resultifyAdd(async () => 'remaining task');
 
-await queue.onIdle();
+  await queue.onIdle();
 
-if (queue.isStopped) {
+  if (queue.isStopped) {
   console.log(`Queue stopped, ${queue.size} tasks remaining`);
 
   // Reset and process remaining tasks
   queue.reset();
   await queue.onIdle();
-}
-```
+  }
+  ```
 
 ##### resultifyAdd()
 
@@ -556,7 +565,7 @@ if (queue.isStopped) {
 resultifyAdd(fn, options?): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:489](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L489)
+Defined in: [packages/utils/src/asyncQueue.ts:494](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L494)
 
 Add a task that returns a plain value or throws errors to the queue
 
@@ -585,31 +594,33 @@ Promise that resolves with the task result wrapped in Result
 
 ###### Examples
 
-```typescript
-const queue = createAsyncQueue<string>();
+Basic Usage
+  ```typescript
+  const queue = createAsyncQueue<string>();
 
-queue.resultifyAdd(async () => {
+  queue.resultifyAdd(async () => {
   const response = await fetch('/api/data');
   return response.json();
-}).then(result => {
+  }).then(result => {
   if (result.ok) {
-    console.log('Data:', result.value);
+  console.log('Data:', result.value);
   } else {
-    console.error('Failed:', result.error);
+  console.error('Failed:', result.error);
   }
-});
-```
+  });
+  ```
 
-```typescript
-queue.resultifyAdd(
+With Callbacks
+  ```typescript
+  queue.resultifyAdd(
   async () => processData(),
   {
-    onComplete: (data) => console.log('Processed:', data),
-    onError: (error) => console.error('Failed:', error),
-    timeout: 5000
+  onComplete: (data) => console.log('Processed:', data),
+  onError: (error) => console.error('Failed:', error),
+  timeout: 5000
   }
-);
-```
+  );
+  ```
 
 ##### resume()
 
@@ -617,7 +628,7 @@ queue.resultifyAdd(
 resume(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:853](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L853)
+Defined in: [packages/utils/src/asyncQueue.ts:859](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L859)
 
 Resume processing tasks after pause
 
@@ -631,7 +642,7 @@ Resume processing tasks after pause
 start(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:820](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L820)
+Defined in: [packages/utils/src/asyncQueue.ts:828](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L828)
 
 Manually start processing tasks (only needed if autoStart: false)
 
@@ -642,22 +653,22 @@ Manually start processing tasks (only needed if autoStart: false)
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue({ autoStart: false });
+  const queue = createAsyncQueue({ autoStart: false });
 
-// Add tasks without starting processing
-queue.resultifyAdd(async () => 'task1');
-queue.resultifyAdd(async () => 'task2');
+  // Add tasks without starting processing
+  queue.resultifyAdd(async () => 'task1');
+  queue.resultifyAdd(async () => 'task2');
 
-// Start processing when ready
-queue.start();
-await queue.onIdle();
-```
+  // Start processing when ready
+  queue.start();
+  await queue.onIdle();
+  ```;
 
 ***
 
 ### AsyncQueueWithMeta\<T, I, E\>
 
-Defined in: [packages/utils/src/asyncQueue.ts:953](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L953)
+Defined in: [packages/utils/src/asyncQueue.ts:957](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L957)
 
 AsyncQueue variant that requires metadata for all tasks
 
@@ -667,23 +678,23 @@ when you need to track or identify tasks consistently.
 #### Example
 
 ```typescript
-interface TaskMeta {
+  interface TaskMeta {
   id: string;
   priority: number;
-}
+  }
 
-const queue = createAsyncQueueWithMeta<string, TaskMeta>({ concurrency: 2 });
+  const queue = createAsyncQueueWithMeta<string, TaskMeta>({ concurrency: 2 });
 
-queue.resultifyAdd(
+  queue.resultifyAdd(
   async () => processImportantTask(),
   { meta: { id: 'task-1', priority: 1 } }
-);
+  );
 
-// Listen to events with metadata
-queue.events.on('complete', (event) => {
+  // Listen to events with metadata
+  queue.events.on('complete', (event) => {
   console.log(`Task ${event.payload.meta.id} completed`);
-});
-```
+  });
+  ```
 
 #### Extends
 
@@ -717,7 +728,7 @@ The type of errors that tasks can produce
 new AsyncQueueWithMeta<T, I, E>(options?): AsyncQueueWithMeta<T, I, E>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:958](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L958)
+Defined in: [packages/utils/src/asyncQueue.ts:962](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L962)
 
 ###### Parameters
 
@@ -741,7 +752,7 @@ Defined in: [packages/utils/src/asyncQueue.ts:958](https://github.com/lucasols/u
 completions: object[] = [];
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:255](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L255)
+Defined in: [packages/utils/src/asyncQueue.ts:257](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L257)
 
 Array of all task completions with metadata for debugging and analysis
 
@@ -779,27 +790,28 @@ events: Emitter<{
 }>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:231](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L231)
+Defined in: [packages/utils/src/asyncQueue.ts:233](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L233)
 
 Event emitter for tracking task lifecycle
 
 ###### Example
 
-```typescript
-const queue = createAsyncQueue<string>();
+Listening to Events
+  ```typescript
+  const queue = createAsyncQueue<string>();
 
-queue.events.on('start', (event) => {
+  queue.events.on('start', (event) => {
   console.log('Task started:', event.payload.meta);
-});
+  });
 
-queue.events.on('complete', (event) => {
+  queue.events.on('complete', (event) => {
   console.log('Task completed:', event.payload.value);
-});
+  });
 
-queue.events.on('error', (event) => {
+  queue.events.on('error', (event) => {
   console.error('Task failed:', event.payload.error);
-});
-```
+  });
+  ```
 
 ###### Inherited from
 
@@ -811,7 +823,7 @@ queue.events.on('error', (event) => {
 failures: object[] = [];
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:252](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L252)
+Defined in: [packages/utils/src/asyncQueue.ts:254](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L254)
 
 Array of all task failures with metadata for debugging and analysis
 
@@ -841,7 +853,7 @@ meta: I;
 get completed(): number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:785](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L785)
+Defined in: [packages/utils/src/asyncQueue.ts:793](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L793)
 
 Number of tasks that have completed successfully
 
@@ -861,7 +873,7 @@ Number of tasks that have completed successfully
 get failed(): number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:790](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L790)
+Defined in: [packages/utils/src/asyncQueue.ts:798](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L798)
 
 Number of tasks that have failed
 
@@ -881,7 +893,7 @@ Number of tasks that have failed
 get isPaused(): boolean;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:900](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L900)
+Defined in: [packages/utils/src/asyncQueue.ts:906](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L906)
 
 Whether the queue is currently paused
 
@@ -901,7 +913,7 @@ Whether the queue is currently paused
 get isStarted(): boolean;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:905](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L905)
+Defined in: [packages/utils/src/asyncQueue.ts:911](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L911)
 
 Whether the queue has been started (relevant for autoStart: false)
 
@@ -921,7 +933,7 @@ Whether the queue has been started (relevant for autoStart: false)
 get isStopped(): boolean;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:895](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L895)
+Defined in: [packages/utils/src/asyncQueue.ts:901](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L901)
 
 Whether the queue is stopped due to an error
 
@@ -941,7 +953,7 @@ Whether the queue is stopped due to an error
 get pending(): number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:795](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L795)
+Defined in: [packages/utils/src/asyncQueue.ts:803](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L803)
 
 Number of tasks currently being processed
 
@@ -961,7 +973,7 @@ Number of tasks currently being processed
 get size(): number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:800](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L800)
+Defined in: [packages/utils/src/asyncQueue.ts:808](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L808)
 
 Number of tasks waiting in the queue to be processed
 
@@ -981,7 +993,7 @@ Number of tasks waiting in the queue to be processed
 get stoppedReason(): undefined | Error;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:910](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L910)
+Defined in: [packages/utils/src/asyncQueue.ts:916](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L916)
 
 The error that caused the queue to stop (if any)
 
@@ -1001,12 +1013,13 @@ The error that caused the queue to stop (if any)
 add(fn, options): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:962](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L962)
+Defined in: [packages/utils/src/asyncQueue.ts:966](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L966)
 
 Add a task that returns a Result to the queue
 
-Use this method when your task function already returns a Result type.
-For functions that throw errors or return plain values, use `resultifyAdd` instead.
+Use this method when your task function already returns a Result type. For
+functions that throw errors or return plain values, use `resultifyAdd`
+instead.
 
 ###### Parameters
 
@@ -1031,23 +1044,23 @@ Promise that resolves with the task result
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue<string>();
+  const queue = createAsyncQueue<string>();
 
-const result = await queue.add(async () => {
-  try {
-    const data = await fetchData();
-    return Result.ok(data);
-  } catch (error) {
-    return Result.err(error);
+  const result = await queue.add(async () => {
+    try {
+      const data = await fetchData();
+      return Result.ok(data);
+    } catch (error) {
+      return Result.err(error);
+    }
+  });
+
+  if (result.ok) {
+    console.log('Success:', result.value);
+  } else {
+    console.log('Error:', result.error);
   }
-});
-
-if (result.ok) {
-  console.log('Success:', result.value);
-} else {
-  console.log('Error:', result.error);
-}
-```
+  ```;
 
 ###### Overrides
 
@@ -1059,12 +1072,12 @@ if (result.ok) {
 clear(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:767](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L767)
+Defined in: [packages/utils/src/asyncQueue.ts:775](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L775)
 
 Clear all queued tasks (does not affect currently running tasks)
 
-This removes all tasks waiting in the queue but allows currently
-executing tasks to complete normally.
+This removes all tasks waiting in the queue but allows currently executing
+tasks to complete normally.
 
 ###### Returns
 
@@ -1073,19 +1086,19 @@ executing tasks to complete normally.
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue({ concurrency: 1 });
+  const queue = createAsyncQueue({ concurrency: 1 });
 
-// Add multiple tasks
-queue.resultifyAdd(async () => longRunningTask()); // Will start immediately
-queue.resultifyAdd(async () => task2()); // Queued
-queue.resultifyAdd(async () => task3()); // Queued
+  // Add multiple tasks
+  queue.resultifyAdd(async () => longRunningTask()); // Will start immediately
+  queue.resultifyAdd(async () => task2()); // Queued
+  queue.resultifyAdd(async () => task3()); // Queued
 
-// Clear remaining queued tasks
-queue.clear();
+  // Clear remaining queued tasks
+  queue.clear();
 
-// Only the first task will complete
-await queue.onIdle();
-```
+  // Only the first task will complete
+  await queue.onIdle();
+  ```;
 
 ###### Inherited from
 
@@ -1097,14 +1110,17 @@ await queue.onIdle();
 onIdle(): Promise<void>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:711](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L711)
+Defined in: [packages/utils/src/asyncQueue.ts:719](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L719)
 
-Wait for the queue to become idle (no pending tasks, no queued tasks, and no rate-limit timers)
+Wait for the queue to become idle (no pending tasks, no queued tasks, and
+no rate-limit timers)
 
 This method resolves when:
+
 - All tasks have completed (success or failure)
 - The queue is stopped due to error (stopOnError), even with remaining tasks
-- There are no queued tasks, no running tasks, and no pending rate-limit timers
+- There are no queued tasks, no running tasks, and no pending rate-limit
+  timers
 
 ###### Returns
 
@@ -1115,18 +1131,18 @@ Promise that resolves when the queue is idle
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue<string>();
+  const queue = createAsyncQueue<string>();
 
-// Add multiple tasks
-for (let i = 0; i < 10; i++) {
+  // Add multiple tasks
+  for (let i = 0; i < 10; i++) {
   queue.resultifyAdd(async () => `task ${i}`);
-}
+  }
 
-// Wait for all tasks to complete
-await queue.onIdle();
+  // Wait for all tasks to complete
+  await queue.onIdle();
 
-console.log(`Completed: ${queue.completed}, Failed: ${queue.failed}`);
-```
+  console.log(`Completed: ${queue.completed}, Failed: ${queue.failed}`);
+  ```
 
 ###### Inherited from
 
@@ -1138,7 +1154,7 @@ console.log(`Completed: ${queue.completed}, Failed: ${queue.failed}`);
 onSizeLessThan(limit): Promise<void>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:736](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L736)
+Defined in: [packages/utils/src/asyncQueue.ts:744](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L744)
 
 Wait until the queued task count is below a limit
 
@@ -1168,7 +1184,7 @@ Threshold that `size` must be below to resolve
 pause(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:846](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L846)
+Defined in: [packages/utils/src/asyncQueue.ts:854](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L854)
 
 Pause processing new tasks (currently running tasks continue)
 
@@ -1179,18 +1195,18 @@ Pause processing new tasks (currently running tasks continue)
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue();
+  const queue = createAsyncQueue();
 
-// Start some tasks
-queue.resultifyAdd(async () => longRunningTask1());
-queue.resultifyAdd(async () => longRunningTask2());
+  // Start some tasks
+  queue.resultifyAdd(async () => longRunningTask1());
+  queue.resultifyAdd(async () => longRunningTask2());
 
-// Pause before more tasks are picked up
-queue.pause();
+  // Pause before more tasks are picked up
+  queue.pause();
 
-// Later, resume processing
-queue.resume();
-```
+  // Later, resume processing
+  queue.resume();
+  ```;
 
 ###### Inherited from
 
@@ -1202,12 +1218,12 @@ queue.resume();
 reset(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:885](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L885)
+Defined in: [packages/utils/src/asyncQueue.ts:891](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L891)
 
 Reset the queue after being stopped, allowing new tasks to be processed
 
-This clears the stopped state and error reason, and resumes processing
-any remaining queued tasks if autoStart was enabled.
+This clears the stopped state and error reason, and resumes processing any
+remaining queued tasks if autoStart was enabled.
 
 ###### Returns
 
@@ -1216,22 +1232,22 @@ any remaining queued tasks if autoStart was enabled.
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue({ stopOnError: true });
+  const queue = createAsyncQueue({ stopOnError: true });
 
-// Add tasks that will cause the queue to stop
-queue.resultifyAdd(async () => { throw new Error('fail'); });
-queue.resultifyAdd(async () => 'remaining task');
+  // Add tasks that will cause the queue to stop
+  queue.resultifyAdd(async () => { throw new Error('fail'); });
+  queue.resultifyAdd(async () => 'remaining task');
 
-await queue.onIdle();
+  await queue.onIdle();
 
-if (queue.isStopped) {
+  if (queue.isStopped) {
   console.log(`Queue stopped, ${queue.size} tasks remaining`);
 
   // Reset and process remaining tasks
   queue.reset();
   await queue.onIdle();
-}
-```
+  }
+  ```
 
 ###### Inherited from
 
@@ -1243,7 +1259,7 @@ if (queue.isStopped) {
 resultifyAdd(fn, options): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:969](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L969)
+Defined in: [packages/utils/src/asyncQueue.ts:973](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L973)
 
 Add a task that returns a plain value or throws errors to the queue
 
@@ -1272,31 +1288,33 @@ Promise that resolves with the task result wrapped in Result
 
 ###### Examples
 
-```typescript
-const queue = createAsyncQueue<string>();
+Basic Usage
+  ```typescript
+  const queue = createAsyncQueue<string>();
 
-queue.resultifyAdd(async () => {
+  queue.resultifyAdd(async () => {
   const response = await fetch('/api/data');
   return response.json();
-}).then(result => {
+  }).then(result => {
   if (result.ok) {
-    console.log('Data:', result.value);
+  console.log('Data:', result.value);
   } else {
-    console.error('Failed:', result.error);
+  console.error('Failed:', result.error);
   }
-});
-```
+  });
+  ```
 
-```typescript
-queue.resultifyAdd(
+With Callbacks
+  ```typescript
+  queue.resultifyAdd(
   async () => processData(),
   {
-    onComplete: (data) => console.log('Processed:', data),
-    onError: (error) => console.error('Failed:', error),
-    timeout: 5000
+  onComplete: (data) => console.log('Processed:', data),
+  onError: (error) => console.error('Failed:', error),
+  timeout: 5000
   }
-);
-```
+  );
+  ```
 
 ###### Overrides
 
@@ -1308,7 +1326,7 @@ queue.resultifyAdd(
 resume(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:853](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L853)
+Defined in: [packages/utils/src/asyncQueue.ts:859](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L859)
 
 Resume processing tasks after pause
 
@@ -1326,7 +1344,7 @@ Resume processing tasks after pause
 start(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:820](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L820)
+Defined in: [packages/utils/src/asyncQueue.ts:828](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L828)
 
 Manually start processing tasks (only needed if autoStart: false)
 
@@ -1337,16 +1355,16 @@ Manually start processing tasks (only needed if autoStart: false)
 ###### Example
 
 ```typescript
-const queue = createAsyncQueue({ autoStart: false });
+  const queue = createAsyncQueue({ autoStart: false });
 
-// Add tasks without starting processing
-queue.resultifyAdd(async () => 'task1');
-queue.resultifyAdd(async () => 'task2');
+  // Add tasks without starting processing
+  queue.resultifyAdd(async () => 'task1');
+  queue.resultifyAdd(async () => 'task2');
 
-// Start processing when ready
-queue.start();
-await queue.onIdle();
-```
+  // Start processing when ready
+  queue.start();
+  await queue.onIdle();
+  ```;
 
 ###### Inherited from
 
@@ -1360,7 +1378,7 @@ await queue.onIdle();
 function createAsyncQueue<T, E>(options?): AsyncQueue<T, E>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:1007](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L1007)
+Defined in: [packages/utils/src/asyncQueue.ts:1014](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L1014)
 
 Create a new AsyncQueue instance
 
@@ -1394,24 +1412,27 @@ A new AsyncQueue instance
 
 #### Examples
 
-```typescript
-const queue = createAsyncQueue<string>({ concurrency: 3 });
-```
+Basic Queue
+  ```typescript
+  const queue = createAsyncQueue<string>({ concurrency: 3 });
+  ```
 
-```typescript
-const queue = createAsyncQueue<string>({
+Error Handling Queue
+  ```typescript
+  const queue = createAsyncQueue<string>({
   concurrency: 2,
   stopOnError: true,
   rejectPendingOnError: true
-});
-```
+  });
+  ```
 
-```typescript
-const queue = createAsyncQueue<string>({
+Lazy Start Queue
+  ```typescript
+  const queue = createAsyncQueue<string>({
   autoStart: false,
   concurrency: 1
-});
-```
+  });
+  ```
 
 ***
 
@@ -1421,7 +1442,7 @@ const queue = createAsyncQueue<string>({
 function createAsyncQueueWithMeta<T, I, E>(options?): AsyncQueueWithMeta<T, I, E>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:1044](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L1044)
+Defined in: [packages/utils/src/asyncQueue.ts:1051](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L1051)
 
 Create a new AsyncQueueWithMeta instance that requires metadata for all tasks
 
@@ -1462,20 +1483,20 @@ A new AsyncQueueWithMeta instance
 #### Example
 
 ```typescript
-interface TaskInfo {
+  interface TaskInfo {
   taskId: string;
   userId: string;
-}
+  }
 
-const queue = createAsyncQueueWithMeta<ProcessResult, TaskInfo>({
+  const queue = createAsyncQueueWithMeta<ProcessResult, TaskInfo>({
   concurrency: 5
-});
+  });
 
-queue.resultifyAdd(
+  queue.resultifyAdd(
   async (ctx) => {
-    console.log(`Processing task ${ctx.meta.taskId} for user ${ctx.meta.userId}`);
-    return await processUserTask(ctx.meta.userId);
+  console.log(`Processing task ${ctx.meta.taskId} for user ${ctx.meta.userId}`);
+  return await processUserTask(ctx.meta.userId);
   },
   { meta: { taskId: '123', userId: 'user456' } }
-);
-```
+  );
+  ```

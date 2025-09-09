@@ -19,7 +19,7 @@ function retryOnError<T>(
 originalMaxRetries): Promise<T>;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L46)
+Defined in: [packages/utils/src/retryOnError.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L48)
 
 Retries a function on error with configurable retry logic.
 
@@ -53,31 +53,32 @@ Configuration options
 
 `number` = `0`
 
-internal use only
+Internal use only
 
 ##### originalMaxRetries
 
 `number` = `maxRetries`
 
-internal use only
+Internal use only
 
 #### Returns
 
 `Promise`\<`T`\>
 
-Promise resolving to the function result or rejecting with the final error
+Promise resolving to the function result or rejecting with the final
+  error
 
 #### Example
 
 ```ts
 await retryOnError(
-  async (ctx) => {
-    console.log(`Attempt ${ctx.retry + 1}`);
-    return await fetchData();
-  },
-  3,
-  { delayBetweenRetriesMs: 1000 }
-);
+    async (ctx) => {
+      console.log(`Attempt ${ctx.retry + 1}`);
+      return await fetchData();
+    },
+    3,
+    { delayBetweenRetriesMs: 1000 },
+  );
 ```
 
 ***
@@ -93,7 +94,7 @@ function retryResultOnError<T, E>(
 __originalMaxRetries): Promise<Result<T, E>>;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:132](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L132)
+Defined in: [packages/utils/src/retryOnError.ts:135](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L135)
 
 Retries a result function on error with configurable retry logic.
 
@@ -149,16 +150,17 @@ Configuration options
 
 `number` = `0`
 
-internal use only
+Internal use only
 
 ##### \_\_originalMaxRetries
 
 `number` = `maxRetries`
 
-internal use only
+Internal use only
 
 #### Returns
 
 `Promise`\<`Result`\<`T`, `E`\>\>
 
-Promise resolving to the function result or rejecting with the final error
+Promise resolving to the function result or rejecting with the final
+  error
