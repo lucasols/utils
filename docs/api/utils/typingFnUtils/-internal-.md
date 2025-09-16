@@ -26,7 +26,7 @@ Defined in: [packages/utils/src/typeUtils.ts:155](https://github.com/lucasols/ut
 type UnionDiff<T, U> = [T] extends [U] ? [U] extends [T] ? null : object : [U] extends [T] ? object : object;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L98)
+Defined in: [packages/utils/src/typingFnUtils.ts:110](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L110)
 
 #### Type Parameters
 
