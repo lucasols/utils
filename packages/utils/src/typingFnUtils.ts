@@ -23,6 +23,18 @@ export function typedObjectEntries<T extends Record<string, unknown>>(
 }
 
 /**
+ * A wrapper to Object.entries with a better typing inference, but with strict
+ * typing narrowing keys to strings.
+ *
+ * @param obj
+ */
+export function strictTypedObjectEntries<T extends Record<string, unknown>>(
+  obj: T,
+): NonNullable<{ [K in keyof T]: [K & string, T[K]] }[keyof T]>[] {
+  return Object.entries(obj) as any;
+}
+
+/**
  * A wrapper to Object.keys with a better typing inference
  *
  * @param obj
@@ -117,4 +129,24 @@ export function asPartialUndefinedValues<T extends Record<string, unknown>>(
   value: PartialPossiblyUndefinedValues<T>,
 ): T {
   return value as T;
+}
+
+/** A type representing an array that is guaranteed to have at least one element. */
+export type NonEmptyArray<T> = [T, ...T[]];
+
+/**
+ * Type guard to check if an array has at least one element.
+ *
+ * @param array - The array to check
+ * @returns True if the array is non-empty, false otherwise
+ */
+export function isNonEmptyArray<T>(array: T[]): array is NonEmptyArray<T> {
+  return array.length > 0;
+}
+
+export function objectHasKey<T extends string>(
+  obj: object,
+  key: T,
+): obj is object & { [K in T]: unknown } {
+  return key in obj;
 }

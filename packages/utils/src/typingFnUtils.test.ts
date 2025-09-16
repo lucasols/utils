@@ -1,5 +1,8 @@
 import { describe, expect, test } from 'vitest';
-import { unionsAreTheSame } from './typingFnUtils';
+import { asType, objectHasKey, unionsAreTheSame } from './typingFnUtils';
+import { typingTest } from './typingTestUtils';
+
+const { expectTypesAreEqual } = typingTest;
 
 type AVeryLargeTypeNameJustToImproveReadability<T> = T;
 
@@ -145,5 +148,20 @@ describe('unionsAreTheSame', () => {
     });
 
     expect(true).toBe(true);
+  });
+});
+
+describe('objectHasKey', () => {
+  test('should return true if the object has the key', () => {
+    const obj = asType<{ a: number } | { b: string }>({ a: 1 });
+    expect(objectHasKey(obj, 'a')).toBe(true);
+
+    if (objectHasKey(obj, 'a')) {
+      expectTypesAreEqual<typeof obj.a, number>();
+    }
+
+    if (objectHasKey(obj, 'b')) {
+      expectTypesAreEqual<typeof obj.b, string>();
+    }
   });
 });
