@@ -144,6 +144,13 @@ export function isNonEmptyArray<T>(array: T[]): array is NonEmptyArray<T> {
   return array.length > 0;
 }
 
+/**
+ * Type guard to check if an object has a specific key and narrow its type.
+ *
+ * @param obj - The object to check
+ * @param key - The key to check for
+ * @returns True if the object has the key, false otherwise
+ */
 export function objectHasKey<T extends string>(
   obj: object,
   key: T,
