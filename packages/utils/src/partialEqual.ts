@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+import type { Result } from 't-result';
+import { err, ok } from 't-result';
 import { deepEqual } from './deepEqual';
 
 const has = Object.prototype.hasOwnProperty;
@@ -559,7 +561,531 @@ function executeComparison(target: any, comparison: ComparisonsType): boolean {
   }
 }
 
-export function partialEqual(target: any, sub: any): boolean {
+type PartialError = {
+  path: string;
+  message: string;
+  received: any;
+  expected?: any;
+};
+
+type ErrorCollectionContext = {
+  errors: PartialError[];
+  path: string[];
+};
+
+function formatPath(path: string[]): string {
+  if (path.length === 0) return '';
+
+  let result = path[0] || '';
+  for (let i = 1; i < path.length; i++) {
+    const segment = path[i];
+    if (segment && segment.startsWith('[') && segment.endsWith(']')) {
+      // Array index - no dot prefix
+      result += segment;
+    } else if (segment) {
+      // Property name - add dot prefix
+      result += `.${  segment}`;
+    }
+  }
+  return result;
+}
+
+function addError(
+  context: ErrorCollectionContext,
+  message: string,
+  received: any,
+  expected?: any,
+): void {
+  const error: PartialError = {
+    path: formatPath(context.path),
+    message,
+    received,
+  };
+
+  if (expected !== undefined) {
+    error.expected = expected;
+  }
+
+  context.errors.push(error);
+}
+
+function executeComparisonWithErrorCollection(
+  target: any,
+  comparison: ComparisonsType,
+  context: ErrorCollectionContext,
+): void {
+  const [type, value] = comparison;
+
+  switch (type) {
+    case 'hasType':
+      switch (value) {
+        case 'string':
+          if (typeof target !== 'string') {
+            addError(context, `Expected type string`, target);
+          }
+          break;
+        case 'number':
+          if (typeof target !== 'number') {
+            addError(context, `Expected type number`, target);
+          }
+          break;
+        case 'boolean':
+          if (typeof target !== 'boolean') {
+            addError(context, `Expected type boolean`, target);
+          }
+          break;
+        case 'function':
+          if (typeof target !== 'function') {
+            addError(context, `Expected type function`, target);
+          }
+          break;
+        case 'array':
+          if (!Array.isArray(target)) {
+            addError(context, `Expected array`, target);
+          }
+          break;
+        case 'object':
+          if (
+            typeof target !== 'object' ||
+            target === null ||
+            Array.isArray(target)
+          ) {
+            addError(context, `Expected object`, target);
+          }
+          break;
+      }
+      break;
+    case 'isInstanceOf':
+      if (!(target instanceof value)) {
+        addError(
+          context,
+          `Expected instance of ${value.name}`,
+          target,
+        );
+      }
+      break;
+    case 'strStartsWith':
+      if (typeof target !== 'string' || !target.startsWith(value)) {
+        addError(
+          context,
+          `Expected string starting with "${value}"`,
+          target,
+        );
+      }
+      break;
+    case 'strEndsWith':
+      if (typeof target !== 'string' || !target.endsWith(value)) {
+        addError(
+          context,
+          `Expected string ending with "${value}"`,
+          target,
+        );
+      }
+      break;
+    case 'strContains':
+      if (typeof target !== 'string' || !target.includes(value)) {
+        addError(
+          context,
+          `Expected string containing "${value}"`,
+          target,
+        );
+      }
+      break;
+    case 'strMatchesRegex':
+      if (typeof target !== 'string' || !value.test(target)) {
+        addError(
+          context,
+          `Expected string matching regex ${value}`,
+          target,
+        );
+      }
+      break;
+    case 'numIsGreaterThan':
+      if (typeof target !== 'number' || target <= value) {
+        addError(
+          context,
+          `Expected number greater than ${value}`,
+          target,
+        );
+      }
+      break;
+    case 'numIsGreaterThanOrEqual':
+      if (typeof target !== 'number' || target < value) {
+        addError(
+          context,
+          `Expected number greater than or equal to ${value}`,
+          target,
+        );
+      }
+      break;
+    case 'numIsLessThan':
+      if (typeof target !== 'number' || target >= value) {
+        addError(
+          context,
+          `Expected number less than ${value}`,
+          target,
+        );
+      }
+      break;
+    case 'numIsLessThanOrEqual':
+      if (typeof target !== 'number' || target > value) {
+        addError(
+          context,
+          `Expected number less than or equal to ${value}`,
+          target,
+        );
+      }
+      break;
+    case 'numIsInRange':
+      if (
+        typeof target !== 'number' ||
+        target < value[0] ||
+        target > value[1]
+      ) {
+        addError(
+          context,
+          `Expected number in range [${value[0]}, ${value[1]}]`,
+          target,
+        );
+      }
+      break;
+    case 'jsonStringHasPartial':
+      if (typeof target !== 'string') {
+        addError(context, `Expected JSON string`, target);
+      } else {
+        try {
+          const parsed = JSON.parse(target);
+          partialEqualWithErrorCollection(parsed, value, context);
+        } catch {
+          addError(
+            context,
+            `Expected valid JSON string`,
+            target,
+          );
+        }
+      }
+      break;
+    case 'deepEqual':
+      if (!deepEqual(target, value)) {
+        addError(context, `Expected deep equal`, target, value);
+      }
+      break;
+    case 'partialEqual':
+      partialEqualWithErrorCollection(target, value, context);
+      break;
+    case 'custom':
+      if (!value(target)) {
+        addError(context, `Custom validation failed`, target, 'valid value');
+      }
+      break;
+    case 'keyNotBePresent':
+      addError(context, `Key should not be present`, target);
+      break;
+    case 'any': {
+      for (const comp of value) {
+        const subContext: ErrorCollectionContext = {
+          errors: [],
+          path: [...context.path],
+        };
+        executeComparisonWithErrorCollection(target, comp, subContext);
+        if (subContext.errors.length === 0) {
+          return; // At least one comparison passed
+        }
+      }
+      addError(
+        context,
+        `None of the alternative comparisons matched`,
+        target,
+      );
+      break;
+    }
+    case 'all':
+      for (const comp of value) {
+        executeComparisonWithErrorCollection(target, comp, context);
+      }
+      break;
+    case 'not': {
+      const subContext: ErrorCollectionContext = {
+        errors: [],
+        path: [...context.path],
+      };
+      executeComparisonWithErrorCollection(target, value, subContext);
+      if (subContext.errors.length === 0) {
+        addError(
+          context,
+          `Expected negated condition to fail`,
+          target,
+        );
+      }
+      break;
+    }
+    case 'withNoExtraKeys':
+    case 'withDeepNoExtraKeys':
+    case 'noExtraDefinedKeys':
+    case 'deepNoExtraDefinedKeys':
+      // These will be handled in partialEqualWithErrorCollection
+      addError(
+        context,
+        `Complex validation not supported in error collection mode yet`,
+        target,
+      );
+      break;
+  }
+}
+
+function executeComparisonWithKeyContextAndErrorCollection(
+  target: any,
+  comp: ComparisonsType,
+  keyExists: boolean,
+  context: ErrorCollectionContext,
+): void {
+  const [type, value] = comp;
+
+  if (type === 'keyNotBePresent') {
+    if (keyExists) {
+      addError(context, `Key should not be present`, target);
+    }
+    return;
+  }
+
+  if (type === 'any') {
+    for (const childComp of value) {
+      const subContext: ErrorCollectionContext = {
+        errors: [],
+        path: [...context.path],
+      };
+      executeComparisonWithKeyContextAndErrorCollection(
+        target,
+        childComp,
+        keyExists,
+        subContext,
+      );
+      if (subContext.errors.length === 0) {
+        return; // At least one comparison passed
+      }
+    }
+    addError(
+      context,
+      `None of the alternative comparisons matched`,
+      target,
+      'any alternative match',
+    );
+    return;
+  }
+
+  if (type === 'not') {
+    const subContext: ErrorCollectionContext = {
+      errors: [],
+      path: [...context.path],
+    };
+    executeComparisonWithKeyContextAndErrorCollection(
+      target,
+      value,
+      keyExists,
+      subContext,
+    );
+    if (subContext.errors.length === 0) {
+      addError(
+        context,
+        `Expected negated condition to fail`,
+        target,
+        'negated condition',
+      );
+    }
+    return;
+  }
+
+  executeComparisonWithErrorCollection(target, comp, context);
+}
+
+function partialEqualWithErrorCollection(
+  target: any,
+  sub: any,
+  context: ErrorCollectionContext,
+): void {
+  if (sub === target) return;
+
+  // Handle special comparisons first
+  if (sub && typeof sub === 'object' && '~sc' in sub) {
+    executeComparisonWithErrorCollection(target, sub['~sc'], context);
+    return;
+  }
+
+  if (sub && target && sub.constructor === target.constructor) {
+    const ctor = sub.constructor;
+
+    if (ctor === Date) {
+      if (sub.getTime() !== target.getTime()) {
+        addError(context, `Date mismatch`, target, sub);
+      }
+      return;
+    }
+
+    if (ctor === RegExp) {
+      if (sub.toString() !== target.toString()) {
+        addError(context, `RegExp mismatch`, target, sub);
+      }
+      return;
+    }
+
+    if (ctor === Array) {
+      if (sub.length > target.length) {
+        addError(
+          context,
+          `Array too short: expected at least ${sub.length} elements, got ${target.length}`,
+          target,
+          sub,
+        );
+        return;
+      }
+      for (let i = 0; i < sub.length; i++) {
+        context.path.push(`[${i}]`);
+        partialEqualWithErrorCollection(target[i], sub[i], context);
+        context.path.pop();
+      }
+      return;
+    }
+
+    if (ctor === Set) {
+      if (sub.size > target.size) {
+        addError(
+          context,
+          `Set too small: expected at least ${sub.size} elements, got ${target.size}`,
+          target,
+          sub,
+        );
+        return;
+      }
+      for (const value of sub) {
+        let found = false;
+        if (value && typeof value === 'object') {
+          found = !!find(target, value);
+        } else {
+          found = target.has(value);
+        }
+        if (!found) {
+          addError(context, `Set missing value`, target, value);
+        }
+      }
+      return;
+    }
+
+    if (ctor === Map) {
+      if (sub.size > target.size) {
+        addError(
+          context,
+          `Map too small: expected at least ${sub.size} entries, got ${target.size}`,
+          target,
+          sub,
+        );
+        return;
+      }
+      for (const [key, value] of sub) {
+        let targetKey = key;
+        if (key && typeof key === 'object') {
+          targetKey = find(target, key);
+          if (!targetKey) {
+            addError(context, `Map missing key`, target, key);
+            continue;
+          }
+        }
+        if (!target.has(targetKey)) {
+          addError(context, `Map missing key`, target, key);
+          continue;
+        }
+
+        context.path.push(`[${key}]`);
+        partialEqualWithErrorCollection(target.get(targetKey), value, context);
+        context.path.pop();
+      }
+      return;
+    }
+
+    if (!ctor || typeof sub === 'object') {
+      for (const key in sub) {
+        if (has.call(sub, key)) {
+          const subValue = sub[key];
+          context.path.push(key);
+
+          // Special handling for keyNotBePresent
+          if (
+            subValue &&
+            typeof subValue === 'object' &&
+            '~sc' in subValue &&
+            subValue['~sc'][0] === 'keyNotBePresent'
+          ) {
+            if (has.call(target, key)) {
+              addError(
+                context,
+                `Key should not be present`,
+                target[key],
+                'key not present',
+              );
+            }
+          } else if (
+            subValue &&
+            typeof subValue === 'object' &&
+            '~sc' in subValue &&
+            subValue['~sc'][0] === 'any'
+          ) {
+            const targetHasKey = has.call(target, key);
+            const targetValue = targetHasKey ? target[key] : undefined;
+
+            executeComparisonWithKeyContextAndErrorCollection(
+              targetValue,
+              subValue['~sc'],
+              targetHasKey,
+              context,
+            );
+          } else {
+            if (!has.call(target, key)) {
+              addError(context, `Missing property`, undefined, subValue);
+            } else {
+              partialEqualWithErrorCollection(target[key], subValue, context);
+            }
+          }
+
+          context.path.pop();
+        }
+      }
+      return;
+    }
+  }
+
+  // NaN === NaN check
+  if (sub !== sub && target !== target) {
+    return;
+  }
+
+  addError(context, `Value mismatch`, target, sub);
+}
+
+export function partialEqual(
+  target: any,
+  sub: any,
+  returnErrors: true,
+): Result<void, PartialError[]>;
+export function partialEqual(target: any, sub: any): boolean;
+export function partialEqual(
+  target: any,
+  sub: any,
+  returnErrors?: boolean,
+): boolean | Result<void, PartialError[]> {
+  if (returnErrors === true) {
+    const context: ErrorCollectionContext = {
+      errors: [],
+      path: [],
+    };
+
+    partialEqualWithErrorCollection(target, sub, context);
+
+    if (context.errors.length === 0) {
+      return ok(undefined);
+    } else {
+      return err(context.errors);
+    }
+  }
+
   if (sub === target) return true;
 
   // Handle special comparisons first

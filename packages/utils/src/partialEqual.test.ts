@@ -1,5 +1,6 @@
-import { describe, expect, test } from 'vitest';
+import { assert, describe, expect, test } from 'vitest';
 import { match, partialEqual } from './partialEqual';
+import { compactSnapshot } from './testUtils';
 
 describe('primitive values', () => {
   test('identical primitives should match', () => {
@@ -1584,7 +1585,10 @@ describe('special comparisons', () => {
 
     test('should fail if target has extra defined keys', () => {
       expect(
-        partialEqual({ a: 1, b: 2, c: 3 }, match.noExtraDefinedKeys({ a: 1, b: 2 })),
+        partialEqual(
+          { a: 1, b: 2, c: 3 },
+          match.noExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
       ).toBe(false);
       expect(
         partialEqual(
@@ -1597,7 +1601,10 @@ describe('special comparisons', () => {
     test('should pass if target has extra undefined keys (root level only)', () => {
       // undefined keys are not considered "extra defined keys"
       expect(
-        partialEqual({ a: 1, b: 2, c: undefined }, match.noExtraDefinedKeys({ a: 1, b: 2 })),
+        partialEqual(
+          { a: 1, b: 2, c: undefined },
+          match.noExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
       ).toBe(true);
       expect(
         partialEqual(
@@ -1611,24 +1618,32 @@ describe('special comparisons', () => {
       // Allows extra keys in nested objects (only checks root level)
       const target1 = { user: { name: 'John', age: 30, city: 'NYC' } };
       const partial1 = { user: { name: 'John', age: 30 } };
-      expect(partialEqual(target1, match.noExtraDefinedKeys(partial1))).toBe(true);
+      expect(partialEqual(target1, match.noExtraDefinedKeys(partial1))).toBe(
+        true,
+      );
 
       // But still fails if root level has extra defined keys
       const target2 = { user: { name: 'John', age: 30 }, extra: 'value' };
       const partial2 = { user: { name: 'John', age: 30 } };
-      expect(partialEqual(target2, match.noExtraDefinedKeys(partial2))).toBe(false);
+      expect(partialEqual(target2, match.noExtraDefinedKeys(partial2))).toBe(
+        false,
+      );
 
       // But passes if root level has extra undefined keys
       const target3 = { user: { name: 'John', age: 30 }, extra: undefined };
       const partial3 = { user: { name: 'John', age: 30 } };
-      expect(partialEqual(target3, match.noExtraDefinedKeys(partial3))).toBe(true);
+      expect(partialEqual(target3, match.noExtraDefinedKeys(partial3))).toBe(
+        true,
+      );
     });
 
     test('should fail if target is missing required keys', () => {
-      expect(partialEqual({ a: 1 }, match.noExtraDefinedKeys({ a: 1, b: 2 }))).toBe(
+      expect(
+        partialEqual({ a: 1 }, match.noExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+      expect(partialEqual({}, match.noExtraDefinedKeys({ name: 'John' }))).toBe(
         false,
       );
-      expect(partialEqual({}, match.noExtraDefinedKeys({ name: 'John' }))).toBe(false);
     });
 
     test('should fail if values do not match', () => {
@@ -1644,19 +1659,21 @@ describe('special comparisons', () => {
     });
 
     test('should handle non-object types gracefully', () => {
-      expect(partialEqual('string', match.noExtraDefinedKeys({ key: 'value' }))).toBe(
+      expect(
+        partialEqual('string', match.noExtraDefinedKeys({ key: 'value' })),
+      ).toBe(false);
+      expect(partialEqual(42, match.noExtraDefinedKeys({ key: 'value' }))).toBe(
         false,
       );
-      expect(partialEqual(42, match.noExtraDefinedKeys({ key: 'value' }))).toBe(false);
-      expect(partialEqual(null, match.noExtraDefinedKeys({ key: 'value' }))).toBe(
-        false,
-      );
-      expect(partialEqual(undefined, match.noExtraDefinedKeys({ key: 'value' }))).toBe(
-        false,
-      );
-      expect(partialEqual([1, 2, 3], match.noExtraDefinedKeys({ key: 'value' }))).toBe(
-        false,
-      );
+      expect(
+        partialEqual(null, match.noExtraDefinedKeys({ key: 'value' })),
+      ).toBe(false);
+      expect(
+        partialEqual(undefined, match.noExtraDefinedKeys({ key: 'value' })),
+      ).toBe(false);
+      expect(
+        partialEqual([1, 2, 3], match.noExtraDefinedKeys({ key: 'value' })),
+      ).toBe(false);
     });
 
     test('should work with special comparison matchers in partialShape', () => {
@@ -1688,7 +1705,10 @@ describe('special comparisons', () => {
         ),
       ).toBe(true);
       expect(
-        partialEqual({ a: 1, b: 2 }, match.not.noExtraDefinedKeys({ a: 1, b: 2 })),
+        partialEqual(
+          { a: 1, b: 2 },
+          match.not.noExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
       ).toBe(false);
     });
   });
@@ -1696,7 +1716,10 @@ describe('special comparisons', () => {
   describe('deepNoExtraDefinedKeys comparison', () => {
     test('should match object with exact same keys at all levels', () => {
       expect(
-        partialEqual({ a: 1, b: 2 }, match.deepNoExtraDefinedKeys({ a: 1, b: 2 })),
+        partialEqual(
+          { a: 1, b: 2 },
+          match.deepNoExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
       ).toBe(true);
       expect(
         partialEqual(
@@ -1743,33 +1766,33 @@ describe('special comparisons', () => {
     test('should fail if nested objects have extra defined keys', () => {
       const target1 = { user: { name: 'John', age: 30, city: 'NYC' } };
       const partial1 = { user: { name: 'John', age: 30 } };
-      expect(partialEqual(target1, match.deepNoExtraDefinedKeys(partial1))).toBe(
-        false,
-      );
+      expect(
+        partialEqual(target1, match.deepNoExtraDefinedKeys(partial1)),
+      ).toBe(false);
 
       const target2 = {
         data: { user: { name: 'John', extra: 'field' }, count: 5 },
       };
       const partial2 = { data: { user: { name: 'John' }, count: 5 } };
-      expect(partialEqual(target2, match.deepNoExtraDefinedKeys(partial2))).toBe(
-        false,
-      );
+      expect(
+        partialEqual(target2, match.deepNoExtraDefinedKeys(partial2)),
+      ).toBe(false);
     });
 
     test('should pass if nested objects have extra undefined keys', () => {
       const target1 = { user: { name: 'John', age: 30, city: undefined } };
       const partial1 = { user: { name: 'John', age: 30 } };
-      expect(partialEqual(target1, match.deepNoExtraDefinedKeys(partial1))).toBe(
-        true,
-      );
+      expect(
+        partialEqual(target1, match.deepNoExtraDefinedKeys(partial1)),
+      ).toBe(true);
 
       const target2 = {
         data: { user: { name: 'John', extra: undefined }, count: 5 },
       };
       const partial2 = { data: { user: { name: 'John' }, count: 5 } };
-      expect(partialEqual(target2, match.deepNoExtraDefinedKeys(partial2))).toBe(
-        true,
-      );
+      expect(
+        partialEqual(target2, match.deepNoExtraDefinedKeys(partial2)),
+      ).toBe(true);
     });
 
     test('should work with deeply nested exact matches', () => {
@@ -1787,7 +1810,9 @@ describe('special comparisons', () => {
           },
         },
       };
-      expect(partialEqual(target, match.deepNoExtraDefinedKeys(partial))).toBe(true);
+      expect(partialEqual(target, match.deepNoExtraDefinedKeys(partial))).toBe(
+        true,
+      );
     });
 
     test('should fail with deeply nested extra defined keys', () => {
@@ -1805,7 +1830,9 @@ describe('special comparisons', () => {
           },
         },
       };
-      expect(partialEqual(target, match.deepNoExtraDefinedKeys(partial))).toBe(false);
+      expect(partialEqual(target, match.deepNoExtraDefinedKeys(partial))).toBe(
+        false,
+      );
     });
 
     test('should pass with deeply nested extra undefined keys', () => {
@@ -1823,21 +1850,26 @@ describe('special comparisons', () => {
           },
         },
       };
-      expect(partialEqual(target, match.deepNoExtraDefinedKeys(partial))).toBe(true);
+      expect(partialEqual(target, match.deepNoExtraDefinedKeys(partial))).toBe(
+        true,
+      );
     });
 
     test('should fail if target is missing required keys', () => {
       expect(
         partialEqual({ a: 1 }, match.deepNoExtraDefinedKeys({ a: 1, b: 2 })),
       ).toBe(false);
-      expect(partialEqual({}, match.deepNoExtraDefinedKeys({ name: 'John' }))).toBe(
-        false,
-      );
+      expect(
+        partialEqual({}, match.deepNoExtraDefinedKeys({ name: 'John' })),
+      ).toBe(false);
     });
 
     test('should fail if values do not match', () => {
       expect(
-        partialEqual({ a: 1, b: 3 }, match.deepNoExtraDefinedKeys({ a: 1, b: 2 })),
+        partialEqual(
+          { a: 1, b: 3 },
+          match.deepNoExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
       ).toBe(false);
       expect(
         partialEqual(
@@ -1851,12 +1883,12 @@ describe('special comparisons', () => {
       expect(
         partialEqual('string', match.deepNoExtraDefinedKeys({ key: 'value' })),
       ).toBe(false);
-      expect(partialEqual(42, match.deepNoExtraDefinedKeys({ key: 'value' }))).toBe(
-        false,
-      );
-      expect(partialEqual(null, match.deepNoExtraDefinedKeys({ key: 'value' }))).toBe(
-        false,
-      );
+      expect(
+        partialEqual(42, match.deepNoExtraDefinedKeys({ key: 'value' })),
+      ).toBe(false);
+      expect(
+        partialEqual(null, match.deepNoExtraDefinedKeys({ key: 'value' })),
+      ).toBe(false);
       expect(
         partialEqual(undefined, match.deepNoExtraDefinedKeys({ key: 'value' })),
       ).toBe(false);
@@ -1894,8 +1926,281 @@ describe('special comparisons', () => {
         ),
       ).toBe(true);
       expect(
-        partialEqual({ a: 1, b: 2 }, match.not.deepNoExtraDefinedKeys({ a: 1, b: 2 })),
+        partialEqual(
+          { a: 1, b: 2 },
+          match.not.deepNoExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
       ).toBe(false);
     });
+  });
+});
+
+describe('error reporting', () => {
+  test('should return detailed errors for simple value mismatch', () => {
+    const result = partialEqual(42, 'hello', true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: '', message: 'Value mismatch', received: 42, expected: 'hello' }
+      "
+    `);
+  });
+
+  test('should return success for matching values', () => {
+    const result = partialEqual({ a: 1, b: 2 }, { a: 1 }, true);
+
+    expect(result.ok).toBe(true);
+  });
+
+  test('should report missing property errors with correct path', () => {
+    const target = { a: 1 };
+    const sub = { a: 1, b: 2 };
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: 'b', message: 'Missing property', expected: 2 }
+      "
+    `);
+  });
+
+  test('should report array index errors with correct path formatting', () => {
+    const target = [1, 2, { name: 'John' }];
+    const sub = [1, 3, { name: 'Jane', age: 30 }];
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: '[1]', message: 'Value mismatch', received: 2, expected: 3 }
+      - { path: '[2].name', message: 'Value mismatch', received: 'John', expected: 'Jane' }
+      - { path: '[2].age', message: 'Missing property', expected: 30 }
+      "
+    `);
+  });
+
+  test('should report nested object errors with correct paths', () => {
+    const target = {
+      user: {
+        profile: {
+          name: 'John',
+          age: 30,
+        },
+        settings: {
+          theme: 'light',
+        },
+      },
+    };
+
+    const sub = {
+      user: {
+        profile: {
+          name: 'Jane',
+          age: 25,
+          email: 'jane@example.com',
+        },
+        settings: {
+          theme: 'dark',
+          notifications: true,
+        },
+      },
+    };
+
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: 'user.profile.name', message: 'Value mismatch', received: 'John', expected: 'Jane' }
+      - { path: 'user.profile.age', message: 'Value mismatch', received: 30, expected: 25 }
+      - { path: 'user.profile.email', message: 'Missing property', expected: 'jane@example.com' }
+      - { path: 'user.settings.theme', message: 'Value mismatch', received: 'light', expected: 'dark' }
+      - { path: 'user.settings.notifications', message: 'Missing property', expected: '✅' }
+      "
+    `);
+  });
+
+  test('should report type validation errors', () => {
+    const target = {
+      name: 42,
+      age: 'thirty',
+      active: 'yes',
+    };
+
+    const sub = {
+      name: match.hasType.string,
+      age: match.hasType.number,
+      active: match.hasType.boolean,
+    };
+
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: 'name', message: 'Expected type string', received: 42 }
+      - { path: 'age', message: 'Expected type number', received: 'thirty' }
+      - { path: 'active', message: 'Expected type boolean', received: 'yes' }
+      "
+    `);
+  });
+
+  test('should report string validation errors', () => {
+    const target = {
+      email: 'user@domain',
+      message: 'Hello world',
+      code: 'ABC',
+      pattern: 'no-digits',
+    };
+
+    const sub = {
+      email: match.str.endsWith('.com'),
+      message: match.str.contains('goodbye'),
+      code: match.str.startsWith('XYZ'),
+      pattern: match.str.matchesRegex(/\d+/),
+    };
+
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'email'
+        message: 'Expected string ending with ".com"'
+        received: 'user@domain'
+      - path: 'message'
+        message: 'Expected string containing "goodbye"'
+        received: 'Hello world'
+      - path: 'code'
+        message: 'Expected string starting with "XYZ"'
+        received: 'ABC'
+      - path: 'pattern'
+        message: 'Expected string matching regex /\\d+/'
+        received: 'no-digits'
+      "
+    `);
+  });
+
+  test('should report numeric validation errors', () => {
+    const target = {
+      score: 85,
+      temperature: 32,
+      range1: 5,
+      range2: 15,
+    };
+
+    const sub = {
+      score: match.num.isGreaterThan(90),
+      temperature: match.num.isLessThan(30),
+      range1: match.num.isInRange([10, 20]),
+      range2: match.num.isGreaterThanOrEqual(20),
+    };
+
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: 'score', message: 'Expected number greater than 90', received: 85 }
+      - { path: 'temperature', message: 'Expected number less than 30', received: 32 }
+      - { path: 'range1', message: 'Expected number in range [10, 20]', received: 5 }
+      - { path: 'range2', message: 'Expected number greater than or equal to 20', received: 15 }
+      "
+    `);
+  });
+
+  test('should report custom validation errors', () => {
+    const isEven = (n: unknown) => typeof n === 'number' && n % 2 === 0;
+
+    const target = {
+      value1: 7,
+      value2: 'not a number',
+    };
+
+    const sub = {
+      value1: match.custom(isEven),
+      value2: match.custom(isEven),
+    };
+
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: 'value1', message: 'Custom validation failed', received: 7, expected: 'valid value' }
+      - path: 'value2'
+        message: 'Custom validation failed'
+        received: 'not a number'
+        expected: 'valid value'
+      "
+    `);
+  });
+
+  test('should report array length errors', () => {
+    const target = [1, 2];
+    const sub = [1, 2, 3, 4];
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: ''
+        message: 'Array too short: expected at least 4 elements, got 2'
+        received: [1, 2]
+        expected: [1, 2, 3, 4]
+      "
+    `);
+  });
+
+  test('should handle empty path for root level errors', () => {
+    const result = partialEqual('hello', 42, true);
+
+    assert(!result.ok);
+    expect(result.error[0]?.path).toBe('');
+  });
+
+  test('should handle complex nested array and object paths', () => {
+    const target = {
+      items: [{ data: [{ value: 1 }] }, { data: [{ value: 2 }] }],
+    };
+
+    const sub = {
+      items: [{ data: [{ value: 5 }] }, { data: [{ value: 10, extra: true }] }],
+    };
+
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: 'items[0].data[0].value', message: 'Value mismatch', received: 1, expected: 5 }
+      - { path: 'items[1].data[0].value', message: 'Value mismatch', received: 2, expected: 10 }
+      - { path: 'items[1].data[0].extra', message: 'Missing property', expected: '✅' }
+      "
+    `);
+  });
+
+  test('should handle Date mismatch errors', () => {
+    const target = { timestamp: new Date('2023-01-01') };
+    const sub = { timestamp: new Date('2023-01-02') };
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(result.error[0]?.message).toBe('Date mismatch');
+    expect(result.error[0]?.path).toBe('timestamp');
+  });
+
+  test('should handle RegExp mismatch errors', () => {
+    const target = { pattern: /abc/g };
+    const sub = { pattern: /def/i };
+    const result = partialEqual(target, sub, true);
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error[0]?.message).toBe('RegExp mismatch');
+      expect(result.error[0]?.path).toBe('pattern');
+    }
   });
 });
