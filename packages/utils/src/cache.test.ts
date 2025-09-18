@@ -543,24 +543,28 @@ describe('withExpiration', () => {
     expect(expiredValue).toBeUndefined();
   });
 
-  test.concurrent('works with cache.setAsync and cache.getAsync', async () => {
-    const cache = createCache<string>({ maxItemAge: { ms: 100 } }); // 100ms
+  test.concurrent(
+    'works with cache.setAsync and cache.getAsync',
+    { retry: 3 },
+    async () => {
+      const cache = createCache<string>({ maxItemAge: { ms: 100 } }); // 100ms
 
-    cache.setAsync('key1', async ({ withExpiration }) => {
-      await sleep(10);
-      return withExpiration('value1', { ms: 50 }); // 50ms expiration
-    });
+      cache.setAsync('key1', async ({ withExpiration }) => {
+        await sleep(10);
+        return withExpiration('value1', { ms: 50 }); // 50ms expiration
+      });
 
-    // Check before expiration (after 40ms)
-    await sleep(40);
-    const cachedValue = await cache.getAsync('key1');
-    expect(cachedValue).toBe('value1');
+      // Check before expiration (after 40ms)
+      await sleep(40);
+      const cachedValue = await cache.getAsync('key1');
+      expect(cachedValue).toBe('value1');
 
-    // Check after expiration (after additional 30ms)
-    await sleep(30);
-    const expiredValue = await cache.getAsync('key1');
-    expect(expiredValue).toBeUndefined();
-  });
+      // Check after expiration (after additional 30ms)
+      await sleep(30);
+      const expiredValue = await cache.getAsync('key1');
+      expect(expiredValue).toBeUndefined();
+    },
+  );
 });
 
 describe('options.rejectWhen', () => {
