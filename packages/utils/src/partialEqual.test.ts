@@ -432,7 +432,8 @@ describe('partialEqual', () => {
 
     describe('custom comparison', () => {
       test('custom should execute provided function', () => {
-        const isEven = (value: unknown) => typeof value === 'number' && value % 2 === 0;
+        const isEven = (value: unknown) =>
+          typeof value === 'number' && value % 2 === 0;
         expect(partialEqual(4, match.custom(isEven))).toBe(true);
         expect(partialEqual(3, match.custom(isEven))).toBe(false);
         expect(partialEqual('4', match.custom(isEven))).toBe(false);
@@ -442,27 +443,36 @@ describe('partialEqual', () => {
         const isValidEmail = (value: unknown) =>
           typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-        expect(partialEqual('test@example.com', match.custom(isValidEmail))).toBe(true);
-        expect(partialEqual('invalid-email', match.custom(isValidEmail))).toBe(false);
+        expect(
+          partialEqual('test@example.com', match.custom(isValidEmail)),
+        ).toBe(true);
+        expect(partialEqual('invalid-email', match.custom(isValidEmail))).toBe(
+          false,
+        );
         expect(partialEqual(123, match.custom(isValidEmail))).toBe(false);
       });
 
       test('custom should work in nested objects', () => {
-        const isPositive = (value: unknown) => typeof value === 'number' && value > 0;
+        const isPositive = (value: unknown) =>
+          typeof value === 'number' && value > 0;
 
         const target = {
           user: { id: 42, score: -5 },
-          stats: { wins: 10, losses: 3 }
+          stats: { wins: 10, losses: 3 },
         };
 
-        expect(partialEqual(target, {
-          user: { id: match.custom(isPositive) },
-          stats: { wins: match.custom(isPositive) }
-        })).toBe(true);
+        expect(
+          partialEqual(target, {
+            user: { id: match.custom(isPositive) },
+            stats: { wins: match.custom(isPositive) },
+          }),
+        ).toBe(true);
 
-        expect(partialEqual(target, {
-          user: { score: match.custom(isPositive) }
-        })).toBe(false);
+        expect(
+          partialEqual(target, {
+            user: { score: match.custom(isPositive) },
+          }),
+        ).toBe(false);
       });
 
       test('not.custom should negate custom function', () => {
@@ -471,6 +481,170 @@ describe('partialEqual', () => {
 
         expect(partialEqual('hello', match.not.custom(isEmpty))).toBe(true);
         expect(partialEqual('', match.not.custom(isEmpty))).toBe(false);
+      });
+    });
+
+    describe('type checking with hasType', () => {
+      test('hasType.string should check string type', () => {
+        expect(partialEqual('hello', match.hasType.string)).toBe(true);
+        expect(partialEqual(123, match.hasType.string)).toBe(false);
+        expect(partialEqual(null, match.hasType.string)).toBe(false);
+      });
+
+      test('hasType.number should check number type', () => {
+        expect(partialEqual(42, match.hasType.number)).toBe(true);
+        expect(partialEqual(3.14, match.hasType.number)).toBe(true);
+        expect(partialEqual('42', match.hasType.number)).toBe(false);
+        expect(partialEqual(NaN, match.hasType.number)).toBe(true);
+      });
+
+      test('hasType.boolean should check boolean type', () => {
+        expect(partialEqual(true, match.hasType.boolean)).toBe(true);
+        expect(partialEqual(false, match.hasType.boolean)).toBe(true);
+        expect(partialEqual(0, match.hasType.boolean)).toBe(false);
+        expect(partialEqual('true', match.hasType.boolean)).toBe(false);
+      });
+
+      test('hasType.function should check function type', () => {
+        const fn = () => 'test';
+        expect(partialEqual(fn, match.hasType.function)).toBe(true);
+        expect(partialEqual(Array, match.hasType.function)).toBe(true);
+        expect(partialEqual({}, match.hasType.function)).toBe(false);
+      });
+
+      test('hasType.array should check array type', () => {
+        expect(partialEqual([], match.hasType.array)).toBe(true);
+        expect(partialEqual([1, 2, 3], match.hasType.array)).toBe(true);
+        expect(partialEqual({}, match.hasType.array)).toBe(false);
+        expect(partialEqual('[]', match.hasType.array)).toBe(false);
+      });
+
+      test('hasType.object should check object type (excluding arrays and null)', () => {
+        expect(partialEqual({}, match.hasType.object)).toBe(true);
+        expect(partialEqual({ a: 1 }, match.hasType.object)).toBe(true);
+        expect(partialEqual([], match.hasType.object)).toBe(false);
+        expect(partialEqual(null, match.hasType.object)).toBe(false);
+        expect(partialEqual('object', match.hasType.object)).toBe(false);
+      });
+
+      test('hasType should work in nested objects', () => {
+        const target = {
+          name: 'John',
+          age: 30,
+          active: true,
+          hobbies: ['reading', 'gaming'],
+          settings: { theme: 'dark' },
+        };
+
+        expect(
+          partialEqual(target, {
+            name: match.hasType.string,
+            age: match.hasType.number,
+            active: match.hasType.boolean,
+            hobbies: match.hasType.array,
+            settings: match.hasType.object,
+          }),
+        ).toBe(true);
+
+        expect(
+          partialEqual(target, {
+            name: match.hasType.number,
+          }),
+        ).toBe(false);
+      });
+
+      test('not.hasType should negate type checks', () => {
+        expect(partialEqual('hello', match.not.hasType.number)).toBe(true);
+        expect(partialEqual(42, match.not.hasType.number)).toBe(false);
+        expect(partialEqual([], match.not.hasType.object)).toBe(true);
+        expect(partialEqual({}, match.not.hasType.array)).toBe(true);
+      });
+    });
+
+    describe('instance checking with isInstanceOf', () => {
+      test('isInstanceOf should check Date instances', () => {
+        const date = new Date();
+        expect(partialEqual(date, match.isInstanceOf(Date))).toBe(true);
+        expect(partialEqual('2023-01-01', match.isInstanceOf(Date))).toBe(
+          false,
+        );
+        expect(partialEqual({}, match.isInstanceOf(Date))).toBe(false);
+      });
+
+      test('isInstanceOf should check RegExp instances', () => {
+        const regex = /test/g;
+        expect(partialEqual(regex, match.isInstanceOf(RegExp))).toBe(true);
+        expect(partialEqual('/test/g', match.isInstanceOf(RegExp))).toBe(false);
+        expect(partialEqual({}, match.isInstanceOf(RegExp))).toBe(false);
+      });
+
+      test('isInstanceOf should check Error instances', () => {
+        const error = new Error('test');
+        const typeError = new TypeError('test');
+        expect(partialEqual(error, match.isInstanceOf(Error))).toBe(true);
+        expect(partialEqual(typeError, match.isInstanceOf(Error))).toBe(true);
+        expect(partialEqual(typeError, match.isInstanceOf(TypeError))).toBe(
+          true,
+        );
+        expect(partialEqual(error, match.isInstanceOf(TypeError))).toBe(false);
+        expect(partialEqual('Error', match.isInstanceOf(Error))).toBe(false);
+      });
+
+      test('isInstanceOf should work with custom classes', () => {
+        class User {
+          constructor(public name: string) {}
+        }
+        class Admin extends User {
+          constructor(
+            name: string,
+            public permissions: string[],
+          ) {
+            super(name);
+          }
+        }
+
+        const user = new User('John');
+        const admin = new Admin('Jane', ['read', 'write']);
+
+        expect(partialEqual(user, match.isInstanceOf(User))).toBe(true);
+        expect(partialEqual(admin, match.isInstanceOf(User))).toBe(true);
+        expect(partialEqual(admin, match.isInstanceOf(Admin))).toBe(true);
+        expect(partialEqual(user, match.isInstanceOf(Admin))).toBe(false);
+        expect(partialEqual({ name: 'John' }, match.isInstanceOf(User))).toBe(
+          false,
+        );
+      });
+
+      test('isInstanceOf should work in nested objects', () => {
+        const target = {
+          createdAt: new Date(),
+          pattern: /test/i,
+          error: new TypeError('validation failed'),
+          metadata: { id: 123 },
+        };
+
+        expect(
+          partialEqual(target, {
+            createdAt: match.isInstanceOf(Date),
+            pattern: match.isInstanceOf(RegExp),
+            error: match.isInstanceOf(Error),
+          }),
+        ).toBe(true);
+
+        expect(
+          partialEqual(target, {
+            metadata: match.isInstanceOf(Date),
+          }),
+        ).toBe(false);
+      });
+
+      test('not.isInstanceOf should negate instance checks', () => {
+        const date = new Date();
+        expect(partialEqual(date, match.not.isInstanceOf(RegExp))).toBe(true);
+        expect(partialEqual(date, match.not.isInstanceOf(Date))).toBe(false);
+        expect(partialEqual('hello', match.not.isInstanceOf(String))).toBe(
+          true,
+        );
       });
     });
 

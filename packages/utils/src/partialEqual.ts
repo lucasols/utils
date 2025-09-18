@@ -6,6 +6,10 @@ const has = Object.prototype.hasOwnProperty;
 type ComparisonsType =
   | [type: 'strStartsWith', value: string]
   | [type: 'strEndsWith', value: string]
+  | [
+      type: 'hasType',
+      value: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'function',
+    ]
   | [type: 'strContains', value: string]
   | [type: 'strMatchesRegex', value: RegExp]
   | [type: 'deepEqual', value: any]
@@ -17,6 +21,7 @@ type ComparisonsType =
   | [type: 'jsonStringHasPartial', value: any]
   | [type: 'partialEqual', value: any]
   | [type: 'custom', value: (target: unknown) => boolean]
+  | [type: 'isInstanceOf', value: new (...args: any[]) => any]
   | [type: 'not', value: ComparisonsType];
 
 class Comparisons {
@@ -27,6 +32,16 @@ class Comparisons {
 }
 
 export const match = {
+  hasType: {
+    string: new Comparisons(['hasType', 'string']),
+    number: new Comparisons(['hasType', 'number']),
+    boolean: new Comparisons(['hasType', 'boolean']),
+    object: new Comparisons(['hasType', 'object']),
+    array: new Comparisons(['hasType', 'array']),
+    function: new Comparisons(['hasType', 'function']),
+  },
+  isInstanceOf: (constructor: new (...args: any[]) => any) =>
+    new Comparisons(['isInstanceOf', constructor]),
   str: {
     contains: (substring: string) =>
       new Comparisons(['strContains', substring]),
@@ -57,6 +72,16 @@ export const match = {
   custom: (isEqual: (value: unknown) => boolean) =>
     new Comparisons(['custom', isEqual]),
   not: {
+    hasType: {
+      string: new Comparisons(['not', ['hasType', 'string']]),
+      number: new Comparisons(['not', ['hasType', 'number']]),
+      boolean: new Comparisons(['not', ['hasType', 'boolean']]),
+      object: new Comparisons(['not', ['hasType', 'object']]),
+      array: new Comparisons(['not', ['hasType', 'array']]),
+      function: new Comparisons(['not', ['hasType', 'function']]),
+    },
+    isInstanceOf: (constructor: new (...args: any[]) => any) =>
+      new Comparisons(['not', ['isInstanceOf', constructor]]),
     str: {
       contains: (substring: string) =>
         new Comparisons(['not', ['strContains', substring]]),
@@ -99,7 +124,8 @@ function find(iter: any[], tar: any): any {
 
 /**
  * Checks if sub is a partial match of target (all properties in sub exist and
- * match in target). Supports special comparison matchers for flexible pattern matching.
+ * match in target). Supports special comparison matchers for flexible pattern
+ * matching.
  *
  * @example
  *   // Basic partial matching
@@ -109,18 +135,49 @@ function find(iter: any[], tar: any): any {
  *   // Special comparisons
  *   partialEqual('hello world', match.str.contains('world')); // true
  *   partialEqual(25, match.num.isGreaterThan(18)); // true
- *   partialEqual('test@example.com', match.custom(v => typeof v === 'string' && v.includes('@'))); // true
+ *   partialEqual(
+ *     'test@example.com',
+ *     match.custom((v) => typeof v === 'string' && v.includes('@')),
+ *   ); // true
  *
  *   // Complex nested matching
  *   partialEqual(
  *     { user: { name: 'John', age: 30 } },
- *     { user: { name: match.str.startsWith('J'), age: match.num.isGreaterThan(25) } }
+ *     {
+ *       user: {
+ *         name: match.str.startsWith('J'),
+ *         age: match.num.isGreaterThan(25),
+ *       },
+ *     },
  *   ); // true
  */
 function executeComparison(target: any, comparison: ComparisonsType): boolean {
   const [type, value] = comparison;
 
   switch (type) {
+    case 'hasType':
+      switch (value) {
+        case 'string':
+          return typeof target === 'string';
+        case 'number':
+          return typeof target === 'number';
+        case 'boolean':
+          return typeof target === 'boolean';
+        case 'function':
+          return typeof target === 'function';
+        case 'array':
+          return Array.isArray(target);
+        case 'object':
+          return (
+            typeof target === 'object' &&
+            target !== null &&
+            !Array.isArray(target)
+          );
+        default:
+          return false;
+      }
+    case 'isInstanceOf':
+      return target instanceof value;
     case 'strStartsWith':
       return typeof target === 'string' && target.startsWith(value);
     case 'strEndsWith':
