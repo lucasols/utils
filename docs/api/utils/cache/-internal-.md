@@ -10,7 +10,7 @@
 type FastCacheOptions = object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:345](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L345)
+Defined in: [packages/utils/src/cache.ts:534](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L534)
 
 #### Properties
 
@@ -20,7 +20,7 @@ Defined in: [packages/utils/src/cache.ts:345](https://github.com/lucasols/utils/
 optional maxCacheSize: number;
 ```
 
-Defined in: [packages/utils/src/cache.ts:345](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L345)
+Defined in: [packages/utils/src/cache.ts:534](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L534)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/utils/src/cache.ts:345](https://github.com/lucasols/utils/
 type GetOptions<T> = object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:69](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L69)
+Defined in: [packages/utils/src/cache.ts:121](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L121)
 
 #### Type Parameters
 
@@ -46,7 +46,7 @@ Defined in: [packages/utils/src/cache.ts:69](https://github.com/lucasols/utils/b
 optional skipCachingWhen: (value) => boolean;
 ```
 
-Defined in: [packages/utils/src/cache.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L78)
+Defined in: [packages/utils/src/cache.ts:130](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L130)
 
 A function that determines whether a value should be rejected from being
 cached. If the function returns true, the value will be returned but not
@@ -74,7 +74,7 @@ True if the value should be rejected, false otherwise
 type Options = object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:15](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L15)
+Defined in: [packages/utils/src/cache.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L33)
 
 #### Properties
 
@@ -84,7 +84,7 @@ Defined in: [packages/utils/src/cache.ts:15](https://github.com/lucasols/utils/b
 optional expirationThrottle: number;
 ```
 
-Defined in: [packages/utils/src/cache.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L30)
+Defined in: [packages/utils/src/cache.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L48)
 
 The throttle for checking expired items in milliseconds.
 
@@ -100,7 +100,7 @@ The throttle for checking expired items in milliseconds.
 optional maxCacheSize: number;
 ```
 
-Defined in: [packages/utils/src/cache.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L21)
+Defined in: [packages/utils/src/cache.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L39)
 
 The maximum number of items in the cache.
 
@@ -116,7 +116,7 @@ The maximum number of items in the cache.
 optional maxItemAge: DurationObj;
 ```
 
-Defined in: [packages/utils/src/cache.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L23)
+Defined in: [packages/utils/src/cache.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L41)
 
 The maximum age of items in the cache.
 
@@ -128,7 +128,7 @@ The maximum age of items in the cache.
 type Utils<T> = object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L56)
+Defined in: [packages/utils/src/cache.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L108)
 
 #### Type Parameters
 
@@ -144,7 +144,7 @@ Defined in: [packages/utils/src/cache.ts:56](https://github.com/lucasols/utils/b
 skipCaching: (value) => SkipCaching<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:57](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L57)
+Defined in: [packages/utils/src/cache.ts:109](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L109)
 
 ###### Parameters
 
@@ -162,7 +162,7 @@ Defined in: [packages/utils/src/cache.ts:57](https://github.com/lucasols/utils/b
 withExpiration: (value, expiration) => WithExpiration<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L66)
+Defined in: [packages/utils/src/cache.ts:118](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L118)
 
 Create a new WithExpiration object with the given value and expiration
 time.

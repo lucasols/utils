@@ -89,6 +89,10 @@
       "import": "./dist/deepEqual.js",
       "require": "./dist/deepEqual.cjs"
     },
+    "./deepReplaceValues": {
+      "import": "./dist/deepReplaceValues.js",
+      "require": "./dist/deepReplaceValues.cjs"
+    },
     "./enhancedMap": {
       "import": "./dist/enhancedMap.js",
       "require": "./dist/enhancedMap.cjs"

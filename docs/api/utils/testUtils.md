@@ -10,7 +10,7 @@
 function compactSnapshot(value, options): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:382](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L382)
+Defined in: [packages/utils/src/testUtils.ts:383](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L383)
 
 Produces a more compact and readable snapshot of a value using yaml. By
 default booleans are shown as `✅` and `❌`, use `showBooleansAs` to
@@ -89,7 +89,7 @@ The compact snapshot of the value.
 function createLoggerStore(__namedParameters): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L11)
+Defined in: [packages/utils/src/testUtils.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L12)
 
 #### Parameters
 
@@ -321,7 +321,7 @@ get snapshotFromLast(): string;
 function getResultFn<T>(fnGetter, wrapper?): T;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:277](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L277)
+Defined in: [packages/utils/src/testUtils.ts:278](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L278)
 
 #### Type Parameters
 
@@ -351,7 +351,7 @@ Defined in: [packages/utils/src/testUtils.ts:277](https://github.com/lucasols/ut
 function waitController(): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:292](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L292)
+Defined in: [packages/utils/src/testUtils.ts:293](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L293)
 
 #### Returns
 
