@@ -129,6 +129,10 @@
       "import": "./dist/levenshtein.js",
       "require": "./dist/levenshtein.cjs"
     },
+    "./matchPath": {
+      "import": "./dist/matchPath.js",
+      "require": "./dist/matchPath.cjs"
+    },
     "./mathUtils": {
       "import": "./dist/mathUtils.js",
       "require": "./dist/mathUtils.cjs"

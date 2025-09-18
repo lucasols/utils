@@ -355,3 +355,59 @@ Defined in: [packages/utils/src/cache.ts:106](https://github.com/lucasols/utils/
 #### Returns
 
 [`Cache`](#cache)\<`T`\>
+
+***
+
+### fastCache()
+
+```ts
+function fastCache<T>(__namedParameters): object;
+```
+
+Defined in: [packages/utils/src/cache.ts:347](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L347)
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+#### Parameters
+
+##### \_\_namedParameters
+
+[`FastCacheOptions`](-internal-.md#fastcacheoptions) = `{}`
+
+#### Returns
+
+`object`
+
+##### clear()
+
+```ts
+clear: () => void;
+```
+
+###### Returns
+
+`void`
+
+##### getOrInsert()
+
+```ts
+getOrInsert: (cacheKey, val) => T;
+```
+
+###### Parameters
+
+###### cacheKey
+
+`string`
+
+###### val
+
+() => `T`
+
+###### Returns
+
+`T`

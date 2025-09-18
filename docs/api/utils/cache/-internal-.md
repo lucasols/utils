@@ -4,6 +4,26 @@
 
 ## Type Aliases
 
+### FastCacheOptions
+
+```ts
+type FastCacheOptions = object;
+```
+
+Defined in: [packages/utils/src/cache.ts:345](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L345)
+
+#### Properties
+
+##### maxCacheSize?
+
+```ts
+optional maxCacheSize: number;
+```
+
+Defined in: [packages/utils/src/cache.ts:345](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L345)
+
+***
+
 ### GetOptions\<T\>
 
 ```ts

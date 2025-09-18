@@ -244,7 +244,9 @@ Narrow a string to a union of strings
 function objectHasKey<T>(obj, key): obj is object & { [K in string]: unknown };
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:147](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L147)
+Defined in: [packages/utils/src/typingFnUtils.ts:154](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L154)
+
+Type guard to check if an object has a specific key and narrow its type.
 
 #### Type Parameters
 
@@ -258,13 +260,19 @@ Defined in: [packages/utils/src/typingFnUtils.ts:147](https://github.com/lucasol
 
 `object`
 
+The object to check
+
 ##### key
 
 `T`
 
+The key to check for
+
 #### Returns
 
 `obj is object & { [K in string]: unknown }`
+
+True if the object has the key, false otherwise
 
 ***
 
