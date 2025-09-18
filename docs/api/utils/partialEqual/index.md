@@ -14,14 +14,14 @@
 const match: object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L34)
+Defined in: [packages/utils/src/partialEqual.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L37)
 
 #### Type declaration
 
 ##### custom()
 
 ```ts
-custom: (isEqual) => Comparisons;
+custom: (isEqual) => Comparison;
 ```
 
 ###### Parameters
@@ -32,12 +32,12 @@ custom: (isEqual) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ##### equal()
 
 ```ts
-equal: (value) => Comparisons;
+equal: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -48,7 +48,7 @@ equal: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ##### hasType
 
@@ -59,43 +59,43 @@ hasType: object;
 ###### hasType.array
 
 ```ts
-array: Comparisons;
+array: Comparison;
 ```
 
 ###### hasType.boolean
 
 ```ts
-boolean: Comparisons;
+boolean: Comparison;
 ```
 
 ###### hasType.function
 
 ```ts
-function: Comparisons;
+function: Comparison;
 ```
 
 ###### hasType.number
 
 ```ts
-number: Comparisons;
+number: Comparison;
 ```
 
 ###### hasType.object
 
 ```ts
-object: Comparisons;
+object: Comparison;
 ```
 
 ###### hasType.string
 
 ```ts
-string: Comparisons;
+string: Comparison;
 ```
 
 ##### isInstanceOf()
 
 ```ts
-isInstanceOf: (constructor) => Comparisons;
+isInstanceOf: (constructor) => Comparison;
 ```
 
 ###### Parameters
@@ -106,7 +106,7 @@ isInstanceOf: (constructor) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ##### jsonString
 
@@ -117,7 +117,7 @@ jsonString: object;
 ###### jsonString.hasPartial()
 
 ```ts
-hasPartial: (value) => Comparisons;
+hasPartial: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -128,7 +128,7 @@ hasPartial: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ##### not
 
@@ -139,7 +139,7 @@ not: object;
 ###### not.custom()
 
 ```ts
-custom: (value) => Comparisons;
+custom: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -150,12 +150,12 @@ custom: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.equal()
 
 ```ts
-equal: (value) => Comparisons;
+equal: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -166,7 +166,7 @@ equal: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.hasType
 
@@ -177,43 +177,43 @@ hasType: object;
 ###### not.hasType.array
 
 ```ts
-array: Comparisons;
+array: Comparison;
 ```
 
 ###### not.hasType.boolean
 
 ```ts
-boolean: Comparisons;
+boolean: Comparison;
 ```
 
 ###### not.hasType.function
 
 ```ts
-function: Comparisons;
+function: Comparison;
 ```
 
 ###### not.hasType.number
 
 ```ts
-number: Comparisons;
+number: Comparison;
 ```
 
 ###### not.hasType.object
 
 ```ts
-object: Comparisons;
+object: Comparison;
 ```
 
 ###### not.hasType.string
 
 ```ts
-string: Comparisons;
+string: Comparison;
 ```
 
 ###### not.isInstanceOf()
 
 ```ts
-isInstanceOf: (constructor) => Comparisons;
+isInstanceOf: (constructor) => Comparison;
 ```
 
 ###### Parameters
@@ -224,7 +224,7 @@ isInstanceOf: (constructor) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.jsonString
 
@@ -235,7 +235,7 @@ jsonString: object;
 ###### not.jsonString.hasPartial()
 
 ```ts
-hasPartial: (value) => Comparisons;
+hasPartial: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -246,7 +246,7 @@ hasPartial: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.num
 
@@ -257,7 +257,7 @@ num: object;
 ###### not.num.isGreaterThan()
 
 ```ts
-isGreaterThan: (value) => Comparisons;
+isGreaterThan: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -268,12 +268,12 @@ isGreaterThan: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.num.isGreaterThanOrEqual()
 
 ```ts
-isGreaterThanOrEqual: (value) => Comparisons;
+isGreaterThanOrEqual: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -284,12 +284,12 @@ isGreaterThanOrEqual: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.num.isInRange()
 
 ```ts
-isInRange: (value) => Comparisons;
+isInRange: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -300,12 +300,12 @@ isInRange: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.num.isLessThan()
 
 ```ts
-isLessThan: (value) => Comparisons;
+isLessThan: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -316,12 +316,12 @@ isLessThan: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.num.isLessThanOrEqual()
 
 ```ts
-isLessThanOrEqual: (value) => Comparisons;
+isLessThanOrEqual: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -332,12 +332,12 @@ isLessThanOrEqual: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.partialEqual()
 
 ```ts
-partialEqual: (value) => Comparisons;
+partialEqual: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -348,7 +348,7 @@ partialEqual: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.str
 
@@ -359,7 +359,7 @@ str: object;
 ###### not.str.contains()
 
 ```ts
-contains: (substring) => Comparisons;
+contains: (substring) => Comparison;
 ```
 
 ###### Parameters
@@ -370,12 +370,12 @@ contains: (substring) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.str.endsWith()
 
 ```ts
-endsWith: (substring) => Comparisons;
+endsWith: (substring) => Comparison;
 ```
 
 ###### Parameters
@@ -386,12 +386,12 @@ endsWith: (substring) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.str.matchesRegex()
 
 ```ts
-matchesRegex: (regex) => Comparisons;
+matchesRegex: (regex) => Comparison;
 ```
 
 ###### Parameters
@@ -402,12 +402,12 @@ matchesRegex: (regex) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.str.startsWith()
 
 ```ts
-startsWith: (substring) => Comparisons;
+startsWith: (substring) => Comparison;
 ```
 
 ###### Parameters
@@ -418,7 +418,7 @@ startsWith: (substring) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ##### num
 
@@ -429,7 +429,7 @@ num: object;
 ###### num.isGreaterThan()
 
 ```ts
-isGreaterThan: (value) => Comparisons;
+isGreaterThan: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -440,12 +440,12 @@ isGreaterThan: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### num.isGreaterThanOrEqual()
 
 ```ts
-isGreaterThanOrEqual: (value) => Comparisons;
+isGreaterThanOrEqual: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -456,12 +456,12 @@ isGreaterThanOrEqual: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### num.isInRange()
 
 ```ts
-isInRange: (value) => Comparisons;
+isInRange: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -472,12 +472,12 @@ isInRange: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### num.isLessThan()
 
 ```ts
-isLessThan: (value) => Comparisons;
+isLessThan: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -488,12 +488,12 @@ isLessThan: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### num.isLessThanOrEqual()
 
 ```ts
-isLessThanOrEqual: (value) => Comparisons;
+isLessThanOrEqual: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -504,12 +504,12 @@ isLessThanOrEqual: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ##### partialEqual()
 
 ```ts
-partialEqual: (value) => Comparisons;
+partialEqual: (value) => Comparison;
 ```
 
 ###### Parameters
@@ -520,7 +520,7 @@ partialEqual: (value) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ##### str
 
@@ -531,7 +531,7 @@ str: object;
 ###### str.contains()
 
 ```ts
-contains: (substring) => Comparisons;
+contains: (substring) => Comparison;
 ```
 
 ###### Parameters
@@ -542,12 +542,12 @@ contains: (substring) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### str.endsWith()
 
 ```ts
-endsWith: (substring) => Comparisons;
+endsWith: (substring) => Comparison;
 ```
 
 ###### Parameters
@@ -558,12 +558,12 @@ endsWith: (substring) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### str.matchesRegex()
 
 ```ts
-matchesRegex: (regex) => Comparisons;
+matchesRegex: (regex) => Comparison;
 ```
 
 ###### Parameters
@@ -574,12 +574,12 @@ matchesRegex: (regex) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ###### str.startsWith()
 
 ```ts
-startsWith: (substring) => Comparisons;
+startsWith: (substring) => Comparison;
 ```
 
 ###### Parameters
@@ -590,7 +590,7 @@ startsWith: (substring) => Comparisons;
 
 ###### Returns
 
-[`Comparisons`](-internal-.md#comparisons)
+[`Comparison`](-internal-.md#comparison)
 
 ## Functions
 
@@ -600,7 +600,7 @@ startsWith: (substring) => Comparisons;
 function partialEqual(target, sub): boolean;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:222](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L222)
+Defined in: [packages/utils/src/partialEqual.ts:225](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L225)
 
 #### Parameters
 

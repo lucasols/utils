@@ -2,43 +2,27 @@
 
 # \<internal\>
 
-## Classes
+## Type Aliases
 
-### Comparisons
+### Comparison
+
+```ts
+type Comparison = object;
+```
 
 Defined in: [packages/utils/src/partialEqual.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L27)
 
-#### Constructors
-
-##### Constructor
-
-```ts
-new Comparisons(type): Comparisons;
-```
-
-Defined in: [packages/utils/src/partialEqual.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L29)
-
-###### Parameters
-
-###### type
-
-[`ComparisonsType`](#comparisonstype-1)
-
-###### Returns
-
-[`Comparisons`](#comparisons)
-
 #### Properties
 
-##### type
+##### ~sc
 
 ```ts
-type: ComparisonsType;
+~sc: ComparisonsType;
 ```
 
 Defined in: [packages/utils/src/partialEqual.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L28)
 
-## Type Aliases
+***
 
 ### ComparisonsType
 
