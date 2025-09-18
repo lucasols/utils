@@ -145,6 +145,10 @@
       "import": "./dist/parallelAsyncCalls.js",
       "require": "./dist/parallelAsyncCalls.cjs"
     },
+    "./partialEqual": {
+      "import": "./dist/partialEqual.js",
+      "require": "./dist/partialEqual.cjs"
+    },
     "./promiseUtils": {
       "import": "./dist/promiseUtils.js",
       "require": "./dist/promiseUtils.cjs"
