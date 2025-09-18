@@ -80,7 +80,7 @@ export const match = {
       hasPartial: (value: any) =>
         new Comparisons(['not', ['jsonStringHasPartial', value]]),
     },
-    deepEqual: (value: any) => new Comparisons(['not', ['deepEqual', value]]),
+    equal: (value: any) => new Comparisons(['not', ['deepEqual', value]]),
     partialEqual: (value: any) =>
       new Comparisons(['not', ['partialEqual', value]]),
   },

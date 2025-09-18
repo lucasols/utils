@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { partialEqual, match } from './partialEqual';
+import { match, partialEqual } from './partialEqual';
 
 describe('partialEqual', () => {
   describe('primitive values', () => {
@@ -74,17 +74,15 @@ describe('partialEqual', () => {
         },
       };
 
-      expect(partialEqual(target, { user: { profile: { name: 'John' } } })).toBe(
-        true,
-      );
+      expect(
+        partialEqual(target, { user: { profile: { name: 'John' } } }),
+      ).toBe(true);
       expect(
         partialEqual(target, {
           user: { profile: { settings: { theme: 'dark' } } },
         }),
       ).toBe(true);
-      expect(
-        partialEqual(target, { user: { posts: [{ id: 1 }] } }),
-      ).toBe(true);
+      expect(partialEqual(target, { user: { posts: [{ id: 1 }] } })).toBe(true);
       expect(
         partialEqual(target, { user: { profile: { name: 'Jane' } } }),
       ).toBe(false);
@@ -113,7 +111,10 @@ describe('partialEqual', () => {
     });
 
     test('arrays with objects should work', () => {
-      const target = [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
+      const target = [
+        { id: 1, name: 'John' },
+        { id: 2, name: 'Jane' },
+      ];
       expect(partialEqual(target, [{ id: 1 }])).toBe(true);
       expect(partialEqual(target, [{ id: 1, name: 'John' }])).toBe(true);
       expect(partialEqual(target, [{ id: 1 }, { id: 2 }])).toBe(true);
@@ -121,13 +122,26 @@ describe('partialEqual', () => {
     });
 
     test('nested arrays should work', () => {
-      const target = [[1, 2], [3, 4, 5]];
+      const target = [
+        [1, 2],
+        [3, 4, 5],
+      ];
       expect(partialEqual(target, [[1]])).toBe(true);
       expect(partialEqual(target, [[1, 2]])).toBe(true);
       expect(partialEqual(target, [[1], [3]])).toBe(true);
-      expect(partialEqual(target, [[1, 2], [3, 4]])).toBe(true);
+      expect(
+        partialEqual(target, [
+          [1, 2],
+          [3, 4],
+        ]),
+      ).toBe(true);
       expect(partialEqual(target, [[1, 3]])).toBe(false);
-      expect(partialEqual(target, [[1, 2], [3, 4, 5, 6]])).toBe(false);
+      expect(
+        partialEqual(target, [
+          [1, 2],
+          [3, 4, 5, 6],
+        ]),
+      ).toBe(false);
     });
   });
 
@@ -321,25 +335,39 @@ describe('partialEqual', () => {
   describe('special comparisons', () => {
     describe('string comparisons', () => {
       test('strContains should match substrings', () => {
-        expect(partialEqual('hello world', match.str.contains('world'))).toBe(true);
-        expect(partialEqual('hello world', match.str.contains('xyz'))).toBe(false);
+        expect(partialEqual('hello world', match.str.contains('world'))).toBe(
+          true,
+        );
+        expect(partialEqual('hello world', match.str.contains('xyz'))).toBe(
+          false,
+        );
         expect(partialEqual(123, match.str.contains('world'))).toBe(false);
       });
 
       test('strStartsWith should match prefixes', () => {
-        expect(partialEqual('hello world', match.str.startsWith('hello'))).toBe(true);
-        expect(partialEqual('hello world', match.str.startsWith('world'))).toBe(false);
+        expect(partialEqual('hello world', match.str.startsWith('hello'))).toBe(
+          true,
+        );
+        expect(partialEqual('hello world', match.str.startsWith('world'))).toBe(
+          false,
+        );
         expect(partialEqual(123, match.str.startsWith('hello'))).toBe(false);
       });
 
       test('strEndsWith should match suffixes', () => {
-        expect(partialEqual('hello world', match.str.endsWith('world'))).toBe(true);
-        expect(partialEqual('hello world', match.str.endsWith('hello'))).toBe(false);
+        expect(partialEqual('hello world', match.str.endsWith('world'))).toBe(
+          true,
+        );
+        expect(partialEqual('hello world', match.str.endsWith('hello'))).toBe(
+          false,
+        );
         expect(partialEqual(123, match.str.endsWith('world'))).toBe(false);
       });
 
       test('strMatchesRegex should match patterns', () => {
-        expect(partialEqual('test123', match.str.matchesRegex(/\d+/))).toBe(true);
+        expect(partialEqual('test123', match.str.matchesRegex(/\d+/))).toBe(
+          true,
+        );
         expect(partialEqual('test', match.str.matchesRegex(/\d+/))).toBe(false);
         expect(partialEqual(123, match.str.matchesRegex(/\d+/))).toBe(false);
       });
@@ -382,8 +410,12 @@ describe('partialEqual', () => {
 
     describe('deep equal comparison', () => {
       test('deepEqual should match exactly', () => {
-        expect(partialEqual({ a: 1, b: 2 }, match.deepEqual({ a: 1, b: 2 }))).toBe(true);
-        expect(partialEqual({ a: 1, b: 2 }, match.deepEqual({ a: 1 }))).toBe(false);
+        expect(
+          partialEqual({ a: 1, b: 2 }, match.deepEqual({ a: 1, b: 2 })),
+        ).toBe(true);
+        expect(partialEqual({ a: 1, b: 2 }, match.deepEqual({ a: 1 }))).toBe(
+          false,
+        );
         expect(partialEqual([1, 2, 3], match.deepEqual([1, 2, 3]))).toBe(true);
         expect(partialEqual([1, 2], match.deepEqual([1, 2, 3]))).toBe(false);
       });
@@ -391,25 +423,47 @@ describe('partialEqual', () => {
 
     describe('partial equal comparison', () => {
       test('partialEqual should work recursively', () => {
-        expect(partialEqual({ a: 1, b: 2 }, match.partialEqual({ a: 1 }))).toBe(true);
-        expect(partialEqual({ a: 1 }, match.partialEqual({ a: 1, b: 2 }))).toBe(false);
+        expect(partialEqual({ a: 1, b: 2 }, match.partialEqual({ a: 1 }))).toBe(
+          true,
+        );
+        expect(partialEqual({ a: 1 }, match.partialEqual({ a: 1, b: 2 }))).toBe(
+          false,
+        );
       });
     });
 
     describe('JSON string comparison', () => {
       test('jsonStringHasPartial should parse and compare', () => {
         const jsonString = JSON.stringify({ user: { name: 'John', age: 30 } });
-        expect(partialEqual(jsonString, match.jsonString.hasPartial({ user: { name: 'John' } }))).toBe(true);
-        expect(partialEqual(jsonString, match.jsonString.hasPartial({ user: { name: 'Jane' } }))).toBe(false);
-        expect(partialEqual('invalid json', match.jsonString.hasPartial({ a: 1 }))).toBe(false);
-        expect(partialEqual(123, match.jsonString.hasPartial({ a: 1 }))).toBe(false);
+        expect(
+          partialEqual(
+            jsonString,
+            match.jsonString.hasPartial({ user: { name: 'John' } }),
+          ),
+        ).toBe(true);
+        expect(
+          partialEqual(
+            jsonString,
+            match.jsonString.hasPartial({ user: { name: 'Jane' } }),
+          ),
+        ).toBe(false);
+        expect(
+          partialEqual('invalid json', match.jsonString.hasPartial({ a: 1 })),
+        ).toBe(false);
+        expect(partialEqual(123, match.jsonString.hasPartial({ a: 1 }))).toBe(
+          false,
+        );
       });
     });
 
     describe('negation with not', () => {
       test('not.str.contains should negate string contains', () => {
-        expect(partialEqual('hello world', match.not.str.contains('xyz'))).toBe(true);
-        expect(partialEqual('hello world', match.not.str.contains('world'))).toBe(false);
+        expect(partialEqual('hello world', match.not.str.contains('xyz'))).toBe(
+          true,
+        );
+        expect(
+          partialEqual('hello world', match.not.str.contains('world')),
+        ).toBe(false);
       });
 
       test('not.num.isGreaterThan should negate number comparison', () => {
@@ -418,8 +472,8 @@ describe('partialEqual', () => {
       });
 
       test('not.deepEqual should negate deep equal', () => {
-        expect(partialEqual({ a: 1 }, match.not.deepEqual({ a: 2 }))).toBe(true);
-        expect(partialEqual({ a: 1 }, match.not.deepEqual({ a: 1 }))).toBe(false);
+        expect(partialEqual({ a: 1 }, match.not.equal({ a: 2 }))).toBe(true);
+        expect(partialEqual({ a: 1 }, match.not.equal({ a: 1 }))).toBe(false);
       });
     });
 
@@ -465,7 +519,10 @@ describe('partialEqual', () => {
 
         expect(
           partialEqual(target, [
-            { name: match.str.contains('Alice'), score: match.num.isGreaterThan(90) },
+            {
+              name: match.str.contains('Alice'),
+              score: match.num.isGreaterThan(90),
+            },
           ]),
         ).toBe(true);
 
