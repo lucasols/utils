@@ -17,6 +17,6 @@
 - [useOnMount](useOnMount.md)
 - [useOnUnMount](useOnUnMount.md)
 - [usePrevious](usePrevious.md)
-- [useScheduleToNextRender](useScheduleToNextRender.md)
+- [useScheduleToNextRender](useScheduleToNextRender/index.md)
 - [useShortCut](useShortCut.md)
 - [useShortCut.test](useShortCut.test.md)
