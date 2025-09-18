@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import type { Result } from 't-result';
-import { err, ok } from 't-result';
-import { deepEqual } from './deepEqual';
+import { err, ok, type Result } from 't-result';
+import { exhaustiveCheck } from './assertions';
 
 const has = Object.prototype.hasOwnProperty;
 
@@ -22,7 +20,7 @@ type ComparisonsType =
   | [type: 'numIsInRange', value: [number, number]]
   | [type: 'jsonStringHasPartial', value: any]
   | [type: 'partialEqual', value: any]
-  | [type: 'custom', value: (target: unknown) => boolean]
+  | [type: 'custom', value: (target: unknown) => boolean | { error: string }]
   | [type: 'isInstanceOf', value: new (...args: any[]) => any]
   | [type: 'keyNotBePresent', value: null]
   | [type: 'not', value: ComparisonsType]
@@ -73,10 +71,12 @@ type BaseMatch = {
   };
   equal: (value: any) => Comparison;
   partialEqual: (value: any) => Comparison;
-  custom: (isEqual: (value: unknown) => boolean) => Comparison;
+  custom: (
+    isEqual: (value: unknown) => boolean | { error: string },
+  ) => Comparison;
   keyNotBePresent: Comparison;
-  any: (...comparisons: Comparison[]) => Comparison;
-  all: (...comparisons: Comparison[]) => Comparison;
+  any: (...values: any[]) => Comparison;
+  all: (...values: any[]) => Comparison;
 };
 
 type Match = BaseMatch & {
@@ -129,13 +129,29 @@ export const match: Match = {
   },
   equal: (value: any) => createComparison(['deepEqual', value]),
   partialEqual: (value: any) => createComparison(['partialEqual', value]),
-  custom: (isEqual: (value: unknown) => boolean) =>
+  custom: (isEqual: (value: unknown) => boolean | { error: string }) =>
     createComparison(['custom', isEqual]),
   keyNotBePresent: createComparison(['keyNotBePresent', null]),
-  any: (...comparisons: Comparison[]) =>
-    createComparison(['any', comparisons.map((c) => c['~sc'])]),
-  all: (...comparisons: Comparison[]) =>
-    createComparison(['all', comparisons.map((c) => c['~sc'])]),
+  any: (...values: any[]) =>
+    createComparison([
+      'any',
+      values.map((v) => {
+        if (isComparison(v)) return v['~sc'];
+        if (typeof v === 'object' && v !== null)
+          return ['partialEqual', v] as ComparisonsType;
+        return ['deepEqual', v] as ComparisonsType;
+      }),
+    ]),
+  all: (...values: any[]) =>
+    createComparison([
+      'all',
+      values.map((v) => {
+        if (isComparison(v)) return v['~sc'];
+        if (typeof v === 'object' && v !== null)
+          return ['partialEqual', v] as ComparisonsType;
+        return ['deepEqual', v] as ComparisonsType;
+      }),
+    ]),
   not: {
     hasType: {
       string: createComparison(['not', ['hasType', 'string']]),
@@ -177,12 +193,34 @@ export const match: Match = {
     equal: (value: any) => createComparison(['not', ['deepEqual', value]]),
     partialEqual: (value: any) =>
       createComparison(['not', ['partialEqual', value]]),
-    custom: (value: (target: unknown) => boolean) =>
+    custom: (value: (target: unknown) => boolean | { error: string }) =>
       createComparison(['not', ['custom', value]]),
-    any: (...comparisons: Comparison[]) =>
-      createComparison(['not', ['any', comparisons.map((c) => c['~sc'])]]),
-    all: (...comparisons: Comparison[]) =>
-      createComparison(['not', ['all', comparisons.map((c) => c['~sc'])]]),
+    any: (...values: any[]) =>
+      createComparison([
+        'not',
+        [
+          'any',
+          values.map((v) => {
+            if (isComparison(v)) return v['~sc'];
+            if (typeof v === 'object' && v !== null)
+              return ['partialEqual', v] as ComparisonsType;
+            return ['deepEqual', v] as ComparisonsType;
+          }),
+        ],
+      ]),
+    all: (...values: any[]) =>
+      createComparison([
+        'not',
+        [
+          'all',
+          values.map((v) => {
+            if (isComparison(v)) return v['~sc'];
+            if (typeof v === 'object' && v !== null)
+              return ['partialEqual', v] as ComparisonsType;
+            return ['deepEqual', v] as ComparisonsType;
+          }),
+        ],
+      ]),
     noExtraKeys: (partialShape: any) =>
       createComparison(['not', ['withNoExtraKeys', partialShape]]),
     deepNoExtraKeys: (partialShape: any) =>
@@ -194,10 +232,751 @@ export const match: Match = {
   },
 };
 
-function find(iter: any[], tar: any): any {
-  for (const key of iter.keys()) {
-    if (partialEqual(key, tar)) return key;
+function isComparison(value: any): value is Comparison {
+  return value && typeof value === 'object' && '~sc' in value;
+}
+
+function executeComparison(
+  target: any,
+  comparison: ComparisonsType,
+  context: ErrorCollectionContext,
+): boolean {
+  const [type, value] = comparison;
+
+  switch (type) {
+    case 'strStartsWith':
+      if (typeof target !== 'string') {
+        addError(context, {
+          message: `Expected string starting with "${value}"`,
+          received: target,
+        });
+        return false;
+      }
+      if (!target.startsWith(value)) {
+        addError(context, {
+          message: `Expected string starting with "${value}"`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'strEndsWith':
+      if (typeof target !== 'string') {
+        addError(context, {
+          message: `Expected string ending with "${value}"`,
+          received: target,
+        });
+        return false;
+      }
+      if (!target.endsWith(value)) {
+        addError(context, {
+          message: `Expected string ending with "${value}"`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'strContains':
+      if (typeof target !== 'string') {
+        addError(context, {
+          message: `Expected string containing "${value}"`,
+          received: target,
+        });
+        return false;
+      }
+      if (!target.includes(value)) {
+        addError(context, {
+          message: `Expected string containing "${value}"`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'strMatchesRegex':
+      if (typeof target !== 'string') {
+        addError(context, {
+          message: `Expected string matching regex ${value}`,
+          received: target,
+        });
+        return false;
+      }
+      if (!value.test(target)) {
+        addError(context, {
+          message: `Expected string matching regex ${value}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'hasType': {
+      let actualType: string;
+      if (value === 'array') {
+        actualType = Array.isArray(target) ? 'array' : typeof target;
+      } else if (value === 'object') {
+        // For 'object' type check, we want true objects (excluding arrays and null)
+        if (target === null || Array.isArray(target)) {
+          actualType = 'not-object'; // Will not match 'object'
+        } else {
+          actualType = typeof target; // Will be 'object' for actual objects
+        }
+      } else {
+        actualType = typeof target;
+      }
+
+      if (actualType !== value) {
+        addError(context, {
+          message: `Expected type ${value}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+    }
+
+    case 'deepEqual':
+      if (!deepEqual(target, value)) {
+        addError(context, {
+          message: 'Values are not deeply equal',
+          received: target,
+          expected: value,
+        });
+        return false;
+      }
+      return true;
+
+    case 'numIsGreaterThan':
+      if (typeof target !== 'number' || target <= value) {
+        addError(context, {
+          message: `Expected number greater than ${value}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'numIsGreaterThanOrEqual':
+      if (typeof target !== 'number' || target < value) {
+        addError(context, {
+          message: `Expected number greater than or equal to ${value}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'numIsLessThan':
+      if (typeof target !== 'number' || target >= value) {
+        addError(context, {
+          message: `Expected number less than ${value}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'numIsLessThanOrEqual':
+      if (typeof target !== 'number' || target > value) {
+        addError(context, {
+          message: `Expected number less than or equal to ${value}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'numIsInRange':
+      if (
+        typeof target !== 'number' ||
+        target < value[0] ||
+        target > value[1]
+      ) {
+        addError(context, {
+          message: `Expected number in range [${value[0]}, ${value[1]}]`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'jsonStringHasPartial':
+      if (typeof target !== 'string') {
+        addError(context, {
+          message: 'Expected JSON string',
+          received: target,
+        });
+        return false;
+      }
+      try {
+        const parsed = JSON.parse(target);
+        if (!partialEqualInternal(parsed, value, context)) {
+          return false;
+        }
+      } catch {
+        addError(context, {
+          message: 'Expected valid JSON string',
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'partialEqual':
+      return partialEqualInternal(target, value, context);
+
+    case 'custom': {
+      const result = value(target);
+      if (result !== true) {
+        addError(context, {
+          message: `Custom validation failed ${typeof result === 'object' ? `: ${result.error}` : ''}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+    }
+
+    case 'isInstanceOf':
+      if (!(target instanceof value)) {
+        addError(context, {
+          message: `Expected instance of ${value.name}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+
+    case 'keyNotBePresent':
+      addError(context, {
+        message: 'This property should not be present',
+        received: target,
+      });
+      return false;
+
+    case 'not': {
+      // For 'not', we need to check if the negated condition would pass
+      const tempContext: ErrorCollectionContext = {
+        errors: [],
+        path: context.path,
+      };
+      const result = executeComparison(target, value, tempContext);
+      if (result) {
+        addError(context, {
+          message: 'Expected negated condition to fail',
+          received: target,
+          expected: { 'not match': value },
+        });
+        return false;
+      }
+      return true;
+    }
+
+    case 'any': {
+      // OR logic - at least one must match
+      for (const subComparison of value) {
+        const anyTempContext: ErrorCollectionContext = {
+          errors: [],
+          path: context.path,
+        };
+        if (executeComparison(target, subComparison, anyTempContext)) {
+          return true;
+        }
+      }
+      addError(context, {
+        message: 'None of the alternative comparisons matched',
+        received: target,
+        expected: {
+          matchAny: value,
+        },
+      });
+      return false;
+    }
+
+    case 'all': {
+      // AND logic - all must match
+      let allMatch = true;
+      for (const subComparison of value) {
+        if (!executeComparison(target, subComparison, context)) {
+          allMatch = false;
+        }
+      }
+      return allMatch;
+    }
+
+    case 'withNoExtraKeys':
+      return checkNoExtraKeys(target, value, context, false);
+
+    case 'withDeepNoExtraKeys':
+      return checkNoExtraKeys(target, value, context, true);
+
+    case 'noExtraDefinedKeys':
+      return checkNoExtraDefinedKeys(target, value, context, false);
+
+    case 'deepNoExtraDefinedKeys':
+      return checkNoExtraDefinedKeys(target, value, context, true);
+
+    default:
+      throw exhaustiveCheck(type);
   }
+}
+
+type PartialError = {
+  path: string;
+  message: string;
+  received?: any;
+  expected?: any;
+};
+
+type ErrorCollectionContext = {
+  errors: PartialError[];
+  path: string[];
+};
+
+function formatPath(path: string[]): string {
+  if (path.length === 0) return '';
+
+  let result = path[0] || '';
+  for (let i = 1; i < path.length; i++) {
+    const segment = path[i];
+    if (segment && segment.startsWith('[') && segment.endsWith(']')) {
+      // Array index - no dot prefix
+      result += segment;
+    } else if (segment) {
+      // Property name - add dot prefix if result is not empty
+      if (result) {
+        result += `.${segment}`;
+      } else {
+        result += segment;
+      }
+    }
+  }
+  return result;
+}
+
+function addError(
+  context: ErrorCollectionContext,
+  error: Omit<PartialError, 'path'>,
+): void {
+  context.errors.push({
+    path: formatPath(context.path),
+    ...error,
+  });
+}
+
+function deepEqual(a: any, b: any): boolean {
+  if (a === b) return true;
+  if (Number.isNaN(a) && Number.isNaN(b)) return true;
+  if (a === null || b === null) return false;
+  if (typeof a !== typeof b) return false;
+
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (!deepEqual(a[i], b[i])) return false;
+    }
+    return true;
+  }
+
+  if (typeof a === 'object') {
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+    if (keysA.length !== keysB.length) return false;
+    for (const key of keysA) {
+      if (!has.call(b, key) || !deepEqual(a[key], b[key])) return false;
+    }
+    return true;
+  }
+
+  return false;
+}
+
+function partialEqualInternal(
+  target: any,
+  sub: any,
+  context: ErrorCollectionContext,
+): boolean {
+  // Handle special comparison objects
+  if (isComparison(sub)) {
+    return executeComparison(target, sub['~sc'], context);
+  }
+
+  // Handle keyNotBePresent special case
+  if (isComparison(sub) && sub['~sc'][0] === 'keyNotBePresent') {
+    addError(context, {
+      message: 'Key should not be present',
+      received: target,
+      expected: 'key not present',
+    });
+    return false;
+  }
+
+  // Handle primitives and null/undefined
+  if (target === sub) return true;
+  if (Number.isNaN(target) && Number.isNaN(sub)) return true;
+  if (
+    target === null ||
+    sub === null ||
+    target === undefined ||
+    sub === undefined
+  ) {
+    if (target !== sub) {
+      addError(context, {
+        message: 'Value mismatch',
+        received: target,
+        expected: sub,
+      });
+      return false;
+    }
+    return true;
+  }
+
+  // Handle Date objects
+  if (target instanceof Date && sub instanceof Date) {
+    if (target.getTime() !== sub.getTime()) {
+      addError(context, {
+        message: 'Date mismatch',
+        received: target,
+        expected: sub,
+      });
+      return false;
+    }
+    return true;
+  }
+
+  // Handle RegExp objects
+  if (target instanceof RegExp && sub instanceof RegExp) {
+    if (target.source !== sub.source || target.flags !== sub.flags) {
+      addError(context, {
+        message: 'RegExp mismatch',
+        received: target,
+        expected: sub,
+      });
+      return false;
+    }
+    return true;
+  }
+
+  // Handle Set objects
+  if (target instanceof Set && sub instanceof Set) {
+    if (sub.size > target.size) {
+      addError(context, {
+        message: 'Set too small',
+        received: target,
+        expected: sub,
+      });
+      return false;
+    }
+
+    for (const subValue of sub) {
+      let found = false;
+      for (const targetValue of target) {
+        const tempContext: ErrorCollectionContext = {
+          errors: [],
+          path: context.path,
+        };
+        if (partialEqualInternal(targetValue, subValue, tempContext)) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        addError(context, {
+          message: 'Set element not found',
+          received: target,
+          expected: sub,
+        });
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Handle Map objects
+  if (target instanceof Map && sub instanceof Map) {
+    if (sub.size > target.size) {
+      addError(context, {
+        message: 'Map too small',
+        received: target,
+        expected: sub,
+      });
+      return false;
+    }
+
+    for (const [subKey, subValue] of sub) {
+      let found = false;
+      for (const [targetKey, targetValue] of target) {
+        const tempContextKey: ErrorCollectionContext = {
+          errors: [],
+          path: context.path,
+        };
+        const tempContextValue: ErrorCollectionContext = {
+          errors: [],
+          path: context.path,
+        };
+        if (
+          partialEqualInternal(targetKey, subKey, tempContextKey) &&
+          partialEqualInternal(targetValue, subValue, tempContextValue)
+        ) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        addError(context, {
+          message: 'Map entry not found',
+          received: target,
+          expected: sub,
+        });
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Handle type mismatches (but treat as value mismatch for primitives)
+  if (typeof target !== typeof sub) {
+    addError(context, {
+      message: 'Value mismatch',
+      received: target,
+      expected: sub,
+    });
+    return false;
+  }
+
+  // Handle arrays
+  if (Array.isArray(sub)) {
+    if (!Array.isArray(target)) {
+      addError(context, {
+        message: 'Expected array',
+        received: target,
+        expected: sub,
+      });
+      return false;
+    }
+
+    if (target.length < sub.length) {
+      addError(context, {
+        message: `Array too short: expected at least ${sub.length} elements, got ${target.length}`,
+        received: target,
+        expected: sub,
+      });
+      return false;
+    }
+
+    let allMatch = true;
+    for (let i = 0; i < sub.length; i++) {
+      const oldPath = context.path;
+      context.path = [...oldPath, `[${i}]`];
+      const result = partialEqualInternal(target[i], sub[i], context);
+      context.path = oldPath;
+      if (!result) allMatch = false;
+    }
+    return allMatch;
+  }
+
+  // Handle objects
+  if (typeof sub === 'object') {
+    if (typeof target !== 'object' || Array.isArray(target)) {
+      addError(context, {
+        message: 'Expected object',
+        received: target,
+        expected: sub,
+      });
+      return false;
+    }
+
+    let allMatch = true;
+
+    for (const key of Object.keys(sub)) {
+      if (isComparison(sub[key]) && sub[key]['~sc'][0] === 'keyNotBePresent') {
+        if (has.call(target, key)) {
+          const oldPath = context.path;
+          context.path = [...oldPath, key];
+          addError(context, {
+            message: 'Key should not be present',
+            received: target[key],
+            expected: 'key not present',
+          });
+          context.path = oldPath;
+          allMatch = false;
+        }
+        continue;
+      }
+
+      // Check if key exists in target
+      if (!has.call(target, key)) {
+        // Key doesn't exist, but check if sub[key] is a comparison that can handle missing keys
+        if (isComparison(sub[key])) {
+          const comparison = sub[key]['~sc'];
+
+          // Check if it's an any() comparison that includes keyNotBePresent
+          if (comparison[0] === 'any') {
+            const anyComparisons = comparison[1] as ComparisonsType[];
+            const hasKeyNotBePresent = anyComparisons.some(
+              (comp) => comp[0] === 'keyNotBePresent',
+            );
+
+            if (hasKeyNotBePresent) {
+              // keyNotBePresent matches since the key doesn't exist
+              continue;
+            }
+          }
+        }
+
+        // Property is missing and not handled by special logic
+        const oldPath = context.path;
+        context.path = [...oldPath, key];
+        addError(context, {
+          message: 'Missing property',
+          received: undefined,
+          expected: sub[key],
+        });
+        context.path = oldPath;
+        allMatch = false;
+        continue;
+      }
+
+      const oldPath = context.path;
+      context.path = [...oldPath, key];
+      const result = partialEqualInternal(target[key], sub[key], context);
+      context.path = oldPath;
+      if (!result) allMatch = false;
+    }
+    return allMatch;
+  }
+
+  // Handle primitive values
+  if (target !== sub) {
+    addError(context, {
+      message: 'Value mismatch',
+      received: target,
+      expected: sub,
+    });
+    return false;
+  }
+
+  return true;
+}
+
+function checkNoExtraKeys(
+  target: any,
+  partialShape: any,
+  context: ErrorCollectionContext,
+  deep: boolean,
+): boolean {
+  if (typeof target !== 'object' || target === null || Array.isArray(target)) {
+    addError(context, {
+      message: 'Expected object for key validation',
+      received: target,
+    });
+    return false;
+  }
+
+  // First check that the partial shape matches
+  if (!partialEqualInternal(target, partialShape, context)) {
+    return false;
+  }
+
+  // Check for extra keys
+  const allowedKeys = new Set(Object.keys(partialShape));
+  for (const key of Object.keys(target)) {
+    if (!allowedKeys.has(key)) {
+      const oldPath = context.path;
+      context.path = [...oldPath, key];
+      addError(context, {
+        message: `Extra key "${key}" not expected`,
+      });
+      context.path = oldPath;
+      return false;
+    }
+  }
+
+  // If deep checking, recursively check nested objects
+  if (deep) {
+    for (const key of Object.keys(partialShape)) {
+      if (
+        typeof partialShape[key] === 'object' &&
+        partialShape[key] !== null &&
+        !Array.isArray(partialShape[key]) &&
+        !isComparison(partialShape[key])
+      ) {
+        const oldPath = context.path;
+        context.path = [...oldPath, key];
+        const result = checkNoExtraKeys(
+          target[key],
+          partialShape[key],
+          context,
+          true,
+        );
+        context.path = oldPath;
+        if (!result) return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function checkNoExtraDefinedKeys(
+  target: any,
+  partialShape: any,
+  context: ErrorCollectionContext,
+  deep: boolean,
+): boolean {
+  if (typeof target !== 'object' || target === null || Array.isArray(target)) {
+    addError(context, {
+      message: 'Expected object for key validation',
+      received: target,
+    });
+    return false;
+  }
+
+  // First check that the partial shape matches
+  if (!partialEqualInternal(target, partialShape, context)) {
+    return false;
+  }
+
+  // Check for extra defined keys (ignore undefined values)
+  const allowedKeys = new Set(Object.keys(partialShape));
+  for (const key of Object.keys(target)) {
+    if (!allowedKeys.has(key) && target[key] !== undefined) {
+      const oldPath = context.path;
+      context.path = [...oldPath, key];
+      addError(context, {
+        message: `Extra defined key "${key}" not expected`,
+      });
+      context.path = oldPath;
+      return false;
+    }
+  }
+
+  // If deep checking, recursively check nested objects
+  if (deep) {
+    for (const key of Object.keys(partialShape)) {
+      if (
+        typeof partialShape[key] === 'object' &&
+        partialShape[key] !== null &&
+        !Array.isArray(partialShape[key]) &&
+        !isComparison(partialShape[key])
+      ) {
+        const oldPath = context.path;
+        context.path = [...oldPath, key];
+        const result = checkNoExtraDefinedKeys(
+          target[key],
+          partialShape[key],
+          context,
+          true,
+        );
+        context.path = oldPath;
+        if (!result) return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -229,837 +1008,6 @@ function find(iter: any[], tar: any): any {
  *     },
  *   ); // true
  */
-function executeComparisonWithKeyContext(
-  target: any,
-  comp: ComparisonsType,
-  keyExists: boolean,
-): boolean {
-  const [type, value] = comp;
-
-  if (type === 'keyNotBePresent') {
-    return !keyExists;
-  }
-
-  if (type === 'any') {
-    for (const childComp of value) {
-      if (executeComparisonWithKeyContext(target, childComp, keyExists)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  if (type === 'not') {
-    return !executeComparisonWithKeyContext(target, value, keyExists);
-  }
-
-  return executeComparison(target, comp);
-}
-
-function executeComparison(target: any, comparison: ComparisonsType): boolean {
-  const [type, value] = comparison;
-
-  switch (type) {
-    case 'hasType':
-      switch (value) {
-        case 'string':
-          return typeof target === 'string';
-        case 'number':
-          return typeof target === 'number';
-        case 'boolean':
-          return typeof target === 'boolean';
-        case 'function':
-          return typeof target === 'function';
-        case 'array':
-          return Array.isArray(target);
-        case 'object':
-          return (
-            typeof target === 'object' &&
-            target !== null &&
-            !Array.isArray(target)
-          );
-        default:
-          return false;
-      }
-    case 'isInstanceOf':
-      return target instanceof value;
-    case 'strStartsWith':
-      return typeof target === 'string' && target.startsWith(value);
-    case 'strEndsWith':
-      return typeof target === 'string' && target.endsWith(value);
-    case 'strContains':
-      return typeof target === 'string' && target.includes(value);
-    case 'strMatchesRegex':
-      return typeof target === 'string' && value.test(target);
-    case 'numIsGreaterThan':
-      return typeof target === 'number' && target > value;
-    case 'numIsGreaterThanOrEqual':
-      return typeof target === 'number' && target >= value;
-    case 'numIsLessThan':
-      return typeof target === 'number' && target < value;
-    case 'numIsLessThanOrEqual':
-      return typeof target === 'number' && target <= value;
-    case 'numIsInRange':
-      return (
-        typeof target === 'number' && target >= value[0] && target <= value[1]
-      );
-    case 'jsonStringHasPartial':
-      if (typeof target !== 'string') return false;
-      try {
-        const parsed = JSON.parse(target);
-        return partialEqual(parsed, value);
-      } catch {
-        return false;
-      }
-    case 'deepEqual':
-      return deepEqual(target, value);
-    case 'partialEqual':
-      return partialEqual(target, value);
-    case 'custom':
-      return value(target);
-    case 'keyNotBePresent':
-      // This case shouldn't be reached directly as keyNotBePresent is handled in object iteration
-      return false;
-    case 'any':
-      // OR logic - return true if ANY comparison matches
-      for (const comp of value) {
-        if (executeComparison(target, comp)) {
-          return true;
-        }
-      }
-      return false;
-    case 'all':
-      // AND logic - return false if ANY comparison fails
-      for (const comp of value) {
-        if (!executeComparison(target, comp)) {
-          return false;
-        }
-      }
-      return true;
-    case 'not':
-      return !executeComparison(target, value);
-    case 'withNoExtraKeys':
-      // Ensure target is an object and has no extra keys beyond partialShape (root level only)
-      if (
-        typeof target !== 'object' ||
-        target === null ||
-        Array.isArray(target)
-      ) {
-        return false;
-      }
-      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-        return false;
-      }
-
-      // Check that target has no extra keys beyond those in partialShape (root level only)
-      for (const key in target) {
-        if (has.call(target, key) && !has.call(value, key)) {
-          return false;
-        }
-      }
-
-      // Check that all keys in partialShape exist and match in target using regular partialEqual
-      for (const key in value) {
-        if (has.call(value, key)) {
-          if (!has.call(target, key)) {
-            return false; // Key missing in target
-          }
-
-          // Use regular partialEqual for all nested comparisons (allows extra keys in nested objects)
-          if (!partialEqual(target[key], value[key])) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    case 'withDeepNoExtraKeys':
-      // Ensure target is an object and has no extra keys beyond partialShape (recursively)
-      if (
-        typeof target !== 'object' ||
-        target === null ||
-        Array.isArray(target)
-      ) {
-        return false;
-      }
-      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-        return false;
-      }
-
-      // Check that target has no extra keys beyond those in partialShape
-      for (const key in target) {
-        if (has.call(target, key) && !has.call(value, key)) {
-          return false;
-        }
-      }
-
-      // Check that all keys in partialShape exist and match in target
-      for (const key in value) {
-        if (has.call(value, key)) {
-          if (!has.call(target, key)) {
-            return false; // Key missing in target
-          }
-
-          const targetValue = target[key];
-          const partialValue = value[key];
-
-          // If partialValue is a withDeepNoExtraKeys comparison, handle it recursively
-          if (
-            partialValue &&
-            typeof partialValue === 'object' &&
-            '~sc' in partialValue &&
-            partialValue['~sc'][0] === 'withDeepNoExtraKeys'
-          ) {
-            if (!executeComparison(targetValue, partialValue['~sc'])) {
-              return false;
-            }
-          } else if (
-            partialValue &&
-            typeof partialValue === 'object' &&
-            !Array.isArray(partialValue) &&
-            partialValue.constructor === Object &&
-            targetValue &&
-            typeof targetValue === 'object' &&
-            !Array.isArray(targetValue) &&
-            targetValue.constructor === Object
-          ) {
-            // For nested plain objects, apply withDeepNoExtraKeys recursively
-            if (
-              !executeComparison(targetValue, [
-                'withDeepNoExtraKeys',
-                partialValue,
-              ])
-            ) {
-              return false;
-            }
-          } else {
-            // Use regular partialEqual for other cases
-            if (!partialEqual(targetValue, partialValue)) {
-              return false;
-            }
-          }
-        }
-      }
-
-      return true;
-    case 'noExtraDefinedKeys':
-      // Ensure target is an object and has no extra defined keys beyond partialShape (root level only)
-      if (
-        typeof target !== 'object' ||
-        target === null ||
-        Array.isArray(target)
-      ) {
-        return false;
-      }
-      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-        return false;
-      }
-
-      // Check that target has no extra defined keys beyond those in partialShape (root level only)
-      // Only count keys with non-undefined values as "extra"
-      for (const key in target) {
-        if (
-          has.call(target, key) &&
-          target[key] !== undefined &&
-          !has.call(value, key)
-        ) {
-          return false;
-        }
-      }
-
-      // Check that all keys in partialShape exist and match in target using regular partialEqual
-      for (const key in value) {
-        if (has.call(value, key)) {
-          if (!has.call(target, key)) {
-            return false; // Key missing in target
-          }
-
-          // Use regular partialEqual for all nested comparisons (allows extra keys in nested objects)
-          if (!partialEqual(target[key], value[key])) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    case 'deepNoExtraDefinedKeys':
-      // Ensure target is an object and has no extra defined keys beyond partialShape (recursively)
-      if (
-        typeof target !== 'object' ||
-        target === null ||
-        Array.isArray(target)
-      ) {
-        return false;
-      }
-      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-        return false;
-      }
-
-      // Check that target has no extra defined keys beyond those in partialShape
-      // Only count keys with non-undefined values as "extra"
-      for (const key in target) {
-        if (
-          has.call(target, key) &&
-          target[key] !== undefined &&
-          !has.call(value, key)
-        ) {
-          return false;
-        }
-      }
-
-      // Check that all keys in partialShape exist and match in target
-      for (const key in value) {
-        if (has.call(value, key)) {
-          if (!has.call(target, key)) {
-            return false; // Key missing in target
-          }
-
-          const targetValue = target[key];
-          const partialValue = value[key];
-
-          // If partialValue is a deepNoExtraDefinedKeys comparison, handle it recursively
-          if (
-            partialValue &&
-            typeof partialValue === 'object' &&
-            '~sc' in partialValue &&
-            partialValue['~sc'][0] === 'deepNoExtraDefinedKeys'
-          ) {
-            if (!executeComparison(targetValue, partialValue['~sc'])) {
-              return false;
-            }
-          } else if (
-            partialValue &&
-            typeof partialValue === 'object' &&
-            !Array.isArray(partialValue) &&
-            partialValue.constructor === Object &&
-            targetValue &&
-            typeof targetValue === 'object' &&
-            !Array.isArray(targetValue) &&
-            targetValue.constructor === Object
-          ) {
-            // For nested plain objects, apply deepNoExtraDefinedKeys recursively
-            if (
-              !executeComparison(targetValue, [
-                'deepNoExtraDefinedKeys',
-                partialValue,
-              ])
-            ) {
-              return false;
-            }
-          } else {
-            // Use regular partialEqual for other cases
-            if (!partialEqual(targetValue, partialValue)) {
-              return false;
-            }
-          }
-        }
-      }
-
-      return true;
-    default:
-      return false;
-  }
-}
-
-type PartialError = {
-  path: string;
-  message: string;
-  received: any;
-  expected?: any;
-};
-
-type ErrorCollectionContext = {
-  errors: PartialError[];
-  path: string[];
-};
-
-function formatPath(path: string[]): string {
-  if (path.length === 0) return '';
-
-  let result = path[0] || '';
-  for (let i = 1; i < path.length; i++) {
-    const segment = path[i];
-    if (segment && segment.startsWith('[') && segment.endsWith(']')) {
-      // Array index - no dot prefix
-      result += segment;
-    } else if (segment) {
-      // Property name - add dot prefix
-      result += `.${  segment}`;
-    }
-  }
-  return result;
-}
-
-function addError(
-  context: ErrorCollectionContext,
-  message: string,
-  received: any,
-  expected?: any,
-): void {
-  const error: PartialError = {
-    path: formatPath(context.path),
-    message,
-    received,
-  };
-
-  if (expected !== undefined) {
-    error.expected = expected;
-  }
-
-  context.errors.push(error);
-}
-
-function executeComparisonWithErrorCollection(
-  target: any,
-  comparison: ComparisonsType,
-  context: ErrorCollectionContext,
-): void {
-  const [type, value] = comparison;
-
-  switch (type) {
-    case 'hasType':
-      switch (value) {
-        case 'string':
-          if (typeof target !== 'string') {
-            addError(context, `Expected type string`, target);
-          }
-          break;
-        case 'number':
-          if (typeof target !== 'number') {
-            addError(context, `Expected type number`, target);
-          }
-          break;
-        case 'boolean':
-          if (typeof target !== 'boolean') {
-            addError(context, `Expected type boolean`, target);
-          }
-          break;
-        case 'function':
-          if (typeof target !== 'function') {
-            addError(context, `Expected type function`, target);
-          }
-          break;
-        case 'array':
-          if (!Array.isArray(target)) {
-            addError(context, `Expected array`, target);
-          }
-          break;
-        case 'object':
-          if (
-            typeof target !== 'object' ||
-            target === null ||
-            Array.isArray(target)
-          ) {
-            addError(context, `Expected object`, target);
-          }
-          break;
-      }
-      break;
-    case 'isInstanceOf':
-      if (!(target instanceof value)) {
-        addError(
-          context,
-          `Expected instance of ${value.name}`,
-          target,
-        );
-      }
-      break;
-    case 'strStartsWith':
-      if (typeof target !== 'string' || !target.startsWith(value)) {
-        addError(
-          context,
-          `Expected string starting with "${value}"`,
-          target,
-        );
-      }
-      break;
-    case 'strEndsWith':
-      if (typeof target !== 'string' || !target.endsWith(value)) {
-        addError(
-          context,
-          `Expected string ending with "${value}"`,
-          target,
-        );
-      }
-      break;
-    case 'strContains':
-      if (typeof target !== 'string' || !target.includes(value)) {
-        addError(
-          context,
-          `Expected string containing "${value}"`,
-          target,
-        );
-      }
-      break;
-    case 'strMatchesRegex':
-      if (typeof target !== 'string' || !value.test(target)) {
-        addError(
-          context,
-          `Expected string matching regex ${value}`,
-          target,
-        );
-      }
-      break;
-    case 'numIsGreaterThan':
-      if (typeof target !== 'number' || target <= value) {
-        addError(
-          context,
-          `Expected number greater than ${value}`,
-          target,
-        );
-      }
-      break;
-    case 'numIsGreaterThanOrEqual':
-      if (typeof target !== 'number' || target < value) {
-        addError(
-          context,
-          `Expected number greater than or equal to ${value}`,
-          target,
-        );
-      }
-      break;
-    case 'numIsLessThan':
-      if (typeof target !== 'number' || target >= value) {
-        addError(
-          context,
-          `Expected number less than ${value}`,
-          target,
-        );
-      }
-      break;
-    case 'numIsLessThanOrEqual':
-      if (typeof target !== 'number' || target > value) {
-        addError(
-          context,
-          `Expected number less than or equal to ${value}`,
-          target,
-        );
-      }
-      break;
-    case 'numIsInRange':
-      if (
-        typeof target !== 'number' ||
-        target < value[0] ||
-        target > value[1]
-      ) {
-        addError(
-          context,
-          `Expected number in range [${value[0]}, ${value[1]}]`,
-          target,
-        );
-      }
-      break;
-    case 'jsonStringHasPartial':
-      if (typeof target !== 'string') {
-        addError(context, `Expected JSON string`, target);
-      } else {
-        try {
-          const parsed = JSON.parse(target);
-          partialEqualWithErrorCollection(parsed, value, context);
-        } catch {
-          addError(
-            context,
-            `Expected valid JSON string`,
-            target,
-          );
-        }
-      }
-      break;
-    case 'deepEqual':
-      if (!deepEqual(target, value)) {
-        addError(context, `Expected deep equal`, target, value);
-      }
-      break;
-    case 'partialEqual':
-      partialEqualWithErrorCollection(target, value, context);
-      break;
-    case 'custom':
-      if (!value(target)) {
-        addError(context, `Custom validation failed`, target, 'valid value');
-      }
-      break;
-    case 'keyNotBePresent':
-      addError(context, `Key should not be present`, target);
-      break;
-    case 'any': {
-      for (const comp of value) {
-        const subContext: ErrorCollectionContext = {
-          errors: [],
-          path: [...context.path],
-        };
-        executeComparisonWithErrorCollection(target, comp, subContext);
-        if (subContext.errors.length === 0) {
-          return; // At least one comparison passed
-        }
-      }
-      addError(
-        context,
-        `None of the alternative comparisons matched`,
-        target,
-      );
-      break;
-    }
-    case 'all':
-      for (const comp of value) {
-        executeComparisonWithErrorCollection(target, comp, context);
-      }
-      break;
-    case 'not': {
-      const subContext: ErrorCollectionContext = {
-        errors: [],
-        path: [...context.path],
-      };
-      executeComparisonWithErrorCollection(target, value, subContext);
-      if (subContext.errors.length === 0) {
-        addError(
-          context,
-          `Expected negated condition to fail`,
-          target,
-        );
-      }
-      break;
-    }
-    case 'withNoExtraKeys':
-    case 'withDeepNoExtraKeys':
-    case 'noExtraDefinedKeys':
-    case 'deepNoExtraDefinedKeys':
-      // These will be handled in partialEqualWithErrorCollection
-      addError(
-        context,
-        `Complex validation not supported in error collection mode yet`,
-        target,
-      );
-      break;
-  }
-}
-
-function executeComparisonWithKeyContextAndErrorCollection(
-  target: any,
-  comp: ComparisonsType,
-  keyExists: boolean,
-  context: ErrorCollectionContext,
-): void {
-  const [type, value] = comp;
-
-  if (type === 'keyNotBePresent') {
-    if (keyExists) {
-      addError(context, `Key should not be present`, target);
-    }
-    return;
-  }
-
-  if (type === 'any') {
-    for (const childComp of value) {
-      const subContext: ErrorCollectionContext = {
-        errors: [],
-        path: [...context.path],
-      };
-      executeComparisonWithKeyContextAndErrorCollection(
-        target,
-        childComp,
-        keyExists,
-        subContext,
-      );
-      if (subContext.errors.length === 0) {
-        return; // At least one comparison passed
-      }
-    }
-    addError(
-      context,
-      `None of the alternative comparisons matched`,
-      target,
-      'any alternative match',
-    );
-    return;
-  }
-
-  if (type === 'not') {
-    const subContext: ErrorCollectionContext = {
-      errors: [],
-      path: [...context.path],
-    };
-    executeComparisonWithKeyContextAndErrorCollection(
-      target,
-      value,
-      keyExists,
-      subContext,
-    );
-    if (subContext.errors.length === 0) {
-      addError(
-        context,
-        `Expected negated condition to fail`,
-        target,
-        'negated condition',
-      );
-    }
-    return;
-  }
-
-  executeComparisonWithErrorCollection(target, comp, context);
-}
-
-function partialEqualWithErrorCollection(
-  target: any,
-  sub: any,
-  context: ErrorCollectionContext,
-): void {
-  if (sub === target) return;
-
-  // Handle special comparisons first
-  if (sub && typeof sub === 'object' && '~sc' in sub) {
-    executeComparisonWithErrorCollection(target, sub['~sc'], context);
-    return;
-  }
-
-  if (sub && target && sub.constructor === target.constructor) {
-    const ctor = sub.constructor;
-
-    if (ctor === Date) {
-      if (sub.getTime() !== target.getTime()) {
-        addError(context, `Date mismatch`, target, sub);
-      }
-      return;
-    }
-
-    if (ctor === RegExp) {
-      if (sub.toString() !== target.toString()) {
-        addError(context, `RegExp mismatch`, target, sub);
-      }
-      return;
-    }
-
-    if (ctor === Array) {
-      if (sub.length > target.length) {
-        addError(
-          context,
-          `Array too short: expected at least ${sub.length} elements, got ${target.length}`,
-          target,
-          sub,
-        );
-        return;
-      }
-      for (let i = 0; i < sub.length; i++) {
-        context.path.push(`[${i}]`);
-        partialEqualWithErrorCollection(target[i], sub[i], context);
-        context.path.pop();
-      }
-      return;
-    }
-
-    if (ctor === Set) {
-      if (sub.size > target.size) {
-        addError(
-          context,
-          `Set too small: expected at least ${sub.size} elements, got ${target.size}`,
-          target,
-          sub,
-        );
-        return;
-      }
-      for (const value of sub) {
-        let found = false;
-        if (value && typeof value === 'object') {
-          found = !!find(target, value);
-        } else {
-          found = target.has(value);
-        }
-        if (!found) {
-          addError(context, `Set missing value`, target, value);
-        }
-      }
-      return;
-    }
-
-    if (ctor === Map) {
-      if (sub.size > target.size) {
-        addError(
-          context,
-          `Map too small: expected at least ${sub.size} entries, got ${target.size}`,
-          target,
-          sub,
-        );
-        return;
-      }
-      for (const [key, value] of sub) {
-        let targetKey = key;
-        if (key && typeof key === 'object') {
-          targetKey = find(target, key);
-          if (!targetKey) {
-            addError(context, `Map missing key`, target, key);
-            continue;
-          }
-        }
-        if (!target.has(targetKey)) {
-          addError(context, `Map missing key`, target, key);
-          continue;
-        }
-
-        context.path.push(`[${key}]`);
-        partialEqualWithErrorCollection(target.get(targetKey), value, context);
-        context.path.pop();
-      }
-      return;
-    }
-
-    if (!ctor || typeof sub === 'object') {
-      for (const key in sub) {
-        if (has.call(sub, key)) {
-          const subValue = sub[key];
-          context.path.push(key);
-
-          // Special handling for keyNotBePresent
-          if (
-            subValue &&
-            typeof subValue === 'object' &&
-            '~sc' in subValue &&
-            subValue['~sc'][0] === 'keyNotBePresent'
-          ) {
-            if (has.call(target, key)) {
-              addError(
-                context,
-                `Key should not be present`,
-                target[key],
-                'key not present',
-              );
-            }
-          } else if (
-            subValue &&
-            typeof subValue === 'object' &&
-            '~sc' in subValue &&
-            subValue['~sc'][0] === 'any'
-          ) {
-            const targetHasKey = has.call(target, key);
-            const targetValue = targetHasKey ? target[key] : undefined;
-
-            executeComparisonWithKeyContextAndErrorCollection(
-              targetValue,
-              subValue['~sc'],
-              targetHasKey,
-              context,
-            );
-          } else {
-            if (!has.call(target, key)) {
-              addError(context, `Missing property`, undefined, subValue);
-            } else {
-              partialEqualWithErrorCollection(target[key], subValue, context);
-            }
-          }
-
-          context.path.pop();
-        }
-      }
-      return;
-    }
-  }
-
-  // NaN === NaN check
-  if (sub !== sub && target !== target) {
-    return;
-  }
-
-  addError(context, `Value mismatch`, target, sub);
-}
-
 export function partialEqual(
   target: any,
   sub: any,
@@ -1071,128 +1019,12 @@ export function partialEqual(
   sub: any,
   returnErrors?: boolean,
 ): boolean | Result<void, PartialError[]> {
-  if (returnErrors === true) {
-    const context: ErrorCollectionContext = {
-      errors: [],
-      path: [],
-    };
+  const context: ErrorCollectionContext = { errors: [], path: [] };
+  const result = partialEqualInternal(target, sub, context);
 
-    partialEqualWithErrorCollection(target, sub, context);
-
-    if (context.errors.length === 0) {
-      return ok(undefined);
-    } else {
-      return err(context.errors);
-    }
+  if (returnErrors) {
+    return result ? ok(undefined) : err(context.errors);
   }
 
-  if (sub === target) return true;
-
-  // Handle special comparisons first
-  if (sub && typeof sub === 'object' && '~sc' in sub) {
-    return executeComparison(target, sub['~sc']);
-  }
-
-  if (sub && target && sub.constructor === target.constructor) {
-    const ctor = sub.constructor;
-
-    if (ctor === Date) {
-      return sub.getTime() === target.getTime();
-    }
-
-    if (ctor === RegExp) {
-      return sub.toString() === target.toString();
-    }
-
-    if (ctor === Array) {
-      if (sub.length > target.length) return false;
-      for (let i = 0; i < sub.length; i++) {
-        if (!partialEqual(target[i], sub[i])) return false;
-      }
-      return true;
-    }
-
-    if (ctor === Set) {
-      if (sub.size > target.size) return false;
-      for (const value of sub) {
-        let found = false;
-        if (value && typeof value === 'object') {
-          found = !!find(target, value);
-        } else {
-          found = target.has(value);
-        }
-        if (!found) return false;
-      }
-      return true;
-    }
-
-    if (ctor === Map) {
-      if (sub.size > target.size) return false;
-      for (const [key, value] of sub) {
-        let targetKey = key;
-        if (key && typeof key === 'object') {
-          targetKey = find(target, key);
-          if (!targetKey) return false;
-        }
-        if (
-          !target.has(targetKey) ||
-          !partialEqual(target.get(targetKey), value)
-        ) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    if (!ctor || typeof sub === 'object') {
-      for (const key in sub) {
-        if (has.call(sub, key)) {
-          const subValue = sub[key];
-
-          // Special handling for keyNotBePresent
-          if (
-            subValue &&
-            typeof subValue === 'object' &&
-            '~sc' in subValue &&
-            subValue['~sc'][0] === 'keyNotBePresent'
-          ) {
-            // Key should NOT exist in target
-            if (has.call(target, key)) {
-              return false;
-            }
-          } else if (
-            subValue &&
-            typeof subValue === 'object' &&
-            '~sc' in subValue &&
-            subValue['~sc'][0] === 'any'
-          ) {
-            // Special handling for any that might contain keyNotBePresent
-            const targetHasKey = has.call(target, key);
-            const targetValue = targetHasKey ? target[key] : undefined;
-
-            if (
-              !executeComparisonWithKeyContext(
-                targetValue,
-                subValue['~sc'],
-                targetHasKey,
-              )
-            ) {
-              return false;
-            }
-          } else {
-            // Regular property comparison
-            if (
-              !has.call(target, key) ||
-              !partialEqual(target[key], subValue)
-            ) {
-              return false;
-            }
-          }
-        }
-      }
-      return true;
-    }
-  }
-
-  return sub !== sub && target !== target; // NaN === NaN
+  return result;
 }

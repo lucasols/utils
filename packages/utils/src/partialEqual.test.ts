@@ -1229,6 +1229,309 @@ describe('special comparisons', () => {
         expect(partialEqual({ data: 'middle' }, deserialized)).toBe(false);
       });
     });
+
+    describe('any/all with arbitrary values', () => {
+      describe('match.any() with mixed values', () => {
+        test('should accept literal values alongside comparisons', () => {
+          // String literal matches
+          expect(
+            partialEqual(
+              'hello',
+              match.any('hello', 'world', match.str.contains('test')),
+            ),
+          ).toBe(true);
+          expect(
+            partialEqual(
+              'world',
+              match.any('hello', 'world', match.str.contains('test')),
+            ),
+          ).toBe(true);
+          expect(
+            partialEqual(
+              'testing',
+              match.any('hello', 'world', match.str.contains('test')),
+            ),
+          ).toBe(true);
+          expect(
+            partialEqual(
+              'xyz',
+              match.any('hello', 'world', match.str.contains('test')),
+            ),
+          ).toBe(false);
+
+          // Number literal matches
+          expect(
+            partialEqual(
+              42,
+              match.any('hello', 42, match.str.contains('test')),
+            ),
+          ).toBe(true);
+          expect(
+            partialEqual(
+              100,
+              match.any('hello', 42, match.str.contains('test')),
+            ),
+          ).toBe(false);
+
+          // Boolean literal matches
+          expect(
+            partialEqual(true, match.any(false, true, match.hasType.string)),
+          ).toBe(true);
+          expect(
+            partialEqual(false, match.any(false, true, match.hasType.string)),
+          ).toBe(true);
+        });
+
+        test('should work with object literals', () => {
+          const target = { name: 'John', age: 30 };
+
+          // Should match the literal object
+          expect(
+            partialEqual(
+              target,
+              match.any(
+                { name: 'John' },
+                { name: 'Jane' },
+                match.hasType.string,
+              ),
+            ),
+          ).toBe(true);
+
+          // Should match partial object literal
+          expect(
+            partialEqual(
+              target,
+              match.any(
+                { name: 'Jane', age: 25 },
+                { name: 'John' },
+                match.hasType.string,
+              ),
+            ),
+          ).toBe(true);
+
+          // Should not match if no literal matches and no comparison matches
+          expect(
+            partialEqual(
+              target,
+              match.any({ name: 'Jane' }, { age: 25 }, match.hasType.string),
+            ),
+          ).toBe(false);
+        });
+
+        test('should work with array literals', () => {
+          expect(
+            partialEqual(
+              [1, 2, 3],
+              match.any([1, 2], [4, 5], match.hasType.string),
+            ),
+          ).toBe(true);
+
+          expect(
+            partialEqual(
+              [1, 2, 3],
+              match.any([4, 5], [6, 7], match.hasType.string),
+            ),
+          ).toBe(false);
+        });
+
+        test('should work in nested objects', () => {
+          const target = {
+            user: { name: 'John', age: 30 },
+            status: 'active',
+          };
+
+          expect(
+            partialEqual(target, {
+              user: match.any(
+                { name: 'John' },
+                { name: 'Jane' },
+                match.hasType.string,
+              ),
+              status: match.any(
+                'active',
+                'inactive',
+                match.str.contains('pending'),
+              ),
+            }),
+          ).toBe(true);
+
+          expect(
+            partialEqual(target, {
+              user: match.any(
+                { name: 'Jane' },
+                { age: 25 },
+                match.hasType.string,
+              ),
+            }),
+          ).toBe(false);
+        });
+      });
+
+      describe('match.all() with mixed values', () => {
+        test('should require all conditions including literals to match', () => {
+          // All conditions must pass
+          const target = { name: 'John', age: 30, status: 'active' };
+
+          expect(
+            partialEqual(
+              target,
+              match.all(
+                { name: 'John' },
+                { age: match.num.isGreaterThan(25) },
+                { status: 'active' },
+              ),
+            ),
+          ).toBe(true);
+
+          expect(
+            partialEqual(
+              target,
+              match.all(
+                { name: 'John' },
+                { age: match.num.isGreaterThan(35) }, // This fails
+                { status: 'active' },
+              ),
+            ),
+          ).toBe(false);
+
+          expect(
+            partialEqual(
+              target,
+              match.all(
+                { name: 'Jane' }, // This fails
+                { age: match.num.isGreaterThan(25) },
+                { status: 'active' },
+              ),
+            ),
+          ).toBe(false);
+        });
+
+        test('should work with primitive literals', () => {
+          expect(
+            partialEqual(
+              'hello',
+              match.all(
+                'hello',
+                match.hasType.string,
+                match.str.contains('ell'),
+              ),
+            ),
+          ).toBe(true);
+
+          expect(
+            partialEqual(
+              'hello',
+              match.all(
+                'world', // This fails
+                match.hasType.string,
+                match.str.contains('ell'),
+              ),
+            ),
+          ).toBe(false);
+
+          expect(
+            partialEqual(
+              42,
+              match.all(42, match.hasType.number, match.num.isGreaterThan(40)),
+            ),
+          ).toBe(true);
+        });
+
+        test('should work with mixed object and primitive values', () => {
+          const target = { data: 'test', count: 5 };
+
+          expect(
+            partialEqual(
+              target,
+              match.all({ data: 'test' }, { count: 5 }, match.hasType.object),
+            ),
+          ).toBe(true);
+
+          expect(
+            partialEqual(
+              target,
+              match.all(
+                { data: 'test' },
+                { count: 10 }, // This fails
+                match.hasType.object,
+              ),
+            ),
+          ).toBe(false);
+        });
+      });
+
+      describe('negated any/all with arbitrary values', () => {
+        test('not.any() should work with mixed values', () => {
+          // None should match
+          expect(
+            partialEqual(
+              'hello',
+              match.not.any('world', 'test', match.str.contains('xyz')),
+            ),
+          ).toBe(true);
+
+          // At least one matches, so not.any fails
+          expect(
+            partialEqual(
+              'hello',
+              match.not.any(
+                'hello', // This matches
+                'test',
+                match.str.contains('xyz'),
+              ),
+            ),
+          ).toBe(false);
+
+          expect(
+            partialEqual(
+              { name: 'John' },
+              match.not.any(
+                { name: 'Jane' },
+                { age: 30 },
+                match.hasType.string,
+              ),
+            ),
+          ).toBe(true);
+        });
+
+        test('not.all() should work with mixed values', () => {
+          // Not all conditions match
+          expect(
+            partialEqual(
+              'hello',
+              match.not.all(
+                'hello',
+                match.hasType.string,
+                match.str.contains('xyz'), // This fails
+              ),
+            ),
+          ).toBe(true);
+
+          // All conditions match, so not.all fails
+          expect(
+            partialEqual(
+              'hello',
+              match.not.all(
+                'hello',
+                match.hasType.string,
+                match.str.contains('ell'),
+              ),
+            ),
+          ).toBe(false);
+
+          expect(
+            partialEqual(
+              { name: 'John', age: 30 },
+              match.not.all(
+                { name: 'John' },
+                { age: 25 }, // This doesn't match
+                match.hasType.object,
+              ),
+            ),
+          ).toBe(true);
+        });
+      });
+    });
   });
 
   describe('withNoExtraKeys comparison', () => {
@@ -2129,11 +2432,8 @@ describe('error reporting', () => {
     assert(!result.ok);
     expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
       "
-      - { path: 'value1', message: 'Custom validation failed', received: 7, expected: 'valid value' }
-      - path: 'value2'
-        message: 'Custom validation failed'
-        received: 'not a number'
-        expected: 'valid value'
+      - { path: 'value1', message: 'Custom validation failed ', received: 7 }
+      - { path: 'value2', message: 'Custom validation failed ', received: 'not a number' }
       "
     `);
   });
@@ -2202,5 +2502,288 @@ describe('error reporting', () => {
       expect(result.error[0]?.message).toBe('RegExp mismatch');
       expect(result.error[0]?.path).toBe('pattern');
     }
+  });
+
+  test('should report keyNotBePresent errors', () => {
+    const target = { a: 1, b: 2, unwanted: 'should not exist' };
+    const sub = { a: 1, b: 2, unwanted: match.keyNotBePresent };
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'unwanted'
+        message: 'Key should not be present'
+        received: 'should not exist'
+        expected: 'key not present'
+      "
+    `);
+  });
+
+  test('should report keyNotBePresent errors in nested objects', () => {
+    const target = {
+      user: { name: 'John', age: 30, id: 'should-not-exist' },
+      settings: { theme: 'dark' },
+    };
+    const sub = {
+      user: { name: 'John', age: 30, id: match.keyNotBePresent },
+      settings: { theme: 'dark' },
+    };
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'user.id'
+        message: 'Key should not be present'
+        received: 'should-not-exist'
+        expected: 'key not present'
+      "
+    `);
+  });
+
+  test('should report not (negation) errors', () => {
+    const target = {
+      name: 'John',
+      age: 30,
+      email: 'john@example.com',
+      score: 85,
+    };
+
+    const sub = {
+      name: match.not.hasType.string, // Should fail - name IS a string
+      age: match.not.num.isGreaterThan(25), // Should fail - age IS greater than 25
+      email: match.not.str.contains('@'), // Should fail - email DOES contain @
+      score: match.not.num.isInRange([80, 90]), // Should fail - score IS in range
+    };
+
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'name'
+        message: 'Expected negated condition to fail'
+        received: 'John'
+        expected:
+          not match: ['hasType', 'string']
+      - path: 'age'
+        message: 'Expected negated condition to fail'
+        received: 30
+        expected:
+          not match: ['numIsGreaterThan', 25]
+      - path: 'email'
+        message: 'Expected negated condition to fail'
+        received: 'john@example.com'
+        expected:
+          not match: ['strContains', '@']
+      - path: 'score'
+        message: 'Expected negated condition to fail'
+        received: 85
+        expected:
+          not match:
+            - 'numIsInRange'
+            - [80, 90]
+      "
+    `);
+  });
+
+  test('should report not.keyNotBePresent errors', () => {
+    const target = { a: 1, b: 2 }; // missing key 'c'
+    const sub = { a: 1, b: 2, c: match.not.keyNotBePresent }; // 'c' should be present
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'c'
+        message: 'Missing property'
+        expected:
+          ~sc:
+            - 'not'
+            - ['keyNotBePresent', null]
+      "
+    `);
+  });
+
+  test('should report any (OR logic) errors when none match', () => {
+    const target = {
+      value: 15,
+      text: 'hello world',
+    };
+
+    const sub = {
+      value: match.any(
+        match.num.isLessThan(10), // 15 is not < 10
+        match.num.isGreaterThan(20), // 15 is not > 20
+        match.hasType.string, // 15 is not a string
+      ),
+      text: match.any(
+        match.str.startsWith('goodbye'), // doesn't start with goodbye
+        match.str.endsWith('planet'), // doesn't end with planet
+        match.hasType.number, // is not a number
+      ),
+    };
+
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'value'
+        message: 'None of the alternative comparisons matched'
+        received: 15
+        expected:
+          matchAny:
+            - ['numIsLessThan', 10]
+            - ['numIsGreaterThan', 20]
+            - ['hasType', 'string']
+      - path: 'text'
+        message: 'None of the alternative comparisons matched'
+        received: 'hello world'
+        expected:
+          matchAny:
+            - ['strStartsWith', 'goodbye']
+            - ['strEndsWith', 'planet']
+            - ['hasType', 'number']
+      "
+    `);
+  });
+
+  test('should report all (AND logic) errors', () => {
+    const target = {
+      value: 15,
+      text: 'hello',
+    };
+
+    const sub = {
+      value: match.all(
+        match.num.isGreaterThan(10), // 15 > 10 ✓
+        match.num.isLessThan(20), // 15 < 20 ✓
+        match.num.isGreaterThan(18), // 15 > 18 ✗
+      ),
+      text: match.all(
+        match.hasType.string, // 'hello' is string ✓
+        match.str.startsWith('h'), // 'hello' starts with 'h' ✓
+        match.str.endsWith('world'), // 'hello' ends with 'world' ✗
+      ),
+    };
+
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: 'value', message: 'Expected number greater than 18', received: 15 }
+      - path: 'text'
+        message: 'Expected string ending with "world"'
+        received: 'hello'
+      "
+    `);
+  });
+
+  test('should report noExtraKeys errors', () => {
+    const target = { a: 1, b: 2, c: 3, extra: 'not allowed' };
+    const sub = match.noExtraKeys({ a: 1, b: 2, c: 3 });
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'extra'
+        message: 'Extra key not allowed'
+        received: 'not allowed'
+        expected: 'no extra keys'
+      "
+    `);
+  });
+
+  test('should report deepNoExtraKeys errors', () => {
+    const target = {
+      user: { name: 'John', age: 30, extra: 'not allowed' },
+      settings: { theme: 'dark' },
+      extraTop: 'also not allowed',
+    };
+    const sub = match.deepNoExtraKeys({
+      user: { name: 'John', age: 30 },
+      settings: { theme: 'dark' },
+    });
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'extraTop'
+        message: 'Extra key not allowed'
+        received: 'also not allowed'
+        expected: 'no extra keys'
+      "
+    `);
+  });
+
+  test('should report noExtraDefinedKeys errors', () => {
+    const target = { a: 1, b: 2, c: 3, extra: 'not allowed', undef: undefined };
+    const sub = match.noExtraDefinedKeys({ a: 1, b: 2, c: 3 });
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'extra'
+        message: 'Extra defined key not allowed'
+        received: 'not allowed'
+        expected: 'no extra defined keys'
+      "
+    `);
+  });
+
+  test('should report deepNoExtraDefinedKeys errors', () => {
+    const target = {
+      user: { name: 'John', age: 30, extra: 'not allowed', undef: undefined },
+      settings: { theme: 'dark' },
+      extraTop: 'also not allowed',
+      undefTop: undefined,
+    };
+    const sub = match.deepNoExtraDefinedKeys({
+      user: { name: 'John', age: 30 },
+      settings: { theme: 'dark' },
+    });
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - path: 'extraTop'
+        message: 'Extra defined key not allowed'
+        received: 'also not allowed'
+        expected: 'no extra defined keys'
+      "
+    `);
+  });
+
+  test('should report missing properties in extra keys comparisons', () => {
+    const target = { a: 1 }; // missing b
+    const sub = match.noExtraKeys({ a: 1, b: 2 });
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: 'b', message: 'Missing property', expected: 2 }
+      "
+    `);
+  });
+
+  test('should report value mismatches in extra keys comparisons', () => {
+    const target = { a: 1, b: 3 }; // b has wrong value
+    const sub = match.noExtraKeys({ a: 1, b: 2 });
+    const result = partialEqual(target, sub, true);
+
+    assert(!result.ok);
+    expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+      "
+      - { path: 'b', message: 'Value mismatch', received: 3, expected: 2 }
+      "
+    `);
   });
 });
