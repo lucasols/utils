@@ -22,7 +22,10 @@ type ComparisonsType =
   | [type: 'partialEqual', value: any]
   | [type: 'custom', value: (target: unknown) => boolean]
   | [type: 'isInstanceOf', value: new (...args: any[]) => any]
-  | [type: 'not', value: ComparisonsType];
+  | [type: 'keyNotBePresent', value: null]
+  | [type: 'not', value: ComparisonsType]
+  | [type: 'any', value: ComparisonsType[]]
+  | [type: 'all', value: ComparisonsType[]];
 
 type Comparison = {
   '~sc': ComparisonsType;
@@ -74,6 +77,11 @@ export const match = {
   partialEqual: (value: any) => createComparison(['partialEqual', value]),
   custom: (isEqual: (value: unknown) => boolean) =>
     createComparison(['custom', isEqual]),
+  keyNotBePresent: createComparison(['keyNotBePresent', null]),
+  any: (...comparisons: Comparison[]) =>
+    createComparison(['any', comparisons.map(c => c['~sc'])]),
+  all: (...comparisons: Comparison[]) =>
+    createComparison(['all', comparisons.map(c => c['~sc'])]),
   not: {
     hasType: {
       string: createComparison(['not', ['hasType', 'string']]),
@@ -116,6 +124,10 @@ export const match = {
       createComparison(['not', ['partialEqual', value]]),
     custom: (value: (target: unknown) => boolean) =>
       createComparison(['not', ['custom', value]]),
+    any: (...comparisons: Comparison[]) =>
+      createComparison(['not', ['any', comparisons.map(c => c['~sc'])]]),
+    all: (...comparisons: Comparison[]) =>
+      createComparison(['not', ['all', comparisons.map(c => c['~sc'])]]),
   },
 };
 
@@ -154,6 +166,33 @@ function find(iter: any[], tar: any): any {
  *     },
  *   ); // true
  */
+function executeComparisonWithKeyContext(
+  target: any,
+  comp: ComparisonsType,
+  keyExists: boolean,
+): boolean {
+  const [type, value] = comp;
+
+  if (type === 'keyNotBePresent') {
+    return !keyExists;
+  }
+
+  if (type === 'any') {
+    for (const childComp of value) {
+      if (executeComparisonWithKeyContext(target, childComp, keyExists)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  if (type === 'not') {
+    return !executeComparisonWithKeyContext(target, value, keyExists);
+  }
+
+  return executeComparison(target, comp);
+}
+
 function executeComparison(target: any, comparison: ComparisonsType): boolean {
   const [type, value] = comparison;
 
@@ -215,6 +254,25 @@ function executeComparison(target: any, comparison: ComparisonsType): boolean {
       return partialEqual(target, value);
     case 'custom':
       return value(target);
+    case 'keyNotBePresent':
+      // This case shouldn't be reached directly as keyNotBePresent is handled in object iteration
+      return false;
+    case 'any':
+      // OR logic - return true if ANY comparison matches
+      for (const comp of value) {
+        if (executeComparison(target, comp)) {
+          return true;
+        }
+      }
+      return false;
+    case 'all':
+      // AND logic - return false if ANY comparison fails
+      for (const comp of value) {
+        if (!executeComparison(target, comp)) {
+          return false;
+        }
+      }
+      return true;
     case 'not':
       return !executeComparison(target, value);
     default:
@@ -284,8 +342,40 @@ export function partialEqual(target: any, sub: any): boolean {
     if (!ctor || typeof sub === 'object') {
       for (const key in sub) {
         if (has.call(sub, key)) {
-          if (!has.call(target, key) || !partialEqual(target[key], sub[key])) {
-            return false;
+          const subValue = sub[key];
+
+          // Special handling for keyNotBePresent
+          if (
+            subValue &&
+            typeof subValue === 'object' &&
+            '~sc' in subValue &&
+            subValue['~sc'][0] === 'keyNotBePresent'
+          ) {
+            // Key should NOT exist in target
+            if (has.call(target, key)) {
+              return false;
+            }
+          } else if (
+            subValue &&
+            typeof subValue === 'object' &&
+            '~sc' in subValue &&
+            subValue['~sc'][0] === 'any'
+          ) {
+            // Special handling for any that might contain keyNotBePresent
+            const targetHasKey = has.call(target, key);
+            const targetValue = targetHasKey ? target[key] : undefined;
+
+            if (!executeComparisonWithKeyContext(targetValue, subValue['~sc'], targetHasKey)) {
+              return false;
+            }
+          } else {
+            // Regular property comparison
+            if (
+              !has.call(target, key) ||
+              !partialEqual(target[key], subValue)
+            ) {
+              return false;
+            }
           }
         }
       }

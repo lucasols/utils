@@ -766,4 +766,355 @@ describe('special comparisons', () => {
       ),
     ).toBe(true);
   });
+
+  test('keyNotBePresent should check property absence', () => {
+    // Property exists with undefined - should fail
+    expect(partialEqual({ a: 1 }, { a: 1, c: undefined })).toBe(false);
+
+    // Property doesn't exist - should pass with keyNotBePresent
+    expect(partialEqual({ a: 1 }, { a: 1, c: match.keyNotBePresent })).toBe(
+      true,
+    );
+
+    // Property exists with null - should fail with keyNotBePresent
+    expect(partialEqual({ a: 1, c: null }, { a: 1, c: match.keyNotBePresent })).toBe(
+      false,
+    );
+
+    // Property exists with value - should fail with keyNotBePresent
+    expect(partialEqual({ a: 1, c: 'test' }, { a: 1, c: match.keyNotBePresent })).toBe(
+      false,
+    );
+
+    // Multiple properties with keyNotBePresent
+    expect(partialEqual({ a: 1 }, {
+      a: 1,
+      b: match.keyNotBePresent,
+      c: match.keyNotBePresent
+    })).toBe(true);
+
+    // Some properties exist, some don't
+    expect(partialEqual({ a: 1, b: 2 }, {
+      a: 1,
+      b: 2,
+      c: match.keyNotBePresent
+    })).toBe(true);
+
+    // Property exists when it shouldn't
+    expect(partialEqual({ a: 1, b: 2, c: 3 }, {
+      a: 1,
+      c: match.keyNotBePresent
+    })).toBe(false);
+  });
+
+  test('keyNotBePresent should work with nested objects', () => {
+    const target = {
+      user: { name: 'John', age: 30 },
+      settings: { theme: 'dark' }
+    };
+
+    // Nested property doesn't exist - should pass
+    expect(partialEqual(target, {
+      user: { name: 'John', email: match.keyNotBePresent },
+      settings: { theme: 'dark', lang: match.keyNotBePresent }
+    })).toBe(true);
+
+    // Nested property exists - should fail
+    expect(partialEqual(target, {
+      user: { name: 'John', age: match.keyNotBePresent }
+    })).toBe(false);
+
+    // Top-level property doesn't exist - should pass
+    expect(partialEqual(target, {
+      user: { name: 'John' },
+      profile: match.keyNotBePresent
+    })).toBe(true);
+  });
+
+  test('keyNotBePresent should be serializable', () => {
+    const pattern = {
+      a: 1,
+      b: match.keyNotBePresent
+    };
+
+    const serialized = JSON.stringify(pattern);
+    const deserialized = JSON.parse(serialized);
+
+    // Should work with deserialized pattern
+    expect(partialEqual({ a: 1 }, deserialized)).toBe(true);
+    expect(partialEqual({ a: 1, b: 2 }, deserialized)).toBe(false);
+  });
+
+  describe('logical operations with any/all', () => {
+    describe('match.any() - OR logic', () => {
+      test('should match if ANY condition is true', () => {
+        // String OR conditions
+        expect(partialEqual('hello world', match.any(
+          match.str.startsWith('hello'),
+          match.str.endsWith('world'),
+          match.str.contains('xyz')
+        ))).toBe(true); // first two match
+
+        expect(partialEqual('test', match.any(
+          match.str.startsWith('hello'),
+          match.str.endsWith('world'),
+          match.str.contains('xyz')
+        ))).toBe(false); // none match
+
+        // Mixed type conditions
+        expect(partialEqual(42, match.any(
+          match.hasType.string,
+          match.hasType.number,
+          match.hasType.boolean
+        ))).toBe(true); // number matches
+
+        expect(partialEqual('text', match.any(
+          match.hasType.number,
+          match.hasType.boolean,
+          match.hasType.function
+        ))).toBe(false); // none match
+      });
+
+      test('should work with single condition', () => {
+        expect(partialEqual('hello', match.any(
+          match.str.contains('ell')
+        ))).toBe(true);
+
+        expect(partialEqual('hello', match.any(
+          match.str.contains('xyz')
+        ))).toBe(false);
+      });
+
+      test('should work in nested objects', () => {
+        const target = {
+          status: 'active',
+          priority: 'high'
+        };
+
+        expect(partialEqual(target, {
+          status: match.any(
+            match.str.contains('active'),
+            match.str.contains('pending')
+          )
+        })).toBe(true);
+
+        expect(partialEqual(target, {
+          priority: match.any(
+            match.str.contains('low'),
+            match.str.contains('medium')
+          )
+        })).toBe(false);
+      });
+
+      test('should work with keyNotBePresent', () => {
+        // Property should either contain 'test' OR not exist at all
+        expect(partialEqual({ a: 1 }, {
+          a: 1,
+          b: match.any(match.str.contains('test'), match.keyNotBePresent)
+        })).toBe(true); // b doesn't exist, so keyNotBePresent matches
+
+        expect(partialEqual({ a: 1, b: 'testing' }, {
+          a: 1,
+          b: match.any(match.str.contains('test'), match.keyNotBePresent)
+        })).toBe(true); // b contains 'test'
+
+        expect(partialEqual({ a: 1, b: 'hello' }, {
+          a: 1,
+          b: match.any(match.str.contains('test'), match.keyNotBePresent)
+        })).toBe(false); // b exists but doesn't contain 'test'
+      });
+    });
+
+    describe('match.all() - AND logic', () => {
+      test('should match only if ALL conditions are true', () => {
+        // All string conditions must match
+        expect(partialEqual('hello world', match.all(
+          match.str.startsWith('hello'),
+          match.str.endsWith('world'),
+          match.str.contains(' ')
+        ))).toBe(true); // all match
+
+        expect(partialEqual('hello world', match.all(
+          match.str.startsWith('hello'),
+          match.str.endsWith('world'),
+          match.str.contains('xyz')
+        ))).toBe(false); // last one fails
+
+        // All type and value conditions must match
+        expect(partialEqual(42, match.all(
+          match.hasType.number,
+          match.num.isGreaterThan(40),
+          match.num.isLessThan(50)
+        ))).toBe(true); // all match
+
+        expect(partialEqual(42, match.all(
+          match.hasType.number,
+          match.num.isGreaterThan(40),
+          match.num.isLessThan(40)
+        ))).toBe(false); // last one fails
+      });
+
+      test('should work with single condition', () => {
+        expect(partialEqual('hello', match.all(
+          match.str.contains('ell')
+        ))).toBe(true);
+
+        expect(partialEqual('hello', match.all(
+          match.str.contains('xyz')
+        ))).toBe(false);
+      });
+
+      test('should work in nested objects', () => {
+        const target = {
+          user: { name: 'John Doe', age: 30 },
+          active: true
+        };
+
+        expect(partialEqual(target, {
+          user: {
+            name: match.all(
+              match.hasType.string,
+              match.str.startsWith('John'),
+              match.str.contains(' ')
+            ),
+            age: match.all(
+              match.hasType.number,
+              match.num.isGreaterThan(25)
+            )
+          }
+        })).toBe(true);
+
+        expect(partialEqual(target, {
+          user: {
+            name: match.all(
+              match.hasType.string,
+              match.str.startsWith('Jane'), // This fails
+              match.str.contains(' ')
+            )
+          }
+        })).toBe(false);
+      });
+
+      test('should work with keyNotBePresent', () => {
+        // Property must be a number AND not exist (impossible)
+        expect(partialEqual({ a: 1 }, {
+          a: 1,
+          b: match.all(match.hasType.number, match.keyNotBePresent)
+        })).toBe(false); // Can't be both a number and not exist
+
+        // In a more realistic scenario - checking constraints on optional properties
+        expect(partialEqual({ a: 1, b: undefined }, {
+          a: 1,
+          b: match.any(
+            match.all(match.hasType.string, match.str.contains('test')),
+            match.keyNotBePresent
+          )
+        })).toBe(false); // b exists with undefined, doesn't match either condition
+      });
+    });
+
+    describe('negated logical operations', () => {
+      test('not.any() should be NOR logic', () => {
+        // None of the conditions should match
+        expect(partialEqual('hello', match.not.any(
+          match.str.contains('xyz'),
+          match.str.startsWith('bye'),
+          match.hasType.number
+        ))).toBe(true); // none match, so NOT(false) = true
+
+        expect(partialEqual('hello', match.not.any(
+          match.str.contains('ell'), // This matches
+          match.str.startsWith('bye'),
+          match.hasType.number
+        ))).toBe(false); // one matches, so NOT(true) = false
+      });
+
+      test('not.all() should be NAND logic', () => {
+        // NOT all conditions should match
+        expect(partialEqual('hello world', match.not.all(
+          match.str.startsWith('hello'),
+          match.str.endsWith('world'),
+          match.str.contains('xyz') // This fails
+        ))).toBe(true); // not all match, so NOT(false) = true
+
+        expect(partialEqual('hello world', match.not.all(
+          match.str.startsWith('hello'),
+          match.str.endsWith('world'),
+          match.str.contains(' ')
+        ))).toBe(false); // all match, so NOT(true) = false
+      });
+    });
+
+    describe('nested any/all combinations', () => {
+      test('should handle complex nested logic', () => {
+        const target = {
+          url: 'https://example.com/api/v1',
+          method: 'GET'
+        };
+
+        // URL should start with http OR https, AND method should be GET or POST
+        expect(partialEqual(target, {
+          url: match.all(
+            match.hasType.string,
+            match.any(
+              match.str.startsWith('http://'),
+              match.str.startsWith('https://')
+            ),
+            match.str.contains('api')
+          ),
+          method: match.any(
+            match.str.contains('GET'),
+            match.str.contains('POST')
+          )
+        })).toBe(true);
+
+        expect(partialEqual(target, {
+          url: match.all(
+            match.hasType.string,
+            match.any(
+              match.str.startsWith('ftp://'), // Neither matches
+              match.str.startsWith('smtp://')
+            )
+          )
+        })).toBe(false);
+      });
+    });
+
+    describe('serialization', () => {
+      test('any/all should be serializable', () => {
+        const pattern = {
+          value: match.any(
+            match.str.contains('test'),
+            match.hasType.number
+          )
+        };
+
+        const serialized = JSON.stringify(pattern);
+        const deserialized = JSON.parse(serialized);
+
+        expect(partialEqual({ value: 'testing' }, deserialized)).toBe(true);
+        expect(partialEqual({ value: 42 }, deserialized)).toBe(true);
+        expect(partialEqual({ value: true }, deserialized)).toBe(false);
+      });
+
+      test('nested any/all should be serializable', () => {
+        const pattern = {
+          data: match.all(
+            match.hasType.string,
+            match.any(
+              match.str.startsWith('prefix'),
+              match.str.endsWith('suffix')
+            )
+          )
+        };
+
+        const serialized = JSON.stringify(pattern);
+        const deserialized = JSON.parse(serialized);
+
+        expect(partialEqual({ data: 'prefix-test' }, deserialized)).toBe(true);
+        expect(partialEqual({ data: 'test-suffix' }, deserialized)).toBe(true);
+        expect(partialEqual({ data: 'middle' }, deserialized)).toBe(false);
+      });
+    });
+  });
 });
