@@ -1,22 +1,22 @@
 import { isPromise } from './assertions';
 import { DurationObj, durationObjToMs } from './time';
 /**
- * Creates a cached getter that only calls the provided function once.
- * The first access computes and caches the value; subsequent accesses return the cached result.
- * This is useful for lazy initialization of expensive computations.
+ * Creates a cached getter that only calls the provided function once. The first
+ * access computes and caches the value; subsequent accesses return the cached
+ * result. This is useful for lazy initialization of expensive computations.
+ *
+ * @example
+ *   const expensive = cachedGetter(() => {
+ *     console.log('Computing...');
+ *     return heavyComputation();
+ *   });
+ *
+ *   console.log(expensive.value); // Logs "Computing..." and returns result
+ *   console.log(expensive.value); // Returns cached result without logging
+ *   console.log(expensive.value); // Returns cached result without logging
  *
  * @param getter - Function that computes the value to cache
  * @returns Object with a `value` property that caches the result
- *
- * @example
- * const expensive = cachedGetter(() => {
- *   console.log('Computing...');
- *   return heavyComputation();
- * });
- *
- * console.log(expensive.value); // Logs "Computing..." and returns result
- * console.log(expensive.value); // Returns cached result without logging
- * console.log(expensive.value); // Returns cached result without logging
  */
 export function cachedGetter<T>(getter: () => T): {
   value: T;
@@ -49,19 +49,19 @@ type Options = {
 };
 
 /**
- * Wrapper class that prevents a value from being cached.
- * When returned from a cache computation function, the value will be returned
- * to the caller but not stored in the cache.
+ * Wrapper class that prevents a value from being cached. When returned from a
+ * cache computation function, the value will be returned to the caller but not
+ * stored in the cache.
  *
  * @example
- * const cache = createCache<string>();
- * const result = cache.getOrInsert('dynamic', ({ skipCaching }) => {
- *   const data = generateData();
- *   if (data.isTemporary) {
- *     return skipCaching(data); // Won't be cached
- *   }
- *   return data; // Will be cached
- * });
+ *   const cache = createCache<string>();
+ *   const result = cache.getOrInsert('dynamic', ({ skipCaching }) => {
+ *     const data = generateData();
+ *     if (data.isTemporary) {
+ *       return skipCaching(data); // Won't be cached
+ *     }
+ *     return data; // Will be cached
+ *   });
  */
 export class SkipCaching<T> {
   value: T;
@@ -72,20 +72,23 @@ export class SkipCaching<T> {
 }
 
 /**
- * Wrapper class that sets a custom expiration time for a cached value.
- * Allows individual cache entries to have different expiration times
- * than the default cache expiration.
+ * Wrapper class that sets a custom expiration time for a cached value. Allows
+ * individual cache entries to have different expiration times than the default
+ * cache expiration.
  *
  * @example
- * const cache = createCache<string>({ maxItemAge: { hours: 1 } }); // Default 1 hour
+ *   const cache = createCache<string>({ maxItemAge: { hours: 1 } }); // Default 1 hour
  *
- * const result = cache.getOrInsert('short-lived', ({ withExpiration }) => {
- *   return withExpiration('temporary data', { minutes: 5 }); // Expires in 5 minutes
- * });
+ *   const result = cache.getOrInsert('short-lived', ({ withExpiration }) => {
+ *     return withExpiration('temporary data', { minutes: 5 }); // Expires in 5 minutes
+ *   });
  *
- * const longLived = cache.getOrInsert('long-lived', ({ withExpiration }) => {
- *   return withExpiration('persistent data', { days: 1 }); // Expires in 1 day
- * });
+ *   const longLived = cache.getOrInsert(
+ *     'long-lived',
+ *     ({ withExpiration }) => {
+ *       return withExpiration('persistent data', { days: 1 }); // Expires in 1 day
+ *     },
+ *   );
  */
 export class WithExpiration<T> {
   value: T;
@@ -153,53 +156,68 @@ export type Cache<T> = {
 };
 
 /**
- * Creates a full-featured cache with time-based expiration, async support, and advanced features.
- * This is a more powerful alternative to `fastCache` when you need expiration, async operations,
- * or advanced caching strategies.
- *
- * @param options - Configuration options for the cache
- * @param options.maxCacheSize - Maximum number of items to store. When exceeded, oldest items are removed first. Defaults to 1000.
- * @param options.maxItemAge - Default expiration time for all cached items. Items older than this will be automatically removed.
- * @param options.expirationThrottle - Minimum time in milliseconds between expiration cleanup runs. Prevents excessive cleanup operations. Defaults to 10,000ms.
- * @returns A cache instance with various methods for storing and retrieving values
+ * Creates a full-featured cache with time-based expiration, async support, and
+ * advanced features. This is a more powerful alternative to `fastCache` when
+ * you need expiration, async operations, or advanced caching strategies.
  *
  * @example
- * // Basic usage with expiration
- * const cache = createCache<string>({
- *   maxCacheSize: 100,
- *   maxItemAge: { minutes: 5 }
- * });
+ *   // Basic usage with expiration
+ *   const cache = createCache<string>({
+ *     maxCacheSize: 100,
+ *     maxItemAge: { minutes: 5 },
+ *   });
  *
- * // Simple caching
- * const result = cache.getOrInsert('user:123', () => {
- *   return fetchUserFromDatabase('123');
- * });
+ *   // Simple caching
+ *   const result = cache.getOrInsert('user:123', () => {
+ *     return fetchUserFromDatabase('123');
+ *   });
  *
- * // Async caching with promise deduplication
- * const asyncResult = await cache.getOrInsertAsync('api:data', async () => {
- *   return await fetchFromApi('/data');
- * });
+ *   // Async caching with promise deduplication
+ *   const asyncResult = await cache.getOrInsertAsync(
+ *     'api:data',
+ *     async () => {
+ *       return await fetchFromApi('/data');
+ *     },
+ *   );
  *
- * // Skip caching for certain values
- * const value = cache.getOrInsert('dynamic', ({ skipCaching }) => {
- *   const data = generateDynamicData();
- *   if (data.shouldNotCache) {
- *     return skipCaching(data); // Won't be cached
- *   }
- *   return data;
- * });
+ *   // Skip caching for certain values
+ *   const value = cache.getOrInsert('dynamic', ({ skipCaching }) => {
+ *     const data = generateDynamicData();
+ *     if (data.shouldNotCache) {
+ *       return skipCaching(data); // Won't be cached
+ *     }
+ *     return data;
+ *   });
  *
- * // Custom expiration per item
- * const shortLivedValue = cache.getOrInsert('temp', ({ withExpiration }) => {
- *   return withExpiration('temporary data', { seconds: 30 });
- * });
+ *   // Custom expiration per item
+ *   const shortLivedValue = cache.getOrInsert(
+ *     'temp',
+ *     ({ withExpiration }) => {
+ *       return withExpiration('temporary data', { seconds: 30 });
+ *     },
+ *   );
  *
- * // Conditional caching based on the computed value
- * const result = cache.getOrInsert('conditional', () => {
- *   return computeValue();
- * }, {
- *   skipCachingWhen: (value) => value === null || value.error
- * });
+ *   // Conditional caching based on the computed value
+ *   const result = cache.getOrInsert(
+ *     'conditional',
+ *     () => {
+ *       return computeValue();
+ *     },
+ *     {
+ *       skipCachingWhen: (value) => value === null || value.error,
+ *     },
+ *   );
+ *
+ * @param options - Configuration options for the cache
+ * @param options.maxCacheSize - Maximum number of items to store. When
+ *   exceeded, oldest items are removed first. Defaults to 1000.
+ * @param options.maxItemAge - Default expiration time for all cached items.
+ *   Items older than this will be automatically removed.
+ * @param options.expirationThrottle - Minimum time in milliseconds between
+ *   expiration cleanup runs. Prevents excessive cleanup operations. Defaults to
+ *   10,000ms.
+ * @returns A cache instance with various methods for storing and retrieving
+ *   values
  */
 export function createCache<T>({
   maxCacheSize = 1000,
@@ -286,16 +304,26 @@ export function createCache<T>({
     },
   };
 
+  function refreshEntry(key: string, now: number): void {
+    const entry = cache.get(key);
+    if (entry && !isExpired(entry, now)) {
+      cache.delete(key);
+      cache.set(key, entry);
+    }
+  }
+
   return {
     /**
      * Gets a value from the cache or computes and stores it if not present.
      * This is the primary method for synchronous caching operations.
      *
      * @param cacheKey - Unique key to identify the cached value
-     * @param val - Function that computes the value if not cached. Receives utility functions for advanced features.
+     * @param val - Function that computes the value if not cached. Receives
+     *   utility functions for advanced features.
      * @param options - Optional configuration for this specific get operation
      * @returns The cached or newly computed value
-     * @throws Error if the cached value is a promise (use getOrInsertAsync instead)
+     * @throws Error if the cached value is a promise (use getOrInsertAsync
+     *   instead)
      */
     getOrInsert(cacheKey, val, options) {
       const now = Date.now();
@@ -326,14 +354,17 @@ export function createCache<T>({
         );
       }
 
+      refreshEntry(cacheKey, now);
       return entry.value;
     },
     /**
      * Gets a value from the cache or computes and stores it asynchronously.
-     * Provides promise deduplication - concurrent calls with the same key will share the same promise.
+     * Provides promise deduplication - concurrent calls with the same key will
+     * share the same promise.
      *
      * @param cacheKey - Unique key to identify the cached value
-     * @param val - Async function that computes the value if not cached. Receives utility functions for advanced features.
+     * @param val - Async function that computes the value if not cached.
+     *   Receives utility functions for advanced features.
      * @param options - Optional configuration for this specific get operation
      * @returns Promise that resolves to the cached or newly computed value
      */
@@ -347,6 +378,7 @@ export function createCache<T>({
       const now = Date.now();
 
       if (entry && !isExpired(entry, now)) {
+        refreshEntry(cacheKey, now);
         return entry.value;
       }
 
@@ -391,15 +423,13 @@ export function createCache<T>({
 
       return promise;
     },
-    /**
-     * Removes all items from the cache.
-     */
+    /** Removes all items from the cache. */
     clear() {
       cache.clear();
     },
     /**
-     * Gets a value from the cache without computing it if missing.
-     * Returns undefined if the key doesn't exist or has expired.
+     * Gets a value from the cache without computing it if missing. Returns
+     * undefined if the key doesn't exist or has expired.
      *
      * @param cacheKey - Key to look up in the cache
      * @returns The cached value or undefined if not found/expired
@@ -407,8 +437,9 @@ export function createCache<T>({
      */
     get(cacheKey) {
       const entry = cache.get(cacheKey);
+      const now = Date.now();
 
-      if (!entry || isExpired(entry, Date.now())) {
+      if (!entry || isExpired(entry, now)) {
         return undefined;
       }
 
@@ -416,13 +447,15 @@ export function createCache<T>({
         throw new Error('Cache value is a promise, use getAsync instead');
       }
 
+      refreshEntry(cacheKey, now);
       return entry.value;
     },
     /**
      * Manually sets a value in the cache.
      *
      * @param cacheKey - Key to store the value under
-     * @param value - Value to store, or WithExpiration wrapper for custom expiration
+     * @param value - Value to store, or WithExpiration wrapper for custom
+     *   expiration
      */
     set(cacheKey, value) {
       cache.set(cacheKey, unwrapValue(value, Date.now()));
@@ -430,24 +463,27 @@ export function createCache<T>({
       cleanExpiredItems();
     },
     /**
-     * Gets a value from the cache without computing it if missing.
-     * Works with both sync and async cached values.
+     * Gets a value from the cache without computing it if missing. Works with
+     * both sync and async cached values.
      *
      * @param cacheKey - Key to look up in the cache
-     * @returns Promise that resolves to the cached value or undefined if not found/expired
+     * @returns Promise that resolves to the cached value or undefined if not
+     *   found/expired
      */
     async getAsync(cacheKey) {
       const entry = cache.get(cacheKey);
+      const now = Date.now();
 
-      if (!entry || isExpired(entry, Date.now())) {
+      if (!entry || isExpired(entry, now)) {
         return undefined;
       }
 
+      refreshEntry(cacheKey, now);
       return entry.value;
     },
     /**
-     * Manually sets an async value in the cache.
-     * The promise will be stored immediately and shared with concurrent requests.
+     * Manually sets an async value in the cache. The promise will be stored
+     * immediately and shared with concurrent requests.
      *
      * @param cacheKey - Key to store the value under
      * @param value - Async function that returns the value to cache
@@ -486,8 +522,8 @@ export function createCache<T>({
       return promise;
     },
     /**
-     * Manually triggers cleanup of expired items.
-     * Normally this happens automatically during cache operations.
+     * Manually triggers cleanup of expired items. Normally this happens
+     * automatically during cache operations.
      */
     cleanExpiredItems,
     /** @internal */
@@ -499,29 +535,29 @@ type FastCacheOptions = { maxCacheSize?: number };
 
 /**
  * Creates a simple, fast cache with FIFO (First In, First Out) eviction policy.
- * This is a lightweight alternative to `createCache` for basic caching needs without
- * expiration, async support, or advanced features.
+ * This is a lightweight alternative to `createCache` for basic caching needs
+ * without expiration, async support, or advanced features.
+ *
+ * @example
+ *   const cache = fastCache<string>({ maxCacheSize: 100 });
+ *
+ *   // Cache expensive computation
+ *   const result = cache.getOrInsert('user:123', () => {
+ *     return fetchUserFromDatabase('123');
+ *   });
+ *
+ *   // Subsequent calls return cached value without re-computation
+ *   const cachedResult = cache.getOrInsert('user:123', () => {
+ *     return fetchUserFromDatabase('123'); // Won't be called
+ *   });
+ *
+ *   // Clear all cached values
+ *   cache.clear();
  *
  * @param options - Configuration options for the cache
  * @param options.maxCacheSize - Maximum number of items to store in the cache.
  *   When exceeded, oldest items are removed first. Defaults to 1000.
  * @returns An object with cache methods
- *
- * @example
- * const cache = fastCache<string>({ maxCacheSize: 100 });
- *
- * // Cache expensive computation
- * const result = cache.getOrInsert('user:123', () => {
- *   return fetchUserFromDatabase('123');
- * });
- *
- * // Subsequent calls return cached value without re-computation
- * const cachedResult = cache.getOrInsert('user:123', () => {
- *   return fetchUserFromDatabase('123'); // Won't be called
- * });
- *
- * // Clear all cached values
- * cache.clear();
  */
 export function fastCache<T>({ maxCacheSize = 1000 }: FastCacheOptions = {}) {
   const cache = new Map<string, T>();
@@ -561,6 +597,6 @@ export function fastCache<T>({ maxCacheSize = 1000 }: FastCacheOptions = {}) {
   return {
     getOrInsert,
     /** Clears all cached values */
-    clear: () => cache.clear()
+    clear: () => cache.clear(),
   };
 }

@@ -39,7 +39,7 @@ describe('createCache', () => {
     expect(mockGetValue).toHaveBeenCalledTimes(1);
   });
 
-  test('should respect maxCacheSize', () => {
+  test('should respect maxCacheSize with LRU eviction', () => {
     vi.useFakeTimers();
     vi.setSystemTime('2025-01-01T00:00:00.000Z');
 
@@ -47,14 +47,19 @@ describe('createCache', () => {
 
     cache.getOrInsert('key1', () => 'value1');
     cache.getOrInsert('key2', () => 'value2');
+
+    // Access key1 to make it most recently used
+    cache.get('key1');
+
+    // Adding key3 should evict key2 (least recently used), not key1
     cache.getOrInsert('key3', () => 'value3');
 
     expect(cache[' cache'].map).toMatchInlineSnapshot(`
       Map {
-        "key2" => {
+        "key1" => {
           "expiration": undefined,
           "timestamp": 1735689600000,
-          "value": "value2",
+          "value": "value1",
         },
         "key3" => {
           "expiration": undefined,
@@ -64,7 +69,11 @@ describe('createCache', () => {
       }
     `);
 
-    cache.getOrInsert('key4', () => 'value1');
+    // Access key3 to make it most recently used
+    cache.get('key3');
+
+    // Adding key4 should evict key1 (now least recently used)
+    cache.getOrInsert('key4', () => 'value4');
 
     expect(cache[' cache'].map).toMatchInlineSnapshot(`
       Map {
@@ -76,12 +85,121 @@ describe('createCache', () => {
         "key4" => {
           "expiration": undefined,
           "timestamp": 1735689600000,
-          "value": "value1",
+          "value": "value4",
         },
       }
     `);
 
     vi.useRealTimers();
+  });
+
+  test('should evict least recently used items when maxCacheSize exceeded', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime('2025-01-01T00:00:00.000Z');
+
+    const cache = createCache({ maxCacheSize: 3 });
+
+    // Fill cache to capacity
+    cache.getOrInsert('A', () => 'valueA');
+    cache.getOrInsert('B', () => 'valueB');
+    cache.getOrInsert('C', () => 'valueC');
+
+    // Access A and B to make them recently used (C is now LRU)
+    cache.get('A');
+    cache.get('B');
+
+    // Adding D should evict C (least recently used)
+    cache.getOrInsert('D', () => 'valueD');
+
+    expect(cache[' cache'].map.has('A')).toBe(true);
+    expect(cache[' cache'].map.has('B')).toBe(true);
+    expect(cache[' cache'].map.has('C')).toBe(false); // Evicted
+    expect(cache[' cache'].map.has('D')).toBe(true);
+
+    // Access A to make it recently used (B is now LRU among A,B,D)
+    cache.get('A');
+
+    // Adding E should evict B (least recently used)
+    cache.getOrInsert('E', () => 'valueE');
+
+    expect(cache[' cache'].map.has('A')).toBe(true);
+    expect(cache[' cache'].map.has('B')).toBe(false); // Evicted
+    expect(cache[' cache'].map.has('D')).toBe(true);
+    expect(cache[' cache'].map.has('E')).toBe(true);
+
+    vi.useRealTimers();
+  });
+
+  test('should prevent eviction of frequently accessed items', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime('2025-01-01T00:00:00.000Z');
+
+    const cache = createCache({ maxCacheSize: 2 });
+
+    cache.getOrInsert('persistent', () => 'persistentValue');
+    cache.getOrInsert('temp1', () => 'temp1Value');
+
+    // Keep accessing 'persistent' while adding new items
+    cache.get('persistent'); // Make persistent recently used
+
+    cache.getOrInsert('temp2', () => 'temp2Value'); // Should evict temp1
+
+    expect(cache[' cache'].map.has('persistent')).toBe(true);
+    expect(cache[' cache'].map.has('temp1')).toBe(false); // Evicted
+    expect(cache[' cache'].map.has('temp2')).toBe(true);
+
+    cache.get('persistent'); // Keep accessing persistent
+
+    cache.getOrInsert('temp3', () => 'temp3Value'); // Should evict temp2
+
+    expect(cache[' cache'].map.has('persistent')).toBe(true);
+    expect(cache[' cache'].map.has('temp2')).toBe(false); // Evicted
+    expect(cache[' cache'].map.has('temp3')).toBe(true);
+
+    cache.get('persistent'); // Keep accessing persistent
+
+    cache.getOrInsert('temp4', () => 'temp4Value'); // Should evict temp3
+
+    expect(cache[' cache'].map.has('persistent')).toBe(true);
+    expect(cache[' cache'].map.has('temp3')).toBe(false); // Evicted
+    expect(cache[' cache'].map.has('temp4')).toBe(true);
+
+    // Verify persistent item was never evicted despite multiple additions
+    expect(cache.get('persistent')).toBe('persistentValue');
+
+    vi.useRealTimers();
+  });
+
+  test.concurrent('should update LRU order with async operations', async () => {
+    const cache = createCache({ maxCacheSize: 2 });
+
+    // Add two async values
+    await cache.getOrInsertAsync('async1', async () => 'asyncValue1');
+    await cache.getOrInsertAsync('async2', async () => 'asyncValue2');
+
+    // Access async1 via getAsync to make it recently used
+    await cache.getAsync('async1');
+
+    // Add async3 - should evict async2 (least recently used)
+    await cache.getOrInsertAsync('async3', async () => 'asyncValue3');
+
+    expect(cache[' cache'].map.has('async1')).toBe(true);
+    expect(cache[' cache'].map.has('async2')).toBe(false); // Evicted
+    expect(cache[' cache'].map.has('async3')).toBe(true);
+
+    // Access async3 via getOrInsertAsync (cache hit) to make it recently used
+    await cache.getOrInsertAsync('async3', async () => 'shouldNotBeCalled');
+
+    // Add async4 - should evict async1 (now least recently used)
+    await cache.getOrInsertAsync('async4', async () => 'asyncValue4');
+
+    expect(cache[' cache'].map.has('async1')).toBe(false); // Evicted
+    expect(cache[' cache'].map.has('async3')).toBe(true);
+    expect(cache[' cache'].map.has('async4')).toBe(true);
+
+    // Verify final values
+    expect(await cache.getAsync('async3')).toBe('asyncValue3');
+    expect(await cache.getAsync('async4')).toBe('asyncValue4');
   });
 
   test('clear should remove all entries', () => {
