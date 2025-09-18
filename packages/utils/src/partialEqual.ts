@@ -225,6 +225,11 @@ function executeComparison(target: any, comparison: ComparisonsType): boolean {
 export function partialEqual(target: any, sub: any): boolean {
   if (sub === target) return true;
 
+  // Handle special comparisons first
+  if (sub && typeof sub === 'object' && '~sc' in sub) {
+    return executeComparison(target, sub['~sc']);
+  }
+
   if (sub && target && sub.constructor === target.constructor) {
     const ctor = sub.constructor;
 
@@ -277,11 +282,6 @@ export function partialEqual(target: any, sub: any): boolean {
     }
 
     if (!ctor || typeof sub === 'object') {
-      // Handle special comparisons
-      if ('~sc' in sub) {
-        return executeComparison(target, sub['~sc']);
-      }
-
       for (const key in sub) {
         if (has.call(sub, key)) {
           if (!has.call(target, key) || !partialEqual(target[key], sub[key])) {

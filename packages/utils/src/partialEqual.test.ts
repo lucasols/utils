@@ -753,6 +753,17 @@ describe('special comparisons', () => {
 
     const serialized = JSON.stringify(target);
     const deserialized = JSON.parse(serialized);
-    expect(partialEqual(target, deserialized)).toBe(true);
+    expect(
+      partialEqual(
+        {
+          user: {
+            name: 'John Doe',
+            age: 30,
+            email: 'john.doe@example.com',
+          },
+        },
+        deserialized,
+      ),
+    ).toBe(true);
   });
 });
