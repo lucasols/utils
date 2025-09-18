@@ -10,7 +10,7 @@
 type Comparison = object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L27)
+Defined in: [packages/utils/src/partialEqual.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L30)
 
 #### Properties
 
@@ -20,7 +20,7 @@ Defined in: [packages/utils/src/partialEqual.ts:27](https://github.com/lucasols/
 ~sc: ComparisonsType;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L28)
+Defined in: [packages/utils/src/partialEqual.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L31)
 
 ***
 
@@ -43,7 +43,10 @@ type ComparisonsType =
   | ["partialEqual", any]
   | ["custom", (target) => boolean]
   | ["isInstanceOf", (...args) => any]
-  | ["not", ComparisonsType];
+  | ["keyNotBePresent", null]
+  | ["not", ComparisonsType]
+  | ["any", ComparisonsType[]]
+  | ["all", ComparisonsType[]];
 ```
 
 Defined in: [packages/utils/src/partialEqual.ts:6](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L6)

@@ -14,9 +14,41 @@
 const match: object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L37)
+Defined in: [packages/utils/src/partialEqual.ts:40](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L40)
 
 #### Type declaration
+
+##### all()
+
+```ts
+all: (...comparisons) => Comparison;
+```
+
+###### Parameters
+
+###### comparisons
+
+...[`Comparison`](-internal-.md#comparison)[]
+
+###### Returns
+
+[`Comparison`](-internal-.md#comparison)
+
+##### any()
+
+```ts
+any: (...comparisons) => Comparison;
+```
+
+###### Parameters
+
+###### comparisons
+
+...[`Comparison`](-internal-.md#comparison)[]
+
+###### Returns
+
+[`Comparison`](-internal-.md#comparison)
 
 ##### custom()
 
@@ -130,11 +162,49 @@ hasPartial: (value) => Comparison;
 
 [`Comparison`](-internal-.md#comparison)
 
+##### keyNotBePresent
+
+```ts
+keyNotBePresent: Comparison;
+```
+
 ##### not
 
 ```ts
 not: object;
 ```
+
+###### not.all()
+
+```ts
+all: (...comparisons) => Comparison;
+```
+
+###### Parameters
+
+###### comparisons
+
+...[`Comparison`](-internal-.md#comparison)[]
+
+###### Returns
+
+[`Comparison`](-internal-.md#comparison)
+
+###### not.any()
+
+```ts
+any: (...comparisons) => Comparison;
+```
+
+###### Parameters
+
+###### comparisons
+
+...[`Comparison`](-internal-.md#comparison)[]
+
+###### Returns
+
+[`Comparison`](-internal-.md#comparison)
 
 ###### not.custom()
 
@@ -600,7 +670,7 @@ startsWith: (substring) => Comparison;
 function partialEqual(target, sub): boolean;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:225](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L225)
+Defined in: [packages/utils/src/partialEqual.ts:283](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L283)
 
 #### Parameters
 
