@@ -6,7 +6,7 @@
 
 ### Comparisons
 
-Defined in: [packages/utils/src/partialEqual.ts:22](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L22)
+Defined in: [packages/utils/src/partialEqual.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L27)
 
 #### Constructors
 
@@ -16,7 +16,7 @@ Defined in: [packages/utils/src/partialEqual.ts:22](https://github.com/lucasols/
 new Comparisons(type): Comparisons;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:24](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L24)
+Defined in: [packages/utils/src/partialEqual.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L29)
 
 ###### Parameters
 
@@ -36,7 +36,7 @@ Defined in: [packages/utils/src/partialEqual.ts:24](https://github.com/lucasols/
 type: ComparisonsType;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L23)
+Defined in: [packages/utils/src/partialEqual.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L28)
 
 ## Type Aliases
 
@@ -46,6 +46,7 @@ Defined in: [packages/utils/src/partialEqual.ts:23](https://github.com/lucasols/
 type ComparisonsType = 
   | ["strStartsWith", string]
   | ["strEndsWith", string]
+  | ["hasType", "string" | "number" | "boolean" | "object" | "array" | "function"]
   | ["strContains", string]
   | ["strMatchesRegex", RegExp]
   | ["deepEqual", any]
@@ -57,6 +58,7 @@ type ComparisonsType =
   | ["jsonStringHasPartial", any]
   | ["partialEqual", any]
   | ["custom", (target) => boolean]
+  | ["isInstanceOf", (...args) => any]
   | ["not", ComparisonsType];
 ```
 

@@ -14,7 +14,7 @@
 const match: object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L29)
+Defined in: [packages/utils/src/partialEqual.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L34)
 
 #### Type declaration
 
@@ -45,6 +45,64 @@ equal: (value) => Comparisons;
 ###### value
 
 `any`
+
+###### Returns
+
+[`Comparisons`](-internal-.md#comparisons)
+
+##### hasType
+
+```ts
+hasType: object;
+```
+
+###### hasType.array
+
+```ts
+array: Comparisons;
+```
+
+###### hasType.boolean
+
+```ts
+boolean: Comparisons;
+```
+
+###### hasType.function
+
+```ts
+function: Comparisons;
+```
+
+###### hasType.number
+
+```ts
+number: Comparisons;
+```
+
+###### hasType.object
+
+```ts
+object: Comparisons;
+```
+
+###### hasType.string
+
+```ts
+string: Comparisons;
+```
+
+##### isInstanceOf()
+
+```ts
+isInstanceOf: (constructor) => Comparisons;
+```
+
+###### Parameters
+
+###### constructor
+
+(...`args`) => `any`
 
 ###### Returns
 
@@ -105,6 +163,64 @@ equal: (value) => Comparisons;
 ###### value
 
 `any`
+
+###### Returns
+
+[`Comparisons`](-internal-.md#comparisons)
+
+###### not.hasType
+
+```ts
+hasType: object;
+```
+
+###### not.hasType.array
+
+```ts
+array: Comparisons;
+```
+
+###### not.hasType.boolean
+
+```ts
+boolean: Comparisons;
+```
+
+###### not.hasType.function
+
+```ts
+function: Comparisons;
+```
+
+###### not.hasType.number
+
+```ts
+number: Comparisons;
+```
+
+###### not.hasType.object
+
+```ts
+object: Comparisons;
+```
+
+###### not.hasType.string
+
+```ts
+string: Comparisons;
+```
+
+###### not.isInstanceOf()
+
+```ts
+isInstanceOf: (constructor) => Comparisons;
+```
+
+###### Parameters
+
+###### constructor
+
+(...`args`) => `any`
 
 ###### Returns
 
@@ -484,7 +600,7 @@ startsWith: (substring) => Comparisons;
 function partialEqual(target, sub): boolean;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:165](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L165)
+Defined in: [packages/utils/src/partialEqual.ts:222](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L222)
 
 #### Parameters
 
