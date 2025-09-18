@@ -777,64 +777,85 @@ describe('special comparisons', () => {
     );
 
     // Property exists with null - should fail with keyNotBePresent
-    expect(partialEqual({ a: 1, c: null }, { a: 1, c: match.keyNotBePresent })).toBe(
-      false,
-    );
+    expect(
+      partialEqual({ a: 1, c: null }, { a: 1, c: match.keyNotBePresent }),
+    ).toBe(false);
 
     // Property exists with value - should fail with keyNotBePresent
-    expect(partialEqual({ a: 1, c: 'test' }, { a: 1, c: match.keyNotBePresent })).toBe(
-      false,
-    );
+    expect(
+      partialEqual({ a: 1, c: 'test' }, { a: 1, c: match.keyNotBePresent }),
+    ).toBe(false);
 
     // Multiple properties with keyNotBePresent
-    expect(partialEqual({ a: 1 }, {
-      a: 1,
-      b: match.keyNotBePresent,
-      c: match.keyNotBePresent
-    })).toBe(true);
+    expect(
+      partialEqual(
+        { a: 1 },
+        {
+          a: 1,
+          b: match.keyNotBePresent,
+          c: match.keyNotBePresent,
+        },
+      ),
+    ).toBe(true);
 
     // Some properties exist, some don't
-    expect(partialEqual({ a: 1, b: 2 }, {
-      a: 1,
-      b: 2,
-      c: match.keyNotBePresent
-    })).toBe(true);
+    expect(
+      partialEqual(
+        { a: 1, b: 2 },
+        {
+          a: 1,
+          b: 2,
+          c: match.keyNotBePresent,
+        },
+      ),
+    ).toBe(true);
 
     // Property exists when it shouldn't
-    expect(partialEqual({ a: 1, b: 2, c: 3 }, {
-      a: 1,
-      c: match.keyNotBePresent
-    })).toBe(false);
+    expect(
+      partialEqual(
+        { a: 1, b: 2, c: 3 },
+        {
+          a: 1,
+          c: match.keyNotBePresent,
+        },
+      ),
+    ).toBe(false);
   });
 
   test('keyNotBePresent should work with nested objects', () => {
     const target = {
       user: { name: 'John', age: 30 },
-      settings: { theme: 'dark' }
+      settings: { theme: 'dark' },
     };
 
     // Nested property doesn't exist - should pass
-    expect(partialEqual(target, {
-      user: { name: 'John', email: match.keyNotBePresent },
-      settings: { theme: 'dark', lang: match.keyNotBePresent }
-    })).toBe(true);
+    expect(
+      partialEqual(target, {
+        user: { name: 'John', email: match.keyNotBePresent },
+        settings: { theme: 'dark', lang: match.keyNotBePresent },
+      }),
+    ).toBe(true);
 
     // Nested property exists - should fail
-    expect(partialEqual(target, {
-      user: { name: 'John', age: match.keyNotBePresent }
-    })).toBe(false);
+    expect(
+      partialEqual(target, {
+        user: { name: 'John', age: match.keyNotBePresent },
+      }),
+    ).toBe(false);
 
     // Top-level property doesn't exist - should pass
-    expect(partialEqual(target, {
-      user: { name: 'John' },
-      profile: match.keyNotBePresent
-    })).toBe(true);
+    expect(
+      partialEqual(target, {
+        user: { name: 'John' },
+        profile: match.keyNotBePresent,
+      }),
+    ).toBe(true);
   });
 
   test('keyNotBePresent should be serializable', () => {
     const pattern = {
       a: 1,
-      b: match.keyNotBePresent
+      b: match.keyNotBePresent,
     };
 
     const serialized = JSON.stringify(pattern);
@@ -849,199 +870,289 @@ describe('special comparisons', () => {
     describe('match.any() - OR logic', () => {
       test('should match if ANY condition is true', () => {
         // String OR conditions
-        expect(partialEqual('hello world', match.any(
-          match.str.startsWith('hello'),
-          match.str.endsWith('world'),
-          match.str.contains('xyz')
-        ))).toBe(true); // first two match
+        expect(
+          partialEqual(
+            'hello world',
+            match.any(
+              match.str.startsWith('hello'),
+              match.str.endsWith('world'),
+              match.str.contains('xyz'),
+            ),
+          ),
+        ).toBe(true); // first two match
 
-        expect(partialEqual('test', match.any(
-          match.str.startsWith('hello'),
-          match.str.endsWith('world'),
-          match.str.contains('xyz')
-        ))).toBe(false); // none match
+        expect(
+          partialEqual(
+            'test',
+            match.any(
+              match.str.startsWith('hello'),
+              match.str.endsWith('world'),
+              match.str.contains('xyz'),
+            ),
+          ),
+        ).toBe(false); // none match
 
         // Mixed type conditions
-        expect(partialEqual(42, match.any(
-          match.hasType.string,
-          match.hasType.number,
-          match.hasType.boolean
-        ))).toBe(true); // number matches
+        expect(
+          partialEqual(
+            42,
+            match.any(
+              match.hasType.string,
+              match.hasType.number,
+              match.hasType.boolean,
+            ),
+          ),
+        ).toBe(true); // number matches
 
-        expect(partialEqual('text', match.any(
-          match.hasType.number,
-          match.hasType.boolean,
-          match.hasType.function
-        ))).toBe(false); // none match
+        expect(
+          partialEqual(
+            'text',
+            match.any(
+              match.hasType.number,
+              match.hasType.boolean,
+              match.hasType.function,
+            ),
+          ),
+        ).toBe(false); // none match
       });
 
       test('should work with single condition', () => {
-        expect(partialEqual('hello', match.any(
-          match.str.contains('ell')
-        ))).toBe(true);
+        expect(
+          partialEqual('hello', match.any(match.str.contains('ell'))),
+        ).toBe(true);
 
-        expect(partialEqual('hello', match.any(
-          match.str.contains('xyz')
-        ))).toBe(false);
+        expect(
+          partialEqual('hello', match.any(match.str.contains('xyz'))),
+        ).toBe(false);
       });
 
       test('should work in nested objects', () => {
         const target = {
           status: 'active',
-          priority: 'high'
+          priority: 'high',
         };
 
-        expect(partialEqual(target, {
-          status: match.any(
-            match.str.contains('active'),
-            match.str.contains('pending')
-          )
-        })).toBe(true);
+        expect(
+          partialEqual(target, {
+            status: match.any(
+              match.str.contains('active'),
+              match.str.contains('pending'),
+            ),
+          }),
+        ).toBe(true);
 
-        expect(partialEqual(target, {
-          priority: match.any(
-            match.str.contains('low'),
-            match.str.contains('medium')
-          )
-        })).toBe(false);
+        expect(
+          partialEqual(target, {
+            priority: match.any(
+              match.str.contains('low'),
+              match.str.contains('medium'),
+            ),
+          }),
+        ).toBe(false);
       });
 
       test('should work with keyNotBePresent', () => {
         // Property should either contain 'test' OR not exist at all
-        expect(partialEqual({ a: 1 }, {
-          a: 1,
-          b: match.any(match.str.contains('test'), match.keyNotBePresent)
-        })).toBe(true); // b doesn't exist, so keyNotBePresent matches
+        expect(
+          partialEqual(
+            { a: 1 },
+            {
+              a: 1,
+              b: match.any(match.str.contains('test'), match.keyNotBePresent),
+            },
+          ),
+        ).toBe(true); // b doesn't exist, so keyNotBePresent matches
 
-        expect(partialEqual({ a: 1, b: 'testing' }, {
-          a: 1,
-          b: match.any(match.str.contains('test'), match.keyNotBePresent)
-        })).toBe(true); // b contains 'test'
+        expect(
+          partialEqual(
+            { a: 1, b: 'testing' },
+            {
+              a: 1,
+              b: match.any(match.str.contains('test'), match.keyNotBePresent),
+            },
+          ),
+        ).toBe(true); // b contains 'test'
 
-        expect(partialEqual({ a: 1, b: 'hello' }, {
-          a: 1,
-          b: match.any(match.str.contains('test'), match.keyNotBePresent)
-        })).toBe(false); // b exists but doesn't contain 'test'
+        expect(
+          partialEqual(
+            { a: 1, b: 'hello' },
+            {
+              a: 1,
+              b: match.any(match.str.contains('test'), match.keyNotBePresent),
+            },
+          ),
+        ).toBe(false); // b exists but doesn't contain 'test'
       });
     });
 
     describe('match.all() - AND logic', () => {
       test('should match only if ALL conditions are true', () => {
         // All string conditions must match
-        expect(partialEqual('hello world', match.all(
-          match.str.startsWith('hello'),
-          match.str.endsWith('world'),
-          match.str.contains(' ')
-        ))).toBe(true); // all match
+        expect(
+          partialEqual(
+            'hello world',
+            match.all(
+              match.str.startsWith('hello'),
+              match.str.endsWith('world'),
+              match.str.contains(' '),
+            ),
+          ),
+        ).toBe(true); // all match
 
-        expect(partialEqual('hello world', match.all(
-          match.str.startsWith('hello'),
-          match.str.endsWith('world'),
-          match.str.contains('xyz')
-        ))).toBe(false); // last one fails
+        expect(
+          partialEqual(
+            'hello world',
+            match.all(
+              match.str.startsWith('hello'),
+              match.str.endsWith('world'),
+              match.str.contains('xyz'),
+            ),
+          ),
+        ).toBe(false); // last one fails
 
         // All type and value conditions must match
-        expect(partialEqual(42, match.all(
-          match.hasType.number,
-          match.num.isGreaterThan(40),
-          match.num.isLessThan(50)
-        ))).toBe(true); // all match
+        expect(
+          partialEqual(
+            42,
+            match.all(
+              match.hasType.number,
+              match.num.isGreaterThan(40),
+              match.num.isLessThan(50),
+            ),
+          ),
+        ).toBe(true); // all match
 
-        expect(partialEqual(42, match.all(
-          match.hasType.number,
-          match.num.isGreaterThan(40),
-          match.num.isLessThan(40)
-        ))).toBe(false); // last one fails
+        expect(
+          partialEqual(
+            42,
+            match.all(
+              match.hasType.number,
+              match.num.isGreaterThan(40),
+              match.num.isLessThan(40),
+            ),
+          ),
+        ).toBe(false); // last one fails
       });
 
       test('should work with single condition', () => {
-        expect(partialEqual('hello', match.all(
-          match.str.contains('ell')
-        ))).toBe(true);
+        expect(
+          partialEqual('hello', match.all(match.str.contains('ell'))),
+        ).toBe(true);
 
-        expect(partialEqual('hello', match.all(
-          match.str.contains('xyz')
-        ))).toBe(false);
+        expect(
+          partialEqual('hello', match.all(match.str.contains('xyz'))),
+        ).toBe(false);
       });
 
       test('should work in nested objects', () => {
         const target = {
           user: { name: 'John Doe', age: 30 },
-          active: true
+          active: true,
         };
 
-        expect(partialEqual(target, {
-          user: {
-            name: match.all(
-              match.hasType.string,
-              match.str.startsWith('John'),
-              match.str.contains(' ')
-            ),
-            age: match.all(
-              match.hasType.number,
-              match.num.isGreaterThan(25)
-            )
-          }
-        })).toBe(true);
+        expect(
+          partialEqual(target, {
+            user: {
+              name: match.all(
+                match.hasType.string,
+                match.str.startsWith('John'),
+                match.str.contains(' '),
+              ),
+              age: match.all(match.hasType.number, match.num.isGreaterThan(25)),
+            },
+          }),
+        ).toBe(true);
 
-        expect(partialEqual(target, {
-          user: {
-            name: match.all(
-              match.hasType.string,
-              match.str.startsWith('Jane'), // This fails
-              match.str.contains(' ')
-            )
-          }
-        })).toBe(false);
+        expect(
+          partialEqual(target, {
+            user: {
+              name: match.all(
+                match.hasType.string,
+                match.str.startsWith('Jane'), // This fails
+                match.str.contains(' '),
+              ),
+            },
+          }),
+        ).toBe(false);
       });
 
       test('should work with keyNotBePresent', () => {
         // Property must be a number AND not exist (impossible)
-        expect(partialEqual({ a: 1 }, {
-          a: 1,
-          b: match.all(match.hasType.number, match.keyNotBePresent)
-        })).toBe(false); // Can't be both a number and not exist
+        expect(
+          partialEqual(
+            { a: 1 },
+            {
+              a: 1,
+              b: match.all(match.hasType.number, match.keyNotBePresent),
+            },
+          ),
+        ).toBe(false); // Can't be both a number and not exist
 
         // In a more realistic scenario - checking constraints on optional properties
-        expect(partialEqual({ a: 1, b: undefined }, {
-          a: 1,
-          b: match.any(
-            match.all(match.hasType.string, match.str.contains('test')),
-            match.keyNotBePresent
-          )
-        })).toBe(false); // b exists with undefined, doesn't match either condition
+        expect(
+          partialEqual(
+            { a: 1, b: undefined },
+            {
+              a: 1,
+              b: match.any(
+                match.all(match.hasType.string, match.str.contains('test')),
+                match.keyNotBePresent,
+              ),
+            },
+          ),
+        ).toBe(false); // b exists with undefined, doesn't match either condition
       });
     });
 
     describe('negated logical operations', () => {
       test('not.any() should be NOR logic', () => {
         // None of the conditions should match
-        expect(partialEqual('hello', match.not.any(
-          match.str.contains('xyz'),
-          match.str.startsWith('bye'),
-          match.hasType.number
-        ))).toBe(true); // none match, so NOT(false) = true
+        expect(
+          partialEqual(
+            'hello',
+            match.not.any(
+              match.str.contains('xyz'),
+              match.str.startsWith('bye'),
+              match.hasType.number,
+            ),
+          ),
+        ).toBe(true); // none match, so NOT(false) = true
 
-        expect(partialEqual('hello', match.not.any(
-          match.str.contains('ell'), // This matches
-          match.str.startsWith('bye'),
-          match.hasType.number
-        ))).toBe(false); // one matches, so NOT(true) = false
+        expect(
+          partialEqual(
+            'hello',
+            match.not.any(
+              match.str.contains('ell'), // This matches
+              match.str.startsWith('bye'),
+              match.hasType.number,
+            ),
+          ),
+        ).toBe(false); // one matches, so NOT(true) = false
       });
 
       test('not.all() should be NAND logic', () => {
         // NOT all conditions should match
-        expect(partialEqual('hello world', match.not.all(
-          match.str.startsWith('hello'),
-          match.str.endsWith('world'),
-          match.str.contains('xyz') // This fails
-        ))).toBe(true); // not all match, so NOT(false) = true
+        expect(
+          partialEqual(
+            'hello world',
+            match.not.all(
+              match.str.startsWith('hello'),
+              match.str.endsWith('world'),
+              match.str.contains('xyz'), // This fails
+            ),
+          ),
+        ).toBe(true); // not all match, so NOT(false) = true
 
-        expect(partialEqual('hello world', match.not.all(
-          match.str.startsWith('hello'),
-          match.str.endsWith('world'),
-          match.str.contains(' ')
-        ))).toBe(false); // all match, so NOT(true) = false
+        expect(
+          partialEqual(
+            'hello world',
+            match.not.all(
+              match.str.startsWith('hello'),
+              match.str.endsWith('world'),
+              match.str.contains(' '),
+            ),
+          ),
+        ).toBe(false); // all match, so NOT(true) = false
       });
     });
 
@@ -1049,44 +1160,45 @@ describe('special comparisons', () => {
       test('should handle complex nested logic', () => {
         const target = {
           url: 'https://example.com/api/v1',
-          method: 'GET'
+          method: 'GET',
         };
 
         // URL should start with http OR https, AND method should be GET or POST
-        expect(partialEqual(target, {
-          url: match.all(
-            match.hasType.string,
-            match.any(
-              match.str.startsWith('http://'),
-              match.str.startsWith('https://')
+        expect(
+          partialEqual(target, {
+            url: match.all(
+              match.hasType.string,
+              match.any(
+                match.str.startsWith('http://'),
+                match.str.startsWith('https://'),
+              ),
+              match.str.contains('api'),
             ),
-            match.str.contains('api')
-          ),
-          method: match.any(
-            match.str.contains('GET'),
-            match.str.contains('POST')
-          )
-        })).toBe(true);
+            method: match.any(
+              match.str.contains('GET'),
+              match.str.contains('POST'),
+            ),
+          }),
+        ).toBe(true);
 
-        expect(partialEqual(target, {
-          url: match.all(
-            match.hasType.string,
-            match.any(
-              match.str.startsWith('ftp://'), // Neither matches
-              match.str.startsWith('smtp://')
-            )
-          )
-        })).toBe(false);
+        expect(
+          partialEqual(target, {
+            url: match.all(
+              match.hasType.string,
+              match.any(
+                match.str.startsWith('ftp://'), // Neither matches
+                match.str.startsWith('smtp://'),
+              ),
+            ),
+          }),
+        ).toBe(false);
       });
     });
 
     describe('serialization', () => {
       test('any/all should be serializable', () => {
         const pattern = {
-          value: match.any(
-            match.str.contains('test'),
-            match.hasType.number
-          )
+          value: match.any(match.str.contains('test'), match.hasType.number),
         };
 
         const serialized = JSON.stringify(pattern);
@@ -1103,9 +1215,9 @@ describe('special comparisons', () => {
             match.hasType.string,
             match.any(
               match.str.startsWith('prefix'),
-              match.str.endsWith('suffix')
-            )
-          )
+              match.str.endsWith('suffix'),
+            ),
+          ),
         };
 
         const serialized = JSON.stringify(pattern);
@@ -1115,6 +1227,675 @@ describe('special comparisons', () => {
         expect(partialEqual({ data: 'test-suffix' }, deserialized)).toBe(true);
         expect(partialEqual({ data: 'middle' }, deserialized)).toBe(false);
       });
+    });
+  });
+
+  describe('withNoExtraKeys comparison', () => {
+    test('should match object with exact same keys', () => {
+      expect(
+        partialEqual({ a: 1, b: 2 }, match.noExtraKeys({ a: 1, b: 2 })),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30 },
+          match.noExtraKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(true);
+    });
+
+    test('should match empty objects', () => {
+      expect(partialEqual({}, match.noExtraKeys({}))).toBe(true);
+    });
+
+    test('should fail if target has extra keys', () => {
+      expect(
+        partialEqual({ a: 1, b: 2, c: 3 }, match.noExtraKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30, city: 'NYC' },
+          match.noExtraKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should fail if target is missing required keys', () => {
+      expect(partialEqual({ a: 1 }, match.noExtraKeys({ a: 1, b: 2 }))).toBe(
+        false,
+      );
+      expect(partialEqual({}, match.noExtraKeys({ name: 'John' }))).toBe(false);
+    });
+
+    test('should fail if values do not match', () => {
+      expect(
+        partialEqual({ a: 1, b: 3 }, match.noExtraKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+      expect(
+        partialEqual(
+          { name: 'Jane', age: 30 },
+          match.noExtraKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should work with nested objects (root level only)', () => {
+      const target1 = { user: { name: 'John', age: 30 } };
+      const partial1 = { user: { name: 'John', age: 30 } };
+      expect(partialEqual(target1, match.noExtraKeys(partial1))).toBe(true);
+
+      // withNoExtraKeys now allows extra keys in nested objects (only checks root level)
+      const target2 = { user: { name: 'John', age: 30, city: 'NYC' } };
+      const partial2 = { user: { name: 'John', age: 30 } };
+      expect(partialEqual(target2, match.noExtraKeys(partial2))).toBe(true);
+
+      // But still fails if root level has extra keys
+      const target3 = { user: { name: 'John', age: 30 }, extra: 'value' };
+      const partial3 = { user: { name: 'John', age: 30 } };
+      expect(partialEqual(target3, match.noExtraKeys(partial3))).toBe(false);
+    });
+
+    test('should handle non-object types gracefully', () => {
+      expect(partialEqual('string', match.noExtraKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(partialEqual(42, match.noExtraKeys({ key: 'value' }))).toBe(false);
+      expect(partialEqual(null, match.noExtraKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(partialEqual(undefined, match.noExtraKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(partialEqual([1, 2, 3], match.noExtraKeys({ key: 'value' }))).toBe(
+        false,
+      );
+    });
+
+    test('should fail if partialShape is not an object', () => {
+      expect(
+        partialEqual({ key: 'value' }, match.noExtraKeys('not an object')),
+      ).toBe(false);
+      expect(partialEqual({ key: 'value' }, match.noExtraKeys(42))).toBe(false);
+      expect(partialEqual({ key: 'value' }, match.noExtraKeys([1, 2, 3]))).toBe(
+        false,
+      );
+      expect(partialEqual({ key: 'value' }, match.noExtraKeys(null))).toBe(
+        false,
+      );
+    });
+
+    test('should work with special comparison matchers in partialShape', () => {
+      expect(
+        partialEqual(
+          { a: 'hello', b: 25 },
+          match.noExtraKeys({
+            a: match.str.startsWith('h'),
+            b: match.num.isGreaterThan(20),
+          }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { a: 'hello', b: 15 },
+          match.noExtraKeys({
+            a: match.str.startsWith('h'),
+            b: match.num.isGreaterThan(20),
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should handle declared but undefined keys', () => {
+      expect(
+        partialEqual(
+          { a: 1, b: undefined },
+          match.noExtraKeys({ a: 1, b: undefined }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { a: 1, b: undefined, c: 2 },
+          match.noExtraKeys({ a: 1, b: undefined }),
+        ),
+      ).toBe(false);
+      expect(
+        partialEqual({ a: 1 }, match.noExtraKeys({ a: 1, b: undefined })),
+      ).toBe(false);
+    });
+
+    test('not.withNoExtraKeys should invert the result', () => {
+      expect(
+        partialEqual(
+          { a: 1, b: 2, c: 3 },
+          match.not.noExtraKeys({ a: 1, b: 2 }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual({ a: 1, b: 2 }, match.not.noExtraKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+    });
+  });
+
+  describe('withDeepNoExtraKeys comparison', () => {
+    test('should match object with exact same keys at all levels', () => {
+      expect(
+        partialEqual({ a: 1, b: 2 }, match.deepNoExtraKeys({ a: 1, b: 2 })),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30 },
+          match.deepNoExtraKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(true);
+    });
+
+    test('should match empty objects', () => {
+      expect(partialEqual({}, match.deepNoExtraKeys({}))).toBe(true);
+    });
+
+    test('should fail if target has extra keys at root level', () => {
+      expect(
+        partialEqual(
+          { a: 1, b: 2, c: 3 },
+          match.deepNoExtraKeys({ a: 1, b: 2 }),
+        ),
+      ).toBe(false);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30, city: 'NYC' },
+          match.deepNoExtraKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should fail if nested objects have extra keys', () => {
+      const target1 = { user: { name: 'John', age: 30, city: 'NYC' } };
+      const partial1 = { user: { name: 'John', age: 30 } };
+      expect(partialEqual(target1, match.deepNoExtraKeys(partial1))).toBe(
+        false,
+      );
+
+      const target2 = {
+        data: { user: { name: 'John', extra: 'field' }, count: 5 },
+      };
+      const partial2 = { data: { user: { name: 'John' }, count: 5 } };
+      expect(partialEqual(target2, match.deepNoExtraKeys(partial2))).toBe(
+        false,
+      );
+    });
+
+    test('should work with deeply nested exact matches', () => {
+      const target = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30 },
+          },
+        },
+      };
+      const partial = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30 },
+          },
+        },
+      };
+      expect(partialEqual(target, match.deepNoExtraKeys(partial))).toBe(true);
+    });
+
+    test('should fail with deeply nested extra keys', () => {
+      const target = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30, extra: 'key' },
+          },
+        },
+      };
+      const partial = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30 },
+          },
+        },
+      };
+      expect(partialEqual(target, match.deepNoExtraKeys(partial))).toBe(false);
+    });
+
+    test('should fail if target is missing required keys', () => {
+      expect(
+        partialEqual({ a: 1 }, match.deepNoExtraKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+      expect(partialEqual({}, match.deepNoExtraKeys({ name: 'John' }))).toBe(
+        false,
+      );
+    });
+
+    test('should fail if values do not match', () => {
+      expect(
+        partialEqual({ a: 1, b: 3 }, match.deepNoExtraKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+      expect(
+        partialEqual(
+          { name: 'Jane', age: 30 },
+          match.deepNoExtraKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should handle non-object types gracefully', () => {
+      expect(
+        partialEqual('string', match.deepNoExtraKeys({ key: 'value' })),
+      ).toBe(false);
+      expect(partialEqual(42, match.deepNoExtraKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(partialEqual(null, match.deepNoExtraKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(
+        partialEqual(undefined, match.deepNoExtraKeys({ key: 'value' })),
+      ).toBe(false);
+      expect(
+        partialEqual([1, 2, 3], match.deepNoExtraKeys({ key: 'value' })),
+      ).toBe(false);
+    });
+
+    test('should fail if partialShape is not an object', () => {
+      expect(
+        partialEqual({ key: 'value' }, match.deepNoExtraKeys('not an object')),
+      ).toBe(false);
+      expect(partialEqual({ key: 'value' }, match.deepNoExtraKeys(42))).toBe(
+        false,
+      );
+      expect(
+        partialEqual({ key: 'value' }, match.deepNoExtraKeys([1, 2, 3])),
+      ).toBe(false);
+      expect(partialEqual({ key: 'value' }, match.deepNoExtraKeys(null))).toBe(
+        false,
+      );
+    });
+
+    test('should work with special comparison matchers in partialShape', () => {
+      expect(
+        partialEqual(
+          { a: 'hello', b: 25 },
+          match.deepNoExtraKeys({
+            a: match.str.startsWith('h'),
+            b: match.num.isGreaterThan(20),
+          }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { a: 'hello', b: 15 },
+          match.deepNoExtraKeys({
+            a: match.str.startsWith('h'),
+            b: match.num.isGreaterThan(20),
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should handle declared but undefined keys', () => {
+      expect(
+        partialEqual(
+          { a: 1, b: undefined },
+          match.deepNoExtraKeys({ a: 1, b: undefined }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { a: 1, b: undefined, c: 2 },
+          match.deepNoExtraKeys({ a: 1, b: undefined }),
+        ),
+      ).toBe(false);
+      expect(
+        partialEqual({ a: 1 }, match.deepNoExtraKeys({ a: 1, b: undefined })),
+      ).toBe(false);
+    });
+
+    test('not.withDeepNoExtraKeys should invert the result', () => {
+      expect(
+        partialEqual(
+          { a: 1, b: 2, c: 3 },
+          match.not.deepNoExtraKeys({ a: 1, b: 2 }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual({ a: 1, b: 2 }, match.not.deepNoExtraKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+    });
+  });
+
+  describe('noExtraDefinedKeys comparison', () => {
+    test('should match object with exact same keys', () => {
+      expect(
+        partialEqual({ a: 1, b: 2 }, match.noExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30 },
+          match.noExtraDefinedKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(true);
+    });
+
+    test('should match empty objects', () => {
+      expect(partialEqual({}, match.noExtraDefinedKeys({}))).toBe(true);
+    });
+
+    test('should fail if target has extra defined keys', () => {
+      expect(
+        partialEqual({ a: 1, b: 2, c: 3 }, match.noExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30, city: 'NYC' },
+          match.noExtraDefinedKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should pass if target has extra undefined keys (root level only)', () => {
+      // undefined keys are not considered "extra defined keys"
+      expect(
+        partialEqual({ a: 1, b: 2, c: undefined }, match.noExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30, city: undefined },
+          match.noExtraDefinedKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(true);
+    });
+
+    test('should work with nested objects (root level only)', () => {
+      // Allows extra keys in nested objects (only checks root level)
+      const target1 = { user: { name: 'John', age: 30, city: 'NYC' } };
+      const partial1 = { user: { name: 'John', age: 30 } };
+      expect(partialEqual(target1, match.noExtraDefinedKeys(partial1))).toBe(true);
+
+      // But still fails if root level has extra defined keys
+      const target2 = { user: { name: 'John', age: 30 }, extra: 'value' };
+      const partial2 = { user: { name: 'John', age: 30 } };
+      expect(partialEqual(target2, match.noExtraDefinedKeys(partial2))).toBe(false);
+
+      // But passes if root level has extra undefined keys
+      const target3 = { user: { name: 'John', age: 30 }, extra: undefined };
+      const partial3 = { user: { name: 'John', age: 30 } };
+      expect(partialEqual(target3, match.noExtraDefinedKeys(partial3))).toBe(true);
+    });
+
+    test('should fail if target is missing required keys', () => {
+      expect(partialEqual({ a: 1 }, match.noExtraDefinedKeys({ a: 1, b: 2 }))).toBe(
+        false,
+      );
+      expect(partialEqual({}, match.noExtraDefinedKeys({ name: 'John' }))).toBe(false);
+    });
+
+    test('should fail if values do not match', () => {
+      expect(
+        partialEqual({ a: 1, b: 3 }, match.noExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+      expect(
+        partialEqual(
+          { name: 'Jane', age: 30 },
+          match.noExtraDefinedKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should handle non-object types gracefully', () => {
+      expect(partialEqual('string', match.noExtraDefinedKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(partialEqual(42, match.noExtraDefinedKeys({ key: 'value' }))).toBe(false);
+      expect(partialEqual(null, match.noExtraDefinedKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(partialEqual(undefined, match.noExtraDefinedKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(partialEqual([1, 2, 3], match.noExtraDefinedKeys({ key: 'value' }))).toBe(
+        false,
+      );
+    });
+
+    test('should work with special comparison matchers in partialShape', () => {
+      expect(
+        partialEqual(
+          { a: 'hello', b: 25 },
+          match.noExtraDefinedKeys({
+            a: match.str.startsWith('h'),
+            b: match.num.isGreaterThan(20),
+          }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { a: 'hello', b: 15 },
+          match.noExtraDefinedKeys({
+            a: match.str.startsWith('h'),
+            b: match.num.isGreaterThan(20),
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    test('not.noExtraDefinedKeys should invert the result', () => {
+      expect(
+        partialEqual(
+          { a: 1, b: 2, c: 3 },
+          match.not.noExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual({ a: 1, b: 2 }, match.not.noExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+    });
+  });
+
+  describe('deepNoExtraDefinedKeys comparison', () => {
+    test('should match object with exact same keys at all levels', () => {
+      expect(
+        partialEqual({ a: 1, b: 2 }, match.deepNoExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30 },
+          match.deepNoExtraDefinedKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(true);
+    });
+
+    test('should match empty objects', () => {
+      expect(partialEqual({}, match.deepNoExtraDefinedKeys({}))).toBe(true);
+    });
+
+    test('should fail if target has extra defined keys at root level', () => {
+      expect(
+        partialEqual(
+          { a: 1, b: 2, c: 3 },
+          match.deepNoExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
+      ).toBe(false);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30, city: 'NYC' },
+          match.deepNoExtraDefinedKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should pass if target has extra undefined keys at root level', () => {
+      expect(
+        partialEqual(
+          { a: 1, b: 2, c: undefined },
+          match.deepNoExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { name: 'John', age: 30, city: undefined },
+          match.deepNoExtraDefinedKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(true);
+    });
+
+    test('should fail if nested objects have extra defined keys', () => {
+      const target1 = { user: { name: 'John', age: 30, city: 'NYC' } };
+      const partial1 = { user: { name: 'John', age: 30 } };
+      expect(partialEqual(target1, match.deepNoExtraDefinedKeys(partial1))).toBe(
+        false,
+      );
+
+      const target2 = {
+        data: { user: { name: 'John', extra: 'field' }, count: 5 },
+      };
+      const partial2 = { data: { user: { name: 'John' }, count: 5 } };
+      expect(partialEqual(target2, match.deepNoExtraDefinedKeys(partial2))).toBe(
+        false,
+      );
+    });
+
+    test('should pass if nested objects have extra undefined keys', () => {
+      const target1 = { user: { name: 'John', age: 30, city: undefined } };
+      const partial1 = { user: { name: 'John', age: 30 } };
+      expect(partialEqual(target1, match.deepNoExtraDefinedKeys(partial1))).toBe(
+        true,
+      );
+
+      const target2 = {
+        data: { user: { name: 'John', extra: undefined }, count: 5 },
+      };
+      const partial2 = { data: { user: { name: 'John' }, count: 5 } };
+      expect(partialEqual(target2, match.deepNoExtraDefinedKeys(partial2))).toBe(
+        true,
+      );
+    });
+
+    test('should work with deeply nested exact matches', () => {
+      const target = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30 },
+          },
+        },
+      };
+      const partial = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30 },
+          },
+        },
+      };
+      expect(partialEqual(target, match.deepNoExtraDefinedKeys(partial))).toBe(true);
+    });
+
+    test('should fail with deeply nested extra defined keys', () => {
+      const target = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30, extra: 'key' },
+          },
+        },
+      };
+      const partial = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30 },
+          },
+        },
+      };
+      expect(partialEqual(target, match.deepNoExtraDefinedKeys(partial))).toBe(false);
+    });
+
+    test('should pass with deeply nested extra undefined keys', () => {
+      const target = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30, extra: undefined },
+          },
+        },
+      };
+      const partial = {
+        level1: {
+          level2: {
+            level3: { name: 'John', age: 30 },
+          },
+        },
+      };
+      expect(partialEqual(target, match.deepNoExtraDefinedKeys(partial))).toBe(true);
+    });
+
+    test('should fail if target is missing required keys', () => {
+      expect(
+        partialEqual({ a: 1 }, match.deepNoExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+      expect(partialEqual({}, match.deepNoExtraDefinedKeys({ name: 'John' }))).toBe(
+        false,
+      );
+    });
+
+    test('should fail if values do not match', () => {
+      expect(
+        partialEqual({ a: 1, b: 3 }, match.deepNoExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(false);
+      expect(
+        partialEqual(
+          { name: 'Jane', age: 30 },
+          match.deepNoExtraDefinedKeys({ name: 'John', age: 30 }),
+        ),
+      ).toBe(false);
+    });
+
+    test('should handle non-object types gracefully', () => {
+      expect(
+        partialEqual('string', match.deepNoExtraDefinedKeys({ key: 'value' })),
+      ).toBe(false);
+      expect(partialEqual(42, match.deepNoExtraDefinedKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(partialEqual(null, match.deepNoExtraDefinedKeys({ key: 'value' }))).toBe(
+        false,
+      );
+      expect(
+        partialEqual(undefined, match.deepNoExtraDefinedKeys({ key: 'value' })),
+      ).toBe(false);
+      expect(
+        partialEqual([1, 2, 3], match.deepNoExtraDefinedKeys({ key: 'value' })),
+      ).toBe(false);
+    });
+
+    test('should work with special comparison matchers in partialShape', () => {
+      expect(
+        partialEqual(
+          { a: 'hello', b: 25 },
+          match.deepNoExtraDefinedKeys({
+            a: match.str.startsWith('h'),
+            b: match.num.isGreaterThan(20),
+          }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual(
+          { a: 'hello', b: 15 },
+          match.deepNoExtraDefinedKeys({
+            a: match.str.startsWith('h'),
+            b: match.num.isGreaterThan(20),
+          }),
+        ),
+      ).toBe(false);
+    });
+
+    test('not.deepNoExtraDefinedKeys should invert the result', () => {
+      expect(
+        partialEqual(
+          { a: 1, b: 2, c: 3 },
+          match.not.deepNoExtraDefinedKeys({ a: 1, b: 2 }),
+        ),
+      ).toBe(true);
+      expect(
+        partialEqual({ a: 1, b: 2 }, match.not.deepNoExtraDefinedKeys({ a: 1, b: 2 })),
+      ).toBe(false);
     });
   });
 });

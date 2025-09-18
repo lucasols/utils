@@ -25,19 +25,71 @@ type ComparisonsType =
   | [type: 'keyNotBePresent', value: null]
   | [type: 'not', value: ComparisonsType]
   | [type: 'any', value: ComparisonsType[]]
-  | [type: 'all', value: ComparisonsType[]];
+  | [type: 'all', value: ComparisonsType[]]
+  | [type: 'withNoExtraKeys', partialShape: any]
+  | [type: 'withDeepNoExtraKeys', partialShape: any]
+  | [type: 'noExtraDefinedKeys', partialShape: any]
+  | [type: 'deepNoExtraDefinedKeys', partialShape: any];
 
 type Comparison = {
   '~sc': ComparisonsType;
 };
 
 function createComparison(type: ComparisonsType): Comparison {
-  return {
-    '~sc': type,
-  };
+  return { '~sc': type };
 }
 
-export const match = {
+type BaseMatch = {
+  noExtraKeys: (partialShape: any) => Comparison;
+  deepNoExtraKeys: (partialShape: any) => Comparison;
+  noExtraDefinedKeys: (partialShape: any) => Comparison;
+  deepNoExtraDefinedKeys: (partialShape: any) => Comparison;
+  hasType: {
+    string: Comparison;
+    number: Comparison;
+    boolean: Comparison;
+    object: Comparison;
+    array: Comparison;
+    function: Comparison;
+  };
+  isInstanceOf: (constructor: new (...args: any[]) => any) => Comparison;
+  str: {
+    contains: (substring: string) => Comparison;
+    startsWith: (substring: string) => Comparison;
+    endsWith: (substring: string) => Comparison;
+    matchesRegex: (regex: RegExp) => Comparison;
+  };
+  num: {
+    isGreaterThan: (value: number) => Comparison;
+    isGreaterThanOrEqual: (value: number) => Comparison;
+    isLessThan: (value: number) => Comparison;
+    isLessThanOrEqual: (value: number) => Comparison;
+    isInRange: (value: [number, number]) => Comparison;
+  };
+  jsonString: {
+    hasPartial: (value: any) => Comparison;
+  };
+  equal: (value: any) => Comparison;
+  partialEqual: (value: any) => Comparison;
+  custom: (isEqual: (value: unknown) => boolean) => Comparison;
+  keyNotBePresent: Comparison;
+  any: (...comparisons: Comparison[]) => Comparison;
+  all: (...comparisons: Comparison[]) => Comparison;
+};
+
+type Match = BaseMatch & {
+  not: BaseMatch;
+};
+
+export const match: Match = {
+  noExtraKeys: (partialShape: any) =>
+    createComparison(['withNoExtraKeys', partialShape]),
+  deepNoExtraKeys: (partialShape: any) =>
+    createComparison(['withDeepNoExtraKeys', partialShape]),
+  noExtraDefinedKeys: (partialShape: any) =>
+    createComparison(['noExtraDefinedKeys', partialShape]),
+  deepNoExtraDefinedKeys: (partialShape: any) =>
+    createComparison(['deepNoExtraDefinedKeys', partialShape]),
   hasType: {
     string: createComparison(['hasType', 'string']),
     number: createComparison(['hasType', 'number']),
@@ -79,9 +131,9 @@ export const match = {
     createComparison(['custom', isEqual]),
   keyNotBePresent: createComparison(['keyNotBePresent', null]),
   any: (...comparisons: Comparison[]) =>
-    createComparison(['any', comparisons.map(c => c['~sc'])]),
+    createComparison(['any', comparisons.map((c) => c['~sc'])]),
   all: (...comparisons: Comparison[]) =>
-    createComparison(['all', comparisons.map(c => c['~sc'])]),
+    createComparison(['all', comparisons.map((c) => c['~sc'])]),
   not: {
     hasType: {
       string: createComparison(['not', ['hasType', 'string']]),
@@ -91,6 +143,7 @@ export const match = {
       array: createComparison(['not', ['hasType', 'array']]),
       function: createComparison(['not', ['hasType', 'function']]),
     },
+    keyNotBePresent: createComparison(['not', ['keyNotBePresent', null]]),
     isInstanceOf: (constructor: new (...args: any[]) => any) =>
       createComparison(['not', ['isInstanceOf', constructor]]),
     str: {
@@ -125,9 +178,17 @@ export const match = {
     custom: (value: (target: unknown) => boolean) =>
       createComparison(['not', ['custom', value]]),
     any: (...comparisons: Comparison[]) =>
-      createComparison(['not', ['any', comparisons.map(c => c['~sc'])]]),
+      createComparison(['not', ['any', comparisons.map((c) => c['~sc'])]]),
     all: (...comparisons: Comparison[]) =>
-      createComparison(['not', ['all', comparisons.map(c => c['~sc'])]]),
+      createComparison(['not', ['all', comparisons.map((c) => c['~sc'])]]),
+    noExtraKeys: (partialShape: any) =>
+      createComparison(['not', ['withNoExtraKeys', partialShape]]),
+    deepNoExtraKeys: (partialShape: any) =>
+      createComparison(['not', ['withDeepNoExtraKeys', partialShape]]),
+    noExtraDefinedKeys: (partialShape: any) =>
+      createComparison(['not', ['noExtraDefinedKeys', partialShape]]),
+    deepNoExtraDefinedKeys: (partialShape: any) =>
+      createComparison(['not', ['deepNoExtraDefinedKeys', partialShape]]),
   },
 };
 
@@ -275,6 +336,224 @@ function executeComparison(target: any, comparison: ComparisonsType): boolean {
       return true;
     case 'not':
       return !executeComparison(target, value);
+    case 'withNoExtraKeys':
+      // Ensure target is an object and has no extra keys beyond partialShape (root level only)
+      if (
+        typeof target !== 'object' ||
+        target === null ||
+        Array.isArray(target)
+      ) {
+        return false;
+      }
+      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        return false;
+      }
+
+      // Check that target has no extra keys beyond those in partialShape (root level only)
+      for (const key in target) {
+        if (has.call(target, key) && !has.call(value, key)) {
+          return false;
+        }
+      }
+
+      // Check that all keys in partialShape exist and match in target using regular partialEqual
+      for (const key in value) {
+        if (has.call(value, key)) {
+          if (!has.call(target, key)) {
+            return false; // Key missing in target
+          }
+
+          // Use regular partialEqual for all nested comparisons (allows extra keys in nested objects)
+          if (!partialEqual(target[key], value[key])) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    case 'withDeepNoExtraKeys':
+      // Ensure target is an object and has no extra keys beyond partialShape (recursively)
+      if (
+        typeof target !== 'object' ||
+        target === null ||
+        Array.isArray(target)
+      ) {
+        return false;
+      }
+      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        return false;
+      }
+
+      // Check that target has no extra keys beyond those in partialShape
+      for (const key in target) {
+        if (has.call(target, key) && !has.call(value, key)) {
+          return false;
+        }
+      }
+
+      // Check that all keys in partialShape exist and match in target
+      for (const key in value) {
+        if (has.call(value, key)) {
+          if (!has.call(target, key)) {
+            return false; // Key missing in target
+          }
+
+          const targetValue = target[key];
+          const partialValue = value[key];
+
+          // If partialValue is a withDeepNoExtraKeys comparison, handle it recursively
+          if (
+            partialValue &&
+            typeof partialValue === 'object' &&
+            '~sc' in partialValue &&
+            partialValue['~sc'][0] === 'withDeepNoExtraKeys'
+          ) {
+            if (!executeComparison(targetValue, partialValue['~sc'])) {
+              return false;
+            }
+          } else if (
+            partialValue &&
+            typeof partialValue === 'object' &&
+            !Array.isArray(partialValue) &&
+            partialValue.constructor === Object &&
+            targetValue &&
+            typeof targetValue === 'object' &&
+            !Array.isArray(targetValue) &&
+            targetValue.constructor === Object
+          ) {
+            // For nested plain objects, apply withDeepNoExtraKeys recursively
+            if (
+              !executeComparison(targetValue, [
+                'withDeepNoExtraKeys',
+                partialValue,
+              ])
+            ) {
+              return false;
+            }
+          } else {
+            // Use regular partialEqual for other cases
+            if (!partialEqual(targetValue, partialValue)) {
+              return false;
+            }
+          }
+        }
+      }
+
+      return true;
+    case 'noExtraDefinedKeys':
+      // Ensure target is an object and has no extra defined keys beyond partialShape (root level only)
+      if (
+        typeof target !== 'object' ||
+        target === null ||
+        Array.isArray(target)
+      ) {
+        return false;
+      }
+      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        return false;
+      }
+
+      // Check that target has no extra defined keys beyond those in partialShape (root level only)
+      // Only count keys with non-undefined values as "extra"
+      for (const key in target) {
+        if (
+          has.call(target, key) &&
+          target[key] !== undefined &&
+          !has.call(value, key)
+        ) {
+          return false;
+        }
+      }
+
+      // Check that all keys in partialShape exist and match in target using regular partialEqual
+      for (const key in value) {
+        if (has.call(value, key)) {
+          if (!has.call(target, key)) {
+            return false; // Key missing in target
+          }
+
+          // Use regular partialEqual for all nested comparisons (allows extra keys in nested objects)
+          if (!partialEqual(target[key], value[key])) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    case 'deepNoExtraDefinedKeys':
+      // Ensure target is an object and has no extra defined keys beyond partialShape (recursively)
+      if (
+        typeof target !== 'object' ||
+        target === null ||
+        Array.isArray(target)
+      ) {
+        return false;
+      }
+      if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        return false;
+      }
+
+      // Check that target has no extra defined keys beyond those in partialShape
+      // Only count keys with non-undefined values as "extra"
+      for (const key in target) {
+        if (
+          has.call(target, key) &&
+          target[key] !== undefined &&
+          !has.call(value, key)
+        ) {
+          return false;
+        }
+      }
+
+      // Check that all keys in partialShape exist and match in target
+      for (const key in value) {
+        if (has.call(value, key)) {
+          if (!has.call(target, key)) {
+            return false; // Key missing in target
+          }
+
+          const targetValue = target[key];
+          const partialValue = value[key];
+
+          // If partialValue is a deepNoExtraDefinedKeys comparison, handle it recursively
+          if (
+            partialValue &&
+            typeof partialValue === 'object' &&
+            '~sc' in partialValue &&
+            partialValue['~sc'][0] === 'deepNoExtraDefinedKeys'
+          ) {
+            if (!executeComparison(targetValue, partialValue['~sc'])) {
+              return false;
+            }
+          } else if (
+            partialValue &&
+            typeof partialValue === 'object' &&
+            !Array.isArray(partialValue) &&
+            partialValue.constructor === Object &&
+            targetValue &&
+            typeof targetValue === 'object' &&
+            !Array.isArray(targetValue) &&
+            targetValue.constructor === Object
+          ) {
+            // For nested plain objects, apply deepNoExtraDefinedKeys recursively
+            if (
+              !executeComparison(targetValue, [
+                'deepNoExtraDefinedKeys',
+                partialValue,
+              ])
+            ) {
+              return false;
+            }
+          } else {
+            // Use regular partialEqual for other cases
+            if (!partialEqual(targetValue, partialValue)) {
+              return false;
+            }
+          }
+        }
+      }
+
+      return true;
     default:
       return false;
   }
@@ -365,7 +644,13 @@ export function partialEqual(target: any, sub: any): boolean {
             const targetHasKey = has.call(target, key);
             const targetValue = targetHasKey ? target[key] : undefined;
 
-            if (!executeComparisonWithKeyContext(targetValue, subValue['~sc'], targetHasKey)) {
+            if (
+              !executeComparisonWithKeyContext(
+                targetValue,
+                subValue['~sc'],
+                targetHasKey,
+              )
+            ) {
               return false;
             }
           } else {
