@@ -606,9 +606,8 @@ function partialEqualInternal(
   // Handle keyNotBePresent special case
   if (isComparison(sub) && sub['~sc'][0] === 'keyNotBePresent') {
     addError(context, {
-      message: 'Key should not be present',
+      message: 'This property should not be present',
       received: target,
-      expected: 'key not present',
     });
     return false;
   }
@@ -698,9 +697,9 @@ function partialEqualInternal(
   if (target instanceof Map && sub instanceof Map) {
     if (sub.size > target.size) {
       addError(context, {
-        message: 'Map too small',
-        received: target,
-        expected: sub,
+        message: 'Map has less entries than expected',
+        received: `${target.size} entries`,
+        expected: `${sub.size} entries`,
       });
       return false;
     }
@@ -798,7 +797,6 @@ function partialEqualInternal(
           addError(context, {
             message: 'Key should not be present',
             received: target[key],
-            expected: 'key not present',
           });
           context.path = oldPath;
           allMatch = false;
@@ -831,8 +829,8 @@ function partialEqualInternal(
         context.path = [...oldPath, key];
         addError(context, {
           message: 'Missing property',
-          received: undefined,
           expected: sub[key],
+          received: { objectWithKeys: Object.keys(target) },
         });
         context.path = oldPath;
         allMatch = false;
@@ -887,7 +885,8 @@ function checkNoExtraKeys(
       const oldPath = context.path;
       context.path = [...oldPath, key];
       addError(context, {
-        message: `Extra key "${key}" not expected`,
+        message: `Extra key "${key}" should not be present`,
+        received: target[key],
       });
       context.path = oldPath;
       return false;
@@ -946,7 +945,8 @@ function checkNoExtraDefinedKeys(
       const oldPath = context.path;
       context.path = [...oldPath, key];
       addError(context, {
-        message: `Extra defined key "${key}" not expected`,
+        message: `Extra defined key "${key}" should not be present`,
+        received: target[key],
       });
       context.path = oldPath;
       return false;
