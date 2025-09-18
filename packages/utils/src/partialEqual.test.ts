@@ -410,14 +410,12 @@ describe('partialEqual', () => {
 
     describe('deep equal comparison', () => {
       test('deepEqual should match exactly', () => {
-        expect(
-          partialEqual({ a: 1, b: 2 }, match.deepEqual({ a: 1, b: 2 })),
-        ).toBe(true);
-        expect(partialEqual({ a: 1, b: 2 }, match.deepEqual({ a: 1 }))).toBe(
-          false,
+        expect(partialEqual({ a: 1, b: 2 }, match.equal({ a: 1, b: 2 }))).toBe(
+          true,
         );
-        expect(partialEqual([1, 2, 3], match.deepEqual([1, 2, 3]))).toBe(true);
-        expect(partialEqual([1, 2], match.deepEqual([1, 2, 3]))).toBe(false);
+        expect(partialEqual({ a: 1, b: 2 }, match.equal({ a: 1 }))).toBe(false);
+        expect(partialEqual([1, 2, 3], match.equal([1, 2, 3]))).toBe(true);
+        expect(partialEqual([1, 2], match.equal([1, 2, 3]))).toBe(false);
       });
     });
 
