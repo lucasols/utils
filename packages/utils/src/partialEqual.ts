@@ -24,95 +24,98 @@ type ComparisonsType =
   | [type: 'isInstanceOf', value: new (...args: any[]) => any]
   | [type: 'not', value: ComparisonsType];
 
-class Comparisons {
-  type: ComparisonsType;
-  constructor(type: ComparisonsType) {
-    this.type = type;
-  }
+type Comparison = {
+  '~sc': ComparisonsType;
+};
+
+function createComparison(type: ComparisonsType): Comparison {
+  return {
+    '~sc': type,
+  };
 }
 
 export const match = {
   hasType: {
-    string: new Comparisons(['hasType', 'string']),
-    number: new Comparisons(['hasType', 'number']),
-    boolean: new Comparisons(['hasType', 'boolean']),
-    object: new Comparisons(['hasType', 'object']),
-    array: new Comparisons(['hasType', 'array']),
-    function: new Comparisons(['hasType', 'function']),
+    string: createComparison(['hasType', 'string']),
+    number: createComparison(['hasType', 'number']),
+    boolean: createComparison(['hasType', 'boolean']),
+    object: createComparison(['hasType', 'object']),
+    array: createComparison(['hasType', 'array']),
+    function: createComparison(['hasType', 'function']),
   },
   isInstanceOf: (constructor: new (...args: any[]) => any) =>
-    new Comparisons(['isInstanceOf', constructor]),
+    createComparison(['isInstanceOf', constructor]),
   str: {
     contains: (substring: string) =>
-      new Comparisons(['strContains', substring]),
+      createComparison(['strContains', substring]),
     startsWith: (substring: string) =>
-      new Comparisons(['strStartsWith', substring]),
+      createComparison(['strStartsWith', substring]),
     endsWith: (substring: string) =>
-      new Comparisons(['strEndsWith', substring]),
+      createComparison(['strEndsWith', substring]),
     matchesRegex: (regex: RegExp) =>
-      new Comparisons(['strMatchesRegex', regex]),
+      createComparison(['strMatchesRegex', regex]),
   },
   num: {
     isGreaterThan: (value: number) =>
-      new Comparisons(['numIsGreaterThan', value]),
+      createComparison(['numIsGreaterThan', value]),
     isGreaterThanOrEqual: (value: number) =>
-      new Comparisons(['numIsGreaterThanOrEqual', value]),
-    isLessThan: (value: number) => new Comparisons(['numIsLessThan', value]),
+      createComparison(['numIsGreaterThanOrEqual', value]),
+    isLessThan: (value: number) => createComparison(['numIsLessThan', value]),
     isLessThanOrEqual: (value: number) =>
-      new Comparisons(['numIsLessThanOrEqual', value]),
+      createComparison(['numIsLessThanOrEqual', value]),
     isInRange: (value: [number, number]) =>
-      new Comparisons(['numIsInRange', value]),
+      createComparison(['numIsInRange', value]),
   },
   jsonString: {
     hasPartial: (value: any) =>
-      new Comparisons(['jsonStringHasPartial', value]),
+      createComparison(['jsonStringHasPartial', value]),
   },
-  equal: (value: any) => new Comparisons(['deepEqual', value]),
-  partialEqual: (value: any) => new Comparisons(['partialEqual', value]),
+  equal: (value: any) => createComparison(['deepEqual', value]),
+  partialEqual: (value: any) => createComparison(['partialEqual', value]),
   custom: (isEqual: (value: unknown) => boolean) =>
-    new Comparisons(['custom', isEqual]),
+    createComparison(['custom', isEqual]),
   not: {
     hasType: {
-      string: new Comparisons(['not', ['hasType', 'string']]),
-      number: new Comparisons(['not', ['hasType', 'number']]),
-      boolean: new Comparisons(['not', ['hasType', 'boolean']]),
-      object: new Comparisons(['not', ['hasType', 'object']]),
-      array: new Comparisons(['not', ['hasType', 'array']]),
-      function: new Comparisons(['not', ['hasType', 'function']]),
+      string: createComparison(['not', ['hasType', 'string']]),
+      number: createComparison(['not', ['hasType', 'number']]),
+      boolean: createComparison(['not', ['hasType', 'boolean']]),
+      object: createComparison(['not', ['hasType', 'object']]),
+      array: createComparison(['not', ['hasType', 'array']]),
+      function: createComparison(['not', ['hasType', 'function']]),
     },
     isInstanceOf: (constructor: new (...args: any[]) => any) =>
-      new Comparisons(['not', ['isInstanceOf', constructor]]),
+      createComparison(['not', ['isInstanceOf', constructor]]),
     str: {
       contains: (substring: string) =>
-        new Comparisons(['not', ['strContains', substring]]),
+        createComparison(['not', ['strContains', substring]]),
       startsWith: (substring: string) =>
-        new Comparisons(['not', ['strStartsWith', substring]]),
+        createComparison(['not', ['strStartsWith', substring]]),
       endsWith: (substring: string) =>
-        new Comparisons(['not', ['strEndsWith', substring]]),
+        createComparison(['not', ['strEndsWith', substring]]),
       matchesRegex: (regex: RegExp) =>
-        new Comparisons(['not', ['strMatchesRegex', regex]]),
+        createComparison(['not', ['strMatchesRegex', regex]]),
     },
     num: {
       isGreaterThan: (value: number) =>
-        new Comparisons(['not', ['numIsGreaterThan', value]]),
+        createComparison(['not', ['numIsGreaterThan', value]]),
       isGreaterThanOrEqual: (value: number) =>
-        new Comparisons(['not', ['numIsGreaterThanOrEqual', value]]),
+        createComparison(['not', ['numIsGreaterThanOrEqual', value]]),
       isLessThan: (value: number) =>
-        new Comparisons(['not', ['numIsLessThan', value]]),
+        createComparison(['not', ['numIsLessThan', value]]),
       isLessThanOrEqual: (value: number) =>
-        new Comparisons(['not', ['numIsLessThanOrEqual', value]]),
+        createComparison(['not', ['numIsLessThanOrEqual', value]]),
       isInRange: (value: [number, number]) =>
-        new Comparisons(['not', ['numIsInRange', value]]),
+        createComparison(['not', ['numIsInRange', value]]),
     },
     jsonString: {
       hasPartial: (value: any) =>
-        new Comparisons(['not', ['jsonStringHasPartial', value]]),
+        createComparison(['not', ['jsonStringHasPartial', value]]),
     },
-    equal: (value: any) => new Comparisons(['not', ['deepEqual', value]]),
+    equal: (value: any) => createComparison(['not', ['deepEqual', value]]),
     partialEqual: (value: any) =>
-      new Comparisons(['not', ['partialEqual', value]]),
+      createComparison(['not', ['partialEqual', value]]),
     custom: (value: (target: unknown) => boolean) =>
-      new Comparisons(['not', ['custom', value]]),
+      createComparison(['not', ['custom', value]]),
   },
 };
 
@@ -222,11 +225,6 @@ function executeComparison(target: any, comparison: ComparisonsType): boolean {
 export function partialEqual(target: any, sub: any): boolean {
   if (sub === target) return true;
 
-  // Handle special comparisons
-  if (sub instanceof Comparisons) {
-    return executeComparison(target, sub.type);
-  }
-
   if (sub && target && sub.constructor === target.constructor) {
     const ctor = sub.constructor;
 
@@ -279,6 +277,11 @@ export function partialEqual(target: any, sub: any): boolean {
     }
 
     if (!ctor || typeof sub === 'object') {
+      // Handle special comparisons
+      if ('~sc' in sub) {
+        return executeComparison(target, sub['~sc']);
+      }
+
       for (const key in sub) {
         if (has.call(sub, key)) {
           if (!has.call(target, key) || !partialEqual(target[key], sub[key])) {
