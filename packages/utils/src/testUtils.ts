@@ -1,6 +1,7 @@
 import { arrayWithPrevAndIndex, filterAndMap } from './arrayUtils';
 import { isObject } from './assertions';
 import { deepEqual } from './deepEqual';
+import { deepReplaceValues } from './deepReplaceValues';
 import { filterObjectOrArrayKeys } from './filterObjectOrArrayKeys';
 import { clampMin } from './mathUtils';
 import { omit, pick } from './objUtils';
@@ -437,7 +438,7 @@ export function compactSnapshot(
 
   // Apply value replacement
   if (replaceValues) {
-    processedValue = applyValueReplacements(processedValue, replaceValues);
+    processedValue = deepReplaceValues(processedValue, replaceValues);
   }
 
   // Apply boolean emoji replacement
@@ -452,61 +453,6 @@ export function compactSnapshot(
     showUndefined,
     ...options,
   })}`;
-}
-
-function applyValueReplacements(
-  value: unknown,
-  replaceValues: (
-    value: unknown,
-    path: string,
-  ) => false | { newValue: unknown },
-  visited: Set<object> = new Set(),
-  currentPath = '',
-): unknown {
-  function processValue(val: unknown, path: string): unknown {
-    // Call replaceValues for this value
-    const replacement = replaceValues(val, path);
-    if (replacement !== false) {
-      return replacement.newValue;
-    }
-
-    // If not replaced, process recursively based on type
-    if (Array.isArray(val)) {
-      if (visited.has(val)) {
-        throw new Error('Circular reference detected in array');
-      }
-      visited.add(val);
-      try {
-        return val.map((item, index) => {
-          const itemPath = path ? `${path}[${index}]` : `[${index}]`;
-          return processValue(item, itemPath);
-        });
-      } finally {
-        visited.delete(val);
-      }
-    }
-
-    if (isPlainObject(val)) {
-      if (visited.has(val)) {
-        throw new Error('Circular reference detected in object');
-      }
-      visited.add(val);
-      try {
-        const result: Record<string, unknown> = {};
-        for (const [key, itemValue] of Object.entries(val)) {
-          const itemPath = path ? `${path}.${key}` : key;
-          result[key] = processValue(itemValue, itemPath);
-        }
-        return result;
-      } finally {
-        visited.delete(val);
-      }
-    }
-
-    return val;
-  }
-
-  return processValue(value, currentPath);
 }
 
 function replaceBooleansWithEmoji(
