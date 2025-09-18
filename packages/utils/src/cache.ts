@@ -341,3 +341,32 @@ export function createCache<T>({
     ' cache': { map: cache },
   };
 }
+
+type FastCacheOptions = { maxCacheSize?: number };
+
+export function fastCache<T>({ maxCacheSize = 1000 }: FastCacheOptions = {}) {
+  const cache = new Map<string, T>();
+
+  function trimCache() {
+    const cacheSize = cache.size;
+
+    if (cacheSize > maxCacheSize) {
+      const keys = Array.from(cache.keys());
+
+      for (let i = 0; i < cacheSize - maxCacheSize; i++) {
+        cache.delete(keys[i] as string);
+      }
+    }
+  }
+
+  function getOrInsert(cacheKey: string, val: () => T): T {
+    if (!cache.has(cacheKey)) {
+      cache.set(cacheKey, val());
+      trimCache();
+    }
+
+    return cache.get(cacheKey) as T;
+  }
+
+  return { getOrInsert, clear: () => cache.clear() };
+}

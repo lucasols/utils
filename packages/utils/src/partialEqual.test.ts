@@ -430,6 +430,50 @@ describe('partialEqual', () => {
       });
     });
 
+    describe('custom comparison', () => {
+      test('custom should execute provided function', () => {
+        const isEven = (value: unknown) => typeof value === 'number' && value % 2 === 0;
+        expect(partialEqual(4, match.custom(isEven))).toBe(true);
+        expect(partialEqual(3, match.custom(isEven))).toBe(false);
+        expect(partialEqual('4', match.custom(isEven))).toBe(false);
+      });
+
+      test('custom should work with complex logic', () => {
+        const isValidEmail = (value: unknown) =>
+          typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+        expect(partialEqual('test@example.com', match.custom(isValidEmail))).toBe(true);
+        expect(partialEqual('invalid-email', match.custom(isValidEmail))).toBe(false);
+        expect(partialEqual(123, match.custom(isValidEmail))).toBe(false);
+      });
+
+      test('custom should work in nested objects', () => {
+        const isPositive = (value: unknown) => typeof value === 'number' && value > 0;
+
+        const target = {
+          user: { id: 42, score: -5 },
+          stats: { wins: 10, losses: 3 }
+        };
+
+        expect(partialEqual(target, {
+          user: { id: match.custom(isPositive) },
+          stats: { wins: match.custom(isPositive) }
+        })).toBe(true);
+
+        expect(partialEqual(target, {
+          user: { score: match.custom(isPositive) }
+        })).toBe(false);
+      });
+
+      test('not.custom should negate custom function', () => {
+        const isEmpty = (value: unknown) =>
+          typeof value === 'string' && value.length === 0;
+
+        expect(partialEqual('hello', match.not.custom(isEmpty))).toBe(true);
+        expect(partialEqual('', match.not.custom(isEmpty))).toBe(false);
+      });
+    });
+
     describe('JSON string comparison', () => {
       test('jsonStringHasPartial should parse and compare', () => {
         const jsonString = JSON.stringify({ user: { name: 'John', age: 30 } });
@@ -487,12 +531,15 @@ describe('partialEqual', () => {
           metadata: '{"lastLogin": "2023-01-15", "theme": "dark"}',
         };
 
+        const isValidEmail = (value: unknown) =>
+          typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
         expect(
           partialEqual(target, {
             user: {
               name: match.str.startsWith('John'),
               age: match.num.isGreaterThan(25),
-              email: match.str.endsWith('.com'),
+              email: match.custom(isValidEmail),
             },
             scores: [match.num.isGreaterThanOrEqual(80)],
             metadata: match.jsonString.hasPartial({ theme: 'dark' }),

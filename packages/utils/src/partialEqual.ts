@@ -16,6 +16,7 @@ type ComparisonsType =
   | [type: 'numIsInRange', value: [number, number]]
   | [type: 'jsonStringHasPartial', value: any]
   | [type: 'partialEqual', value: any]
+  | [type: 'custom', value: (target: unknown) => boolean]
   | [type: 'not', value: ComparisonsType];
 
 class Comparisons {
@@ -53,6 +54,8 @@ export const match = {
   },
   equal: (value: any) => new Comparisons(['deepEqual', value]),
   partialEqual: (value: any) => new Comparisons(['partialEqual', value]),
+  custom: (isEqual: (value: unknown) => boolean) =>
+    new Comparisons(['custom', isEqual]),
   not: {
     str: {
       contains: (substring: string) =>
@@ -83,6 +86,8 @@ export const match = {
     equal: (value: any) => new Comparisons(['not', ['deepEqual', value]]),
     partialEqual: (value: any) =>
       new Comparisons(['not', ['partialEqual', value]]),
+    custom: (value: (target: unknown) => boolean) =>
+      new Comparisons(['not', ['custom', value]]),
   },
 };
 
@@ -94,13 +99,23 @@ function find(iter: any[], tar: any): any {
 
 /**
  * Checks if sub is a partial match of target (all properties in sub exist and
- * match in target)
+ * match in target). Supports special comparison matchers for flexible pattern matching.
  *
  * @example
+ *   // Basic partial matching
  *   partialEqual({ a: 1, b: 2 }, { a: 1 }); // true - sub is subset of target
- *   partialEqual({ a: 1 }, { a: 1, b: 2 }); // false - sub has more properties than target
  *   partialEqual([1, 2, 3], [1, 2]); // true - sub array is prefix of target
- *   partialEqual([1, 2], [1, 2, 3]); // false - sub array is longer than target
+ *
+ *   // Special comparisons
+ *   partialEqual('hello world', match.str.contains('world')); // true
+ *   partialEqual(25, match.num.isGreaterThan(18)); // true
+ *   partialEqual('test@example.com', match.custom(v => typeof v === 'string' && v.includes('@'))); // true
+ *
+ *   // Complex nested matching
+ *   partialEqual(
+ *     { user: { name: 'John', age: 30 } },
+ *     { user: { name: match.str.startsWith('J'), age: match.num.isGreaterThan(25) } }
+ *   ); // true
  */
 function executeComparison(target: any, comparison: ComparisonsType): boolean {
   const [type, value] = comparison;
@@ -138,6 +153,8 @@ function executeComparison(target: any, comparison: ComparisonsType): boolean {
       return deepEqual(target, value);
     case 'partialEqual':
       return partialEqual(target, value);
+    case 'custom':
+      return value(target);
     case 'not':
       return !executeComparison(target, value);
     default:
