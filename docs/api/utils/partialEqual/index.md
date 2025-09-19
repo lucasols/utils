@@ -14,7 +14,7 @@
 const match: Match;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:86](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L86)
+Defined in: [packages/utils/src/partialEqual.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L108)
 
 ## Functions
 
@@ -29,7 +29,7 @@ function partialEqual(
 returnErrors): Result<void, PartialError[]>;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:1011](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L1011)
+Defined in: [packages/utils/src/partialEqual.ts:1352](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L1352)
 
 Checks if sub is a partial match of target (all properties in sub exist and
 match in target). Supports special comparison matchers for flexible pattern
@@ -58,7 +58,21 @@ matching.
 ```ts
 // Basic partial matching
   partialEqual({ a: 1, b: 2 }, { a: 1 }); // true - sub is subset of target
-  partialEqual([1, 2, 3], [1, 2]); // true - sub array is prefix of target
+  partialEqual([1, 2, 3], [1, 2]); // true - sub array is prefix of target (default behavior)
+
+  // Array matching (default behavior: prefix matching)
+  partialEqual([1, 2, 3, 4], [1, 2]); // true - checks first 2 elements
+  partialEqual([1, 3, 4], [1, 2]); // false - second element doesn't match
+
+  // Advanced array matchers for flexible matching
+  partialEqual([1, 2, 3, 4, 5], match.array.contains([3, 1])); // true - contains elements anywhere
+  partialEqual([1, 2, 3, 4, 5], match.array.containsInOrder([2, 4])); // true - contains in order (non-consecutive)
+  partialEqual([1, 2, 3], match.array.startsWith([1, 2])); // true - explicit prefix matching
+  partialEqual([1, 2, 3], match.array.endsWith([2, 3])); // true - suffix matching
+  partialEqual([1, 2, 3], match.array.length(3)); // true - exact length
+  partialEqual([1, 2, 3], match.array.includes(2)); // true - includes element
+  partialEqual([10, 20, 30], match.array.every(match.num.isGreaterThan(5))); // true - all elements match
+  partialEqual([1, 10, 3], match.array.some(match.num.isGreaterThan(8))); // true - at least one matches
 
   // Special comparisons
   partialEqual('hello world', match.str.contains('world')); // true
@@ -86,7 +100,7 @@ matching.
 function partialEqual(target, sub): boolean;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:1016](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L1016)
+Defined in: [packages/utils/src/partialEqual.ts:1357](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L1357)
 
 Checks if sub is a partial match of target (all properties in sub exist and
 match in target). Supports special comparison matchers for flexible pattern
@@ -111,7 +125,21 @@ matching.
 ```ts
 // Basic partial matching
   partialEqual({ a: 1, b: 2 }, { a: 1 }); // true - sub is subset of target
-  partialEqual([1, 2, 3], [1, 2]); // true - sub array is prefix of target
+  partialEqual([1, 2, 3], [1, 2]); // true - sub array is prefix of target (default behavior)
+
+  // Array matching (default behavior: prefix matching)
+  partialEqual([1, 2, 3, 4], [1, 2]); // true - checks first 2 elements
+  partialEqual([1, 3, 4], [1, 2]); // false - second element doesn't match
+
+  // Advanced array matchers for flexible matching
+  partialEqual([1, 2, 3, 4, 5], match.array.contains([3, 1])); // true - contains elements anywhere
+  partialEqual([1, 2, 3, 4, 5], match.array.containsInOrder([2, 4])); // true - contains in order (non-consecutive)
+  partialEqual([1, 2, 3], match.array.startsWith([1, 2])); // true - explicit prefix matching
+  partialEqual([1, 2, 3], match.array.endsWith([2, 3])); // true - suffix matching
+  partialEqual([1, 2, 3], match.array.length(3)); // true - exact length
+  partialEqual([1, 2, 3], match.array.includes(2)); // true - includes element
+  partialEqual([10, 20, 30], match.array.every(match.num.isGreaterThan(5))); // true - all elements match
+  partialEqual([1, 10, 3], match.array.some(match.num.isGreaterThan(8))); // true - at least one matches
 
   // Special comparisons
   partialEqual('hello world', match.str.contains('world')); // true
