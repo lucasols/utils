@@ -18,6 +18,16 @@ type ComparisonsType =
   | [type: 'numIsLessThan', value: number]
   | [type: 'numIsLessThanOrEqual', value: number]
   | [type: 'numIsInRange', value: [number, number]]
+  | [type: 'arrayContains', value: any[]]
+  | [type: 'arrayContainsInOrder', value: any[]]
+  | [type: 'arrayStartsWith', value: any[]]
+  | [type: 'arrayEndsWith', value: any[]]
+  | [type: 'arrayLength', value: number]
+  | [type: 'arrayMinLength', value: number]
+  | [type: 'arrayMaxLength', value: number]
+  | [type: 'arrayIncludes', value: any]
+  | [type: 'arrayEvery', value: ComparisonsType]
+  | [type: 'arraySome', value: ComparisonsType]
   | [type: 'jsonStringHasPartial', value: any]
   | [type: 'partialEqual', value: any]
   | [type: 'custom', value: (target: unknown) => boolean | { error: string }]
@@ -65,6 +75,18 @@ type BaseMatch = {
     isLessThan: (value: number) => Comparison;
     isLessThanOrEqual: (value: number) => Comparison;
     isInRange: (value: [number, number]) => Comparison;
+  };
+  array: {
+    contains: (elements: any[]) => Comparison;
+    containsInOrder: (elements: any[]) => Comparison;
+    startsWith: (elements: any[]) => Comparison;
+    endsWith: (elements: any[]) => Comparison;
+    length: (n: number) => Comparison;
+    minLength: (n: number) => Comparison;
+    maxLength: (n: number) => Comparison;
+    includes: (element: any) => Comparison;
+    every: (matcher: Comparison) => Comparison;
+    some: (matcher: Comparison) => Comparison;
   };
   jsonString: {
     hasPartial: (value: any) => Comparison;
@@ -122,6 +144,24 @@ export const match: Match = {
       createComparison(['numIsLessThanOrEqual', value]),
     isInRange: (value: [number, number]) =>
       createComparison(['numIsInRange', value]),
+  },
+  array: {
+    contains: (elements: any[]) =>
+      createComparison(['arrayContains', elements]),
+    containsInOrder: (elements: any[]) =>
+      createComparison(['arrayContainsInOrder', elements]),
+    startsWith: (elements: any[]) =>
+      createComparison(['arrayStartsWith', elements]),
+    endsWith: (elements: any[]) =>
+      createComparison(['arrayEndsWith', elements]),
+    length: (n: number) => createComparison(['arrayLength', n]),
+    minLength: (n: number) => createComparison(['arrayMinLength', n]),
+    maxLength: (n: number) => createComparison(['arrayMaxLength', n]),
+    includes: (element: any) => createComparison(['arrayIncludes', element]),
+    every: (matcher: Comparison) =>
+      createComparison(['arrayEvery', matcher['~sc']]),
+    some: (matcher: Comparison) =>
+      createComparison(['arraySome', matcher['~sc']]),
   },
   jsonString: {
     hasPartial: (value: any) =>
@@ -185,6 +225,27 @@ export const match: Match = {
         createComparison(['not', ['numIsLessThanOrEqual', value]]),
       isInRange: (value: [number, number]) =>
         createComparison(['not', ['numIsInRange', value]]),
+    },
+    array: {
+      contains: (elements: any[]) =>
+        createComparison(['not', ['arrayContains', elements]]),
+      containsInOrder: (elements: any[]) =>
+        createComparison(['not', ['arrayContainsInOrder', elements]]),
+      startsWith: (elements: any[]) =>
+        createComparison(['not', ['arrayStartsWith', elements]]),
+      endsWith: (elements: any[]) =>
+        createComparison(['not', ['arrayEndsWith', elements]]),
+      length: (n: number) => createComparison(['not', ['arrayLength', n]]),
+      minLength: (n: number) =>
+        createComparison(['not', ['arrayMinLength', n]]),
+      maxLength: (n: number) =>
+        createComparison(['not', ['arrayMaxLength', n]]),
+      includes: (element: any) =>
+        createComparison(['not', ['arrayIncludes', element]]),
+      every: (matcher: Comparison) =>
+        createComparison(['not', ['arrayEvery', matcher['~sc']]]),
+      some: (matcher: Comparison) =>
+        createComparison(['not', ['arraySome', matcher['~sc']]]),
     },
     jsonString: {
       hasPartial: (value: any) =>
@@ -517,6 +578,272 @@ function executeComparison(
 
     case 'deepNoExtraDefinedKeys':
       return checkNoExtraDefinedKeys(target, value, context, true);
+
+    case 'arrayContains': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      for (const element of value) {
+        let found = false;
+        for (const targetElement of target) {
+          const tempContext: ErrorCollectionContext = {
+            errors: [],
+            path: context.path,
+          };
+          if (partialEqualInternal(targetElement, element, tempContext)) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          addError(context, {
+            message: 'Array does not contain expected element',
+            received: target,
+            expected: element,
+          });
+          return false;
+        }
+      }
+      return true;
+    }
+
+    case 'arrayContainsInOrder': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      let targetIndex = 0;
+      for (const element of value) {
+        let found = false;
+        for (let i = targetIndex; i < target.length; i++) {
+          const tempContext: ErrorCollectionContext = {
+            errors: [],
+            path: context.path,
+          };
+          if (partialEqualInternal(target[i], element, tempContext)) {
+            targetIndex = i + 1;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          addError(context, {
+            message: 'Array does not contain expected elements in order',
+            received: target,
+            expected: value,
+          });
+          return false;
+        }
+      }
+      return true;
+    }
+
+    case 'arrayStartsWith': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      if (target.length < value.length) {
+        addError(context, {
+          message: `Array too short: expected to start with ${value.length} elements, got ${target.length}`,
+          received: target,
+          expected: value,
+        });
+        return false;
+      }
+
+      let allMatch = true;
+      for (let i = 0; i < value.length; i++) {
+        const oldPath = context.path;
+        context.path = [...oldPath, `[${i}]`];
+        const result = partialEqualInternal(target[i], value[i], context);
+        context.path = oldPath;
+        if (!result) allMatch = false;
+      }
+      return allMatch;
+    }
+
+    case 'arrayEndsWith': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      if (target.length < value.length) {
+        addError(context, {
+          message: `Array too short: expected to end with ${value.length} elements, got ${target.length}`,
+          received: target,
+          expected: value,
+        });
+        return false;
+      }
+
+      let allMatch = true;
+      const startIndex = target.length - value.length;
+      for (let i = 0; i < value.length; i++) {
+        const oldPath = context.path;
+        context.path = [...oldPath, `[${startIndex + i}]`];
+        const result = partialEqualInternal(
+          target[startIndex + i],
+          value[i],
+          context,
+        );
+        context.path = oldPath;
+        if (!result) allMatch = false;
+      }
+      return allMatch;
+    }
+
+    case 'arrayLength': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      if (target.length !== value) {
+        addError(context, {
+          message: `Expected array length ${value}, got ${target.length}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+    }
+
+    case 'arrayMinLength': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      if (target.length < value) {
+        addError(context, {
+          message: `Expected array with at least ${value} elements, got ${target.length}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+    }
+
+    case 'arrayMaxLength': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      if (target.length > value) {
+        addError(context, {
+          message: `Expected array with at most ${value} elements, got ${target.length}`,
+          received: target,
+        });
+        return false;
+      }
+      return true;
+    }
+
+    case 'arrayIncludes': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      let found = false;
+      for (const targetElement of target) {
+        const tempContext: ErrorCollectionContext = {
+          errors: [],
+          path: context.path,
+        };
+        if (partialEqualInternal(targetElement, value, tempContext)) {
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        addError(context, {
+          message: 'Array does not include expected element',
+          received: target,
+          expected: value,
+        });
+        return false;
+      }
+      return true;
+    }
+
+    case 'arrayEvery': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      let allMatch = true;
+      for (let i = 0; i < target.length; i++) {
+        const oldPath = context.path;
+        context.path = [...oldPath, `[${i}]`];
+        const result = executeComparison(target[i], value, context);
+        context.path = oldPath;
+        if (!result) allMatch = false;
+      }
+      return allMatch;
+    }
+
+    case 'arraySome': {
+      if (!Array.isArray(target)) {
+        addError(context, {
+          message: 'Expected array',
+          received: target,
+        });
+        return false;
+      }
+
+      for (let i = 0; i < target.length; i++) {
+        const tempContext: ErrorCollectionContext = {
+          errors: [],
+          path: [...context.path, `[${i}]`],
+        };
+        if (executeComparison(target[i], value, tempContext)) {
+          return true;
+        }
+      }
+
+      addError(context, {
+        message: 'No array element matches the condition',
+        received: target,
+      });
+      return false;
+    }
 
     default:
       throw exhaustiveCheck(type);
@@ -987,7 +1314,21 @@ function checkNoExtraDefinedKeys(
  * @example
  *   // Basic partial matching
  *   partialEqual({ a: 1, b: 2 }, { a: 1 }); // true - sub is subset of target
- *   partialEqual([1, 2, 3], [1, 2]); // true - sub array is prefix of target
+ *   partialEqual([1, 2, 3], [1, 2]); // true - sub array is prefix of target (default behavior)
+ *
+ *   // Array matching (default behavior: prefix matching)
+ *   partialEqual([1, 2, 3, 4], [1, 2]); // true - checks first 2 elements
+ *   partialEqual([1, 3, 4], [1, 2]); // false - second element doesn't match
+ *
+ *   // Advanced array matchers for flexible matching
+ *   partialEqual([1, 2, 3, 4, 5], match.array.contains([3, 1])); // true - contains elements anywhere
+ *   partialEqual([1, 2, 3, 4, 5], match.array.containsInOrder([2, 4])); // true - contains in order (non-consecutive)
+ *   partialEqual([1, 2, 3], match.array.startsWith([1, 2])); // true - explicit prefix matching
+ *   partialEqual([1, 2, 3], match.array.endsWith([2, 3])); // true - suffix matching
+ *   partialEqual([1, 2, 3], match.array.length(3)); // true - exact length
+ *   partialEqual([1, 2, 3], match.array.includes(2)); // true - includes element
+ *   partialEqual([10, 20, 30], match.array.every(match.num.isGreaterThan(5))); // true - all elements match
+ *   partialEqual([1, 10, 3], match.array.some(match.num.isGreaterThan(8))); // true - at least one matches
  *
  *   // Special comparisons
  *   partialEqual('hello world', match.str.contains('world')); // true

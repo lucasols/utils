@@ -106,6 +106,573 @@ describe('partialEqual with error reporting', () => {
         "
       `);
     });
+
+    test('should handle deep partial arrays with objects', () => {
+      const result = partialEqual(
+        [
+          { id: 1, name: 'John', age: 30 },
+          { id: 2, name: 'Jane', age: 25 },
+          { id: 3, name: 'Bob', age: 35 },
+        ],
+        [
+          { id: 1, name: 'John' },
+          { id: 2, age: 25 },
+        ],
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should handle nested arrays', () => {
+      const result = partialEqual(
+        [
+          [1, 2, 3],
+          [4, 5, 6],
+          [7, 8, 9],
+        ],
+        [
+          [1, 2],
+          [4, 5],
+        ],
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should handle arrays with matchers', () => {
+      const result = partialEqual(
+        [
+          { name: 'John', age: 30 },
+          { name: 'Jane', age: 25 },
+        ],
+        [
+          { name: match.str.startsWith('J'), age: match.num.isGreaterThan(25) },
+          { name: match.str.contains('ane') },
+        ],
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+  });
+
+  describe('array matchers', () => {
+    describe('array.contains', () => {
+      test('should match when array contains all elements', () => {
+        const result = partialEqual(
+          [1, 2, 3, 4, 5],
+          match.array.contains([3, 1, 5]),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should match when array contains all objects partially', () => {
+        const result = partialEqual(
+          [
+            { id: 1, name: 'John' },
+            { id: 2, name: 'Jane' },
+            { id: 3, name: 'Bob' },
+          ],
+          match.array.contains([{ id: 2 }, { name: 'John' }]),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report when element is missing', () => {
+        const result = partialEqual(
+          [1, 2, 3],
+          match.array.contains([1, 4]),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'Array does not contain expected element'
+            received: [1, 2, 3]
+            expected: 4
+          "
+        `);
+      });
+
+      test('should report when not an array', () => {
+        const result = partialEqual(
+          'not an array',
+          match.array.contains([1, 2]),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - { path: '', message: 'Expected array', received: 'not an array' }
+          "
+        `);
+      });
+    });
+
+    describe('array.containsInOrder', () => {
+      test('should match when array contains elements in order', () => {
+        const result = partialEqual(
+          [1, 2, 3, 4, 5],
+          match.array.containsInOrder([2, 4, 5]),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should match non-consecutive elements in order', () => {
+        const result = partialEqual(
+          ['a', 'b', 'c', 'd', 'e'],
+          match.array.containsInOrder(['a', 'c', 'e']),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report when elements are out of order', () => {
+        const result = partialEqual(
+          [1, 2, 3, 4, 5],
+          match.array.containsInOrder([3, 1, 5]),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'Array does not contain expected elements in order'
+            received: [1, 2, 3, 4, 5]
+            expected: [3, 1, 5]
+          "
+        `);
+      });
+    });
+
+    describe('array.startsWith', () => {
+      test('should match when array starts with elements', () => {
+        const result = partialEqual(
+          [1, 2, 3, 4, 5],
+          match.array.startsWith([1, 2, 3]),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should match with objects', () => {
+        const result = partialEqual(
+          [{ id: 1 }, { id: 2 }, { id: 3 }],
+          match.array.startsWith([{ id: 1 }, { id: 2 }]),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report when array is too short', () => {
+        const result = partialEqual(
+          [1, 2],
+          match.array.startsWith([1, 2, 3]),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'Array too short: expected to start with 3 elements, got 2'
+            received: [1, 2]
+            expected: [1, 2, 3]
+          "
+        `);
+      });
+
+      test('should report element mismatches', () => {
+        const result = partialEqual(
+          [1, 3, 4],
+          match.array.startsWith([1, 2]),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - { path: '[1]', message: 'Value mismatch', received: 3, expected: 2 }
+          "
+        `);
+      });
+    });
+
+    describe('array.endsWith', () => {
+      test('should match when array ends with elements', () => {
+        const result = partialEqual(
+          [1, 2, 3, 4, 5],
+          match.array.endsWith([4, 5]),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should match with objects', () => {
+        const result = partialEqual(
+          [{ id: 1 }, { id: 2 }, { id: 3 }],
+          match.array.endsWith([{ id: 2 }, { id: 3 }]),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report when array is too short', () => {
+        const result = partialEqual(
+          [1, 2],
+          match.array.endsWith([1, 2, 3]),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'Array too short: expected to end with 3 elements, got 2'
+            received: [1, 2]
+            expected: [1, 2, 3]
+          "
+        `);
+      });
+
+      test('should report element mismatches', () => {
+        const result = partialEqual(
+          [1, 2, 4],
+          match.array.endsWith([2, 3]),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - { path: '[2]', message: 'Value mismatch', received: 4, expected: 3 }
+          "
+        `);
+      });
+    });
+
+    describe('array.length', () => {
+      test('should match exact length', () => {
+        const result = partialEqual([1, 2, 3], match.array.length(3), true);
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report wrong length', () => {
+        const result = partialEqual([1, 2, 3], match.array.length(2), true);
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'Expected array length 2, got 3'
+            received: [1, 2, 3]
+          "
+        `);
+      });
+
+      test('should work with empty array', () => {
+        const result = partialEqual([], match.array.length(0), true);
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+    });
+
+    describe('array.minLength', () => {
+      test('should match when array meets minimum length', () => {
+        const result = partialEqual([1, 2, 3], match.array.minLength(2), true);
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should match when array exceeds minimum length', () => {
+        const result = partialEqual([1, 2, 3, 4], match.array.minLength(2), true);
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report when array is too short', () => {
+        const result = partialEqual([1], match.array.minLength(3), true);
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'Expected array with at least 3 elements, got 1'
+            received: [1]
+          "
+        `);
+      });
+    });
+
+    describe('array.maxLength', () => {
+      test('should match when array meets maximum length', () => {
+        const result = partialEqual([1, 2], match.array.maxLength(3), true);
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should match when array equals maximum length', () => {
+        const result = partialEqual([1, 2, 3], match.array.maxLength(3), true);
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report when array is too long', () => {
+        const result = partialEqual([1, 2, 3, 4], match.array.maxLength(2), true);
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'Expected array with at most 2 elements, got 4'
+            received: [1, 2, 3, 4]
+          "
+        `);
+      });
+    });
+
+    describe('array.includes', () => {
+      test('should match when array includes element', () => {
+        const result = partialEqual([1, 2, 3], match.array.includes(2), true);
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should match when array includes object partially', () => {
+        const result = partialEqual(
+          [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }],
+          match.array.includes({ id: 1 }),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report when element is not included', () => {
+        const result = partialEqual([1, 2, 3], match.array.includes(4), true);
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'Array does not include expected element'
+            received: [1, 2, 3]
+            expected: 4
+          "
+        `);
+      });
+    });
+
+    describe('array.every', () => {
+      test('should match when all elements satisfy condition', () => {
+        const result = partialEqual(
+          [10, 20, 30],
+          match.array.every(match.num.isGreaterThan(5)),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should match with object conditions', () => {
+        const result = partialEqual(
+          [{ active: true }, { active: true }],
+          match.array.every(match.partialEqual({ active: true })),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report when not all elements match', () => {
+        const result = partialEqual(
+          [10, 5, 30],
+          match.array.every(match.num.isGreaterThan(8)),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - { path: '[1]', message: 'Expected number greater than 8', received: 5 }
+          "
+        `);
+      });
+
+      test('should work with empty array', () => {
+        const result = partialEqual(
+          [],
+          match.array.every(match.num.isGreaterThan(5)),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+    });
+
+    describe('array.some', () => {
+      test('should match when at least one element satisfies condition', () => {
+        const result = partialEqual(
+          [1, 10, 3],
+          match.array.some(match.num.isGreaterThan(8)),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should match with object conditions', () => {
+        const result = partialEqual(
+          [{ active: false }, { active: true }],
+          match.array.some(match.partialEqual({ active: true })),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should report when no elements match', () => {
+        const result = partialEqual(
+          [1, 2, 3],
+          match.array.some(match.num.isGreaterThan(10)),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'No array element matches the condition'
+            received: [1, 2, 3]
+          "
+        `);
+      });
+
+      test('should report when empty array', () => {
+        const result = partialEqual(
+          [],
+          match.array.some(match.num.isGreaterThan(5)),
+          true,
+        );
+        assert(result.error);
+        expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+          "
+          - path: ''
+            message: 'No array element matches the condition'
+            received: []
+          "
+        `);
+      });
+    });
+
+    describe('negated array matchers', () => {
+      test('should work with not.array.contains', () => {
+        const result = partialEqual(
+          [1, 2, 3],
+          match.not.array.contains([4, 5]),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should work with not.array.length', () => {
+        const result = partialEqual([1, 2, 3], match.not.array.length(2), true);
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should work with not.array.includes', () => {
+        const result = partialEqual([1, 2, 3], match.not.array.includes(4), true);
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should work with not.array.every', () => {
+        const result = partialEqual(
+          [1, 10, 3],
+          match.not.array.every(match.num.isGreaterThan(5)),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should work with not.array.some', () => {
+        const result = partialEqual(
+          [1, 2, 3],
+          match.not.array.some(match.num.isGreaterThan(10)),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+    });
+
+    describe('complex array scenarios', () => {
+      test('should handle mixed array matchers', () => {
+        const result = partialEqual(
+          [1, 2, 3, 4, 5, 6],
+          match.all(
+            match.array.length(6),
+            match.array.startsWith([1, 2]),
+            match.array.endsWith([5, 6]),
+            match.array.contains([3, 4]),
+            match.array.every(match.num.isGreaterThan(0)),
+            match.array.some(match.num.isGreaterThan(5)),
+          ),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should handle arrays with deep object matching', () => {
+        const result = partialEqual(
+          [
+            { user: { name: 'John', age: 30, active: true } },
+            { user: { name: 'Jane', age: 25, active: false } },
+            { user: { name: 'Bob', age: 35, active: true } },
+          ],
+          match.all(
+            match.array.length(3),
+            match.array.contains([
+              { user: { name: match.str.startsWith('J') } },
+              { user: { active: true } },
+            ]),
+            match.array.every(match.partialEqual({ user: match.hasType.object })),
+            match.array.some(match.partialEqual({ user: { age: match.num.isGreaterThan(30) } })),
+          ),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+
+      test('should handle nested array matching', () => {
+        const result = partialEqual(
+          [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+          ],
+          match.all(
+            match.array.length(3),
+            match.array.every(match.array.length(3)),
+            match.array.some(match.array.contains([1, 2])),
+            match.array.contains([match.array.startsWith([4, 5])]),
+          ),
+          true,
+        );
+        assert(result.ok);
+        expect(result.ok).toBe(true);
+      });
+    });
   });
 
   describe('string comparisons', () => {
