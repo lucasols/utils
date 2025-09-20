@@ -50,6 +50,38 @@ export function isSnakeCase(str: string) {
   return /^[a-z0-9_]+$/.test(str);
 }
 
+export function isKebabCase(str: string) {
+  return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(str);
+}
+export function isPascalCase(str: string) {
+  return /^[A-Z][a-zA-Z0-9]*$/.test(str);
+}
+export function isCamelCase(str: string) {
+  return /^[a-z][a-zA-Z0-9]*$/.test(str);
+}
+export function isTitleCase(str: string) {
+  return /^[A-Z][a-z0-9]*( ([A-Z][a-z0-9]*|[0-9]+))*$/.test(str);
+}
+export function isSentenceCase(str: string) {
+  return /^[A-Z][a-z0-9]*( [a-z0-9]+)*$/.test(str);
+}
+
+export function isConstantCase(str: string) {
+  return /^[A-Z_][A-Z0-9_]*$/.test(str);
+}
+
+export function isDotCase(str: string) {
+  return /^[a-z0-9]+(\.[a-z0-9]+)*$/.test(str);
+}
+
+export function isPathCase(str: string) {
+  return /^[a-z0-9]+(\/[a-z0-9]+)*$/.test(str);
+}
+
+export function convertToKebabCase(str: string) {
+  return convertToSnakeCase(str).replace(/_/g, '-');
+}
+
 export function convertToSnakeCase(str: string) {
   return str
     .replace(/[\s\-.]+/g, '_') // Convert spaces, dashes, dots to underscores
@@ -92,6 +124,18 @@ export function convertToTitleCase(str: string) {
     .split(/[\s_-]+/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
+}
+
+export function convertToConstantCase(str: string) {
+  return convertToSnakeCase(str).toUpperCase();
+}
+
+export function convertToDotCase(str: string) {
+  return convertToSnakeCase(str).replace(/_/g, '.');
+}
+
+export function convertToPathCase(str: string) {
+  return convertToSnakeCase(str).replace(/_/g, '/');
 }
 
 export function truncateString(str: string, length: number, ellipsis = '…') {

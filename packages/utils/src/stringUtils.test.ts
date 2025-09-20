@@ -2,12 +2,23 @@ import { expect, test } from 'vitest';
 import {
   concatStrings,
   convertToCamelCase,
+  convertToConstantCase,
+  convertToDotCase,
+  convertToPathCase,
   convertToPascalCase,
   convertToSentenceCase,
   convertToSnakeCase,
   convertToTitleCase,
   formatNum,
+  isCamelCase,
+  isConstantCase,
+  isDotCase,
+  isKebabCase,
+  isPathCase,
+  isPascalCase,
+  isSentenceCase,
   isSnakeCase,
+  isTitleCase,
   truncateString,
 } from './stringUtils';
 
@@ -291,6 +302,152 @@ test('isSnakeCase', () => {
   expect(isSnakeCase('')).toBe(false);
 });
 
+test('isKebabCase', () => {
+  // Valid kebab-case
+  expect(isKebabCase('kebab-case')).toBe(true);
+  expect(isKebabCase('valid-kebab-case')).toBe(true);
+  expect(isKebabCase('simple')).toBe(true);
+  expect(isKebabCase('with-numbers-123')).toBe(true);
+  expect(isKebabCase('single-word')).toBe(true);
+  expect(isKebabCase('multiple-word-string')).toBe(true);
+  expect(isKebabCase('123-numbers-first')).toBe(true);
+  expect(isKebabCase('numbers123')).toBe(true);
+
+  // Invalid cases
+  expect(isKebabCase('CamelCase')).toBe(false);
+  expect(isKebabCase('camelCase')).toBe(false);
+  expect(isKebabCase('PascalCase')).toBe(false);
+  expect(isKebabCase('with spaces')).toBe(false);
+  expect(isKebabCase('with_underscores')).toBe(false);
+  expect(isKebabCase('with.dots')).toBe(false);
+  expect(isKebabCase('with@special')).toBe(false);
+  expect(isKebabCase('-leading-dash')).toBe(false);
+  expect(isKebabCase('trailing-dash-')).toBe(false);
+  expect(isKebabCase('double--dash')).toBe(false);
+  expect(isKebabCase('')).toBe(false);
+  expect(isKebabCase('Mixed-Case')).toBe(false);
+});
+
+test('isPascalCase', () => {
+  // Valid PascalCase
+  expect(isPascalCase('PascalCase')).toBe(true);
+  expect(isPascalCase('ValidPascalCase')).toBe(true);
+  expect(isPascalCase('Simple')).toBe(true);
+  expect(isPascalCase('WithNumbers123')).toBe(true);
+  expect(isPascalCase('SingleWord')).toBe(true);
+  expect(isPascalCase('MultipleWordString')).toBe(true);
+  expect(isPascalCase('XMLHttpRequest')).toBe(true);
+  expect(isPascalCase('APIKey')).toBe(true);
+  expect(isPascalCase('A')).toBe(true);
+  expect(isPascalCase('AB')).toBe(true);
+  expect(isPascalCase('ABC123')).toBe(true);
+
+  // Invalid cases
+  expect(isPascalCase('camelCase')).toBe(false);
+  expect(isPascalCase('snake_case')).toBe(false);
+  expect(isPascalCase('kebab-case')).toBe(false);
+  expect(isPascalCase('with spaces')).toBe(false);
+  expect(isPascalCase('With Spaces')).toBe(false);
+  expect(isPascalCase('with.dots')).toBe(false);
+  expect(isPascalCase('with@special')).toBe(false);
+  expect(isPascalCase('lowercase')).toBe(false);
+  expect(isPascalCase('')).toBe(false);
+  expect(isPascalCase('123StartingWithNumber')).toBe(false);
+  expect(isPascalCase('_StartingWithUnderscore')).toBe(false);
+});
+
+test('isCamelCase', () => {
+  // Valid camelCase
+  expect(isCamelCase('camelCase')).toBe(true);
+  expect(isCamelCase('validCamelCase')).toBe(true);
+  expect(isCamelCase('simple')).toBe(true);
+  expect(isCamelCase('withNumbers123')).toBe(true);
+  expect(isCamelCase('singleWord')).toBe(true);
+  expect(isCamelCase('multipleWordString')).toBe(true);
+  expect(isCamelCase('xmlHttpRequest')).toBe(true);
+  expect(isCamelCase('apiKey')).toBe(true);
+  expect(isCamelCase('a')).toBe(true);
+  expect(isCamelCase('aB')).toBe(true);
+  expect(isCamelCase('aBC123')).toBe(true);
+
+  // Invalid cases
+  expect(isCamelCase('PascalCase')).toBe(false);
+  expect(isCamelCase('snake_case')).toBe(false);
+  expect(isCamelCase('kebab-case')).toBe(false);
+  expect(isCamelCase('with spaces')).toBe(false);
+  expect(isCamelCase('With Spaces')).toBe(false);
+  expect(isCamelCase('with.dots')).toBe(false);
+  expect(isCamelCase('with@special')).toBe(false);
+  expect(isCamelCase('UPPERCASE')).toBe(false);
+  expect(isCamelCase('')).toBe(false);
+  expect(isCamelCase('123startingWithNumber')).toBe(false);
+  expect(isCamelCase('_startingWithUnderscore')).toBe(false);
+});
+
+test('isTitleCase', () => {
+  // Valid Title Case
+  expect(isTitleCase('Title Case')).toBe(true);
+  expect(isTitleCase('Valid Title Case')).toBe(true);
+  expect(isTitleCase('Simple')).toBe(true);
+  expect(isTitleCase('With Numbers 123')).toBe(true);
+  expect(isTitleCase('Single Word')).toBe(true);
+  expect(isTitleCase('Multiple Word String')).toBe(true);
+  expect(isTitleCase('Api Key')).toBe(true);
+  expect(isTitleCase('A')).toBe(true);
+  expect(isTitleCase('A B')).toBe(true);
+  expect(isTitleCase('Test 123')).toBe(true);
+
+  // Invalid cases
+  expect(isTitleCase('camelCase')).toBe(false);
+  expect(isTitleCase('PascalCase')).toBe(false);
+  expect(isTitleCase('snake_case')).toBe(false);
+  expect(isTitleCase('kebab-case')).toBe(false);
+  expect(isTitleCase('title case')).toBe(false); // lowercase words
+  expect(isTitleCase('Title case')).toBe(false); // mixed case
+  expect(isTitleCase('TITLE CASE')).toBe(false); // all uppercase
+  expect(isTitleCase('Title  Case')).toBe(false); // double space
+  expect(isTitleCase('Title-Case')).toBe(false); // with dash
+  expect(isTitleCase('Title.Case')).toBe(false); // with dot
+  expect(isTitleCase('Title@Case')).toBe(false); // with special char
+  expect(isTitleCase('')).toBe(false);
+  expect(isTitleCase('123 Title')).toBe(false); // starting with number
+  expect(isTitleCase(' Title')).toBe(false); // leading space
+  expect(isTitleCase('Title ')).toBe(false); // trailing space
+});
+
+test('isSentenceCase', () => {
+  // Valid Sentence case
+  expect(isSentenceCase('Sentence case')).toBe(true);
+  expect(isSentenceCase('Valid sentence case')).toBe(true);
+  expect(isSentenceCase('Simple')).toBe(true);
+  expect(isSentenceCase('With numbers 123')).toBe(true);
+  expect(isSentenceCase('Single word')).toBe(true);
+  expect(isSentenceCase('Multiple word string')).toBe(true);
+  expect(isSentenceCase('Api key value')).toBe(true);
+  expect(isSentenceCase('A')).toBe(true);
+  expect(isSentenceCase('A b')).toBe(true);
+  expect(isSentenceCase('Test 123')).toBe(true);
+  expect(isSentenceCase('Test with multiple words here')).toBe(true);
+
+  // Invalid cases
+  expect(isSentenceCase('camelCase')).toBe(false);
+  expect(isSentenceCase('PascalCase')).toBe(false);
+  expect(isSentenceCase('snake_case')).toBe(false);
+  expect(isSentenceCase('kebab-case')).toBe(false);
+  expect(isSentenceCase('Title Case')).toBe(false); // multiple capitals
+  expect(isSentenceCase('sentence case')).toBe(false); // lowercase start
+  expect(isSentenceCase('SENTENCE CASE')).toBe(false); // all uppercase
+  expect(isSentenceCase('Sentence  case')).toBe(false); // double space
+  expect(isSentenceCase('Sentence-case')).toBe(false); // with dash
+  expect(isSentenceCase('Sentence.case')).toBe(false); // with dot
+  expect(isSentenceCase('Sentence@case')).toBe(false); // with special char
+  expect(isSentenceCase('')).toBe(false);
+  expect(isSentenceCase('123 sentence')).toBe(false); // starting with number
+  expect(isSentenceCase(' Sentence')).toBe(false); // leading space
+  expect(isSentenceCase('Sentence ')).toBe(false); // trailing space
+  expect(isSentenceCase('Sentence Case word')).toBe(false); // capital in middle
+});
+
 test('concatStrings', () => {
   expect(concatStrings('a', 'b', 'c')).toBe('abc');
   expect(concatStrings('a', false, 'c')).toBe('ac');
@@ -314,4 +471,89 @@ test('truncateString', () => {
   expect(truncateString('exactly10c', 10)).toBe('exactly10c');
   expect(truncateString('toolongstring', 8, '...')).toBe('toolong...');
   expect(truncateString('', 5)).toBe('');
+});
+
+test('isConstantCase', () => {
+  // Valid CONSTANT_CASE
+  expect(isConstantCase('CONSTANT_CASE')).toBe(true);
+  expect(isConstantCase('API_KEY')).toBe(true);
+  expect(isConstantCase('MAX_VALUE')).toBe(true);
+  expect(isConstantCase('A')).toBe(true);
+  expect(isConstantCase('_PRIVATE')).toBe(true);
+  expect(isConstantCase('VALUE_123')).toBe(true);
+
+  // Invalid cases
+  expect(isConstantCase('snake_case')).toBe(false);
+  expect(isConstantCase('camelCase')).toBe(false);
+  expect(isConstantCase('PascalCase')).toBe(false);
+  expect(isConstantCase('with spaces')).toBe(false);
+  expect(isConstantCase('with-dashes')).toBe(false);
+  expect(isConstantCase('123INVALID')).toBe(false);
+  expect(isConstantCase('')).toBe(false);
+});
+
+test('isDotCase', () => {
+  // Valid dot.case
+  expect(isDotCase('dot.case')).toBe(true);
+  expect(isDotCase('api.key')).toBe(true);
+  expect(isDotCase('simple')).toBe(true);
+  expect(isDotCase('with.numbers.123')).toBe(true);
+  expect(isDotCase('a.b.c')).toBe(true);
+
+  // Invalid cases
+  expect(isDotCase('CamelCase')).toBe(false);
+  expect(isDotCase('with spaces')).toBe(false);
+  expect(isDotCase('with_underscores')).toBe(false);
+  expect(isDotCase('.leading.dot')).toBe(false);
+  expect(isDotCase('trailing.dot.')).toBe(false);
+  expect(isDotCase('double..dot')).toBe(false);
+  expect(isDotCase('')).toBe(false);
+});
+
+test('isPathCase', () => {
+  // Valid path/case
+  expect(isPathCase('path/case')).toBe(true);
+  expect(isPathCase('api/key')).toBe(true);
+  expect(isPathCase('simple')).toBe(true);
+  expect(isPathCase('with/numbers/123')).toBe(true);
+  expect(isPathCase('a/b/c')).toBe(true);
+
+  // Invalid cases
+  expect(isPathCase('CamelCase')).toBe(false);
+  expect(isPathCase('with spaces')).toBe(false);
+  expect(isPathCase('with_underscores')).toBe(false);
+  expect(isPathCase('/leading/slash')).toBe(false);
+  expect(isPathCase('trailing/slash/')).toBe(false);
+  expect(isPathCase('double//slash')).toBe(false);
+  expect(isPathCase('')).toBe(false);
+});
+
+test('convertToConstantCase', () => {
+  expect(convertToConstantCase('camelCase')).toBe('CAMEL_CASE');
+  expect(convertToConstantCase('PascalCase')).toBe('PASCAL_CASE');
+  expect(convertToConstantCase('snake_case')).toBe('SNAKE_CASE');
+  expect(convertToConstantCase('kebab-case')).toBe('KEBAB_CASE');
+  expect(convertToConstantCase('with spaces')).toBe('WITH_SPACES');
+  expect(convertToConstantCase('XMLHttpRequest')).toBe('XML_HTTP_REQUEST');
+  expect(convertToConstantCase('')).toBe('');
+});
+
+test('convertToDotCase', () => {
+  expect(convertToDotCase('camelCase')).toBe('camel.case');
+  expect(convertToDotCase('PascalCase')).toBe('pascal.case');
+  expect(convertToDotCase('snake_case')).toBe('snake.case');
+  expect(convertToDotCase('kebab-case')).toBe('kebab.case');
+  expect(convertToDotCase('with spaces')).toBe('with.spaces');
+  expect(convertToDotCase('XMLHttpRequest')).toBe('xml.http.request');
+  expect(convertToDotCase('')).toBe('');
+});
+
+test('convertToPathCase', () => {
+  expect(convertToPathCase('camelCase')).toBe('camel/case');
+  expect(convertToPathCase('PascalCase')).toBe('pascal/case');
+  expect(convertToPathCase('snake_case')).toBe('snake/case');
+  expect(convertToPathCase('kebab-case')).toBe('kebab/case');
+  expect(convertToPathCase('with spaces')).toBe('with/spaces');
+  expect(convertToPathCase('XMLHttpRequest')).toBe('xml/http/request');
+  expect(convertToPathCase('')).toBe('');
 });
