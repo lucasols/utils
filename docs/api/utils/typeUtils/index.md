@@ -213,3 +213,19 @@ Defined in: [packages/utils/src/typeUtils.ts:25](https://github.com/lucasols/uti
 ##### T
 
 `T` *extends* `Record`\<`string`, `unknown`\>
+
+***
+
+### StringWithAutoComplete\<T\>
+
+```ts
+type StringWithAutoComplete<T> = T | string & object;
+```
+
+Defined in: [packages/utils/src/typeUtils.ts:181](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L181)
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `string`

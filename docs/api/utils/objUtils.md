@@ -10,7 +10,7 @@
 function filterObjectKeys<T>(obj, predicate): Partial<T>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L78)
+Defined in: [packages/utils/src/objUtils.ts:79](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L79)
 
 #### Type Parameters
 
@@ -34,13 +34,37 @@ Defined in: [packages/utils/src/objUtils.ts:78](https://github.com/lucasols/util
 
 ***
 
+### getValueFromPath()
+
+```ts
+function getValueFromPath(obj, path): Result<unknown, Error>;
+```
+
+Defined in: [packages/utils/src/objUtils.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L100)
+
+#### Parameters
+
+##### obj
+
+`Record`\<`string`, `unknown`\>
+
+##### path
+
+`string`
+
+#### Returns
+
+`Result`\<`unknown`, `Error`\>
+
+***
+
 ### looseGetObjectProperty()
 
 ```ts
 function looseGetObjectProperty<T>(obj, key): undefined | T[keyof T];
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:57](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L57)
+Defined in: [packages/utils/src/objUtils.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L58)
 
 #### Type Parameters
 
@@ -70,7 +94,7 @@ Defined in: [packages/utils/src/objUtils.ts:57](https://github.com/lucasols/util
 function mapArrayToObject<T, K, O>(array, mapper): Record<K, O>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L25)
+Defined in: [packages/utils/src/objUtils.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L26)
 
 #### Type Parameters
 
@@ -108,7 +132,7 @@ Defined in: [packages/utils/src/objUtils.ts:25](https://github.com/lucasols/util
 function mapObjectToObject<I, K, O>(obj, mapper): Record<K, O>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L32)
+Defined in: [packages/utils/src/objUtils.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L33)
 
 #### Type Parameters
 
@@ -146,7 +170,7 @@ Defined in: [packages/utils/src/objUtils.ts:32](https://github.com/lucasols/util
 function objectTypedEntries<T>(obj): [Extract<keyof T, string>, T[keyof T]][];
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:9](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L9)
+Defined in: [packages/utils/src/objUtils.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L10)
 
 #### Type Parameters
 
@@ -176,7 +200,7 @@ Use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
 function omit<T, K>(obj, keys): Omit<T, K>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L42)
+Defined in: [packages/utils/src/objUtils.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L43)
 
 #### Type Parameters
 
@@ -210,7 +234,7 @@ Defined in: [packages/utils/src/objUtils.ts:42](https://github.com/lucasols/util
 function pick<T, K>(obj, keys): Pick<T, K>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L13)
+Defined in: [packages/utils/src/objUtils.ts:14](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L14)
 
 #### Type Parameters
 
@@ -244,7 +268,7 @@ Defined in: [packages/utils/src/objUtils.ts:13](https://github.com/lucasols/util
 function rejectObjUndefinedValues<T>(obj): { [P in string | number | symbol]: (Partial<Pick<T, PickUndefinedKeys<T>>> & Pick<T, PickRequiredKeys<T>>)[P] };
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L64)
+Defined in: [packages/utils/src/objUtils.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L65)
 
 #### Type Parameters
 
@@ -273,7 +297,7 @@ function sortObjectKeys<T>(
    options?): T;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:89](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L89)
+Defined in: [packages/utils/src/objUtils.ts:90](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L90)
 
 #### Type Parameters
 
