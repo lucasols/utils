@@ -266,7 +266,7 @@ https://reactrouter.com/utils/match-path
 function matchPathWith(path): object;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:216](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L216)
+Defined in: [packages/utils/src/matchPath.ts:219](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L219)
 
 #### Parameters
 
