@@ -14,7 +14,7 @@
 const match: Match;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L108)
+Defined in: [packages/utils/src/partialEqual.ts:129](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L129)
 
 ## Functions
 
@@ -29,7 +29,7 @@ function partialEqual(
 returnErrors): Result<void, PartialError[]>;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:1352](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L1352)
+Defined in: [packages/utils/src/partialEqual.ts:1588](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L1588)
 
 Checks if sub is a partial match of target (all properties in sub exist and
 match in target). Supports special comparison matchers for flexible pattern
@@ -71,7 +71,10 @@ matching.
   partialEqual([1, 2, 3], match.array.endsWith([2, 3])); // true - suffix matching
   partialEqual([1, 2, 3], match.array.length(3)); // true - exact length
   partialEqual([1, 2, 3], match.array.includes(2)); // true - includes element
-  partialEqual([10, 20, 30], match.array.every(match.num.isGreaterThan(5))); // true - all elements match
+  partialEqual(
+    [10, 20, 30],
+    match.array.every(match.num.isGreaterThan(5)),
+  ); // true - all elements match
   partialEqual([1, 10, 3], match.array.some(match.num.isGreaterThan(8))); // true - at least one matches
 
   // Special comparisons
@@ -100,7 +103,7 @@ matching.
 function partialEqual(target, sub): boolean;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:1357](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L1357)
+Defined in: [packages/utils/src/partialEqual.ts:1593](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L1593)
 
 Checks if sub is a partial match of target (all properties in sub exist and
 match in target). Supports special comparison matchers for flexible pattern
@@ -138,7 +141,10 @@ matching.
   partialEqual([1, 2, 3], match.array.endsWith([2, 3])); // true - suffix matching
   partialEqual([1, 2, 3], match.array.length(3)); // true - exact length
   partialEqual([1, 2, 3], match.array.includes(2)); // true - includes element
-  partialEqual([10, 20, 30], match.array.every(match.num.isGreaterThan(5))); // true - all elements match
+  partialEqual(
+    [10, 20, 30],
+    match.array.every(match.num.isGreaterThan(5)),
+  ); // true - all elements match
   partialEqual([1, 10, 3], match.array.some(match.num.isGreaterThan(8))); // true - at least one matches
 
   // Special comparisons
