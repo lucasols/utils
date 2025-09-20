@@ -177,3 +177,5 @@ type PickRequiredKeys<T> = {
 export type MakeUndefinedKeysOptional<T> = Prettify<
   Partial<Pick<T, PickUndefinedKeys<T>>> & Pick<T, PickRequiredKeys<T>>
 >;
+
+export type StringWithAutoComplete<T extends string> = T | (string & {});
