@@ -91,13 +91,16 @@ export function matchPath<
     pattern = { path: pattern, caseSensitive: false, end: true };
   }
 
+  // Normalize pathname to ensure leading slash for consistency (but preserve empty strings)
+  const normalizedPathname = pathname === '' ? '' : pathname.replace(/^\/*/, '/');
+
   const [matcher, compiledParams] = compilePath(
     pattern.path,
     pattern.caseSensitive,
     pattern.end,
   );
 
-  const match = pathname.match(matcher);
+  const match = normalizedPathname.match(matcher);
   if (!match) return null;
 
   const matchedPathname = match[0];

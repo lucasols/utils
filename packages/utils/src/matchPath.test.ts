@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
 import { matchPath, matchPathWith } from './matchPath';
+import { compactSnapshot } from './testUtils';
 
 test('matchPath - basic string matching', () => {
   expect(matchPath('/users', '/users')).toMatchInlineSnapshot(`
@@ -54,22 +55,23 @@ test('matchPath - path parameters', () => {
     }
   `);
 
-  expect(matchPath('/users/:id/posts/:postId', '/users/123/posts/456')).toMatchInlineSnapshot(`
-    {
-      "glob": null,
-      "params": {
-        "id": "123",
-        "postId": "456",
-      },
-      "pathname": "/users/123/posts/456",
-      "pathnameBase": "/users/123/posts/456",
-      "pattern": {
-        "caseSensitive": false,
-        "end": true,
-        "path": "/users/:id/posts/:postId",
-      },
-    }
-  `);
+  expect(matchPath('/users/:id/posts/:postId', '/users/123/posts/456'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": null,
+        "params": {
+          "id": "123",
+          "postId": "456",
+        },
+        "pathname": "/users/123/posts/456",
+        "pathnameBase": "/users/123/posts/456",
+        "pattern": {
+          "caseSensitive": false,
+          "end": true,
+          "path": "/users/:id/posts/:postId",
+        },
+      }
+    `);
 });
 
 test('matchPath - optional parameters', () => {
@@ -123,24 +125,25 @@ test('matchPath - optional parameters', () => {
 });
 
 test('matchPath - wildcard matching', () => {
-  expect(matchPath('/files/*', '/files/documents/readme.txt')).toMatchInlineSnapshot(`
-    {
-      "glob": {
-        "matchPath": [Function],
-        "path": "/documents/readme.txt",
-      },
-      "params": {
-        "*": "documents/readme.txt",
-      },
-      "pathname": "/files/documents/readme.txt",
-      "pathnameBase": "/files",
-      "pattern": {
-        "caseSensitive": false,
-        "end": true,
-        "path": "/files/*",
-      },
-    }
-  `);
+  expect(matchPath('/files/*', '/files/documents/readme.txt'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": {
+          "matchPath": [Function],
+          "path": "/documents/readme.txt",
+        },
+        "params": {
+          "*": "documents/readme.txt",
+        },
+        "pathname": "/files/documents/readme.txt",
+        "pathnameBase": "/files",
+        "pattern": {
+          "caseSensitive": false,
+          "end": true,
+          "path": "/files/*",
+        },
+      }
+    `);
 
   expect(matchPath('*', '/any/path/here')).toMatchInlineSnapshot(`
     {
@@ -182,25 +185,26 @@ test('matchPath - wildcard matching', () => {
 });
 
 test('matchPath - wildcard with parameters', () => {
-  expect(matchPath('/users/:id/*', '/users/123/posts/456/edit')).toMatchInlineSnapshot(`
-    {
-      "glob": {
-        "matchPath": [Function],
-        "path": "/posts/456/edit",
-      },
-      "params": {
-        "*": "posts/456/edit",
-        "id": "123",
-      },
-      "pathname": "/users/123/posts/456/edit",
-      "pathnameBase": "/users/123",
-      "pattern": {
-        "caseSensitive": false,
-        "end": true,
-        "path": "/users/:id/*",
-      },
-    }
-  `);
+  expect(matchPath('/users/:id/*', '/users/123/posts/456/edit'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": {
+          "matchPath": [Function],
+          "path": "/posts/456/edit",
+        },
+        "params": {
+          "*": "posts/456/edit",
+          "id": "123",
+        },
+        "pathname": "/users/123/posts/456/edit",
+        "pathnameBase": "/users/123",
+        "pattern": {
+          "caseSensitive": false,
+          "end": true,
+          "path": "/users/:id/*",
+        },
+      }
+    `);
 });
 
 test('matchPath - nested glob matching', () => {
@@ -227,82 +231,89 @@ test('matchPath - nested glob matching', () => {
 });
 
 test('matchPath - case sensitivity', () => {
-  expect(matchPath({ path: '/Users', caseSensitive: true }, '/users')).toBe(null);
-  expect(matchPath({ path: '/Users', caseSensitive: true }, '/Users')).toMatchInlineSnapshot(`
-    {
-      "glob": null,
-      "params": {},
-      "pathname": "/Users",
-      "pathnameBase": "/Users",
-      "pattern": {
-        "caseSensitive": true,
-        "path": "/Users",
-      },
-    }
-  `);
+  expect(matchPath({ path: '/Users', caseSensitive: true }, '/users')).toBe(
+    null,
+  );
+  expect(matchPath({ path: '/Users', caseSensitive: true }, '/Users'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": null,
+        "params": {},
+        "pathname": "/Users",
+        "pathnameBase": "/Users",
+        "pattern": {
+          "caseSensitive": true,
+          "path": "/Users",
+        },
+      }
+    `);
 
-  expect(matchPath({ path: '/Users', caseSensitive: false }, '/users')).toMatchInlineSnapshot(`
-    {
-      "glob": null,
-      "params": {},
-      "pathname": "/users",
-      "pathnameBase": "/users",
-      "pattern": {
-        "caseSensitive": false,
-        "path": "/Users",
-      },
-    }
-  `);
+  expect(matchPath({ path: '/Users', caseSensitive: false }, '/users'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": null,
+        "params": {},
+        "pathname": "/users",
+        "pathnameBase": "/users",
+        "pattern": {
+          "caseSensitive": false,
+          "path": "/Users",
+        },
+      }
+    `);
 });
 
 test('matchPath - end option', () => {
-  expect(matchPath({ path: '/users', end: false }, '/users/123')).toMatchInlineSnapshot(`
-    {
-      "glob": null,
-      "params": {},
-      "pathname": "/users",
-      "pathnameBase": "/users",
-      "pattern": {
-        "end": false,
-        "path": "/users",
-      },
-    }
-  `);
+  expect(matchPath({ path: '/users', end: false }, '/users/123'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": null,
+        "params": {},
+        "pathname": "/users",
+        "pathnameBase": "/users",
+        "pattern": {
+          "end": false,
+          "path": "/users",
+        },
+      }
+    `);
 
   expect(matchPath({ path: '/users', end: true }, '/users/123')).toBe(null);
 
-  expect(matchPath({ path: '/users/:id', end: false }, '/users/123/posts')).toMatchInlineSnapshot(`
-    {
-      "glob": null,
-      "params": {
-        "id": "123",
-      },
-      "pathname": "/users/123",
-      "pathnameBase": "/users/123",
-      "pattern": {
-        "end": false,
-        "path": "/users/:id",
-      },
-    }
-  `);
+  expect(matchPath({ path: '/users/:id', end: false }, '/users/123/posts'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": null,
+        "params": {
+          "id": "123",
+        },
+        "pathname": "/users/123",
+        "pathnameBase": "/users/123",
+        "pattern": {
+          "end": false,
+          "path": "/users/:id",
+        },
+      }
+    `);
 });
 
 test('matchPath - encoded characters', () => {
-  expect(matchPath('/files/:filename', '/files/my%2Ffile.txt')).toMatchInlineSnapshot(`
-    {
-      "glob": null,
-      "params": {
-        "filename": "my/file.txt",
-      },
-      "pathname": "/files/my%2Ffile.txt",
-      "pathnameBase": "/files/my%2Ffile.txt",
-      "pattern": {
-        "caseSensitive": false,
-        "end": true,
-        "path": "/files/:filename",
-      },
-    }
-  `);
+  expect(matchPath('/files/:filename', '/files/my%2Ffile.txt'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": null,
+        "params": {
+          "filename": "my/file.txt",
+        },
+        "pathname": "/files/my%2Ffile.txt",
+        "pathnameBase": "/files/my%2Ffile.txt",
+        "pattern": {
+          "caseSensitive": false,
+          "end": true,
+          "path": "/files/:filename",
+        },
+      }
+    `);
 });
 
 test('matchPath - trailing slashes', () => {
@@ -383,19 +394,20 @@ test('matchPath - edge cases', () => {
 });
 
 test('matchPath - special regex characters in path', () => {
-  expect(matchPath('/files/test.txt', '/files/test.txt')).toMatchInlineSnapshot(`
-    {
-      "glob": null,
-      "params": {},
-      "pathname": "/files/test.txt",
-      "pathnameBase": "/files/test.txt",
-      "pattern": {
-        "caseSensitive": false,
-        "end": true,
-        "path": "/files/test.txt",
-      },
-    }
-  `);
+  expect(matchPath('/files/test.txt', '/files/test.txt'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": null,
+        "params": {},
+        "pathname": "/files/test.txt",
+        "pathnameBase": "/files/test.txt",
+        "pattern": {
+          "caseSensitive": false,
+          "end": true,
+          "path": "/files/test.txt",
+        },
+      }
+    `);
 
   expect(matchPath('/files/(test)', '/files/(test)')).toMatchInlineSnapshot(`
     {
@@ -433,25 +445,31 @@ test('matchPath - empty parameters', () => {
   expect(matchPath('/users/:id/posts', '/users//posts')).toBe(null);
 
   // Test that optional parameters can handle empty values
-  expect(matchPath('/users/:id?/posts', '/users//posts')).toMatchInlineSnapshot(`
-    {
-      "glob": null,
-      "params": {
-        "id": undefined,
-      },
-      "pathname": "/users//posts",
-      "pathnameBase": "/users//posts",
-      "pattern": {
-        "caseSensitive": false,
-        "end": true,
-        "path": "/users/:id?/posts",
-      },
-    }
-  `);
+  expect(matchPath('/users/:id?/posts', '/users//posts'))
+    .toMatchInlineSnapshot(`
+      {
+        "glob": null,
+        "params": {
+          "id": undefined,
+        },
+        "pathname": "/users//posts",
+        "pathnameBase": "/users//posts",
+        "pattern": {
+          "caseSensitive": false,
+          "end": true,
+          "path": "/users/:id?/posts",
+        },
+      }
+    `);
 });
 
 test('matchPath - complex patterns', () => {
-  expect(matchPath('/api/:version/users/:id?/posts/:postId', '/api/v1/users/123/posts/456')).toMatchInlineSnapshot(`
+  expect(
+    matchPath(
+      '/api/:version/users/:id?/posts/:postId',
+      '/api/v1/users/123/posts/456',
+    ),
+  ).toMatchInlineSnapshot(`
     {
       "glob": null,
       "params": {
@@ -469,7 +487,12 @@ test('matchPath - complex patterns', () => {
     }
   `);
 
-  expect(matchPath('/api/:version/users/:id?/posts/:postId', '/api/v1/users//posts/456')).toMatchInlineSnapshot(`
+  expect(
+    matchPath(
+      '/api/:version/users/:id?/posts/:postId',
+      '/api/v1/users//posts/456',
+    ),
+  ).toMatchInlineSnapshot(`
     {
       "glob": null,
       "params": {
@@ -523,17 +546,23 @@ test('matchPathWith - no match', () => {
 });
 
 test('matchPathWith - null/undefined path', () => {
-  expect(matchPathWith(null).patterns({
-    '/users/:id': () => 'user',
-  })).toBe(null);
+  expect(
+    matchPathWith(null).patterns({
+      '/users/:id': () => 'user',
+    }),
+  ).toBe(null);
 
-  expect(matchPathWith(undefined).patterns({
-    '/users/:id': () => 'user',
-  })).toBe(null);
+  expect(
+    matchPathWith(undefined).patterns({
+      '/users/:id': () => 'user',
+    }),
+  ).toBe(null);
 
-  expect(matchPathWith('').patterns({
-    '/users/:id': () => 'user',
-  })).toBe(null);
+  expect(
+    matchPathWith('').patterns({
+      '/users/:id': () => 'user',
+    }),
+  ).toBe(null);
 });
 
 test('matchPathWith - complex pattern matching', () => {
@@ -574,4 +603,35 @@ test('type inference', () => {
     const optionalId: string | undefined = optionalMatch.params.id;
     expect(optionalId).toBeUndefined();
   }
+});
+
+test('normalize paths not starting with /', () => {
+  const result = matchPath('users', '/users');
+  const result2 = matchPath('users', 'users');
+  const result3 = matchPath('/users', 'users');
+
+  // All three should succeed in matching
+  expect(result).toBeTruthy();
+  expect(result2).toBeTruthy();
+  expect(result3).toBeTruthy();
+
+  // Core matching results should be identical
+  expect(result?.params).toEqual(result2?.params);
+  expect(result?.pathname).toEqual(result2?.pathname);
+  expect(result?.pathnameBase).toEqual(result2?.pathnameBase);
+
+  expect(result?.params).toEqual(result3?.params);
+  expect(result?.pathname).toEqual(result3?.pathname);
+  expect(result?.pathnameBase).toEqual(result3?.pathnameBase);
+
+  expect(compactSnapshot(result)).toMatchInlineSnapshot(`
+    "
+    params: {}
+
+    pathname: '/users'
+    pathnameBase: '/users'
+    pattern: { path: 'users', caseSensitive: '❌', end: '✅' }
+    glob: null
+    "
+  `);
 });
