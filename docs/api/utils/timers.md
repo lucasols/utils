@@ -10,7 +10,7 @@
 type CleanupTimer = () => void;
 ```
 
-Defined in: [packages/utils/src/timers.ts:1](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L1)
+Defined in: [packages/utils/src/timers.ts:4](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L4)
 
 #### Returns
 
@@ -24,7 +24,7 @@ Defined in: [packages/utils/src/timers.ts:1](https://github.com/lucasols/utils/b
 function createDebouncedTimeout(ms, callback): object;
 ```
 
-Defined in: [packages/utils/src/timers.ts:95](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L95)
+Defined in: [packages/utils/src/timers.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L98)
 
 Creates a timeout that prevents concurrent executions.
 
@@ -92,7 +92,7 @@ clean: CleanupTimer;
 function createInterval(ms, callback): CleanupTimer;
 ```
 
-Defined in: [packages/utils/src/timers.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L56)
+Defined in: [packages/utils/src/timers.ts:59](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L59)
 
 Creates an interval with automatic cleanup capability.
 
@@ -138,7 +138,7 @@ A cleanup function that cancels the interval when called
 function createTimeout(ms, callback): CleanupTimer;
 ```
 
-Defined in: [packages/utils/src/timers.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L23)
+Defined in: [packages/utils/src/timers.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L26)
 
 Creates a timeout with automatic cleanup capability.
 
@@ -184,7 +184,7 @@ A cleanup function that cancels the timeout when called
 function createWaitUntil<T>(options): CleanupTimer;
 ```
 
-Defined in: [packages/utils/src/timers.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L149)
+Defined in: [packages/utils/src/timers.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L152)
 
 Creates a timeout that waits for a condition to become true.
 
@@ -255,3 +255,33 @@ A cleanup function that cancels the condition timeout
   // Cancel the condition check
   cleanup();
   ```;
+
+***
+
+### waitFor()
+
+```ts
+function waitFor(condition, __namedParameters): Promise<Result<void, Error>>;
+```
+
+Defined in: [packages/utils/src/timers.ts:188](https://github.com/lucasols/utils/blob/main/packages/utils/src/timers.ts#L188)
+
+#### Parameters
+
+##### condition
+
+() => `boolean`
+
+##### \_\_namedParameters
+
+###### polling
+
+`number` \| `"raf"`
+
+###### timeout
+
+`number`
+
+#### Returns
+
+`Promise`\<`Result`\<`void`, `Error`\>\>
