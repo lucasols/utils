@@ -46,42 +46,57 @@ export function formatNum(
   return num.toLocaleString('en-US', options);
 }
 
+/** Check if a string is `snake_case` */
 export function isSnakeCase(str: string) {
   return /^[a-z0-9_]+$/.test(str);
 }
 
+/** Check if a string is `kebab-case` */
 export function isKebabCase(str: string) {
   return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(str);
 }
+
+/** Check if a string is `PascalCase` */
 export function isPascalCase(str: string) {
   return /^[A-Z][a-zA-Z0-9]*$/.test(str);
 }
+
+/** Check if a string is `camelCase` */
 export function isCamelCase(str: string) {
   return /^[a-z][a-zA-Z0-9]*$/.test(str);
 }
+
+/** Check if a string is `Title Case` */
 export function isTitleCase(str: string) {
   return /^[A-Z][a-z0-9]*( ([A-Z][a-z0-9]*|[0-9]+))*$/.test(str);
 }
+
+/** Check if a string is `Sentence Case` */
 export function isSentenceCase(str: string) {
   return /^[A-Z][a-z0-9]*( [a-z0-9]+)*$/.test(str);
 }
 
+/** Check if a string is `CONSTANT_CASE` */
 export function isConstantCase(str: string) {
   return /^[A-Z_][A-Z0-9_]*$/.test(str);
 }
 
+/** Check if a string is `dot.case` */
 export function isDotCase(str: string) {
   return /^[a-z0-9]+(\.[a-z0-9]+)*$/.test(str);
 }
 
+/** Check if a string is `path/case` */
 export function isPathCase(str: string) {
   return /^[a-z0-9]+(\/[a-z0-9]+)*$/.test(str);
 }
 
+/** Convert a string to `kebab-case` */
 export function convertToKebabCase(str: string) {
   return convertToSnakeCase(str).replace(/_/g, '-');
 }
 
+/** Convert a string to `snake_case` */
 export function convertToSnakeCase(str: string) {
   return str
     .replace(/[\s\-.]+/g, '_') // Convert spaces, dashes, dots to underscores
@@ -93,6 +108,7 @@ export function convertToSnakeCase(str: string) {
     .replace(/_+/g, '_'); // Collapse multiple underscores
 }
 
+/** Convert a string to `PascalCase` */
 export function convertToPascalCase(str: string) {
   return str
     .split(/[\s_-]+/)
@@ -100,11 +116,13 @@ export function convertToPascalCase(str: string) {
     .join('');
 }
 
+/** Convert a string to `camelCase` */
 export function convertToCamelCase(str: string) {
   const pascalCase = convertToPascalCase(str);
   return pascalCase.charAt(0).toLowerCase() + pascalCase.slice(1);
 }
 
+/** Convert a string to `Sentence Case` */
 export function convertToSentenceCase(str: string) {
   return str
     .replace(/[\s\-.]+/g, ' ') // Convert spaces, dashes, dots to spaces
@@ -116,6 +134,7 @@ export function convertToSentenceCase(str: string) {
     .replace(/^\w/, (char) => char.toUpperCase());
 }
 
+/** Convert a string to `Title Case` */
 export function convertToTitleCase(str: string) {
   return str
     .replace(/[\s\-.]+/g, ' ') // Convert spaces, dashes, dots to spaces
@@ -126,14 +145,17 @@ export function convertToTitleCase(str: string) {
     .join(' ');
 }
 
+/** Convert a string to `CONSTANT_CASE` */
 export function convertToConstantCase(str: string) {
   return convertToSnakeCase(str).toUpperCase();
 }
 
+/** Convert a string to `dot.case` */
 export function convertToDotCase(str: string) {
   return convertToSnakeCase(str).replace(/_/g, '.');
 }
 
+/** Convert a string to `path/case` */
 export function convertToPathCase(str: string) {
   return convertToSnakeCase(str).replace(/_/g, '/');
 }
