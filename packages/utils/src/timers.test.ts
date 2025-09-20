@@ -4,6 +4,7 @@ import {
   createInterval,
   createTimeout,
   createWaitUntil,
+  waitFor,
 } from './timers';
 
 describe('timers', { retry: 2 }, () => {
@@ -327,6 +328,192 @@ describe('timers', { retry: 2 }, () => {
         cleanup();
         cleanup();
       }).not.toThrow();
+    });
+  });
+
+  describe('waitFor', () => {
+    test('should resolve immediately if condition is already true', async () => {
+      const result = await waitFor(
+        () => true,
+        { polling: 10, timeout: 100 },
+      );
+
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value).toBe(undefined);
+      }
+    });
+
+    test('should resolve when condition becomes true with numeric polling', async () => {
+      let conditionResult = false;
+      const startTime = Date.now();
+
+      setTimeout(() => {
+        conditionResult = true;
+      }, 50);
+
+      const result = await waitFor(
+        () => conditionResult,
+        { polling: 10, timeout: 200 },
+      );
+
+      const elapsed = Date.now() - startTime;
+      expect(result.ok).toBe(true);
+      expect(elapsed).toBeGreaterThan(40); // Should take at least ~50ms
+      expect(elapsed).toBeLessThan(100); // But not too much longer
+    });
+
+    test('should timeout if condition never becomes true', async () => {
+      const startTime = Date.now();
+
+      const result = await waitFor(
+        () => false,
+        { polling: 10, timeout: 50 },
+      );
+
+      const elapsed = Date.now() - startTime;
+      expect(result.ok).toBe(false);
+      expect(elapsed).toBeGreaterThan(40); // Should wait for timeout
+      expect(elapsed).toBeLessThan(80); // But not too much longer
+
+      if (!result.ok) {
+        expect(result.error.message).toContain('Timeout of 50ms exceeded');
+      }
+    });
+
+    test('should handle condition that throws an error', async () => {
+      const result = await waitFor(
+        () => {
+          throw new Error('Condition error');
+        },
+        { polling: 10, timeout: 100 },
+      );
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.message).toContain('Condition check failed');
+        expect(result.error.message).toContain('Condition error');
+      }
+    });
+
+    test('should handle requestAnimationFrame polling in browser environment', async () => {
+      // Mock requestAnimationFrame and cancelAnimationFrame
+      const mockRaf = vi.fn();
+      const mockCancelRaf = vi.fn();
+
+      vi.stubGlobal('requestAnimationFrame', mockRaf);
+      vi.stubGlobal('cancelAnimationFrame', mockCancelRaf);
+
+      let conditionResult = false;
+      let rafCallback: (() => void) | null = null;
+
+      mockRaf.mockImplementation((callback: () => void) => {
+        rafCallback = callback;
+        return 1; // Mock frame ID
+      });
+
+      const resultPromise = waitFor(
+        () => conditionResult,
+        { polling: 'raf', timeout: 100 },
+      );
+
+      // Simulate first RAF call
+      expect(mockRaf).toHaveBeenCalledTimes(1);
+      expect(rafCallback).toBeTruthy();
+
+      // Call the RAF callback (condition still false)
+      rafCallback!();
+
+      // Should schedule another RAF
+      expect(mockRaf).toHaveBeenCalledTimes(2);
+
+      // Now make condition true and call RAF callback again
+      conditionResult = true;
+      rafCallback!();
+
+      const result = await resultPromise;
+      expect(result.ok).toBe(true);
+
+      vi.unstubAllGlobals();
+    });
+
+    test('should error when requestAnimationFrame is not available', async () => {
+      // Ensure requestAnimationFrame is undefined
+      vi.stubGlobal('requestAnimationFrame', undefined);
+
+      const result = await waitFor(
+        () => false,
+        { polling: 'raf', timeout: 100 },
+      );
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.message).toContain('requestAnimationFrame is not available');
+      }
+
+      vi.unstubAllGlobals();
+    });
+
+    test('should clean up properly when condition becomes true', async () => {
+      const mockClearTimeout = vi.spyOn(global, 'clearTimeout');
+      const mockClearInterval = vi.spyOn(global, 'clearInterval');
+
+      let conditionResult = false;
+
+      setTimeout(() => {
+        conditionResult = true;
+      }, 30);
+
+      const result = await waitFor(
+        () => conditionResult,
+        { polling: 10, timeout: 200 },
+      );
+
+      expect(result.ok).toBe(true);
+      expect(mockClearTimeout).toHaveBeenCalled();
+      expect(mockClearInterval).toHaveBeenCalled();
+
+      mockClearTimeout.mockRestore();
+      mockClearInterval.mockRestore();
+    });
+
+    test('should clean up properly when timeout occurs', async () => {
+      const mockClearTimeout = vi.spyOn(global, 'clearTimeout');
+      const mockClearInterval = vi.spyOn(global, 'clearInterval');
+
+      const result = await waitFor(
+        () => false,
+        { polling: 10, timeout: 30 },
+      );
+
+      expect(result.ok).toBe(false);
+      expect(mockClearTimeout).toHaveBeenCalled();
+      expect(mockClearInterval).toHaveBeenCalled();
+
+      mockClearTimeout.mockRestore();
+      mockClearInterval.mockRestore();
+    });
+
+    test('should work with different polling intervals', async () => {
+      let checkCount = 0;
+      let conditionResult = false;
+
+      setTimeout(() => {
+        conditionResult = true;
+      }, 45);
+
+      const result = await waitFor(
+        () => {
+          checkCount++;
+          return conditionResult;
+        },
+        { polling: 20, timeout: 100 },
+      );
+
+      expect(result.ok).toBe(true);
+      // Should check approximately 3 times (0ms, 20ms, 40ms) before becoming true at 45ms
+      expect(checkCount).toBeGreaterThanOrEqual(2);
+      expect(checkCount).toBeLessThanOrEqual(4);
     });
   });
 });

@@ -1,3 +1,6 @@
+import { Result } from 't-result';
+import { defer } from './promiseUtils';
+
 export type CleanupTimer = () => void;
 
 /**
@@ -180,4 +183,83 @@ export function createWaitUntil<T extends NonNullable<unknown>>({
     cleanMaxWaitTimeout();
     cleanCheckTimeout?.();
   };
+}
+
+export async function waitFor(
+  condition: () => boolean,
+  { polling, timeout }: { polling: number | 'raf'; timeout: number },
+): Promise<Result<void, Error>> {
+  const { promise, resolve } = defer<Result<void, Error>>();
+
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let intervalId: ReturnType<typeof setInterval> | null = null;
+  let rafId: number | null = null;
+  let isResolved = false;
+
+  function cleanup() {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    if (rafId && typeof cancelAnimationFrame !== 'undefined') {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  }
+
+  function resolveWith(result: Result<void, Error>) {
+    if (isResolved) return;
+    isResolved = true;
+    cleanup();
+    resolve(result);
+  }
+
+  function checkCondition() {
+    try {
+      if (condition()) {
+        resolveWith(Result.ok(undefined));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      resolveWith(Result.err(new Error(`Condition check failed: ${error}`)));
+      return true;
+    }
+  }
+
+  // Check condition immediately
+  if (checkCondition()) {
+    return promise;
+  }
+
+  // Set up timeout
+  timeoutId = setTimeout(() => {
+    resolveWith(Result.err(new Error(`Timeout of ${timeout}ms exceeded while waiting for condition`)));
+  }, timeout);
+
+  // Set up polling
+  if (polling === 'raf') {
+    if (typeof requestAnimationFrame === 'undefined') {
+      resolveWith(Result.err(new Error('requestAnimationFrame is not available in this environment')));
+      return promise;
+    }
+
+    function rafCheck() {
+      if (isResolved) return;
+      if (!checkCondition()) {
+        rafId = requestAnimationFrame(rafCheck);
+      }
+    }
+    rafId = requestAnimationFrame(rafCheck);
+  } else {
+    intervalId = setInterval(() => {
+      checkCondition();
+    }, polling);
+  }
+
+  return promise;
 }
