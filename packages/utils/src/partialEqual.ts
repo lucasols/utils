@@ -41,6 +41,18 @@ type ComparisonsType =
   | [type: 'noExtraDefinedKeys', partialShape: any]
   | [type: 'deepNoExtraDefinedKeys', partialShape: any];
 
+type KeyComparisonPrefix = 'pqkc' | 'pqkc-not';
+
+type KeyComparison = {
+  any: `$${KeyComparisonPrefix}:any$`;
+  anyOther: `$${KeyComparisonPrefix}:anyOther$`;
+  numeric: `$${KeyComparisonPrefix}:numeric$`;
+  startingWith: `$${KeyComparisonPrefix}:startingWith:${string}$`;
+  endingWith: `$${KeyComparisonPrefix}:endingWith:${string}$`;
+  contains: `$${KeyComparisonPrefix}:contains:${string}$`;
+  matchesRegex: `$${KeyComparisonPrefix}:matchesRegex:${string}$`;
+};
+
 type Comparison = {
   '~sc': ComparisonsType;
 };
@@ -99,6 +111,15 @@ type BaseMatch = {
   keyNotBePresent: Comparison;
   any: (...values: any[]) => Comparison;
   all: (...values: any[]) => Comparison;
+  key: {
+    any: KeyComparison['any'];
+    anyOther: KeyComparison['anyOther'];
+    numeric: KeyComparison['numeric'];
+    startingWith: (substring: string) => KeyComparison['startingWith'];
+    endingWith: (substring: string) => KeyComparison['endingWith'];
+    containing: (substring: string) => KeyComparison['contains'];
+    matchingRegex: (regex: RegExp) => KeyComparison['matchesRegex'];
+  };
 };
 
 type Match = BaseMatch & {
@@ -192,6 +213,15 @@ export const match: Match = {
         return ['deepEqual', v] as ComparisonsType;
       }),
     ]),
+  key: {
+    any: '$pqkc:any$',
+    anyOther: '$pqkc:anyOther$',
+    numeric: '$pqkc:numeric$',
+    startingWith: (substring: string) => `$pqkc:startingWith:${substring}$`,
+    endingWith: (substring: string) => `$pqkc:endingWith:${substring}$`,
+    containing: (substring: string) => `$pqkc:contains:${substring}$`,
+    matchingRegex: (regex: RegExp) => `$pqkc:matchesRegex:${regex}$`,
+  },
   not: {
     hasType: {
       string: createComparison(['not', ['hasType', 'string']]),
@@ -290,11 +320,117 @@ export const match: Match = {
       createComparison(['not', ['noExtraDefinedKeys', partialShape]]),
     deepNoExtraDefinedKeys: (partialShape: any) =>
       createComparison(['not', ['deepNoExtraDefinedKeys', partialShape]]),
+    key: {
+      any: '$pqkc-not:any$',
+      anyOther: '$pqkc-not:anyOther$',
+      numeric: '$pqkc-not:numeric$',
+      startingWith: (substring: string) =>
+        `$pqkc-not:startingWith:${substring}$`,
+      endingWith: (substring: string) => `$pqkc-not:endingWith:${substring}$`,
+      containing: (substring: string) => `$pqkc-not:contains:${substring}$`,
+      matchingRegex: (regex: RegExp) => `$pqkc-not:matchesRegex:${regex}$`,
+    },
   },
 };
 
 function isComparison(value: any): value is Comparison {
   return value && typeof value === 'object' && '~sc' in value;
+}
+
+function isKeyMatcher(key: string): boolean {
+  return typeof key === 'string' && (key.startsWith('$pqkc:') || key.startsWith('$pqkc-not:'));
+}
+
+type ParsedKeyMatcher = {
+  type: 'any' | 'anyOther' | 'numeric' | 'startingWith' | 'endingWith' | 'contains' | 'matchesRegex';
+  parameter?: string | RegExp;
+  negated: boolean;
+};
+
+function parseKeyMatcher(key: string): ParsedKeyMatcher | null {
+  if (!isKeyMatcher(key)) return null;
+
+  const negated = key.startsWith('$pqkc-not:');
+  const prefix = negated ? '$pqkc-not:' : '$pqkc:';
+  const suffix = '$';
+
+  if (!key.endsWith(suffix)) return null;
+
+  const content = key.slice(prefix.length, -suffix.length);
+
+  if (content === 'any') {
+    return { type: 'any', negated };
+  }
+
+  if (content === 'anyOther') {
+    return { type: 'anyOther', negated };
+  }
+
+  if (content === 'numeric') {
+    return { type: 'numeric', negated };
+  }
+
+  if (content.startsWith('startingWith:')) {
+    return { type: 'startingWith', parameter: content.slice('startingWith:'.length), negated };
+  }
+
+  if (content.startsWith('endingWith:')) {
+    return { type: 'endingWith', parameter: content.slice('endingWith:'.length), negated };
+  }
+
+  if (content.startsWith('contains:')) {
+    return { type: 'contains', parameter: content.slice('contains:'.length), negated };
+  }
+
+  if (content.startsWith('matchesRegex:')) {
+    const regexStr = content.slice('matchesRegex:'.length);
+    try {
+      // Parse RegExp string that looks like "/pattern/flags"
+      if (regexStr.startsWith('/') && regexStr.lastIndexOf('/') > 0) {
+        const lastSlashIndex = regexStr.lastIndexOf('/');
+        const pattern = regexStr.slice(1, lastSlashIndex);
+        const flags = regexStr.slice(lastSlashIndex + 1);
+        return { type: 'matchesRegex', parameter: new RegExp(pattern, flags), negated };
+      } else {
+        // Fallback: treat as pattern without flags
+        return { type: 'matchesRegex', parameter: new RegExp(regexStr), negated };
+      }
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
+}
+
+function keyMatchesPattern(key: string, matcher: ParsedKeyMatcher): boolean {
+  let matches = false;
+
+  switch (matcher.type) {
+    case 'any':
+      matches = true;
+      break;
+    case 'anyOther':
+      matches = true;
+      break;
+    case 'numeric':
+      matches = /^\d+$/.test(key);
+      break;
+    case 'startingWith':
+      matches = key.startsWith(matcher.parameter as string);
+      break;
+    case 'endingWith':
+      matches = key.endsWith(matcher.parameter as string);
+      break;
+    case 'contains':
+      matches = key.includes(matcher.parameter as string);
+      break;
+    case 'matchesRegex':
+      matches = (matcher.parameter as RegExp).test(key);
+      break;
+  }
+
+  return matcher.negated ? !matches : matches;
 }
 
 function executeComparison(
@@ -1116,7 +1252,26 @@ function partialEqualInternal(
 
     let allMatch = true;
 
+    // Separate key matchers from regular keys
+    const regularKeys: string[] = [];
+    const keyMatchers: Array<{ key: string; matcher: ParsedKeyMatcher; value: any }> = [];
+
     for (const key of Object.keys(sub)) {
+      if (isKeyMatcher(key)) {
+        const matcher = parseKeyMatcher(key);
+        if (matcher) {
+          keyMatchers.push({ key, matcher, value: sub[key] });
+        }
+      } else {
+        regularKeys.push(key);
+      }
+    }
+
+    // Handle regular keys first
+    const explicitlySpecifiedKeys = new Set<string>();
+    for (const key of regularKeys) {
+      explicitlySpecifiedKeys.add(key);
+
       if (isComparison(sub[key]) && sub[key]['~sc'][0] === 'keyNotBePresent') {
         if (has.call(target, key)) {
           const oldPath = context.path;
@@ -1169,6 +1324,84 @@ function partialEqualInternal(
       const result = partialEqualInternal(target[key], sub[key], context);
       context.path = oldPath;
       if (!result) allMatch = false;
+    }
+
+    // Handle key matchers
+    for (const { matcher, value } of keyMatchers) {
+      let foundMatch = false;
+      const matchedKeys: string[] = [];
+
+      if (matcher.type === 'anyOther') {
+        // anyOther matches keys not explicitly specified
+        for (const targetKey of Object.keys(target)) {
+          if (!explicitlySpecifiedKeys.has(targetKey)) {
+            const matches = keyMatchesPattern(targetKey, matcher);
+            if (matches) {
+              foundMatch = true;
+              matchedKeys.push(targetKey);
+              const oldPath = context.path;
+              context.path = [...oldPath, targetKey];
+              const result = partialEqualInternal(target[targetKey], value, context);
+              context.path = oldPath;
+              if (!result) allMatch = false;
+            }
+          }
+        }
+      } else if (matcher.type === 'any') {
+        // 'any' means at least one key should match the pattern AND value
+        let anyKeyMatched = false;
+        for (const targetKey of Object.keys(target)) {
+          if (keyMatchesPattern(targetKey, matcher)) {
+            foundMatch = true;
+            matchedKeys.push(targetKey);
+            explicitlySpecifiedKeys.add(targetKey); // Mark as explicitly handled
+            const tempContext: ErrorCollectionContext = {
+              errors: [],
+              path: [...context.path, targetKey],
+            };
+            const result = partialEqualInternal(target[targetKey], value, tempContext);
+            if (result) {
+              anyKeyMatched = true;
+              break; // Found one matching key with correct value
+            }
+          }
+        }
+
+        if (foundMatch && !anyKeyMatched) {
+          // Keys matched the pattern but none had the correct value
+          addError(context, {
+            message: `No keys matching pattern had the expected value`,
+            received: { keysChecked: matchedKeys, availableKeys: Object.keys(target) },
+          });
+          allMatch = false;
+        }
+      } else {
+        // Other matchers (numeric, startingWith, etc.) require ALL matching keys to have the correct value
+        for (const targetKey of Object.keys(target)) {
+          if (keyMatchesPattern(targetKey, matcher)) {
+            foundMatch = true;
+            matchedKeys.push(targetKey);
+            explicitlySpecifiedKeys.add(targetKey); // Mark as explicitly handled
+            const oldPath = context.path;
+            context.path = [...oldPath, targetKey];
+            const result = partialEqualInternal(target[targetKey], value, context);
+            context.path = oldPath;
+            if (!result) allMatch = false;
+          }
+        }
+      }
+
+      // For all matchers, ensure at least one key matched
+      if (!foundMatch) {
+        const patternDescription = matcher.type === 'anyOther'
+          ? 'anyOther (keys not explicitly specified)'
+          : `${matcher.type}${matcher.parameter ? ` (${matcher.parameter})` : ''}`;
+        addError(context, {
+          message: `No keys found matching pattern: ${patternDescription}`,
+          received: { availableKeys: Object.keys(target), explicitKeys: Array.from(explicitlySpecifiedKeys) },
+        });
+        allMatch = false;
+      }
     }
     return allMatch;
   }
@@ -1327,7 +1560,10 @@ function checkNoExtraDefinedKeys(
  *   partialEqual([1, 2, 3], match.array.endsWith([2, 3])); // true - suffix matching
  *   partialEqual([1, 2, 3], match.array.length(3)); // true - exact length
  *   partialEqual([1, 2, 3], match.array.includes(2)); // true - includes element
- *   partialEqual([10, 20, 30], match.array.every(match.num.isGreaterThan(5))); // true - all elements match
+ *   partialEqual(
+ *     [10, 20, 30],
+ *     match.array.every(match.num.isGreaterThan(5)),
+ *   ); // true - all elements match
  *   partialEqual([1, 10, 3], match.array.some(match.num.isGreaterThan(8))); // true - at least one matches
  *
  *   // Special comparisons

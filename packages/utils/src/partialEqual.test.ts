@@ -1627,6 +1627,327 @@ describe('partialEqual with error reporting', () => {
   });
 });
 
+describe('key matchers', () => {
+  describe('match.key.any', () => {
+    test('should match any key with the specified value', () => {
+      const result = partialEqual(
+        { foo: 'hello', bar: 'hello', baz: 'world' },
+        { [match.key.any]: match.str.contains('ello') },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should fail when no key matches the value', () => {
+      const result = partialEqual(
+        { foo: 'world', bar: 'test' },
+        { [match.key.any]: match.str.contains('hello') },
+        true,
+      );
+      assert(result.error);
+      expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+        "
+        - path: ''
+          message: 'No keys matching pattern had the expected value'
+          received:
+            keysChecked: ['foo', 'bar']
+            availableKeys: ['foo', 'bar']
+        "
+      `);
+    });
+
+    test('should fail when object has no keys', () => {
+      const result = partialEqual(
+        {},
+        { [match.key.any]: 'test' },
+        true,
+      );
+      assert(result.error);
+      expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+        "
+        - path: ''
+          message: 'No keys found matching pattern: any'
+          received:
+            availableKeys: []
+            explicitKeys: []
+        "
+      `);
+    });
+  });
+
+  describe('match.key.numeric', () => {
+    test('should match numeric keys', () => {
+      const result = partialEqual(
+        { '123': 'number key', foo: 'string key', '0': 'zero' },
+        { [match.key.numeric]: match.hasType.string },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should fail when numeric keys have wrong values', () => {
+      const result = partialEqual(
+        { '123': 42, foo: 'string key' },
+        { [match.key.numeric]: match.hasType.string },
+        true,
+      );
+      assert(result.error);
+      expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+        "
+        - { path: '123', message: 'Expected type string', received: 42 }
+        "
+      `);
+    });
+
+    test('should fail when no numeric keys exist', () => {
+      const result = partialEqual(
+        { foo: 'test', bar: 'test' },
+        { [match.key.numeric]: 'test' },
+        true,
+      );
+      assert(result.error);
+      expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+        "
+        - path: ''
+          message: 'No keys found matching pattern: numeric'
+          received:
+            availableKeys: ['foo', 'bar']
+            explicitKeys: []
+        "
+      `);
+    });
+  });
+
+  describe('match.key.startingWith', () => {
+    test('should match keys starting with specified substring', () => {
+      const result = partialEqual(
+        { prefixFoo: 'value1', prefixBar: 'value2', other: 'value3' },
+        { [match.key.startingWith('prefix')]: match.str.startsWith('value') },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should fail when keys starting with substring have wrong values', () => {
+      const result = partialEqual(
+        { prefixFoo: 'wrong', other: 'value3' },
+        { [match.key.startingWith('prefix')]: match.str.startsWith('value') },
+        true,
+      );
+      assert(result.error);
+      expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+        "
+        - path: 'prefixFoo'
+          message: 'Expected string starting with "value"'
+          received: 'wrong'
+        "
+      `);
+    });
+  });
+
+  describe('match.key.endingWith', () => {
+    test('should match keys ending with specified substring', () => {
+      const result = partialEqual(
+        { fooSuffix: 'value1', barSuffix: 'value2', other: 'value3' },
+        { [match.key.endingWith('Suffix')]: match.str.startsWith('value') },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+  });
+
+  describe('match.key.containing', () => {
+    test('should match keys containing specified substring', () => {
+      const result = partialEqual(
+        { fooTestBar: 'value1', bazTestQux: 'value2', other: 'value3' },
+        { [match.key.containing('Test')]: match.str.startsWith('value') },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+  });
+
+  describe('match.key.matchingRegex', () => {
+    test('should match keys matching regex pattern', () => {
+      const result = partialEqual(
+        { user_123: 'john', user_456: 'jane', admin: 'admin' },
+        { [match.key.matchingRegex(/^user_\d+$/)]: match.hasType.string },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should fail when regex matching keys have wrong values', () => {
+      const result = partialEqual(
+        { user_123: 42, admin: 'admin' },
+        { [match.key.matchingRegex(/^user_\d+$/)]: match.hasType.string },
+        true,
+      );
+      assert(result.error);
+      expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+        "
+        - { path: 'user_123', message: 'Expected type string', received: 42 }
+        "
+      `);
+    });
+  });
+
+  describe('match.key.anyOther', () => {
+    test('should match keys not explicitly specified', () => {
+      const result = partialEqual(
+        { foo: 'explicit', bar: 'explicit', baz: 'other', qux: 'other' },
+        {
+          foo: match.str.contains('exp'),
+          bar: match.str.contains('exp'),
+          [match.key.anyOther]: match.str.contains('other'),
+        },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should fail when other keys have wrong values', () => {
+      const result = partialEqual(
+        { foo: 'explicit', baz: 'wrong' },
+        {
+          foo: match.str.contains('exp'),
+          [match.key.anyOther]: match.str.contains('other'),
+        },
+        true,
+      );
+      assert(result.error);
+      expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+        "
+        - path: 'baz'
+          message: 'Expected string containing "other"'
+          received: 'wrong'
+        "
+      `);
+    });
+
+    test('should fail when no other keys exist', () => {
+      const result = partialEqual(
+        { foo: 'explicit' },
+        {
+          foo: match.str.contains('exp'),
+          [match.key.anyOther]: match.str.contains('other'),
+        },
+        true,
+      );
+      assert(result.error);
+      expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+        "
+        - path: ''
+          message: 'No keys found matching pattern: anyOther (keys not explicitly specified)'
+          received:
+            availableKeys: ['foo']
+            explicitKeys: ['foo']
+        "
+      `);
+    });
+
+    test('should pass when anyOther has no expectation but other keys exist', () => {
+      const result = partialEqual(
+        { foo: 'explicit', other1: 'value', other2: 'value' },
+        {
+          foo: match.str.contains('exp'),
+        },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+  });
+
+  describe('negated key matchers (match.not.key)', () => {
+    test('should match keys that do NOT match pattern', () => {
+      const result = partialEqual(
+        { abc: 'value', def: 'value', '123': 'wrong' },
+        { [match.not.key.numeric]: match.str.contains('value') },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should fail when non-matching keys have wrong values', () => {
+      const result = partialEqual(
+        { abc: 'wrong', '123': 'number' },
+        { [match.not.key.numeric]: match.str.contains('value') },
+        true,
+      );
+      assert(result.error);
+      expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
+        "
+        - path: 'abc'
+          message: 'Expected string containing "value"'
+          received: 'wrong'
+        "
+      `);
+    });
+  });
+
+  describe('complex scenarios', () => {
+    test('should handle multiple key matchers', () => {
+      const result = partialEqual(
+        {
+          '123': 'number key',
+          '456': 'number key',
+          prefixTest: 'prefix key',
+          other: 'other key',
+        },
+        {
+          [match.key.numeric]: match.str.contains('number'),
+          [match.key.startingWith('prefix')]: match.str.contains('prefix'),
+          [match.key.anyOther]: match.str.contains('other'),
+        },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should work with mixed regular keys and key matchers', () => {
+      const result = partialEqual(
+        {
+          specificKey: 'specific value',
+          '123': 'number',
+          '456': 'number',
+          other: 'other value',
+        },
+        {
+          specificKey: 'specific value',
+          [match.key.numeric]: match.hasType.string,
+          [match.key.anyOther]: match.str.contains('other'),
+        },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+
+    test('should prevent double-matching of keys', () => {
+      const result = partialEqual(
+        { '123': 'number key' },
+        {
+          [match.key.any]: match.hasType.string,
+          [match.key.numeric]: match.str.contains('number'),
+        },
+        true,
+      );
+      assert(result.ok);
+      expect(result.ok).toBe(true);
+    });
+  });
+});
+
 describe('partialEqual boolean return (basic smoke tests)', () => {
   test('should return true for matches', () => {
     expect(partialEqual(1, 1)).toBe(true);
