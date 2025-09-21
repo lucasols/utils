@@ -125,6 +125,10 @@
       "import": "./dist/interpolate.js",
       "require": "./dist/interpolate.cjs"
     },
+    "./iteratorUtils": {
+      "import": "./dist/iteratorUtils.js",
+      "require": "./dist/iteratorUtils.cjs"
+    },
     "./keepPrevIfUnchanged": {
       "import": "./dist/keepPrevIfUnchanged.js",
       "require": "./dist/keepPrevIfUnchanged.cjs"

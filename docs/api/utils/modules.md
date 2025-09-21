@@ -24,6 +24,7 @@
 - [getValueStableKey](getValueStableKey.md)
 - [hash](hash.md)
 - [interpolate](interpolate/index.md)
+- [iteratorUtils](iteratorUtils.md)
 - [keepPrevIfUnchanged](keepPrevIfUnchanged.md)
 - [levenshtein](levenshtein.md)
 - [main](main.md)

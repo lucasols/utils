@@ -251,7 +251,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:171](https://github.com/lucasols/u
 function findAndMap<T, R>(array, predicate): undefined | R;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:310](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L310)
+Defined in: [packages/utils/src/arrayUtils.ts:290](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L290)
 
 Finds the first item in an array where the predicate returns a non-false
 value and returns that mapped value.
@@ -410,6 +410,54 @@ Defined in: [packages/utils/src/arrayUtils.ts:209](https://github.com/lucasols/u
 
 ***
 
+### intersperse()
+
+```ts
+function intersperse<T, I>(array, separator): (T | I)[];
+```
+
+Defined in: [packages/utils/src/arrayUtils.ts:352](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L352)
+
+Inserts a separator value between each element in an array.
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+##### I
+
+`I`
+
+#### Parameters
+
+##### array
+
+`T`[]
+
+The array to intersperse
+
+##### separator
+
+`I`
+
+The value to insert between elements
+
+#### Returns
+
+(`T` \| `I`)[]
+
+A new array with separator values inserted between elements
+
+#### Example
+
+```ts
+intersperse([1, 2, 3], 0); // [1, 0, 2, 0, 3]
+```
+
+***
+
 ### isInArray()
 
 ```ts
@@ -497,6 +545,61 @@ Defined in: [packages/utils/src/arrayUtils.ts:226](https://github.com/lucasols/u
 #### Returns
 
 `T`[]
+
+***
+
+### repeat()
+
+```ts
+function repeat<T>(
+   value, 
+   count, 
+   separator?): T[];
+```
+
+Defined in: [packages/utils/src/arrayUtils.ts:379](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L379)
+
+Creates an array by repeating a value a specified number of times,
+optionally with a separator between each repetition.
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+#### Parameters
+
+##### value
+
+`T`
+
+The value to repeat
+
+##### count
+
+`number`
+
+Number of times to repeat the value
+
+##### separator?
+
+`T`
+
+Optional separator to insert between repetitions
+
+#### Returns
+
+`T`[]
+
+A new array with the repeated values
+
+#### Example
+
+```ts
+repeat('x', 3); // ['x', 'x', 'x']
+  repeat('x', 3, '-'); // ['x', '-', 'x', '-', 'x']
+```
 
 ***
 

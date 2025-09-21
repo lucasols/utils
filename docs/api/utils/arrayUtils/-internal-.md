@@ -10,7 +10,7 @@
 type ArrayOps<T> = object;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:265](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L265)
+Defined in: [packages/utils/src/arrayUtils.ts:301](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L301)
 
 #### Type Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:265](https://github.com/lucasols/u
 filterAndMap: <R>(mapFilter) => R[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:279](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L279)
+Defined in: [packages/utils/src/arrayUtils.ts:315](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L315)
 
 Filter and map an array
 
@@ -65,7 +65,7 @@ const items = [1, 2, 3];
 findAndMap: <R>(predicate) => R | undefined;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:282](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L282)
+Defined in: [packages/utils/src/arrayUtils.ts:318](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L318)
 
 ###### Type Parameters
 
@@ -89,7 +89,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:282](https://github.com/lucasols/u
 rejectDuplicates: (getKey) => T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:281](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L281)
+Defined in: [packages/utils/src/arrayUtils.ts:317](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L317)
 
 ###### Parameters
 
@@ -107,7 +107,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:281](https://github.com/lucasols/u
 sortBy: (sortByValue, props) => T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:280](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L280)
+Defined in: [packages/utils/src/arrayUtils.ts:316](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L316)
 
 ###### Parameters
 
