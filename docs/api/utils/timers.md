@@ -270,7 +270,7 @@ Defined in: [packages/utils/src/timers.ts:188](https://github.com/lucasols/utils
 
 ##### condition
 
-() => `boolean`
+() => `boolean` \| `Promise`\<`boolean`\>
 
 ##### \_\_namedParameters
 
