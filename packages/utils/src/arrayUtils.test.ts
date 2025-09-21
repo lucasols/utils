@@ -4,8 +4,10 @@ import {
   findAfterIndex,
   findAndMap,
   findBeforeIndex,
+  intersperse,
   rejectArrayUndefinedValues,
   rejectDuplicates,
+  repeat,
   truncateArray,
 } from './arrayUtils';
 import { typingTest } from './typingTestUtils';
@@ -288,5 +290,159 @@ describe('arrayOps', () => {
 
     typingTest.expectTypesAre<typeof result, string | undefined>('equal');
     expect(result).toMatchInlineSnapshot(`"found-3"`);
+  });
+});
+
+describe('intersperse', () => {
+  test('should insert separator between elements', () => {
+    const array = [1, 2, 3];
+    const result = intersperse(array, 0);
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        1,
+        0,
+        2,
+        0,
+        3,
+      ]
+    `);
+  });
+
+  test('should return empty array for empty input', () => {
+    const array: number[] = [];
+    const result = intersperse(array, 0);
+
+    expect(result).toMatchInlineSnapshot(`[]`);
+  });
+
+  test('should return single element array unchanged', () => {
+    const array = [1];
+    const result = intersperse(array, 0);
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        1,
+      ]
+    `);
+  });
+
+  test('should work with different types', () => {
+    const array = ['a', 'b', 'c'];
+    const result = intersperse(array, '-');
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        "a",
+        "-",
+        "b",
+        "-",
+        "c",
+      ]
+    `);
+  });
+
+  test('should work with mixed types', () => {
+    const array = [1, 2, 3];
+    const result = intersperse(array, 'sep');
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        1,
+        "sep",
+        2,
+        "sep",
+        3,
+      ]
+    `);
+  });
+});
+
+describe('repeat', () => {
+  test('should repeat value specified number of times', () => {
+    const result = repeat('x', 3);
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        "x",
+        "x",
+        "x",
+      ]
+    `);
+  });
+
+  test('should repeat with separator', () => {
+    const result = repeat('x', 3, '-');
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        "x",
+        "-",
+        "x",
+        "-",
+        "x",
+      ]
+    `);
+  });
+
+  test('should return empty array for zero count', () => {
+    const result = repeat('x', 0);
+
+    expect(result).toMatchInlineSnapshot(`[]`);
+  });
+
+  test('should return single element for count of 1', () => {
+    const result = repeat('x', 1);
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        "x",
+      ]
+    `);
+  });
+
+  test('should ignore separator for count of 1', () => {
+    const result = repeat('x', 1, '-');
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        "x",
+      ]
+    `);
+  });
+
+  test('should work with numbers', () => {
+    const result = repeat(42, 4, 0);
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        42,
+        0,
+        42,
+        0,
+        42,
+        0,
+        42,
+      ]
+    `);
+  });
+
+  test('should work with objects', () => {
+    const obj = { id: 1 };
+    const result = repeat(obj, 2, { id: 0 });
+
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "id": 1,
+        },
+        {
+          "id": 0,
+        },
+        {
+          "id": 1,
+        },
+      ]
+    `);
   });
 });

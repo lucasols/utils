@@ -262,26 +262,6 @@ export function truncateArray<T>(
   return result;
 }
 
-type ArrayOps<T> = {
-  /**
-   * Filter and map an array
-   *
-   * @example
-   *   const items = [1, 2, 3];
-   *
-   *   const enhancedItems = arrayOps(items);
-   *
-   *   enhancedItems.filterAndMap((item) => (item === 2 ? false : item));
-   *
-   * @param mapFilter - A function that takes an item and returns a value or
-   *   `false` to reject the item.
-   */
-  filterAndMap: <R>(mapFilter: (item: T, index: number) => false | R) => R[];
-  sortBy: (sortByValue: SortByValueFn<T>, props: SortByProps) => T[];
-  rejectDuplicates: (getKey: (item: T) => unknown) => T[];
-  findAndMap: <R>(predicate: (value: T) => R | false) => R | undefined;
-};
-
 /**
  * Finds the first item in an array where the predicate returns a non-false
  * value and returns that mapped value.
@@ -318,6 +298,26 @@ export function findAndMap<T, R>(
   return undefined;
 }
 
+type ArrayOps<T> = {
+  /**
+   * Filter and map an array
+   *
+   * @example
+   *   const items = [1, 2, 3];
+   *
+   *   const enhancedItems = arrayOps(items);
+   *
+   *   enhancedItems.filterAndMap((item) => (item === 2 ? false : item));
+   *
+   * @param mapFilter - A function that takes an item and returns a value or
+   *   `false` to reject the item.
+   */
+  filterAndMap: <R>(mapFilter: (item: T, index: number) => false | R) => R[];
+  sortBy: (sortByValue: SortByValueFn<T>, props: SortByProps) => T[];
+  rejectDuplicates: (getKey: (item: T) => unknown) => T[];
+  findAndMap: <R>(predicate: (value: T) => R | false) => R | undefined;
+};
+
 /**
  * Enhance an array with extra methods
  *
@@ -337,4 +337,56 @@ export function arrayOps<T>(array: T[]): ArrayOps<T> {
     rejectDuplicates: (getKey) => rejectDuplicates(array, getKey),
     findAndMap: (predicate) => findAndMap(array, predicate),
   };
+}
+
+/**
+ * Inserts a separator value between each element in an array.
+ *
+ * @example
+ *   intersperse([1, 2, 3], 0); // [1, 0, 2, 0, 3]
+ *
+ * @param array - The array to intersperse
+ * @param separator - The value to insert between elements
+ * @returns A new array with separator values inserted between elements
+ */
+export function intersperse<T, I>(
+  array: T[],
+  separator: I,
+): (T | I)[] {
+  const result: (T | I)[] = [];
+  for (let i = 0; i < array.length; i++) {
+    result.push(array[i]!);
+    if (i < array.length - 1) {
+      result.push(separator);
+    }
+  }
+  return result;
+}
+
+/**
+ * Creates an array by repeating a value a specified number of times,
+ * optionally with a separator between each repetition.
+ *
+ * @example
+ *   repeat('x', 3); // ['x', 'x', 'x']
+ *   repeat('x', 3, '-'); // ['x', '-', 'x', '-', 'x']
+ *
+ * @param value - The value to repeat
+ * @param count - Number of times to repeat the value
+ * @param separator - Optional separator to insert between repetitions
+ * @returns A new array with the repeated values
+ */
+export function repeat<T>(
+  value: T,
+  count: number,
+  separator?: T,
+): T[] {
+  const result: T[] = [];
+  for (let i = 0; i < count; i++) {
+    result.push(value);
+    if (separator !== undefined && i < count - 1) {
+      result.push(separator);
+    }
+  }
+  return result;
 }
