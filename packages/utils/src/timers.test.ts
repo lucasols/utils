@@ -6,6 +6,7 @@ import {
   createWaitUntil,
   waitFor,
 } from './timers';
+import { sleep } from './sleep';
 
 describe('timers', { retry: 2 }, () => {
   describe('createTimeout', () => {
@@ -417,12 +418,18 @@ describe('timers', { retry: 2 }, () => {
         { polling: 'raf', timeout: 100 },
       );
 
+      // Give a moment for the initial async check to complete and RAF to be set up
+      await sleep(5);
+
       // Simulate first RAF call
       expect(mockRaf).toHaveBeenCalledTimes(1);
       expect(rafCallback).toBeTruthy();
 
       // Call the RAF callback (condition still false)
       rafCallback!();
+
+      // Give time for the async condition check to complete and schedule another RAF
+      await sleep(5);
 
       // Should schedule another RAF
       expect(mockRaf).toHaveBeenCalledTimes(2);
@@ -514,6 +521,213 @@ describe('timers', { retry: 2 }, () => {
       // Should check approximately 3 times (0ms, 20ms, 40ms) before becoming true at 45ms
       expect(checkCount).toBeGreaterThanOrEqual(2);
       expect(checkCount).toBeLessThanOrEqual(4);
+    });
+
+    test('should resolve immediately with async condition returning true', async () => {
+      const result = await waitFor(
+        async () => true,
+        { polling: 10, timeout: 100 },
+      );
+
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value).toBe(undefined);
+      }
+    });
+
+    test('should resolve when async condition becomes true with numeric polling', async () => {
+      let conditionResult = false;
+      const startTime = Date.now();
+
+      setTimeout(() => {
+        conditionResult = true;
+      }, 50);
+
+      const result = await waitFor(
+        async () => {
+          await sleep(5); // Simulate async work
+          return conditionResult;
+        },
+        { polling: 10, timeout: 200 },
+      );
+
+      const elapsed = Date.now() - startTime;
+      expect(result.ok).toBe(true);
+      expect(elapsed).toBeGreaterThan(40); // Should take at least ~50ms
+      expect(elapsed).toBeLessThan(120); // But not too much longer (accounting for async work)
+    });
+
+    test('should timeout with async condition that never becomes true', async () => {
+      const startTime = Date.now();
+
+      const result = await waitFor(
+        async () => {
+          await sleep(2); // Simulate async work
+          return false;
+        },
+        { polling: 10, timeout: 50 },
+      );
+
+      const elapsed = Date.now() - startTime;
+      expect(result.ok).toBe(false);
+      expect(elapsed).toBeGreaterThan(40); // Should wait for timeout
+      expect(elapsed).toBeLessThan(80); // But not too much longer
+
+      if (!result.ok) {
+        expect(result.error.message).toContain('Timeout of 50ms exceeded');
+      }
+    });
+
+    test('should handle async condition that throws an error', async () => {
+      const result = await waitFor(
+        async () => {
+          await sleep(5);
+          throw new Error('Async condition error');
+        },
+        { polling: 10, timeout: 100 },
+      );
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.message).toContain('Condition check failed');
+        expect(result.error.message).toContain('Async condition error');
+      }
+    });
+
+    test('should handle async condition with RAF polling', async () => {
+      // Mock requestAnimationFrame and cancelAnimationFrame
+      const mockRaf = vi.fn();
+      const mockCancelRaf = vi.fn();
+
+      vi.stubGlobal('requestAnimationFrame', mockRaf);
+      vi.stubGlobal('cancelAnimationFrame', mockCancelRaf);
+
+      let conditionResult = false;
+      let rafCallback: (() => void) | null = null;
+
+      mockRaf.mockImplementation((callback: () => void) => {
+        rafCallback = callback;
+        return 1; // Mock frame ID
+      });
+
+      const resultPromise = waitFor(
+        async () => {
+          await sleep(1); // Simulate async work
+          return conditionResult;
+        },
+        { polling: 'raf', timeout: 100 },
+      );
+
+      // Give time for the initial async condition check to complete and RAF to be set up
+      await sleep(10);
+
+      // Simulate first RAF call
+      expect(mockRaf).toHaveBeenCalledTimes(1);
+      expect(rafCallback).toBeTruthy();
+
+      // Call the RAF callback (condition still false)
+      rafCallback!();
+
+      // Give time for async condition to resolve
+      await sleep(10);
+
+      // Should schedule another RAF after async condition resolves
+      expect(mockRaf).toHaveBeenCalledTimes(2);
+
+      // Now make condition true and call RAF callback again
+      conditionResult = true;
+      rafCallback!();
+
+      await sleep(10);
+
+      const result = await resultPromise;
+      expect(result.ok).toBe(true);
+
+      vi.unstubAllGlobals();
+    });
+
+    test('should work with slow async conditions', async () => {
+      let checkCount = 0;
+      let conditionResult = false;
+
+      setTimeout(() => {
+        conditionResult = true;
+      }, 80);
+
+      const result = await waitFor(
+        async () => {
+          checkCount++;
+          await sleep(15); // Each check takes 15ms
+          return conditionResult;
+        },
+        { polling: 20, timeout: 200 },
+      );
+
+      expect(result.ok).toBe(true);
+      // Should check approximately 4-5 times before condition becomes true
+      expect(checkCount).toBeGreaterThanOrEqual(3);
+      expect(checkCount).toBeLessThanOrEqual(6);
+    });
+
+    test('should handle async condition that returns promise of false', async () => {
+      const result = await waitFor(
+        async () => {
+          await sleep(5);
+          return false;
+        },
+        { polling: 10, timeout: 30 },
+      );
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.message).toContain('Timeout of 30ms exceeded');
+      }
+    });
+
+    test('should properly clean up with async conditions on timeout', async () => {
+      const mockClearTimeout = vi.spyOn(global, 'clearTimeout');
+      const mockClearInterval = vi.spyOn(global, 'clearInterval');
+
+      const result = await waitFor(
+        async () => {
+          await sleep(5);
+          return false;
+        },
+        { polling: 10, timeout: 30 },
+      );
+
+      expect(result.ok).toBe(false);
+      expect(mockClearTimeout).toHaveBeenCalled();
+      expect(mockClearInterval).toHaveBeenCalled();
+
+      mockClearTimeout.mockRestore();
+      mockClearInterval.mockRestore();
+    });
+
+    test('should properly clean up with async conditions on success', async () => {
+      const mockClearTimeout = vi.spyOn(global, 'clearTimeout');
+      const mockClearInterval = vi.spyOn(global, 'clearInterval');
+
+      let conditionResult = false;
+
+      setTimeout(() => {
+        conditionResult = true;
+      }, 30);
+
+      const result = await waitFor(
+        async () => {
+          await sleep(5);
+          return conditionResult;
+        },
+        { polling: 10, timeout: 200 },
+      );
+
+      expect(result.ok).toBe(true);
+      expect(mockClearTimeout).toHaveBeenCalled();
+      expect(mockClearInterval).toHaveBeenCalled();
+
+      mockClearTimeout.mockRestore();
+      mockClearInterval.mockRestore();
     });
   });
 });
