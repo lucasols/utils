@@ -10,6 +10,8 @@
 - [useComponentEvents](useComponentEvents/index.md)
 - [useComponentEvents.test](useComponentEvents.test.md)
 - [useConst](useConst.md)
+- [useDebouncedCallback](useDebouncedCallback/index.md)
+- [useDebouncedControlledValue](useDebouncedControlledValue.md)
 - [useLatestValue](useLatestValue/index.md)
 - [useOnChange](useOnChange/index.md)
 - [useOnClickOutside](useOnClickOutside/index.md)
@@ -20,3 +22,4 @@
 - [useScheduleToNextRender](useScheduleToNextRender/index.md)
 - [useShortCut](useShortCut.md)
 - [useShortCut.test](useShortCut.test.md)
+- [useTimeout](useTimeout.md)

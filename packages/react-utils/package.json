@@ -51,6 +51,14 @@
       "import": "./dist/useConst.js",
       "require": "./dist/useConst.cjs"
     },
+    "./useDebouncedCallback": {
+      "import": "./dist/useDebouncedCallback.js",
+      "require": "./dist/useDebouncedCallback.cjs"
+    },
+    "./useDebouncedControlledValue": {
+      "import": "./dist/useDebouncedControlledValue.js",
+      "require": "./dist/useDebouncedControlledValue.cjs"
+    },
     "./useLatestValue": {
       "import": "./dist/useLatestValue.js",
       "require": "./dist/useLatestValue.cjs"
@@ -82,6 +90,10 @@
     "./useShortCut": {
       "import": "./dist/useShortCut.js",
       "require": "./dist/useShortCut.cjs"
+    },
+    "./useTimeout": {
+      "import": "./dist/useTimeout.js",
+      "require": "./dist/useTimeout.cjs"
     }
   },
   "engines": {
