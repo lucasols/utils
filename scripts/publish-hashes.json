@@ -22,7 +22,8 @@
     "3.54.0": "4dc2336de0fd33f2dc677ded49a66d4cb5ca898fead5ce1ded267acaffbcf570",
     "3.55.0": "e055fbf5d1fb725adc1a19c76c73c78ec16654dab0eb7a02ece3a198a41dfa47",
     "3.56.0": "b9946ea3909e619daf15b6bb0db003e64d5d1d59074b98c58cc8c9e3a7015070",
-    "3.57.0": "c4374a49ec0cdcabbd5ba2a72626e9f3feba471473f40ffb77ec7b69ffdae2fd"
+    "3.57.0": "c4374a49ec0cdcabbd5ba2a72626e9f3feba471473f40ffb77ec7b69ffdae2fd",
+    "3.58.0": "cd42bc1c19579410e5d28804b53c3ce67b42db5db365a231999f2b40a7fc7ae4"
   },
   "@ls-stack/react-utils": {
     "0.5.0": "1acf69d8d801d1299ee1457a36849a496b05bdd86e2fca0285b74f0fd13abe87"
