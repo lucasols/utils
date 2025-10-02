@@ -30,6 +30,15 @@ export interface DebouncedFunc<T extends (...args: any[]) => void> {
    * debounced function was never invoked.
    */
   flush: () => ReturnType<T> | undefined;
+
+  /** Return true if the debounced function still has a scheduled run. */
+  pending: () => boolean;
+
+  /** Update the debounced function with a new callback. */
+  updateCb: (callback: T) => void;
+
+  /** Update the debounce wait and options while keeping scheduled runs. */
+  updateParams: (wait: number, options?: DebounceOptions) => void;
 }
 
 // forked from lodash/debounce
@@ -38,6 +47,9 @@ export function debounce<T extends (...args: any[]) => void>(
   wait: number,
   options?: DebounceOptions,
 ): DebouncedFunc<T> {
+  let currentCallback = func;
+  let waitMs = wait;
+  let currentOptions = options;
   let lastArgs: IArguments | undefined;
   let lastThis: undefined;
   let maxWait: number | undefined;
@@ -49,12 +61,16 @@ export function debounce<T extends (...args: any[]) => void>(
   let maxing = false;
   let trailing = true;
 
-  if (options) {
-    leading = !!options.leading;
-    maxing = 'maxWait' in options;
-    maxWait = maxing ? Math.max(options.maxWait || 0, wait) : maxWait;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  function applyOptions() {
+    const opts = currentOptions;
+
+    leading = !!opts?.leading;
+    trailing = opts && 'trailing' in opts ? !!opts.trailing : true;
+    maxing = !!(opts && 'maxWait' in opts);
+    maxWait = maxing ? Math.max(opts?.maxWait ?? 0, waitMs) : undefined;
   }
+
+  applyOptions();
 
   function invokeFunc(time: number) {
     const args = lastArgs;
@@ -62,7 +78,7 @@ export function debounce<T extends (...args: any[]) => void>(
 
     lastArgs = lastThis = undefined;
     lastInvokeTime = time;
-    result = func.apply(thisArg, args as any);
+    result = currentCallback.apply(thisArg, args as any);
     return result;
   }
 
@@ -70,7 +86,7 @@ export function debounce<T extends (...args: any[]) => void>(
     // Reset any `maxWait` timer.
     lastInvokeTime = time;
     // Start the timer for the trailing edge.
-    timerId = setTimeout(timerExpired, wait);
+    timerId = setTimeout(timerExpired, waitMs);
     // Invoke the leading edge.
     return leading ? invokeFunc(time) : result;
   }
@@ -78,7 +94,7 @@ export function debounce<T extends (...args: any[]) => void>(
   function remainingWait(time: number) {
     const timeSinceLastCall = time - (lastCallTime ?? 0);
     const timeSinceLastInvoke = time - lastInvokeTime;
-    const timeWaiting = wait - timeSinceLastCall;
+    const timeWaiting = waitMs - timeSinceLastCall;
 
     return maxing ?
         Math.min(timeWaiting, (maxWait ?? 0) - timeSinceLastInvoke)
@@ -94,7 +110,7 @@ export function debounce<T extends (...args: any[]) => void>(
     // it as the trailing edge, or we've hit the `maxWait` limit.
     return (
       lastCallTime === undefined ||
-      timeSinceLastCall >= wait ||
+      timeSinceLastCall >= waitMs ||
       timeSinceLastCall < 0 ||
       (maxing && timeSinceLastInvoke >= (maxWait ?? 0))
     );
@@ -133,6 +149,34 @@ export function debounce<T extends (...args: any[]) => void>(
     return timerId === undefined ? result : trailingEdge(Date.now());
   }
 
+  function pending() {
+    return timerId !== undefined;
+  }
+
+  function updateCb(callback: T) {
+    currentCallback = callback;
+  }
+
+  function updateParams(newWait: number, newOptions?: DebounceOptions) {
+    waitMs = newWait;
+    if (newOptions !== undefined) {
+      currentOptions = newOptions;
+    }
+    applyOptions();
+
+    if (timerId !== undefined) {
+      const time = Date.now();
+      const shouldRun = shouldInvoke(time);
+      clearTimeout(timerId);
+      if (shouldRun) {
+        timerId = setTimeout(timerExpired, 0);
+      } else {
+        const delay = remainingWait(time);
+        timerId = setTimeout(timerExpired, delay > 0 ? delay : 0);
+      }
+    }
+  }
+
   function debounced(this: any) {
     const time = Date.now();
     const isInvoking = shouldInvoke(time);
@@ -150,17 +194,20 @@ export function debounce<T extends (...args: any[]) => void>(
       if (maxing) {
         // Handle invocations in a tight loop.
         clearTimeout(timerId);
-        timerId = setTimeout(timerExpired, wait);
+        timerId = setTimeout(timerExpired, waitMs);
         return invokeFunc(lastCallTime);
       }
     }
     if (timerId === undefined) {
-      timerId = setTimeout(timerExpired, wait);
+      timerId = setTimeout(timerExpired, waitMs);
     }
     return result;
   }
   debounced.cancel = cancel;
   debounced.flush = flush;
+  debounced.pending = pending;
+  debounced.updateCb = updateCb;
+  debounced.updateParams = updateParams;
 
   return debounced;
 }
@@ -170,6 +217,21 @@ export function isDebouncedFn<T extends (...args: any[]) => void>(
 ): fn is T & {
   cancel: () => void;
   flush: () => ReturnType<T> | undefined;
+  pending: () => boolean;
+  updateCb: (callback: T) => void;
+  updateParams: (wait: number, options?: DebounceOptions) => void;
 } {
-  return typeof fn === 'function' && 'cancel' in fn && 'flush' in fn;
+  return (
+    typeof fn === 'function' &&
+    'cancel' in fn &&
+    typeof (fn as any).cancel === 'function' &&
+    'flush' in fn &&
+    typeof (fn as any).flush === 'function' &&
+    'pending' in fn &&
+    typeof (fn as any).pending === 'function' &&
+    'updateCb' in fn &&
+    typeof (fn as any).updateCb === 'function' &&
+    'updateParams' in fn &&
+    typeof (fn as any).updateParams === 'function'
+  );
 }
