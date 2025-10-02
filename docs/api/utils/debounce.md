@@ -72,6 +72,64 @@ debounced function was never invoked.
 
 `undefined` \| `ReturnType`\<`T`\>
 
+##### pending()
+
+```ts
+pending: () => boolean;
+```
+
+Defined in: [packages/utils/src/debounce.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L35)
+
+Return true if the debounced function still has a scheduled run.
+
+###### Returns
+
+`boolean`
+
+##### updateCb()
+
+```ts
+updateCb: (callback) => void;
+```
+
+Defined in: [packages/utils/src/debounce.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L38)
+
+Update the debounced function with a new callback.
+
+###### Parameters
+
+###### callback
+
+`T`
+
+###### Returns
+
+`void`
+
+##### updateParams()
+
+```ts
+updateParams: (wait, options?) => void;
+```
+
+Defined in: [packages/utils/src/debounce.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L41)
+
+Update the debounce wait and options while keeping scheduled runs.
+
+###### Parameters
+
+###### wait
+
+`number`
+
+###### options?
+
+[`DebounceOptions`](#debounceoptions)
+
+###### Returns
+
+`void`
+
 ## Type Aliases
 
 ### DebounceOptions
@@ -131,7 +189,7 @@ function debounce<T>(
 options?): DebouncedFunc<T>;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L36)
+Defined in: [packages/utils/src/debounce.ts:45](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L45)
 
 #### Type Parameters
 
@@ -162,10 +220,10 @@ Defined in: [packages/utils/src/debounce.ts:36](https://github.com/lucasols/util
 ### isDebouncedFn()
 
 ```ts
-function isDebouncedFn<T>(fn): fn is T & { cancel: () => void; flush: () => undefined | ReturnType<T> };
+function isDebouncedFn<T>(fn): fn is T & { cancel: () => void; flush: () => undefined | ReturnType<T>; pending: () => boolean; updateCb: (callback: T) => void; updateParams: (wait: number, options?: DebounceOptions) => void };
 ```
 
-Defined in: [packages/utils/src/debounce.ts:168](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L168)
+Defined in: [packages/utils/src/debounce.ts:215](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L215)
 
 #### Type Parameters
 
@@ -181,4 +239,4 @@ Defined in: [packages/utils/src/debounce.ts:168](https://github.com/lucasols/uti
 
 #### Returns
 
-fn is T & \{ cancel: () =\> void; flush: () =\> undefined \| ReturnType\<T\> \}
+fn is T & \{ cancel: () =\> void; flush: () =\> undefined \| ReturnType\<T\>; pending: () =\> boolean; updateCb: (callback: T) =\> void; updateParams: (wait: number, options?: DebounceOptions) =\> void \}
