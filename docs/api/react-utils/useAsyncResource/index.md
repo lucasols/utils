@@ -14,12 +14,14 @@
 function useAsyncResource<T>(asyncFn, options): AsyncResult<null | T>;
 ```
 
-Defined in: [packages/react-utils/src/useAsyncResource.ts:47](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L47)
+Defined in: [packages/react-utils/src/useAsyncResource.ts:58](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L58)
 
-React hook to manage the lifecycle of an async resource (fetching, loading, error, success).
+React hook to manage the lifecycle of an async resource (fetching, loading,
+error, success).
 
-Handles loading state, error state, and provides a `load` function to trigger the async operation.
-By default, the async function runs on mount unless `lazy: true` is passed.
+Handles loading state, error state, and provides a `load` function to trigger
+the async operation. By default, the async function runs on mount unless
+`lazy: true` is passed.
 
 #### Type Parameters
 
@@ -46,6 +48,7 @@ Optional configuration object
 [`AsyncResult`](-internal-.md#asyncresult)\<`null` \| `T`\>
 
 Object with:
+
   - `status`: 'idle' | 'loading' | 'refetching' | 'success' | 'error'
   - `error`: Error or null
   - `data`: The loaded data or null
@@ -55,15 +58,17 @@ Object with:
 #### Examples
 
 ```ts
-const { data, isLoading, error, load } = useAsyncResource(() => fetchUser(id));
-// Optionally, call `load()` to re-fetch or if using lazy mode
+const { data, isLoading, error, load } = useAsyncResource(() =>
+    fetchUser(id),
+  );
+  // Optionally, call `load()` to re-fetch or if using lazy mode
 ```
 
 ```ts
 // Auto-refetch when dependencies change
-const { data, isLoading, status } = useAsyncResource(
-  () => fetchUser(userId),
-  { asyncFnUsesExternalDeps: true }
-);
-// Will refetch automatically when userId changes, status becomes 'refetching'
+  const { data, isLoading, status } = useAsyncResource(
+    () => fetchUser(userId),
+    { asyncFnUsesExternalDeps: true },
+  );
+  // Will refetch automatically when userId changes, status becomes 'refetching'
 ```
