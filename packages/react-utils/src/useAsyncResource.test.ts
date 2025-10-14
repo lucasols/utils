@@ -747,8 +747,8 @@ describe('useAsyncResource', () => {
     test('should handle multiple function changes during loading', async () => {
       let currentResolve: (value: string) => void;
       let callCount = 0;
-      
-      const createAsyncFn = (_id: number) => vi.fn(() => 
+
+      const createAsyncFn = (_id: number) => vi.fn(() =>
         new Promise<string>((resolve) => {
           currentResolve = resolve;
           callCount++;
@@ -770,7 +770,7 @@ describe('useAsyncResource', () => {
       await act(async () => {
         rerender({ fn: fn2 });
       });
-      
+
       await act(async () => {
         rerender({ fn: fn3 });
       });
@@ -788,6 +788,368 @@ describe('useAsyncResource', () => {
       });
 
       expect(result.current.data).toBe('final-data');
+    });
+  });
+
+  describe('externalDeps option', () => {
+    test('should auto-refetch when external deps change', async () => {
+      const mockAsyncFn = vi.fn(async () => {
+        await sleep(50);
+        return 'data';
+      });
+
+      const { result, rerender } = renderHook(
+        ({ userId }) =>
+          useAsyncResource(mockAsyncFn, { externalDeps: [userId] }),
+        { initialProps: { userId: 1 } }
+      );
+
+      // Wait for initial load
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(result.current.data).toBe('data');
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+
+      // Change external dep - should trigger refetch
+      await act(async () => {
+        rerender({ userId: 2 });
+      });
+
+      // Should be refetching and preserve previous data
+      expect(result.current.status).toBe('refetching');
+      expect(result.current.data).toBe('data');
+      expect(result.current.isLoading).toBe(true);
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+
+      expect(result.current.data).toBe('data');
+      expect(result.current.isLoading).toBe(false);
+      expect(mockAsyncFn).toHaveBeenCalledTimes(2);
+    });
+
+    test('should not refetch when external deps remain the same', async () => {
+      const mockAsyncFn = vi.fn(async () => {
+        await sleep(50);
+        return 'data';
+      });
+
+      const { result, rerender } = renderHook(
+        ({ userId }) =>
+          useAsyncResource(mockAsyncFn, { externalDeps: [userId] }),
+        { initialProps: { userId: 1 } }
+      );
+
+      // Wait for initial load
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+
+      // Rerender with same dep - should not refetch
+      await act(async () => {
+        rerender({ userId: 1 });
+      });
+
+      await sleep(100);
+
+      // Should remain in success state
+      expect(result.current.status).toBe('success');
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+    });
+
+    test('should not refetch on initial mount', async () => {
+      const mockAsyncFn = vi.fn(async () => {
+        await sleep(50);
+        return 'data';
+      });
+
+      const { result } = renderHook(() =>
+        useAsyncResource(mockAsyncFn, { externalDeps: [1, 'test'] })
+      );
+
+      // Should do initial load, not refetch
+      expect(result.current.status).toBe('loading');
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+
+      expect(result.current.data).toBe('data');
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+    });
+
+    test('should work with multiple dependencies', async () => {
+      const mockAsyncFn = vi.fn(async () => {
+        await sleep(50);
+        return 'data';
+      });
+
+      const { result, rerender } = renderHook(
+        ({ userId, filter }) =>
+          useAsyncResource(mockAsyncFn, { externalDeps: [userId, filter] }),
+        { initialProps: { userId: 1, filter: 'active' } }
+      );
+
+      // Wait for initial load
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+
+      // Change one dep
+      await act(async () => {
+        rerender({ userId: 2, filter: 'active' });
+      });
+
+      expect(result.current.status).toBe('refetching');
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(mockAsyncFn).toHaveBeenCalledTimes(2);
+
+      // Change other dep
+      await act(async () => {
+        rerender({ userId: 2, filter: 'inactive' });
+      });
+
+      expect(result.current.status).toBe('refetching');
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(mockAsyncFn).toHaveBeenCalledTimes(3);
+
+      // Change both deps
+      await act(async () => {
+        rerender({ userId: 3, filter: 'all' });
+      });
+
+      expect(result.current.status).toBe('refetching');
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(mockAsyncFn).toHaveBeenCalledTimes(4);
+    });
+
+    test('should work in lazy mode', async () => {
+      const mockAsyncFn = vi.fn(async () => {
+        await sleep(50);
+        return 'data';
+      });
+
+      const { result, rerender } = renderHook(
+        ({ userId }) =>
+          useAsyncResource(mockAsyncFn, { lazy: true, externalDeps: [userId] }),
+        { initialProps: { userId: 1 } }
+      );
+
+      // Should be idle
+      expect(result.current.status).toBe('idle');
+
+      // Manual load
+      await act(async () => {
+        result.current.load();
+      });
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+
+      // Change dep - should trigger refetch even in lazy mode
+      await act(async () => {
+        rerender({ userId: 2 });
+      });
+
+      expect(result.current.status).toBe('refetching');
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(mockAsyncFn).toHaveBeenCalledTimes(2);
+    });
+
+    test('should not refetch if no initial load completed', async () => {
+      const mockAsyncFn = vi.fn(async () => {
+        await sleep(50);
+        return 'data';
+      });
+
+      const { result, rerender } = renderHook(
+        ({ userId }) =>
+          useAsyncResource(mockAsyncFn, { lazy: true, externalDeps: [userId] }),
+        { initialProps: { userId: 1 } }
+      );
+
+      // Should be idle
+      expect(result.current.status).toBe('idle');
+      expect(mockAsyncFn).not.toHaveBeenCalled();
+
+      // Change dep while still idle - should not trigger load
+      await act(async () => {
+        rerender({ userId: 2 });
+      });
+
+      await sleep(100);
+
+      // Should remain idle
+      expect(result.current.status).toBe('idle');
+      expect(mockAsyncFn).not.toHaveBeenCalled();
+    });
+
+    test('should handle deps change after error', async () => {
+      let shouldThrow = true;
+      const mockAsyncFn = vi.fn(async () => {
+        await sleep(50);
+        if (shouldThrow) {
+          throw new Error('Test error');
+        }
+        return 'data';
+      });
+
+      const { result, rerender } = renderHook(
+        ({ userId }) =>
+          useAsyncResource(mockAsyncFn, { externalDeps: [userId] }),
+        { initialProps: { userId: 1 } }
+      );
+
+      // Wait for error
+      await waitFor(() => {
+        expect(result.current.status).toBe('error');
+      });
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+
+      // Change the function behavior to not throw and change dep
+      shouldThrow = false;
+      await act(async () => {
+        rerender({ userId: 2 });
+      });
+
+      // Should refetch
+      expect(result.current.status).toBe('refetching');
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(result.current.data).toBe('data');
+      expect(result.current.error).toBe(null);
+      expect(mockAsyncFn).toHaveBeenCalledTimes(2);
+    });
+
+    test('should work without externalDeps defined', async () => {
+      const mockAsyncFn = vi.fn(async () => {
+        await sleep(50);
+        return 'data';
+      });
+
+      const { result } = renderHook(() =>
+        useAsyncResource(mockAsyncFn)
+      );
+
+      // Should load normally without externalDeps
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+
+      expect(result.current.data).toBe('data');
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+    });
+
+    test('should work with empty externalDeps array', async () => {
+      const mockAsyncFn = vi.fn(async () => {
+        await sleep(50);
+        return 'data';
+      });
+
+      const { result, rerender } = renderHook(() =>
+        useAsyncResource(mockAsyncFn, { externalDeps: [] })
+      );
+
+      // Should load normally
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+
+      // Rerender - should not refetch with empty deps
+      await act(async () => {
+        rerender();
+      });
+
+      await sleep(100);
+
+      expect(result.current.status).toBe('success');
+      expect(mockAsyncFn).toHaveBeenCalledTimes(1);
+    });
+
+    test('should work with both asyncFnUsesExternalDeps and externalDeps', async () => {
+      const mockAsyncFn1 = vi.fn(async () => {
+        await sleep(50);
+        return 'data1';
+      });
+      const mockAsyncFn2 = vi.fn(async () => {
+        await sleep(50);
+        return 'data2';
+      });
+
+      const { result, rerender } = renderHook(
+        ({ fn, userId }) =>
+          useAsyncResource(fn, {
+            asyncFnUsesExternalDeps: true,
+            externalDeps: [userId]
+          }),
+        { initialProps: { fn: mockAsyncFn1, userId: 1 } }
+      );
+
+      // Wait for initial load
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(result.current.data).toBe('data1');
+      expect(mockAsyncFn1).toHaveBeenCalledTimes(1);
+
+      // Change externalDeps only
+      await act(async () => {
+        rerender({ fn: mockAsyncFn1, userId: 2 });
+      });
+
+      expect(result.current.status).toBe('refetching');
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(mockAsyncFn1).toHaveBeenCalledTimes(2);
+
+      // Change function only
+      await act(async () => {
+        rerender({ fn: mockAsyncFn2, userId: 2 });
+      });
+
+      expect(result.current.status).toBe('refetching');
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(result.current.data).toBe('data2');
+      expect(mockAsyncFn2).toHaveBeenCalledTimes(1);
+
+      // Change both
+      await act(async () => {
+        rerender({ fn: mockAsyncFn1, userId: 3 });
+      });
+
+      expect(result.current.status).toBe('refetching');
+
+      await waitFor(() => {
+        expect(result.current.status).toBe('success');
+      });
+      expect(result.current.data).toBe('data1');
+      expect(mockAsyncFn1).toHaveBeenCalledTimes(3);
     });
   });
 });

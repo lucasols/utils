@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { unknownToError } from 't-result';
+import { shallowEqual } from '@ls-stack/utils/shallowEqual';
 import { useLatestValue } from './useLatestValue';
+import { useOnChange } from './useOnChange';
 
 type AsyncState<T> = {
   status: 'idle' | 'loading' | 'refetching' | 'success' | 'error';
@@ -13,40 +15,49 @@ type AsyncResult<T> = AsyncState<T> & { isLoading: boolean; load: () => void };
 type Options = {
   lazy?: boolean;
   asyncFnUsesExternalDeps?: boolean;
+  externalDeps?: unknown[];
 };
 
 /**
- * React hook to manage the lifecycle of an async resource (fetching, loading, error, success).
+ * React hook to manage the lifecycle of an async resource (fetching, loading,
+ * error, success).
  *
- * Handles loading state, error state, and provides a `load` function to trigger the async operation.
- * By default, the async function runs on mount unless `lazy: true` is passed.
+ * Handles loading state, error state, and provides a `load` function to trigger
+ * the async operation. By default, the async function runs on mount unless
+ * `lazy: true` is passed.
+ *
+ * @example
+ *   const { data, isLoading, error, load } = useAsyncResource(() =>
+ *     fetchUser(id),
+ *   );
+ *   // Optionally, call `load()` to re-fetch or if using lazy mode
+ *
+ * @example
+ *   // Auto-refetch when dependencies change
+ *   const { data, isLoading, status } = useAsyncResource(
+ *     () => fetchUser(userId),
+ *     { asyncFnUsesExternalDeps: true },
+ *   );
+ *   // Will refetch automatically when userId changes, status becomes 'refetching'
  *
  * @param asyncFn - Function returning a Promise for the resource to load
  * @param options - Optional configuration object
  * @param options.lazy - If true, does not auto-load on mount
- * @param options.asyncFnUsesExternalDeps - If true, automatically re-fetches when asyncFn changes
+ * @param options.asyncFnUsesExternalDeps - If true, automatically re-fetches
+ *   when asyncFn changes
+ * @param options.externalDeps - Array of dependencies that trigger refetch when
+ *   changed (similar to useEffect deps)
  * @returns Object with:
+ *
  *   - `status`: 'idle' | 'loading' | 'refetching' | 'success' | 'error'
  *   - `error`: Error or null
  *   - `data`: The loaded data or null
  *   - `isLoading`: boolean (true if loading or refetching)
  *   - `load`: function to trigger loading
- *
- * @example
- * const { data, isLoading, error, load } = useAsyncResource(() => fetchUser(id));
- * // Optionally, call `load()` to re-fetch or if using lazy mode
- *
- * @example
- * // Auto-refetch when dependencies change
- * const { data, isLoading, status } = useAsyncResource(
- *   () => fetchUser(userId),
- *   { asyncFnUsesExternalDeps: true }
- * );
- * // Will refetch automatically when userId changes, status becomes 'refetching'
  */
 export function useAsyncResource<T>(
   asyncFn: () => Promise<T>,
-  { lazy, asyncFnUsesExternalDeps }: Options = {},
+  { lazy, asyncFnUsesExternalDeps, externalDeps }: Options = {},
 ): AsyncResult<T | null> {
   const [state, setState] = useState<AsyncState<T | null>>({
     status: lazy ? 'idle' : 'loading',
@@ -149,6 +160,24 @@ export function useAsyncResource<T>(
 
     prevAsyncFnRef.current = asyncFn;
   }, [asyncFnUsesExternalDeps, asyncFn, stableFetchData, state.status]);
+
+  // Auto-refetch when externalDeps change
+  useOnChange(
+    externalDeps,
+    () => {
+      if (!externalDeps) return;
+
+      // Only refetch if we've completed at least one load
+      const hasCompletedLoad =
+        hasInitialLoadRef.current &&
+        (state.status === 'success' || state.status === 'error');
+
+      if (hasCompletedLoad) {
+        void stableFetchData.insideEffect(true);
+      }
+    },
+    { equalityFn: shallowEqual },
+  );
 
   useEffect(() => {
     return () => {
