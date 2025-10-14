@@ -27,6 +27,7 @@
   },
   "@ls-stack/react-utils": {
     "0.5.0": "1acf69d8d801d1299ee1457a36849a496b05bdd86e2fca0285b74f0fd13abe87",
-    "0.6.0": "b9581540a246ea34aeea74708c2ea53d358fcf1dc0fca1dec88a0088bc389378"
+    "0.6.0": "b9581540a246ea34aeea74708c2ea53d358fcf1dc0fca1dec88a0088bc389378",
+    "0.7.0": "d6be1a9be22366c00954bfd6494f04772b8e2052c703b37b302ef39bdf2af613"
   }
 }
