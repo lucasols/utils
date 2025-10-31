@@ -5,6 +5,7 @@ import {
   findAndMap,
   findBeforeIndex,
   intersperse,
+  looseIsInArray,
   rejectArrayUndefinedValues,
   rejectDuplicates,
   repeat,
@@ -445,4 +446,12 @@ describe('repeat', () => {
       ]
     `);
   });
+});
+
+test('looseIsInArray', () => {
+  expect(looseIsInArray(2, [1, 2, 3])).toBe(true);
+  expect(looseIsInArray('2', [1, 2, 3])).toBe(false);
+  expect(looseIsInArray(2, [1, '2', 3])).toBe(false);
+  expect(looseIsInArray('2', [1, '2', 3])).toBe(true);
+  expect(looseIsInArray(2, [1, '2', 3])).toBe(false);
 });

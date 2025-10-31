@@ -168,6 +168,13 @@ export function isInArray<T, const U extends T>(
   return false;
 }
 
+export function looseIsInArray(
+  value: unknown,
+  array: readonly unknown[],
+): boolean {
+  return array.includes(value);
+}
+
 export function findAfterIndex<T>(
   array: T[],
   index: number,
@@ -349,10 +356,7 @@ export function arrayOps<T>(array: T[]): ArrayOps<T> {
  * @param separator - The value to insert between elements
  * @returns A new array with separator values inserted between elements
  */
-export function intersperse<T, I>(
-  array: T[],
-  separator: I,
-): (T | I)[] {
+export function intersperse<T, I>(array: T[], separator: I): (T | I)[] {
   const result: (T | I)[] = [];
   for (let i = 0; i < array.length; i++) {
     result.push(array[i]!);
@@ -364,8 +368,8 @@ export function intersperse<T, I>(
 }
 
 /**
- * Creates an array by repeating a value a specified number of times,
- * optionally with a separator between each repetition.
+ * Creates an array by repeating a value a specified number of times, optionally
+ * with a separator between each repetition.
  *
  * @example
  *   repeat('x', 3); // ['x', 'x', 'x']
@@ -376,11 +380,7 @@ export function intersperse<T, I>(
  * @param separator - Optional separator to insert between repetitions
  * @returns A new array with the repeated values
  */
-export function repeat<T>(
-  value: T,
-  count: number,
-  separator?: T,
-): T[] {
+export function repeat<T>(value: T, count: number, separator?: T): T[] {
   const result: T[] = [];
   for (let i = 0; i < count; i++) {
     result.push(value);
