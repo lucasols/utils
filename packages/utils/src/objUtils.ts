@@ -23,14 +23,17 @@ export function pick<T extends Record<string, unknown>, K extends keyof T>(
   return result;
 }
 
-export function mapArrayToObject<T, K extends string, O>(
+export function mapArrToObj<T, K extends string, O>(
   array: T[],
   mapper: (item: T, index: number) => [K, O],
 ): Record<K, O> {
   return Object.fromEntries(array.map(mapper)) as any;
 }
 
-export function mapObjectToObject<
+/** @deprecated Use mapArrToObj instead */
+export const mapArrayToObject = mapArrToObj;
+
+export function mapObjToObj<
   I extends Record<string | number | symbol, unknown>,
   K extends string | number | symbol,
   O,
@@ -39,6 +42,9 @@ export function mapObjectToObject<
     objectTypedEntries(obj).map(([key, value]) => mapper(key, value)),
   ) as any;
 }
+
+/** @deprecated Use mapObjToObj instead */
+export const mapObjectToObject = mapObjToObj;
 
 export function omit<T extends Record<string, unknown>, K extends keyof T>(
   obj: T,
@@ -193,4 +199,45 @@ function parsePath(path: string): string[] {
 
 function isNumericString(str: string): boolean {
   return /^\d+$/.test(str);
+}
+
+export function getObjPropertyOrInsert<
+  T extends Record<string, any>,
+  K extends keyof T,
+>(
+  obj: T,
+  prop: K,
+  insertValue: () => Exclude<T[K], undefined>,
+): Exclude<T[K], undefined> {
+  if (obj[prop] === undefined) {
+    obj[prop] = insertValue();
+  }
+
+  return obj[prop];
+}
+
+export function addPrefixToObjKeys<
+  T extends Record<string, unknown>,
+  P extends string,
+>(obj: T, prefix: P): { [K in keyof T & string as `${P}${K}`]: T[K] } {
+  const newObj = {} as any;
+
+  for (const [key, value] of Object.entries(obj)) {
+    newObj[`${prefix}${key}`] = value;
+  }
+
+  return newObj;
+}
+
+export function addSuffixToObjKeys<
+  T extends Record<string, unknown>,
+  S extends string,
+>(obj: T, suffix: S): { [K in keyof T & string as `${K}${S}`]: T[K] } {
+  const newObj = {} as any;
+
+  for (const [key, value] of Object.entries(obj)) {
+    newObj[`${key}${suffix}`] = value;
+  }
+
+  return newObj;
 }

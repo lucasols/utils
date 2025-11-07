@@ -1,6 +1,9 @@
 import { assert, describe, expect, test } from 'vitest';
 import {
+  addPrefixToObjKeys,
+  addSuffixToObjKeys,
   filterObjectKeys,
+  getObjPropertyOrInsert,
   getValueFromPath,
   looseGetObjectProperty,
   pick,
@@ -232,5 +235,239 @@ describe('getValueFromPath', () => {
 
     assert(result.ok);
     expect(result.value).toEqual(testObj.user);
+  });
+});
+
+describe('getObjPropertyOrInsert', () => {
+  test('should return existing property value when it exists', () => {
+    const obj = { count: 5, name: 'test' };
+    const insertFn = () => 10;
+
+    const result = getObjPropertyOrInsert(obj, 'count', insertFn);
+
+    typingTest.expectType<TestTypeIsEqual<typeof result, number>>();
+    expect(result).toBe(5);
+    expect(obj.count).toBe(5);
+  });
+
+  test('should insert and return new value when property is undefined', () => {
+    const obj: { count?: number; name: string } = { name: 'test' };
+    const insertFn = () => 10;
+
+    const result = getObjPropertyOrInsert(obj, 'count', insertFn);
+
+    typingTest.expectType<TestTypeIsEqual<typeof result, number>>();
+    expect(result).toBe(10);
+    expect(obj.count).toBe(10);
+  });
+
+  test('should insert array when property is undefined', () => {
+    const obj: { items?: string[] } = {};
+    const insertFn = () => ['a', 'b', 'c'];
+
+    const result = getObjPropertyOrInsert(obj, 'items', insertFn);
+
+    typingTest.expectType<TestTypeIsEqual<typeof result, string[]>>();
+    expect(result).toEqual(['a', 'b', 'c']);
+    expect(obj.items).toEqual(['a', 'b', 'c']);
+  });
+
+  test('should insert object when property is undefined', () => {
+    const obj: { config?: { enabled: boolean } } = {};
+    const insertFn = () => ({ enabled: true });
+
+    const result = getObjPropertyOrInsert(obj, 'config', insertFn);
+
+    typingTest.expectType<
+      TestTypeIsEqual<typeof result, { enabled: boolean }>
+    >();
+    expect(result).toEqual({ enabled: true });
+    expect(obj.config).toEqual({ enabled: true });
+  });
+
+  test('should mutate the original object', () => {
+    const obj: { cache?: Map<string, number> } = {};
+    const insertFn = () => new Map([['key', 1]]);
+
+    const result = getObjPropertyOrInsert(obj, 'cache', insertFn);
+
+    expect(result).toBe(obj.cache);
+    expect(obj.cache?.get('key')).toBe(1);
+  });
+
+  test('should handle zero as existing value', () => {
+    const obj = { count: 0 };
+    const insertFn = () => 10;
+
+    const result = getObjPropertyOrInsert(obj, 'count', insertFn);
+
+    expect(result).toBe(0);
+    expect(obj.count).toBe(0);
+  });
+
+  test('should handle empty string as existing value', () => {
+    const obj = { text: '' };
+    const insertFn = () => 'default';
+
+    const result = getObjPropertyOrInsert(obj, 'text', insertFn);
+
+    expect(result).toBe('');
+    expect(obj.text).toBe('');
+  });
+
+  test('should handle false as existing value', () => {
+    const obj = { flag: false };
+    const insertFn = () => true;
+
+    const result = getObjPropertyOrInsert(obj, 'flag', insertFn);
+
+    expect(result).toBe(false);
+    expect(obj.flag).toBe(false);
+  });
+});
+
+describe('addPrefixToObjKeys', () => {
+  test('should add prefix to all object keys', () => {
+    const obj = { name: 'John', age: 30, city: 'NYC' };
+
+    const result = addPrefixToObjKeys(obj, 'user_');
+
+    typingTest.expectType<
+      TestTypeIsEqual<
+        typeof result,
+        { user_name: string; user_age: number; user_city: string }
+      >
+    >();
+    expect(result).toEqual({
+      user_name: 'John',
+      user_age: 30,
+      user_city: 'NYC',
+    });
+  });
+
+  test('should work with empty prefix', () => {
+    const obj = { a: 1, b: 2 };
+
+    const result = addPrefixToObjKeys(obj, '');
+
+    expect(result).toEqual({ a: 1, b: 2 });
+  });
+
+  test('should preserve value types', () => {
+    const obj = {
+      str: 'text',
+      num: 42,
+      bool: true,
+      arr: [1, 2, 3],
+      nested: { key: 'value' },
+      nul: null,
+    };
+
+    const result = addPrefixToObjKeys(obj, 'data_');
+
+    expect(result.data_str).toBe('text');
+    expect(result.data_num).toBe(42);
+    expect(result.data_bool).toBe(true);
+    expect(result.data_arr).toEqual([1, 2, 3]);
+    expect(result.data_nested).toEqual({ key: 'value' });
+    expect(result.data_nul).toBe(null);
+  });
+
+  test('should work with empty object', () => {
+    const obj = {};
+
+    const result = addPrefixToObjKeys(obj, 'prefix_');
+
+    expect(result).toEqual({});
+  });
+
+  test('should handle special characters in prefix', () => {
+    const obj = { id: 1, name: 'test' };
+
+    const result = addPrefixToObjKeys(obj, '$_');
+
+    expect(result).toEqual({ $_id: 1, $_name: 'test' });
+  });
+
+  test('should not mutate original object', () => {
+    const obj = { a: 1, b: 2 };
+    const original = { ...obj };
+
+    addPrefixToObjKeys(obj, 'prefix_');
+
+    expect(obj).toEqual(original);
+  });
+});
+
+describe('addSuffixToObjKeys', () => {
+  test('should add suffix to all object keys', () => {
+    const obj = { name: 'John', age: 30, city: 'NYC' };
+
+    const result = addSuffixToObjKeys(obj, '_old');
+
+    typingTest.expectType<
+      TestTypeIsEqual<
+        typeof result,
+        { name_old: string; age_old: number; city_old: string }
+      >
+    >();
+    expect(result).toEqual({
+      name_old: 'John',
+      age_old: 30,
+      city_old: 'NYC',
+    });
+  });
+
+  test('should work with empty suffix', () => {
+    const obj = { a: 1, b: 2 };
+
+    const result = addSuffixToObjKeys(obj, '');
+
+    expect(result).toEqual({ a: 1, b: 2 });
+  });
+
+  test('should preserve value types', () => {
+    const obj = {
+      str: 'text',
+      num: 42,
+      bool: true,
+      arr: [1, 2, 3],
+      nested: { key: 'value' },
+      nul: null,
+    };
+
+    const result = addSuffixToObjKeys(obj, '_v1');
+
+    expect(result.str_v1).toBe('text');
+    expect(result.num_v1).toBe(42);
+    expect(result.bool_v1).toBe(true);
+    expect(result.arr_v1).toEqual([1, 2, 3]);
+    expect(result.nested_v1).toEqual({ key: 'value' });
+    expect(result.nul_v1).toBe(null);
+  });
+
+  test('should work with empty object', () => {
+    const obj = {};
+
+    const result = addSuffixToObjKeys(obj, '_suffix');
+
+    expect(result).toEqual({});
+  });
+
+  test('should handle special characters in suffix', () => {
+    const obj = { id: 1, name: 'test' };
+
+    const result = addSuffixToObjKeys(obj, '_$');
+
+    expect(result).toEqual({ id_$: 1, name_$: 'test' });
+  });
+
+  test('should not mutate original object', () => {
+    const obj = { a: 1, b: 2 };
+    const original = { ...obj };
+
+    addSuffixToObjKeys(obj, '_suffix');
+
+    expect(obj).toEqual(original);
   });
 });
