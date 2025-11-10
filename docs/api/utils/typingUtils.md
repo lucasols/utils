@@ -4,6 +4,46 @@
 
 ## Type Aliases
 
+### AddPrefixToObjKeys\<T, Prefix\>
+
+```ts
+type AddPrefixToObjKeys<T, Prefix> = { [K in keyof T & string as `${Prefix}${K}`]: T[K] };
+```
+
+Defined in: [packages/utils/src/typingUtils.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L39)
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `Record`\<`string`, `unknown`\>
+
+##### Prefix
+
+`Prefix` *extends* `string`
+
+***
+
+### AddSuffixToObjKeys\<T, Suffix\>
+
+```ts
+type AddSuffixToObjKeys<T, Suffix> = { [K in keyof T & string as `${K}${Suffix}`]: T[K] };
+```
+
+Defined in: [packages/utils/src/typingUtils.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L46)
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `Record`\<`string`, `unknown`\>
+
+##### Suffix
+
+`Suffix` *extends* `string`
+
+***
+
 ### ~~DeepPrettify\<T\>~~
 
 ```ts

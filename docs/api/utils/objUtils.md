@@ -10,7 +10,7 @@
 const mapArrayToObject: <T, K, O>(array, mapper) => Record<K, O> = mapArrToObj;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L34)
+Defined in: [packages/utils/src/objUtils.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L35)
 
 #### Type Parameters
 
@@ -52,7 +52,7 @@ Use mapArrToObj instead
 const mapObjectToObject: <I, K, O>(obj, mapper) => Record<K, O> = mapObjToObj;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:47](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L47)
+Defined in: [packages/utils/src/objUtils.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L48)
 
 #### Type Parameters
 
@@ -91,10 +91,10 @@ Use mapObjToObj instead
 ### addPrefixToObjKeys()
 
 ```ts
-function addPrefixToObjKeys<T, P>(obj, prefix): { [K in string as `${P}${K}`]: T[K] };
+function addPrefixToObjKeys<T, P>(obj, prefix): AddPrefixToObjKeys<T, P>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:219](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L219)
+Defined in: [packages/utils/src/objUtils.ts:220](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L220)
 
 #### Type Parameters
 
@@ -118,17 +118,17 @@ Defined in: [packages/utils/src/objUtils.ts:219](https://github.com/lucasols/uti
 
 #### Returns
 
-`` { [K in string as `${P}${K}`]: T[K] } ``
+[`AddPrefixToObjKeys`](typingUtils.md#addprefixtoobjkeys)\<`T`, `P`\>
 
 ***
 
 ### addSuffixToObjKeys()
 
 ```ts
-function addSuffixToObjKeys<T, S>(obj, suffix): { [K in string as `${K}${S}`]: T[K] };
+function addSuffixToObjKeys<T, S>(obj, suffix): AddSuffixToObjKeys<T, S>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:232](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L232)
+Defined in: [packages/utils/src/objUtils.ts:233](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L233)
 
 #### Type Parameters
 
@@ -152,7 +152,7 @@ Defined in: [packages/utils/src/objUtils.ts:232](https://github.com/lucasols/uti
 
 #### Returns
 
-`` { [K in string as `${K}${S}`]: T[K] } ``
+[`AddSuffixToObjKeys`](typingUtils.md#addsuffixtoobjkeys)\<`T`, `S`\>
 
 ***
 
@@ -162,7 +162,7 @@ Defined in: [packages/utils/src/objUtils.ts:232](https://github.com/lucasols/uti
 function filterObjectKeys<T>(obj, predicate): Partial<T>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:85](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L85)
+Defined in: [packages/utils/src/objUtils.ts:86](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L86)
 
 #### Type Parameters
 
@@ -195,7 +195,7 @@ function getObjPropertyOrInsert<T, K>(
 insertValue): Exclude<T[K], undefined>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:204](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L204)
+Defined in: [packages/utils/src/objUtils.ts:205](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L205)
 
 #### Type Parameters
 
@@ -233,7 +233,7 @@ Defined in: [packages/utils/src/objUtils.ts:204](https://github.com/lucasols/uti
 function getValueFromPath(obj, path): Result<unknown, Error>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:106](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L106)
+Defined in: [packages/utils/src/objUtils.ts:107](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L107)
 
 #### Parameters
 
@@ -257,7 +257,7 @@ Defined in: [packages/utils/src/objUtils.ts:106](https://github.com/lucasols/uti
 function looseGetObjectProperty<T>(obj, key): undefined | T[keyof T];
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L64)
+Defined in: [packages/utils/src/objUtils.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L65)
 
 #### Type Parameters
 
@@ -287,7 +287,7 @@ Defined in: [packages/utils/src/objUtils.ts:64](https://github.com/lucasols/util
 function mapArrToObj<T, K, O>(array, mapper): Record<K, O>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L26)
+Defined in: [packages/utils/src/objUtils.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L27)
 
 #### Type Parameters
 
@@ -325,7 +325,7 @@ Defined in: [packages/utils/src/objUtils.ts:26](https://github.com/lucasols/util
 function mapObjToObj<I, K, O>(obj, mapper): Record<K, O>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L36)
+Defined in: [packages/utils/src/objUtils.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L37)
 
 #### Type Parameters
 
@@ -363,7 +363,7 @@ Defined in: [packages/utils/src/objUtils.ts:36](https://github.com/lucasols/util
 function objectTypedEntries<T>(obj): [Extract<keyof T, string>, T[keyof T]][];
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L10)
+Defined in: [packages/utils/src/objUtils.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L11)
 
 #### Type Parameters
 
@@ -393,7 +393,7 @@ Use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
 function omit<T, K>(obj, keys): Omit<T, K>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:49](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L49)
+Defined in: [packages/utils/src/objUtils.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L50)
 
 #### Type Parameters
 
@@ -427,7 +427,7 @@ Defined in: [packages/utils/src/objUtils.ts:49](https://github.com/lucasols/util
 function pick<T, K>(obj, keys): Pick<T, K>;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:14](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L14)
+Defined in: [packages/utils/src/objUtils.ts:15](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L15)
 
 #### Type Parameters
 
@@ -461,7 +461,7 @@ Defined in: [packages/utils/src/objUtils.ts:14](https://github.com/lucasols/util
 function rejectObjUndefinedValues<T>(obj): { [P in string | number | symbol]: (Partial<Pick<T, PickUndefinedKeys<T>>> & Pick<T, PickRequiredKeys<T>>)[P] };
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:71](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L71)
+Defined in: [packages/utils/src/objUtils.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L72)
 
 #### Type Parameters
 
@@ -490,7 +490,7 @@ function sortObjectKeys<T>(
    options?): T;
 ```
 
-Defined in: [packages/utils/src/objUtils.ts:96](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L96)
+Defined in: [packages/utils/src/objUtils.ts:97](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L97)
 
 #### Type Parameters
 
