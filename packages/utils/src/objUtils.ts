@@ -2,6 +2,7 @@ import { Result } from 't-result';
 import { sortBy, type SortByProps, type SortByValueFn } from './arrayUtils';
 import type { MakeUndefinedKeysOptional } from './typeUtils';
 import { typedObjectEntries } from './typingFnUtils';
+import type { AddPrefixToObjKeys, AddSuffixToObjKeys } from './typingUtils';
 
 /**
  * @deprecated Use typedObjectEntries from @ls-stack/utils/typingFnUtils instead
@@ -219,7 +220,7 @@ export function getObjPropertyOrInsert<
 export function addPrefixToObjKeys<
   T extends Record<string, unknown>,
   P extends string,
->(obj: T, prefix: P): { [K in keyof T & string as `${P}${K}`]: T[K] } {
+>(obj: T, prefix: P): AddPrefixToObjKeys<T, P> {
   const newObj = {} as any;
 
   for (const [key, value] of Object.entries(obj)) {
@@ -232,7 +233,7 @@ export function addPrefixToObjKeys<
 export function addSuffixToObjKeys<
   T extends Record<string, unknown>,
   S extends string,
->(obj: T, suffix: S): { [K in keyof T & string as `${K}${S}`]: T[K] } {
+>(obj: T, suffix: S): AddSuffixToObjKeys<T, S> {
   const newObj = {} as any;
 
   for (const [key, value] of Object.entries(obj)) {

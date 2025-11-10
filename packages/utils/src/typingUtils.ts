@@ -35,3 +35,17 @@ export type DeepPrettify<T> = {
   [K in keyof T]: T[K] extends Record<string, unknown> ? DeepPrettify<T[K]>
   : T[K];
 } & {};
+
+export type AddPrefixToObjKeys<
+  T extends Record<string, unknown>,
+  Prefix extends string,
+> = {
+  [K in keyof T & string as `${Prefix}${K}`]: T[K];
+};
+
+export type AddSuffixToObjKeys<
+  T extends Record<string, unknown>,
+  Suffix extends string,
+> = {
+  [K in keyof T & string as `${K}${Suffix}`]: T[K];
+};
