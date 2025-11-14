@@ -1,3 +1,4 @@
+import { escapeRegExp } from '@ls-stack/utils/regexUtils';
 import type { ReactElement, ReactNode } from 'react';
 import { Children } from 'react';
 
@@ -11,12 +12,6 @@ type NormalizedReplacer = {
   fn: Replacer['fn'];
   order: number;
 };
-
-const SPECIAL_REGEX_CHARS = /[.*+?^${}()|[\]\\]/g;
-
-function escapeRegExp(value: string): string {
-  return value.replace(SPECIAL_REGEX_CHARS, '\\$&');
-}
 
 function normalizeRegex(match: RegExp): RegExp {
   const flags = match.flags.includes('g') ? match.flags : `${match.flags}g`;
@@ -42,7 +37,9 @@ export function replaceStringWithJSX(
   const normalizedReplacers: NormalizedReplacer[] = replacers.map(
     ({ match, fn }, order) => ({
       regex:
-        typeof match === 'string' ? normalizeStringMatcher(match) : normalizeRegex(match),
+        typeof match === 'string' ?
+          normalizeStringMatcher(match)
+        : normalizeRegex(match),
       fn,
       order,
     }),
@@ -53,15 +50,13 @@ export function replaceStringWithJSX(
   let hasMatches = false;
 
   while (cursor < string.length) {
-    let closestMatch:
-      | {
-          start: number;
-          end: number;
-          groups: (string | undefined)[];
-          fullMatch: string;
-          replacer: NormalizedReplacer;
-        }
-      | null = null;
+    let closestMatch: {
+      start: number;
+      end: number;
+      groups: (string | undefined)[];
+      fullMatch: string;
+      replacer: NormalizedReplacer;
+    } | null = null;
 
     for (const replacer of normalizedReplacers) {
       replacer.regex.lastIndex = cursor;
@@ -85,7 +80,8 @@ export function replaceStringWithJSX(
       if (
         !closestMatch ||
         start < closestMatch.start ||
-        (start === closestMatch.start && replacer.order < closestMatch.replacer.order)
+        (start === closestMatch.start &&
+          replacer.order < closestMatch.replacer.order)
       ) {
         closestMatch = {
           start,
@@ -107,7 +103,9 @@ export function replaceStringWithJSX(
       jsx.push(textBefore);
     }
 
-    jsx.push(closestMatch.replacer.fn(closestMatch.fullMatch, closestMatch.groups));
+    jsx.push(
+      closestMatch.replacer.fn(closestMatch.fullMatch, closestMatch.groups),
+    );
     cursor = closestMatch.end;
     hasMatches = true;
   }
