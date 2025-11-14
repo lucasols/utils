@@ -142,11 +142,11 @@ describe('updateObject', () => {
 });
 
 describe('getArrayMethodsFromProduce', () => {
-  interface Item {
+  type Item = {
     id: string;
     name: string;
     value: number;
-  }
+  };
 
   describe('add method', () => {
     test('should add item to empty array', () => {
@@ -623,10 +623,10 @@ describe('getArrayMethodsFromProduce', () => {
     });
 
     test('should work with custom id getter', () => {
-      interface CustomItem {
+      type CustomItem = {
         userId: string;
         data: string;
-      }
+      };
 
       let state: CustomItem[] = [
         { userId: 'user-1', data: 'Data 1' },
@@ -659,14 +659,14 @@ describe('getArrayMethodsFromProduce', () => {
     });
 
     test('should handle nested object updates', () => {
-      interface ComplexItem {
+      type ComplexItem = {
         id: string;
         metadata: {
           title: string;
           tags: string[];
         };
         value: number;
-      }
+      };
 
       let state: ComplexItem[] = [
         {
@@ -680,7 +680,9 @@ describe('getArrayMethodsFromProduce', () => {
           value: 20,
         },
       ];
-      const produceFn = (cb: (draft: ComplexItem[]) => void | ComplexItem[]) => {
+      const produceFn = (
+        cb: (draft: ComplexItem[]) => void | ComplexItem[],
+      ) => {
         state = produce(state, cb);
       };
       const methods = getArrayMethodsFromProduce(produceFn, (item) => item.id);
