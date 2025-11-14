@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { getRegexMatches, getRegexMatchAll } from './regexUtils';
+import { getRegexMatches, getRegexMatchAll, escapeRegExp } from './regexUtils';
 import { compactSnapshot } from './testUtils';
 
 test('getRegexMatches should return fullMatch and groups for simple match', () => {
@@ -196,4 +196,87 @@ test('getRegexMatchAll should work with case-insensitive flag', () => {
       prevEnd: 11
     "
   `);
+});
+
+test('escapeRegExp should escape all special regex characters', () => {
+  const input = '.*+?^${}()|[]\\';
+  const escaped = escapeRegExp(input);
+
+  expect(escaped).toBe('\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\');
+});
+
+test('escapeRegExp should not modify strings without special characters', () => {
+  const input = 'hello world 123';
+  const escaped = escapeRegExp(input);
+
+  expect(escaped).toBe('hello world 123');
+});
+
+test('escapeRegExp should handle mixed content', () => {
+  const input = 'Price: $5.99 (50% off)';
+  const escaped = escapeRegExp(input);
+
+  expect(escaped).toBe('Price: \\$5\\.99 \\(50% off\\)');
+});
+
+test('escapeRegExp should handle empty string', () => {
+  const escaped = escapeRegExp('');
+
+  expect(escaped).toBe('');
+});
+
+test('escapeRegExp should work in real regex patterns', () => {
+  const searchTerm = 'test.value';
+  const text = 'This is test.value and testXvalue';
+
+  const escapedPattern = new RegExp(escapeRegExp(searchTerm));
+  const matches = text.match(escapedPattern);
+
+  expect(matches).toMatchInlineSnapshot(`
+    [
+      "test.value",
+    ]
+  `);
+});
+
+test('escapeRegExp should handle dot character correctly', () => {
+  const searchTerm = '...';
+  const text = 'abc...def...ghi';
+
+  const pattern = new RegExp(escapeRegExp(searchTerm), 'g');
+  const matches = text.match(pattern);
+
+  expect(matches).toMatchInlineSnapshot(`
+    [
+      "...",
+      "...",
+    ]
+  `);
+});
+
+test('escapeRegExp should handle regex quantifiers correctly', () => {
+  const searchTerm = 'a+b*c?';
+  const text = 'Find a+b*c? in this text, not abc or aabbc';
+
+  const pattern = new RegExp(escapeRegExp(searchTerm));
+
+  expect(pattern.test(text)).toBe(true);
+  expect(pattern.test('abc')).toBe(false);
+});
+
+test('escapeRegExp should handle character classes correctly', () => {
+  const searchTerm = '[abc]';
+  const text = 'Match [abc] literally, not a, b, or c';
+
+  const pattern = new RegExp(escapeRegExp(searchTerm));
+
+  expect(pattern.test(text)).toBe(true);
+  expect(pattern.test('a')).toBe(false);
+});
+
+test('escapeRegExp should handle already escaped strings', () => {
+  const input = 'already\\escaped';
+  const escaped = escapeRegExp(input);
+
+  expect(escaped).toBe('already\\\\escaped');
 });

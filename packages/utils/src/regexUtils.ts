@@ -26,3 +26,9 @@ export function* getRegexMatchAll(str: string, regexp: RegExp) {
     };
   }
 }
+
+const SPECIAL_REGEX_CHARS = /[.*+?^${}()|[\]\\]/g;
+
+export function escapeRegExp(value: string): string {
+  return value.replace(SPECIAL_REGEX_CHARS, '\\$&');
+}
