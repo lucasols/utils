@@ -1,4 +1,5 @@
 import { keepPrevIfUnchanged } from './keepPrevIfUnchanged';
+import { isFunction } from './typeGuards';
 
 /**
  * Updates an object with a new set of values. undefined values are ignored in
@@ -25,4 +26,44 @@ export function updateObject<T extends Record<string, unknown>>(
       });
     }
   }
+}
+
+export function getArrayMethodsFromProduce<T extends Record<string, unknown>>(
+  produceFn: (cb: (newVal: T[]) => void | T[]) => T[] | void,
+  getItemId: (item: T) => string,
+) {
+  return {
+    add: (item: T) =>
+      produceFn((draft) => {
+        draft.push(item);
+      }),
+    remove: (id: string) =>
+      produceFn((draft) => {
+        const index = draft.findIndex((item) => getItemId(item) === id);
+        if (index !== -1) {
+          draft.splice(index, 1);
+        }
+      }),
+    update: (
+      id: string,
+      updateItem: ((draftItem: T) => T | void) | Partial<T>,
+    ) =>
+      produceFn((draft) => {
+        const index = draft.findIndex((item) => getItemId(item) === id);
+        const item = draft[index];
+
+        if (!item) {
+          throw new Error(`Item with id ${id} not found`);
+        }
+
+        if (isFunction(updateItem)) {
+          const updatedItem = updateItem(item);
+          if (updatedItem) {
+            draft[index] = updatedItem;
+          }
+        } else {
+          updateObject(item, updateItem);
+        }
+      }),
+  };
 }
