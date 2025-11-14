@@ -35,6 +35,7 @@
 - [parallelAsyncCalls](parallelAsyncCalls/index.md)
 - [partialEqual](partialEqual/index.md)
 - [promiseUtils](promiseUtils/index.md)
+- [regexUtils](regexUtils.md)
 - [retryOnError](retryOnError/index.md)
 - [runShellCmd](runShellCmd/index.md)
 - [safeJson](safeJson.md)
