@@ -3,6 +3,8 @@
 ## Modules
 
 - [internalUtils/noopWithArgs](internalUtils/noopWithArgs.md)
+- [jsxUtils](jsxUtils/index.md)
+- [jsxUtils.test](jsxUtils.test.md)
 - [main](main.md)
 - [useActionFn](useActionFn.md)
 - [useAnimateMountUnmount](useAnimateMountUnmount.md)

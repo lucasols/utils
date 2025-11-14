@@ -31,6 +31,10 @@
       "import": "./dist/main.js",
       "require": "./dist/main.cjs"
     },
+    "./jsxUtils": {
+      "import": "./dist/jsxUtils.js",
+      "require": "./dist/jsxUtils.cjs"
+    },
     "./useActionFn": {
       "import": "./dist/useActionFn.js",
       "require": "./dist/useActionFn.cjs"
