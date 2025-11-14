@@ -31,7 +31,10 @@ describe('replaceStringWithJSX', () => {
       {
         match: /@(\w+)/g,
         fn: (_, [username]) => (
-          <a data-username={username} href={`/users/${username}`}>
+          <a
+            data-username={username}
+            href={`/users/${username}`}
+          >
             @{username}
           </a>
         ),
@@ -41,7 +44,7 @@ describe('replaceStringWithJSX', () => {
     const { container } = render(<>{node}</>);
 
     expect(container.innerHTML).toMatchInlineSnapshot(`
-      "Chat with <a data-username=\"alice\" href=\"/users/alice\">@alice</a> and <a data-username=\"bob\" href=\"/users/bob\">@bob</a> today"
+      "Chat with <a data-username="alice" href="/users/alice">@alice</a> and <a data-username="bob" href="/users/bob">@bob</a> today"
     `);
   });
 
@@ -50,7 +53,10 @@ describe('replaceStringWithJSX', () => {
       {
         match: /@(\w+)/,
         fn: (_, [username]) => (
-          <button type="button" data-user={username}>
+          <button
+            type="button"
+            data-user={username}
+          >
             @{username}
           </button>
         ),
@@ -60,7 +66,7 @@ describe('replaceStringWithJSX', () => {
     const { container } = render(<>{node}</>);
 
     expect(container.innerHTML).toMatchInlineSnapshot(`
-      "Chat with <button type=\"button\" data-user=\"ana\">@ana</button>, <button type=\"button\" data-user=\"ben\">@ben</button> and <button type=\"button\" data-user=\"cory\">@cory</button>"
+      "Chat with <button type="button" data-user="ana">@ana</button>, <button type="button" data-user="ben">@ben</button> and <button type="button" data-user="cory">@cory</button>"
     `);
   });
 
@@ -107,7 +113,7 @@ describe('replaceStringWithJSX', () => {
     const { container } = render(<>{node}</>);
 
     expect(container.innerHTML).toMatchInlineSnapshot(
-      '"Use <mark data-tag=\"x\">[x]</mark> + <mark data-tag=\"x\">[x]</mark> to mark <mark data-tag=\"x\">[x]</mark>"',
+      '"Use <mark data-tag="x">[x]</mark> + <mark data-tag="x">[x]</mark> to mark <mark data-tag="x">[x]</mark>"',
     );
   });
 
@@ -169,7 +175,7 @@ describe('replaceStringWithJSX', () => {
     const { container } = render(<>{node}</>);
 
     expect(container.innerHTML).toMatchInlineSnapshot(
-      '"<span data-role=\"default\">#10</span> <span data-role=\"admin\">#20</span>"',
+      '"<span data-role="default">#10</span> <span data-role="admin">#20</span>"',
     );
   });
 });
