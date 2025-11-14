@@ -10,6 +10,8 @@
   "readme": "./README.md",
   "exclude": [
     "**/*.test.ts",
+    "**/*.typesTest.ts",
+    "**/*.typesTest.tsx",
     "**/*.test.tsx",
     "**/*.spec.ts",
     "**/*.spec.tsx",
