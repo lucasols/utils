@@ -168,6 +168,13 @@ export function isInArray<T, const U extends T>(
   return false;
 }
 
+export function isInArrayNoNarrow<T, const U extends T>(
+  value: T,
+  oneOf: readonly U[],
+): boolean {
+  return oneOf.includes(value as U);
+}
+
 export function looseIsInArray(
   value: unknown,
   array: readonly unknown[],

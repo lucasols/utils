@@ -2,7 +2,7 @@ import { escapeRegExp } from '@ls-stack/utils/regexUtils';
 import type { ReactElement, ReactNode } from 'react';
 import { Children } from 'react';
 
-type Replacer = {
+export type Replacer = {
   match: RegExp | string;
   fn: (fullMatch: string, groups: (string | undefined)[]) => ReactElement;
 };
