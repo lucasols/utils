@@ -168,7 +168,7 @@ export function isInArray<T, const U extends T>(
   return false;
 }
 
-export function isInArrayNoNarrow<T, const U extends T>(
+export function isInArrayWithoutNarrowing<T, const U extends T>(
   value: T,
   oneOf: readonly U[],
 ): boolean {
