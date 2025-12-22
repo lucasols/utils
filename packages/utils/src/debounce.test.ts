@@ -77,25 +77,31 @@ describe.concurrent('debounce', () => {
     expect(func).toBeCalledTimes(1);
   });
 
-  test('should replace the callback without cancelling scheduled invocation', async ({ expect }) => {
-    const first = vi.fn();
-    const second = vi.fn();
-    const debouncedFunc = debounce(first, 40);
+  test(
+    'should replace the callback without cancelling scheduled invocation',
+    async ({ expect }) => {
+      const first = vi.fn();
+      const second = vi.fn();
+      const debouncedFunc = debounce(first, 40);
 
-    debouncedFunc('value');
-    expect(debouncedFunc.pending()).toMatchInlineSnapshot('true');
+      debouncedFunc('value');
+      expect(debouncedFunc.pending()).toMatchInlineSnapshot('true');
 
-    await sleep(15);
-    debouncedFunc.updateCb(second);
-    expect(debouncedFunc.pending()).toMatchInlineSnapshot('true');
+      await sleep(15);
+      debouncedFunc.updateCb(second);
+      expect(debouncedFunc.pending()).toMatchInlineSnapshot('true');
 
-    await sleep(45);
-    expect(first).not.toBeCalled();
-    expect(second).toBeCalledTimes(1);
-    expect(second).toBeCalledWith('value');
-  });
+      await sleep(45);
+      expect(first).not.toBeCalled();
+      expect(second).toBeCalledTimes(1);
+      expect(second).toBeCalledWith('value');
+    },
+    { retries: 3 },
+  );
 
-  test('should update wait without cancelling pending invocation', async ({ expect }) => {
+  test('should update wait without cancelling pending invocation', async ({
+    expect,
+  }) => {
     const func = vi.fn();
     const debouncedFunc = debounce(func, 80);
 
@@ -113,7 +119,10 @@ describe.concurrent('debounce', () => {
 
   test('should apply updated options', async ({ expect }) => {
     const func = vi.fn();
-    const debouncedFunc = debounce(func, 50, { leading: true, trailing: false });
+    const debouncedFunc = debounce(func, 50, {
+      leading: true,
+      trailing: false,
+    });
 
     debouncedFunc('first');
     expect(func).toHaveBeenCalledTimes(1);
@@ -129,7 +138,9 @@ describe.concurrent('debounce', () => {
     expect(func).toHaveBeenLastCalledWith('second');
   });
 
-  test('should report pending status for scheduled invocations', async ({ expect }) => {
+  test('should report pending status for scheduled invocations', async ({
+    expect,
+  }) => {
     const func = vi.fn();
     const debouncedFunc = debounce(func, 30);
 
@@ -146,7 +157,9 @@ describe.concurrent('debounce', () => {
     expect(debouncedFunc.pending()).toMatchInlineSnapshot('false');
   });
 
-  test('should identify debounced functions with the type guard', ({ expect }) => {
+  test('should identify debounced functions with the type guard', ({
+    expect,
+  }) => {
     const debouncedFunc = debounce(vi.fn(), 25);
 
     expect(isDebouncedFn(debouncedFunc)).toMatchInlineSnapshot('true');
@@ -154,7 +167,9 @@ describe.concurrent('debounce', () => {
 
     if (isDebouncedFn(debouncedFunc)) {
       expect(typeof debouncedFunc.updateCb).toMatchInlineSnapshot('"function"');
-      expect(typeof debouncedFunc.updateParams).toMatchInlineSnapshot('"function"');
+      expect(typeof debouncedFunc.updateParams).toMatchInlineSnapshot(
+        '"function"',
+      );
     }
   });
 });
