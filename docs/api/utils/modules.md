@@ -26,6 +26,8 @@
 - [interpolate](interpolate/index.md)
 - [iteratorUtils](iteratorUtils.md)
 - [keepPrevIfUnchanged](keepPrevIfUnchanged.md)
+- [keyedMap](keyedMap.md)
+- [keyedSet](keyedSet.md)
 - [levenshtein](levenshtein.md)
 - [main](main.md)
 - [matchPath](matchPath/index.md)
