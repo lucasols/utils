@@ -189,6 +189,10 @@
       "import": "./dist/serializeXML.js",
       "require": "./dist/serializeXML.cjs"
     },
+    "./setUtils": {
+      "import": "./dist/setUtils.js",
+      "require": "./dist/setUtils.cjs"
+    },
     "./shallowEqual": {
       "import": "./dist/shallowEqual.js",
       "require": "./dist/shallowEqual.cjs"
