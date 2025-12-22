@@ -50,7 +50,7 @@ const getMarkdownContent = async (): Promise<string> => {
     if (markdownPath.endsWith('/')) {
       markdownPath = markdownPath.replace(/\/$/, '')
     }
-    markdownPath += '.md'
+    markdownPath = markdownPath.replace(/\.html$/, '') + '.md'
     
     // Fetch the raw markdown content
     const response = await fetch(markdownPath)
@@ -107,7 +107,7 @@ const copyMarkdownLink = async () => {
     if (markdownPath.endsWith('/')) {
       markdownPath = markdownPath.replace(/\/$/, '')
     }
-    markdownPath += '.md'
+    markdownPath = markdownPath.replace(/\.html$/, '') + '.md'
     
     // Get the base URL and construct the full markdown URL
     const baseUrl = window.location.origin
