@@ -96,7 +96,7 @@ describe.concurrent('debounce', () => {
       expect(second).toBeCalledTimes(1);
       expect(second).toBeCalledWith('value');
     },
-    { retries: 3 },
+    { retry: 3 },
   );
 
   test('should update wait without cancelling pending invocation', async ({
