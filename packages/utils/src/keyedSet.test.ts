@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { KeyedSet } from './setUtils';
+import { KeyedSet } from './keyedSet';
 
 type Item = { id: number; name: string };
 

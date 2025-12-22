@@ -133,6 +133,10 @@
       "import": "./dist/keepPrevIfUnchanged.js",
       "require": "./dist/keepPrevIfUnchanged.cjs"
     },
+    "./keyedMap": {
+      "import": "./dist/keyedMap.js",
+      "require": "./dist/keyedMap.cjs"
+    },
     "./levenshtein": {
       "import": "./dist/levenshtein.js",
       "require": "./dist/levenshtein.cjs"
@@ -189,9 +193,9 @@
       "import": "./dist/serializeXML.js",
       "require": "./dist/serializeXML.cjs"
     },
-    "./setUtils": {
-      "import": "./dist/setUtils.js",
-      "require": "./dist/setUtils.cjs"
+    "./keyedSet": {
+      "import": "./dist/keyedSet.js",
+      "require": "./dist/keyedSet.cjs"
     },
     "./shallowEqual": {
       "import": "./dist/shallowEqual.js",
