@@ -258,17 +258,8 @@ async function updatePackageExports(_packageName: string) {
     exportedUtils.push(srcFile.replace(/\.ts$/, ''));
   }
 
-  const newExportsField: Record<
-    string,
-    {
-      import: string;
-      require: string;
-    }
-  > = {
-    '.': {
-      import: `${libDir}/${mainFile}.js`,
-      require: `${libDir}/${mainFile}.cjs`,
-    },
+  const newExportsField: Record<string, string> = {
+    '.': `${libDir}/${mainFile}.mjs`,
   };
 
   for (const exportedUtil of exportedUtils) {
@@ -276,10 +267,7 @@ async function updatePackageExports(_packageName: string) {
       continue;
     }
 
-    newExportsField[`./${exportedUtil}`] = {
-      import: `${libDir}/${exportedUtil}.js`,
-      require: `${libDir}/${exportedUtil}.cjs`,
-    };
+    newExportsField[`./${exportedUtil}`] = `${libDir}/${exportedUtil}.mjs`;
   }
 
   if (!deepEqual(packageJson.exports, newExportsField)) {

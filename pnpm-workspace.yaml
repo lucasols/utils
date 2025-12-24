@@ -21,7 +21,7 @@ catalog:
   prettier-plugin-organize-imports: ^4.1.0
   t-result: ^0.6.1
   tsm: ^2.3.0
-  tsup: ^8.3.5
+  tsdown: ^0.18.2
   typedoc: ^0.28.4
   typedoc-plugin-markdown: ^4.6.3
   typedoc-plugin-missing-exports: ^4.0.0

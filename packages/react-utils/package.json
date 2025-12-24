@@ -10,7 +10,7 @@
     "tsc": "tsc -p tsconfig.prod.json",
     "tsc:watch": "tsc -p tsconfig.prod.json --watch",
     "eslint": "CI=true eslint src/ --color --max-warnings=0 --fix",
-    "build": "tsup",
+    "build": "tsdown",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch"
   },
@@ -23,82 +23,28 @@
   "author": "Lucas Santos",
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/main.cjs",
-  "module": "./dist/main.js",
-  "types": "./dist/main.d.ts",
+  "module": "./dist/main.mjs",
+  "types": "./dist/main.d.mts",
   "exports": {
-    ".": {
-      "import": "./dist/main.js",
-      "require": "./dist/main.cjs"
-    },
-    "./jsxUtils": {
-      "import": "./dist/jsxUtils.js",
-      "require": "./dist/jsxUtils.cjs"
-    },
-    "./useActionFn": {
-      "import": "./dist/useActionFn.js",
-      "require": "./dist/useActionFn.cjs"
-    },
-    "./useAnimateMountUnmount": {
-      "import": "./dist/useAnimateMountUnmount.js",
-      "require": "./dist/useAnimateMountUnmount.cjs"
-    },
-    "./useAsyncResource": {
-      "import": "./dist/useAsyncResource.js",
-      "require": "./dist/useAsyncResource.cjs"
-    },
-    "./useComponentEvents": {
-      "import": "./dist/useComponentEvents.js",
-      "require": "./dist/useComponentEvents.cjs"
-    },
-    "./useConst": {
-      "import": "./dist/useConst.js",
-      "require": "./dist/useConst.cjs"
-    },
-    "./useDebouncedCallback": {
-      "import": "./dist/useDebouncedCallback.js",
-      "require": "./dist/useDebouncedCallback.cjs"
-    },
-    "./useDebouncedControlledValue": {
-      "import": "./dist/useDebouncedControlledValue.js",
-      "require": "./dist/useDebouncedControlledValue.cjs"
-    },
-    "./useLatestValue": {
-      "import": "./dist/useLatestValue.js",
-      "require": "./dist/useLatestValue.cjs"
-    },
-    "./useOnChange": {
-      "import": "./dist/useOnChange.js",
-      "require": "./dist/useOnChange.cjs"
-    },
-    "./useOnClickOutside": {
-      "import": "./dist/useOnClickOutside.js",
-      "require": "./dist/useOnClickOutside.cjs"
-    },
-    "./useOnMount": {
-      "import": "./dist/useOnMount.js",
-      "require": "./dist/useOnMount.cjs"
-    },
-    "./useOnUnMount": {
-      "import": "./dist/useOnUnMount.js",
-      "require": "./dist/useOnUnMount.cjs"
-    },
-    "./usePrevious": {
-      "import": "./dist/usePrevious.js",
-      "require": "./dist/usePrevious.cjs"
-    },
-    "./useScheduleToNextRender": {
-      "import": "./dist/useScheduleToNextRender.js",
-      "require": "./dist/useScheduleToNextRender.cjs"
-    },
-    "./useShortCut": {
-      "import": "./dist/useShortCut.js",
-      "require": "./dist/useShortCut.cjs"
-    },
-    "./useTimeout": {
-      "import": "./dist/useTimeout.js",
-      "require": "./dist/useTimeout.cjs"
-    }
+    ".": "./dist/main.mjs",
+    "./DelayUnmount": "./dist/DelayUnmount.mjs",
+    "./jsxUtils": "./dist/jsxUtils.mjs",
+    "./useActionFn": "./dist/useActionFn.mjs",
+    "./useAnimateMountUnmount": "./dist/useAnimateMountUnmount.mjs",
+    "./useAsyncResource": "./dist/useAsyncResource.mjs",
+    "./useComponentEvents": "./dist/useComponentEvents.mjs",
+    "./useConst": "./dist/useConst.mjs",
+    "./useDebouncedCallback": "./dist/useDebouncedCallback.mjs",
+    "./useDebouncedControlledValue": "./dist/useDebouncedControlledValue.mjs",
+    "./useLatestValue": "./dist/useLatestValue.mjs",
+    "./useOnChange": "./dist/useOnChange.mjs",
+    "./useOnClickOutside": "./dist/useOnClickOutside.mjs",
+    "./useOnMount": "./dist/useOnMount.mjs",
+    "./useOnUnMount": "./dist/useOnUnMount.mjs",
+    "./usePrevious": "./dist/usePrevious.mjs",
+    "./useScheduleToNextRender": "./dist/useScheduleToNextRender.mjs",
+    "./useShortCut": "./dist/useShortCut.mjs",
+    "./useTimeout": "./dist/useTimeout.mjs"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -125,7 +71,7 @@
     "prettier-plugin-organize-imports": "catalog:",
     "react": "^18.3.1",
     "tsm": "catalog:",
-    "tsup": "catalog:",
+    "tsdown": "catalog:",
     "typedoc": "catalog:",
     "typedoc-plugin-markdown": "catalog:",
     "typedoc-plugin-missing-exports": "catalog:",

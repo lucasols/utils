@@ -53,7 +53,7 @@
     "prettier-plugin-jsdoc": "^1.3.3",
     "prettier-plugin-organize-imports": "catalog:",
     "tsm": "catalog:",
-    "tsup": "catalog:",
+    "tsdown": "catalog:",
     "typedoc": "catalog:",
     "typedoc-plugin-markdown": "catalog:",
     "typedoc-plugin-missing-exports": "catalog:",

@@ -70,15 +70,13 @@ Each package follows a flat module structure:
 # Special Notes
 
 - Some utilities like `tsResult` are deprecated in favor of external libraries (`t-result`)
+- There is no need to change `package.json` exports field, the publish script will update it automatically.
 
 # Testing Best Practices
 
 - **Framework**: Vitest for unit testing
 - Do not run tests with `pnpm vitest` use `pnpm test` instead
 
-- **Timing in Tests**:
-  - Do not use `vi.useFakeTimers()`
-  - Instead, use `await sleep()` with small intervals when simulating time-based behaviors
 - prefer `toMatchInlineSnapshot` over `toEqual`
 - prefer `toThrowErrorMatchingInlineSnapshot` over `toThrowError`
 - use `test` instead of `it`

@@ -1,6 +1,6 @@
-import { defineConfig, type Options } from 'tsup';
+import { defineConfig, type UserConfig } from 'tsdown';
 
-export function createTsupConfig(options: Partial<Options> = {}) {
+export function createTsdownConfig(options: Partial<UserConfig> = {}) {
   return defineConfig({
     entry: [
       'src/*.ts',
@@ -11,7 +11,7 @@ export function createTsupConfig(options: Partial<Options> = {}) {
     clean: true,
     dts: true,
     outDir: 'dist',
-    format: ['esm', 'cjs'],
+    format: ['esm'],
     ...options,
   });
 }

@@ -11,7 +11,7 @@
     "tsc:watch": "tsc -p tsconfig.prod.json --watch",
     "eslint": "CI=true eslint src/ --color --max-warnings=0 --fix",
     "format": "prettier --write .",
-    "build": "tsup",
+    "build": "tsdown",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch"
   },
@@ -24,18 +24,11 @@
   "author": "Lucas Santos",
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/main.cjs",
-  "module": "./dist/main.js",
-  "types": "./dist/main.d.ts",
+  "module": "./dist/main.mjs",
+  "types": "./dist/main.d.mts",
   "exports": {
-    ".": {
-      "import": "./dist/main.js",
-      "require": "./dist/main.cjs"
-    },
-    "./runShellCmd": {
-      "import": "./dist/runShellCmd.js",
-      "require": "./dist/runShellCmd.cjs"
-    }
+    ".": "./dist/main.mjs",
+    "./runShellCmd": "./dist/runShellCmd.mjs"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -55,7 +48,7 @@
     "prettier": "catalog:",
     "prettier-plugin-organize-imports": "catalog:",
     "tsm": "catalog:",
-    "tsup": "catalog:",
+    "tsdown": "catalog:",
     "typedoc": "catalog:",
     "typedoc-plugin-markdown": "catalog:",
     "typedoc-plugin-missing-exports": "catalog:",

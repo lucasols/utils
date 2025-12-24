@@ -11,7 +11,7 @@
     "tsc:watch": "tsc -p tsconfig.prod.json --watch",
     "eslint": "CI=true eslint src/ --color --max-warnings=0 --fix",
     "format": "prettier --write .",
-    "build": "tsup",
+    "build": "tsdown",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch"
   },
@@ -24,30 +24,14 @@
   "author": "Lucas Santos",
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/main.cjs",
-  "module": "./dist/main.js",
-  "types": "./dist/main.d.ts",
+  "module": "./dist/main.mjs",
+  "types": "./dist/main.d.mts",
   "exports": {
-    ".": {
-      "import": "./dist/main.js",
-      "require": "./dist/main.cjs"
-    },
-    "./keyboardShortcuts": {
-      "import": "./dist/keyboardShortcuts.js",
-      "require": "./dist/keyboardShortcuts.cjs"
-    },
-    "./blockWindowClose": {
-      "import": "./dist/blockWindowClose.js",
-      "require": "./dist/blockWindowClose.cjs"
-    },
-    "./domEvents": {
-      "import": "./dist/domEvents.js",
-      "require": "./dist/domEvents.cjs"
-    },
-    "./window": {
-      "import": "./dist/window.js",
-      "require": "./dist/window.cjs"
-    }
+    ".": "./dist/main.mjs",
+    "./keyboardShortcuts": "./dist/keyboardShortcuts.mjs",
+    "./blockWindowClose": "./dist/blockWindowClose.mjs",
+    "./domEvents": "./dist/domEvents.mjs",
+    "./window": "./dist/window.mjs"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -70,7 +54,7 @@
     "prettier": "catalog:",
     "prettier-plugin-organize-imports": "catalog:",
     "tsm": "catalog:",
-    "tsup": "catalog:",
+    "tsdown": "catalog:",
     "typedoc": "catalog:",
     "typedoc-plugin-markdown": "catalog:",
     "typedoc-plugin-missing-exports": "catalog:",
