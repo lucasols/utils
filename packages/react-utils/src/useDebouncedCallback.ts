@@ -1,5 +1,5 @@
 import { debounce, type DebounceOptions } from '@ls-stack/utils/debounce';
-import { useLayoutEffect } from 'react';
+import { useInsertionEffect } from 'react';
 import { useConst } from './useConst';
 
 /**
@@ -29,11 +29,11 @@ export function useDebouncedCallback<T extends (...args: any[]) => void>(
 ) {
   const debouncedFn = useConst(() => debounce(callback, debounceMs, options));
 
-  useLayoutEffect(() => {
+  useInsertionEffect(() => {
     debouncedFn.updateCb(callback);
   }, [callback, debouncedFn]);
 
-  useLayoutEffect(() => {
+  useInsertionEffect(() => {
     debouncedFn.updateParams(debounceMs, options);
   }, [debounceMs, options, debouncedFn]);
 
