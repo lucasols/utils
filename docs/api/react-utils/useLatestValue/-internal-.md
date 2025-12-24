@@ -10,7 +10,7 @@
 type __LEGIT_ANY__ = any;
 ```
 
-Defined in: packages/utils/dist/saferTyping.d.cts:5
+Defined in: packages/utils/dist/saferTyping.d.mts:6
 
 Use this only when you have 100% of certainty that this will not break the
 types
@@ -23,7 +23,7 @@ types
 type __LEGIT_ANY_FUNCTION__ = (...params) => __LEGIT_ANY__;
 ```
 
-Defined in: packages/utils/dist/saferTyping.d.cts:6
+Defined in: packages/utils/dist/saferTyping.d.mts:8
 
 #### Parameters
 

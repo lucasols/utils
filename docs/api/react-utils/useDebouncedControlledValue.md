@@ -53,7 +53,7 @@ Debounce delay in milliseconds
 
 ###### onUnMount?
 
-`"flush"` \| `"cancel"` = `'flush'`
+`"cancel"` \| `"flush"` = `'flush'`
 
 Whether to flush or cancel pending debounced
   updates on unmount (default: 'flush')

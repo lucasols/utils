@@ -6,7 +6,7 @@
 
 ### DebouncedFunc()\<T\>
 
-Defined in: packages/utils/dist/debounce.d.cts:9
+Defined in: packages/utils/dist/debounce.d.mts:10
 
 #### Type Parameters
 
@@ -18,7 +18,7 @@ Defined in: packages/utils/dist/debounce.d.cts:9
 DebouncedFunc(...args): undefined | ReturnType<T>;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:19
+Defined in: packages/utils/dist/debounce.d.mts:20
 
 Call the original function, but applying the debounce rules.
 
@@ -46,7 +46,7 @@ if the debounced function was not invoked yet.
 cancel: () => void;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:21
+Defined in: packages/utils/dist/debounce.d.mts:22
 
 Throw away any pending invocation of the debounced function.
 
@@ -60,7 +60,7 @@ Throw away any pending invocation of the debounced function.
 flush: () => undefined | ReturnType<T>;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:29
+Defined in: packages/utils/dist/debounce.d.mts:30
 
 If there is a pending invocation of the debounced function, invoke it
 immediately and return its return value.
@@ -78,7 +78,7 @@ debounced function was never invoked.
 pending: () => boolean;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:31
+Defined in: packages/utils/dist/debounce.d.mts:32
 
 Return true if the debounced function still has a scheduled run.
 
@@ -92,7 +92,7 @@ Return true if the debounced function still has a scheduled run.
 updateCb: (callback) => void;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:33
+Defined in: packages/utils/dist/debounce.d.mts:34
 
 Update the debounced function with a new callback.
 
@@ -112,7 +112,7 @@ Update the debounced function with a new callback.
 updateParams: (wait, options?) => void;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:35
+Defined in: packages/utils/dist/debounce.d.mts:36
 
 Update the debounce wait and options while keeping scheduled runs.
 
@@ -138,7 +138,7 @@ Update the debounce wait and options while keeping scheduled runs.
 type DebounceOptions = object;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:1
+Defined in: packages/utils/dist/debounce.d.mts:2
 
 #### Properties
 
@@ -148,7 +148,7 @@ Defined in: packages/utils/dist/debounce.d.cts:1
 optional leading: boolean;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:3
+Defined in: packages/utils/dist/debounce.d.mts:4
 
 ###### See
 
@@ -160,7 +160,7 @@ _.leading
 optional maxWait: number;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:5
+Defined in: packages/utils/dist/debounce.d.mts:6
 
 ###### See
 
@@ -172,7 +172,7 @@ _.maxWait
 optional trailing: boolean;
 ```
 
-Defined in: packages/utils/dist/debounce.d.cts:7
+Defined in: packages/utils/dist/debounce.d.mts:8
 
 ###### See
 

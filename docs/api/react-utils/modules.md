@@ -2,8 +2,9 @@
 
 ## Modules
 
+- [DelayUnmount](DelayUnmount/index.md)
 - [internalUtils/noopWithArgs](internalUtils/noopWithArgs.md)
-- [jsxUtils](jsxUtils/index.md)
+- [jsxUtils](jsxUtils.md)
 - [main](main.md)
 - [useActionFn](useActionFn.md)
 - [useAnimateMountUnmount](useAnimateMountUnmount.md)
