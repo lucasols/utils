@@ -10,7 +10,7 @@
 
 ### KeyBindingHandlerOptions
 
-Defined in: [keyboardShortcuts.ts:15](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L15)
+Defined in: [keyboardShortcuts.ts:11](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L11)
 
 #### Extended by
 
@@ -24,7 +24,7 @@ Defined in: [keyboardShortcuts.ts:15](https://github.com/lucasols/utils/blob/mai
 optional timeout: number;
 ```
 
-Defined in: [keyboardShortcuts.ts:23](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L23)
+Defined in: [keyboardShortcuts.ts:19](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L19)
 
 Keybinding sequences will wait this long between key presses before
 cancelling (default: 1000).
@@ -36,7 +36,7 @@ of your users.
 
 ### KeyBindingMap
 
-Defined in: [keyboardShortcuts.ts:11](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L11)
+Defined in: [keyboardShortcuts.ts:7](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L7)
 
 A map of keybinding strings to event handlers.
 
@@ -50,7 +50,7 @@ A map of keybinding strings to event handlers.
 
 ### KeyBindingOptions
 
-Defined in: [keyboardShortcuts.ts:29](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L29)
+Defined in: [keyboardShortcuts.ts:23](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L23)
 
 Options to configure the behavior of keybindings.
 
@@ -66,7 +66,7 @@ Options to configure the behavior of keybindings.
 optional capture: boolean;
 ```
 
-Defined in: [keyboardShortcuts.ts:38](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L38)
+Defined in: [keyboardShortcuts.ts:28](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L28)
 
 Key presses will use a capture listener (default: false)
 
@@ -76,7 +76,7 @@ Key presses will use a capture listener (default: false)
 optional event: "keydown" | "keyup";
 ```
 
-Defined in: [keyboardShortcuts.ts:33](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L33)
+Defined in: [keyboardShortcuts.ts:25](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L25)
 
 Key presses will listen to this event (default: "keydown").
 
@@ -86,7 +86,7 @@ Key presses will listen to this event (default: "keydown").
 optional timeout: number;
 ```
 
-Defined in: [keyboardShortcuts.ts:23](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L23)
+Defined in: [keyboardShortcuts.ts:19](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L19)
 
 Keybinding sequences will wait this long between key presses before
 cancelling (default: 1000).
@@ -106,7 +106,7 @@ of your users.
 type KeyBindingPress = [string[], string | RegExp];
 ```
 
-Defined in: [keyboardShortcuts.ts:6](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L6)
+Defined in: [keyboardShortcuts.ts:4](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L4)
 
 A single press of a keybinding sequence
 
@@ -118,7 +118,7 @@ A single press of a keybinding sequence
 function createKeybindingsHandler(keyBindingMap, options): EventListener;
 ```
 
-Defined in: [keyboardShortcuts.ts:175](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L175)
+Defined in: [keyboardShortcuts.ts:160](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L160)
 
 Creates an event listener for handling keybindings.
 
@@ -139,22 +139,22 @@ Creates an event listener for handling keybindings.
 #### Example
 
 ```js
-import { createKeybindingsHandler } from "../src/keybindings"
+  import { createKeybindingsHandler } from "../src/keybindings"
 
-let handler = createKeybindingsHandler({
-	"Shift+d": () => {
-		alert("The 'Shift' and 'd' keys were pressed at the same time")
-	},
-	"y e e t": () => {
-		alert("The keys 'y', 'e', 'e', and 't' were pressed in order")
-	},
-	"$mod+d": () => {
-		alert("Either 'Control+d' or 'Meta+d' were pressed")
-	},
-})
+  let handler = createKeybindingsHandler({
+  	"Shift+d": () => {
+  		alert("The 'Shift' and 'd' keys were pressed at the same time")
+  	},
+  	"y e e t": () => {
+  		alert("The keys 'y', 'e', 'e', and 't' were pressed in order")
+  	},
+  	"$mod+d": () => {
+  		alert("Either 'Control+d' or 'Meta+d' were pressed")
+  	},
+  })
 
-window.addEvenListener("keydown", handler)
-```
+  window.addEvenListener("keydown", handler)
+  ```;
 
 ***
 
@@ -164,7 +164,7 @@ window.addEvenListener("keydown", handler)
 function ignoreInputTypingEvents(callback): (e) => void;
 ```
 
-Defined in: [keyboardShortcuts.ts:265](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L265)
+Defined in: [keyboardShortcuts.ts:250](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L250)
 
 #### Parameters
 
@@ -198,7 +198,7 @@ Defined in: [keyboardShortcuts.ts:265](https://github.com/lucasols/utils/blob/ma
 function ignoreRichTextInputTypingEvents(callback): (e) => void;
 ```
 
-Defined in: [keyboardShortcuts.ts:284](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L284)
+Defined in: [keyboardShortcuts.ts:269](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L269)
 
 #### Parameters
 
@@ -235,7 +235,7 @@ function keyboardShortcuts(
    __namedParameters): () => void;
 ```
 
-Defined in: [keyboardShortcuts.ts:251](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L251)
+Defined in: [keyboardShortcuts.ts:236](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L236)
 
 Subscribes to keybindings.
 
@@ -268,20 +268,20 @@ Returns an unsubscribe method.
 #### Example
 
 ```js
-import { keyboardShortcuts } from "@ls-stack/browser-utils/keyboardShortcuts"
+  import { keyboardShortcuts } from "@ls-stack/browser-utils/keyboardShortcuts"
 
-tinykeys(window, {
-	"Shift+d": () => {
-		alert("The 'Shift' and 'd' keys were pressed at the same time")
-	},
-	"y e e t": () => {
-		alert("The keys 'y', 'e', 'e', and 't' were pressed in order")
-	},
-	"$mod+d": () => {
-		alert("Either 'Control+d' or 'Meta+d' were pressed")
-	},
-})
-```
+  tinykeys(window, {
+  	"Shift+d": () => {
+  		alert("The 'Shift' and 'd' keys were pressed at the same time")
+  	},
+  	"y e e t": () => {
+  		alert("The keys 'y', 'e', 'e', and 't' were pressed in order")
+  	},
+  	"$mod+d": () => {
+  		alert("Either 'Control+d' or 'Meta+d' were pressed")
+  	},
+  })
+  ```;
 
 ***
 
@@ -291,7 +291,7 @@ tinykeys(window, {
 function matchKeyBindingPress(event, __namedParameters): boolean;
 ```
 
-Defined in: [keyboardShortcuts.ts:124](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L124)
+Defined in: [keyboardShortcuts.ts:109](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L109)
 
 This tells us if a single keyboard event matches a single keybinding press.
 
@@ -317,16 +317,14 @@ This tells us if a single keyboard event matches a single keybinding press.
 function parseKeybinding(str): KeyBindingPress[];
 ```
 
-Defined in: [keyboardShortcuts.ts:105](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L105)
+Defined in: [keyboardShortcuts.ts:92](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L92)
 
 Parses a "Key Binding String" into its parts
 
-grammar    = `{sequence}`
-{sequence} = `{press} {press} {press} ...`
-{press}    = `{key}` or `{mods}+{key}`
-{mods}     = `{mod}+{mod}+...`
-{key}      = `{KeyboardEvent.key}` or `{KeyboardEvent.code}` (case-insensitive)
-{key}      = `({regex})` -> `/^{regex}$/` (case-sensitive)
+Grammar = `{sequence}` {sequence} = `{press} {press} {press} ...` {press} =
+`{key}` or `{mods}+{key}` {mods} = `{mod}+{mod}+...` {key} =
+`{KeyboardEvent.key}` or `{KeyboardEvent.code}` (case-insensitive) {key} =
+`({regex})` -> `/^{regex}$/` (case-sensitive)
 
 #### Parameters
 

@@ -10,7 +10,7 @@
 function deprecated(): void;
 ```
 
-Defined in: [main.ts:5](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/main.ts#L5)
+Defined in: [main.ts:6](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/main.ts#L6)
 
 #### Returns
 
@@ -18,5 +18,6 @@ Defined in: [main.ts:5](https://github.com/lucasols/utils/blob/main/packages/nod
 
 #### Deprecated
 
-This package is for Node.js-specific utilities only.
-Import utilities directly instead: import { runCmd } from '@ls-stack/node-utils/runShellCmd'
+This package is for Node.js-specific utilities only. Import
+  utilities directly instead: import { runCmd } from
+  '@ls-stack/node-utils/runShellCmd'

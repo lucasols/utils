@@ -17,7 +17,7 @@ function concurrentCmd(
 onResult): Promise<() => void>;
 ```
 
-Defined in: [runShellCmd.ts:123](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L123)
+Defined in: [runShellCmd.ts:124](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L124)
 
 Runs a command concurrently with logging and error handling.
 
@@ -58,7 +58,7 @@ function runCmd(
 options): Promise<CmdResult>;
 ```
 
-Defined in: [runShellCmd.ts:34](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L34)
+Defined in: [runShellCmd.ts:35](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L35)
 
 Runs a shell command and returns the result.
 
@@ -96,7 +96,7 @@ Promise that resolves to the command result
 function runCmdSilent(command): Promise<CmdResult>;
 ```
 
-Defined in: [runShellCmd.ts:182](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L182)
+Defined in: [runShellCmd.ts:183](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L183)
 
 Runs a command silently without any output.
 
@@ -122,7 +122,7 @@ Promise that resolves to the command result
 function runCmdSilentUnwrap(command): Promise<string>;
 ```
 
-Defined in: [runShellCmd.ts:192](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L192)
+Defined in: [runShellCmd.ts:193](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L193)
 
 Runs a command silently and returns only the stdout.
 
@@ -151,7 +151,7 @@ function runCmdUnwrap(
 options): Promise<string>;
 ```
 
-Defined in: [runShellCmd.ts:161](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L161)
+Defined in: [runShellCmd.ts:162](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L162)
 
 Runs a command and returns only the stdout, throwing on error.
 

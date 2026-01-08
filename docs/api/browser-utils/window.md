@@ -10,12 +10,14 @@
 function isWindowFocused(): boolean;
 ```
 
-Defined in: [window.ts:58](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/window.ts#L58)
+Defined in: [window.ts:61](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/window.ts#L61)
 
-Checks if the current browser window/tab is focused and visible.
-This combines both the document visibility state and focus state for a comprehensive check.
+Checks if the current browser window/tab is focused and visible. This
+combines both the document visibility state and focus state for a
+comprehensive check.
 
 A window is considered focused when:
+
 - The document visibility state is 'visible' (tab is not hidden)
 - The document has focus (window is the active window)
 
@@ -28,13 +30,13 @@ A window is considered focused when:
 #### Example
 
 ```ts
-// Check if we should play sounds or animations
-if (isWindowFocused()) {
-  playNotificationSound();
-} else {
-  showBrowserNotification();
-}
-```
+  // Check if we should play sounds or animations
+  if (isWindowFocused()) {
+    playNotificationSound();
+  } else {
+    showBrowserNotification();
+  }
+  ```;
 
 ***
 
@@ -44,14 +46,15 @@ if (isWindowFocused()) {
 function onWindowFocus(handler): () => void;
 ```
 
-Defined in: [window.ts:26](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/window.ts#L26)
+Defined in: [window.ts:27](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/window.ts#L27)
 
-Registers a throttled event handler for window focus events.
-The handler is triggered when the window gains focus or becomes visible,
-but is throttled to prevent excessive calls.
+Registers a throttled event handler for window focus events. The handler is
+triggered when the window gains focus or becomes visible, but is throttled to
+prevent excessive calls.
 
-This is useful for performing actions when the user returns to your application,
-such as refreshing data, resuming timers, or checking for updates.
+This is useful for performing actions when the user returns to your
+application, such as refreshing data, resuming timers, or checking for
+updates.
 
 #### Parameters
 
@@ -76,12 +79,12 @@ A cleanup function to remove the event listeners
 #### Example
 
 ```ts
-// Refresh data when user returns to the app
-const cleanup = onWindowFocus(() => {
-  console.log('Window focused - refreshing data');
-  refreshUserData();
-});
+  // Refresh data when user returns to the app
+  const cleanup = onWindowFocus(() => {
+    console.log('Window focused - refreshing data');
+    refreshUserData();
+  });
 
-// Later, remove the listener
-cleanup();
-```
+  // Later, remove the listener
+  cleanup();
+  ```;
