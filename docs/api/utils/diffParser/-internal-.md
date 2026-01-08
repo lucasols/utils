@@ -235,6 +235,14 @@ oldMode: undefined | string;
 
 Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L52)
 
+##### rawDiff
+
+```ts
+rawDiff: string;
+```
+
+Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L56)
+
 ##### to
 
 ```ts
@@ -255,7 +263,7 @@ Defined in: [packages/utils/src/diffParser.ts:46](https://github.com/lucasols/ut
 
 ### DiffFileBinary
 
-Defined in: [packages/utils/src/diffParser.ts:75](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L75)
+Defined in: [packages/utils/src/diffParser.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L76)
 
 #### Extends
 
@@ -359,6 +367,18 @@ Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/ut
 
 [`DiffFileBase`](#difffilebase).[`oldMode`](#oldmode)
 
+##### rawDiff
+
+```ts
+rawDiff: string;
+```
+
+Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L56)
+
+###### Inherited from
+
+[`DiffFileBase`](#difffilebase).[`rawDiff`](#rawdiff)
+
 ##### to
 
 ```ts
@@ -377,7 +397,7 @@ Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/ut
 type: "binary";
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L76)
+Defined in: [packages/utils/src/diffParser.ts:77](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L77)
 
 ###### Overrides
 
@@ -387,7 +407,7 @@ Defined in: [packages/utils/src/diffParser.ts:76](https://github.com/lucasols/ut
 
 ### DiffFileCombined
 
-Defined in: [packages/utils/src/diffParser.ts:79](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L79)
+Defined in: [packages/utils/src/diffParser.ts:80](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L80)
 
 #### Extends
 
@@ -461,7 +481,7 @@ Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/ut
 froms: undefined | string[];
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:81](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L81)
+Defined in: [packages/utils/src/diffParser.ts:82](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L82)
 
 ##### index
 
@@ -498,6 +518,18 @@ Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/ut
 ###### Inherited from
 
 [`DiffFileBase`](#difffilebase).[`oldMode`](#oldmode)
+
+##### rawDiff
+
+```ts
+rawDiff: string;
+```
+
+Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L56)
+
+###### Inherited from
+
+[`DiffFileBase`](#difffilebase).[`rawDiff`](#rawdiff)
 
 ##### to
 
@@ -517,7 +549,7 @@ Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/ut
 type: "combined";
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:80](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L80)
+Defined in: [packages/utils/src/diffParser.ts:81](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L81)
 
 ###### Overrides
 
@@ -527,7 +559,7 @@ Defined in: [packages/utils/src/diffParser.ts:80](https://github.com/lucasols/ut
 
 ### DiffFileDeleted
 
-Defined in: [packages/utils/src/diffParser.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L66)
+Defined in: [packages/utils/src/diffParser.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L67)
 
 #### Extends
 
@@ -630,6 +662,18 @@ Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/ut
 ###### Inherited from
 
 [`DiffFileBase`](#difffilebase).[`oldMode`](#oldmode)
+
+##### rawDiff
+
+```ts
+rawDiff: string;
+```
+
+Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L56)
+
+###### Inherited from
+
+[`DiffFileBase`](#difffilebase).[`rawDiff`](#rawdiff)
 
 ##### to
 
@@ -649,7 +693,7 @@ Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/ut
 type: "deleted";
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L67)
+Defined in: [packages/utils/src/diffParser.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L68)
 
 ###### Overrides
 
@@ -659,7 +703,7 @@ Defined in: [packages/utils/src/diffParser.ts:67](https://github.com/lucasols/ut
 
 ### DiffFileModified
 
-Defined in: [packages/utils/src/diffParser.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L58)
+Defined in: [packages/utils/src/diffParser.ts:59](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L59)
 
 #### Extends
 
@@ -762,6 +806,18 @@ Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/ut
 ###### Inherited from
 
 [`DiffFileBase`](#difffilebase).[`oldMode`](#oldmode)
+
+##### rawDiff
+
+```ts
+rawDiff: string;
+```
+
+Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L56)
+
+###### Inherited from
+
+[`DiffFileBase`](#difffilebase).[`rawDiff`](#rawdiff)
 
 ##### to
 
@@ -781,7 +837,7 @@ Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/ut
 type: "modified";
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:59](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L59)
+Defined in: [packages/utils/src/diffParser.ts:60](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L60)
 
 ###### Overrides
 
@@ -791,7 +847,7 @@ Defined in: [packages/utils/src/diffParser.ts:59](https://github.com/lucasols/ut
 
 ### DiffFileNew
 
-Defined in: [packages/utils/src/diffParser.ts:62](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L62)
+Defined in: [packages/utils/src/diffParser.ts:63](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L63)
 
 #### Extends
 
@@ -894,6 +950,18 @@ Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/ut
 ###### Inherited from
 
 [`DiffFileBase`](#difffilebase).[`oldMode`](#oldmode)
+
+##### rawDiff
+
+```ts
+rawDiff: string;
+```
+
+Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L56)
+
+###### Inherited from
+
+[`DiffFileBase`](#difffilebase).[`rawDiff`](#rawdiff)
 
 ##### to
 
@@ -913,7 +981,7 @@ Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/ut
 type: "new";
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:63](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L63)
+Defined in: [packages/utils/src/diffParser.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L64)
 
 ###### Overrides
 
@@ -923,7 +991,7 @@ Defined in: [packages/utils/src/diffParser.ts:63](https://github.com/lucasols/ut
 
 ### DiffFileRenamed
 
-Defined in: [packages/utils/src/diffParser.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L70)
+Defined in: [packages/utils/src/diffParser.ts:71](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L71)
 
 #### Extends
 
@@ -1027,13 +1095,25 @@ Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/ut
 
 [`DiffFileBase`](#difffilebase).[`oldMode`](#oldmode)
 
+##### rawDiff
+
+```ts
+rawDiff: string;
+```
+
+Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L56)
+
+###### Inherited from
+
+[`DiffFileBase`](#difffilebase).[`rawDiff`](#rawdiff)
+
 ##### similarityIndex
 
 ```ts
 similarityIndex: undefined | number;
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L72)
+Defined in: [packages/utils/src/diffParser.ts:73](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L73)
 
 ##### to
 
@@ -1053,7 +1133,7 @@ Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/ut
 type: "renamed";
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:71](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L71)
+Defined in: [packages/utils/src/diffParser.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L72)
 
 ###### Overrides
 

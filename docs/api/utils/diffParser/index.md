@@ -20,7 +20,7 @@ type DiffFile =
   | DiffFileCombined;
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:91](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L91)
+Defined in: [packages/utils/src/diffParser.ts:92](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L92)
 
 Parsed diff file metadata and hunks.
 
@@ -36,7 +36,7 @@ Combined diffs (e.g. `diff --cc`) may include multiple parent paths via
 function diffParser(input): DiffFile[];
 ```
 
-Defined in: [packages/utils/src/diffParser.ts:107](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L107)
+Defined in: [packages/utils/src/diffParser.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L108)
 
 Parse unified diff text (git, hg, svn) into structured file hunks.
 
@@ -53,5 +53,5 @@ Parse unified diff text (git, hg, svn) into structured file hunks.
 #### Example
 
 ```ts
-const files = diffParser('@@ -1 +1 @@\\n-old\\n+new');
-```
+  const files = diffParser('@@ -1 +1 @@\\n-old\\n+new');
+  ```;
