@@ -40,6 +40,10 @@ index 123..456 789
         index: ['123..456', '789']
         newMode: '789'
         oldMode: '789'
+        diff: |-
+          @@ -1,2 +1,2 @@
+          - line1
+          + line2
       "
     `);
   });
@@ -151,6 +155,10 @@ index 0000000..db81be4
         new: '✅'
         newMode: '100644'
         index: ['0000000..db81be4']
+        diff: |-
+          @@ -0,0 +1,2 @@
+          +line1
+          +line2
       "
     `);
   });
@@ -185,6 +193,10 @@ index db81be4..0000000
         deleted: '✅'
         oldMode: '100644'
         index: ['db81be4..0000000']
+        diff: |-
+          @@ -1,2 +0,0 @@
+          -line1
+          -line2
       "
     `);
   });
@@ -220,6 +232,10 @@ index 123..456
         oldMode: '100644'
         newMode: '100755'
         index: ['123..456']
+        diff: |-
+          @@ -1,2 +1,2 @@
+          - line1
+          + line2
       "
     `);
   });
@@ -259,6 +275,9 @@ index 0000000..db81be4
         deleted: '✅'
         oldMode: '100644'
         index: ['db81be4..0000000']
+        diff: |-
+          @@ -1 +0,0 @@
+          -line1
       - chunks:
           - content: '@@ -0,0 +1 @@'
             changes:
@@ -274,6 +293,9 @@ index 0000000..db81be4
         new: '✅'
         newMode: '100644'
         index: ['0000000..db81be4']
+        diff: |-
+          @@ -0,0 +1 @@
+          +line1
       "
     `);
   });
@@ -314,6 +336,10 @@ index 123..456 789
         index: ['123..456', '789']
         newMode: '789'
         oldMode: '789'
+        diff: |-
+          @@ -1,1 +1,1 @@
+          - line1
+          + line2
       - chunks:
           - content: '@@ -1,1 +1,1 @@'
             changes:
@@ -330,6 +356,10 @@ index 123..456 789
         index: ['123..456', '789']
         newMode: '789'
         oldMode: '789'
+        diff: |-
+          @@ -1,1 +1,1 @@
+          - line1
+          + line2
       "
     `);
   });
@@ -373,6 +403,12 @@ index 123..456 789
         index: ['123..456', '789']
         newMode: '789'
         oldMode: '789'
+        diff: |-
+          @@ -1,1 +1,1 @@
+          - line1
+          \\ No newline at end of file
+          + line2
+          \\ No newline at end of file
       "
     `);
   });
@@ -500,6 +536,10 @@ Index: text.txt
             newLines: 1
         deletions: 1
         additions: 1
+        diff: |-
+          @@ -1 +1 @@
+          -hello world
+          +hello universe
       "
     `);
   });
@@ -638,6 +678,10 @@ rename to My Folder/a/File
         to: 'My Folder/a/File'
         similarityIndex: 100
         renamed: '✅'
+        diff: |-
+          @@ -1,2 +1,2 @@
+          - line1
+          + line2
       "
     `);
   });
@@ -674,6 +718,10 @@ index 9daeafb..88bd214 100644
         index: ['9daeafb..88bd214', '100644']
         newMode: '100644'
         oldMode: '100644'
+        diff: |-
+          @@ -1 +1 @@
+          -test
+          +test\\n1234
       "
     `);
   });
@@ -717,6 +765,11 @@ index 123..456 789
         index: ['123..456', '789']
         newMode: '789'
         oldMode: '789'
+        diff: |-
+          @@ -1,2 +1,1 @@
+          - line11
+          --- line12
+          + line21
       - chunks:
           - content: '@@ -1,2 +1,1 @@'
             changes:
@@ -734,6 +787,11 @@ index 123..456 789
         index: ['123..456', '789']
         newMode: '789'
         oldMode: '789'
+        diff: |-
+          @@ -1,2 +1,1 @@
+          - line11
+          +++ line21
+          + line22
       "
     `);
   });

@@ -308,6 +308,21 @@ export function diffParser(input: string): DiffFile[] {
 
   for (const line of lines) parseLine(line);
 
+  for (const file of files) {
+    if (file.chunks.length === 0) continue;
+
+    const diffLines: string[] = [];
+
+    for (const fileChunk of file.chunks) {
+      diffLines.push(fileChunk.content);
+      for (const change of fileChunk.changes) {
+        diffLines.push(change.content);
+      }
+    }
+
+    file.diff = diffLines.join('\n');
+  }
+
   return files;
 }
 
