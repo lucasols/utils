@@ -99,10 +99,10 @@ Defined in: [packages/utils/src/testUtils.ts:12](https://github.com/lucasols/uti
 
   \| `"length"`
   \| `"all"`
-  \| `"firstAndLast"`
   \| \{
   `firstNItems`: `number`;
-\} = `...`
+\}
+  \| `"firstAndLast"` = `...`
 
 ###### changesOnly?
 

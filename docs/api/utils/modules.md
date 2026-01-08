@@ -16,6 +16,7 @@
 - [dedent](dedent/index.md)
 - [deepEqual](deepEqual.md)
 - [deepReplaceValues](deepReplaceValues.md)
+- [diffParser](diffParser/index.md)
 - [enhancedMap](enhancedMap.md)
 - [exhaustiveMatch](exhaustiveMatch/index.md)
 - [filterObjectOrArrayKeys](filterObjectOrArrayKeys.md)

@@ -110,7 +110,7 @@ The keys to reject.
 
 ###### sortKeys?
 
-`false` \| `"asc"` \| `"simpleValuesFirst"` \| `"desc"` = `'simpleValuesFirst'`
+`false` \| `"desc"` \| `"asc"` \| `"simpleValuesFirst"` = `'simpleValuesFirst'`
 
 Sort all keys by a specific order (optional,
   preserves original order when not specified).
