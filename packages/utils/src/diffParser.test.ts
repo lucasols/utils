@@ -2,6 +2,9 @@ import { describe, expect, test } from 'vitest';
 import { diffParser as parse } from './diffParser';
 import { compactSnapshot } from './testUtils';
 
+const snapshot = (value: unknown) =>
+  compactSnapshot(value, { rejectKeys: 'rawDiff', sortKeys: false });
+
 describe('diff parser', () => {
   test('should parse empty string', () => {
     expect(parse('').length).toBe(0);
@@ -22,7 +25,7 @@ index 123..456 789
 + line2\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -49,6 +52,28 @@ index 123..456 789
     `);
   });
 
+  test('should expose raw diff text per file', () => {
+    const diff = `\
+Index: text.txt
+===================================================================
+--- text.txt\t(revision 1)
++++ text.txt\t(working copy)
+@@ -1 +1 @@
+-old
++new\
+`;
+    const [file] = parse(diff);
+    expect(file?.rawDiff).toMatchInlineSnapshot(`
+      "Index: text.txt
+      ===================================================================
+      --- text.txt\t(revision 1)
+      +++ text.txt\t(working copy)
+      @@ -1 +1 @@
+      -old
+      +new"
+    `);
+  });
+
   test('should parse file names when diff.mnemonicPrefix equals true', () => {
     const diff = `\
 diff --git i/file w/file
@@ -60,7 +85,7 @@ index 123..456 789
 + line2\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -95,7 +120,7 @@ rename from "file1"
 rename to "file2"\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'renamed'
         chunks: []
@@ -115,7 +140,7 @@ index 1c352c2..e1fb381 100644
 Binary files a/screenshots/split-view.png and b/screenshots/split-view.png differ\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'binary'
         chunks: []
@@ -137,7 +162,7 @@ index fc72ba34b..ec373e9a4 100644
 Binary files a/Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png and b/Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png differ\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'binary'
         chunks: []
@@ -164,7 +189,7 @@ index 0000000..db81be4
 +line2\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'new'
         chunks:
@@ -202,7 +227,7 @@ index db81be4..0000000
 -line2\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'deleted'
         chunks:
@@ -241,7 +266,7 @@ index 123..456
 + line2\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -306,6 +331,14 @@ index 0000000..db81be4
         diff: |-
           @@ -1 +0,0 @@
           -line1
+        rawDiff: |-
+          diff --git a/file1 b/file1
+          deleted file mode 100644
+          index db81be4..0000000
+          --- b/file1
+          +++ /dev/null
+          @@ -1 +0,0 @@
+          -line1
       - type: 'new'
         chunks:
           - content: '@@ -0,0 +1 @@'
@@ -322,6 +355,14 @@ index 0000000..db81be4
         newMode: '100644'
         index: ['0000000..db81be4']
         diff: |-
+          @@ -0,0 +1 @@
+          +line1
+        rawDiff: |-
+          diff --git a/file2 b/file2
+          new file mode 100644
+          index 0000000..db81be4
+          --- /dev/null
+          +++ b/file2
           @@ -0,0 +1 @@
           +line1
       "
@@ -346,7 +387,7 @@ index 123..456 789
 + line2\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -407,7 +448,7 @@ index 123..456 789
 \\ No newline at end of file
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -467,7 +508,7 @@ index 123..456 789
 +The door of all subtleties!\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -549,7 +590,7 @@ diff -r 514fc757521e lib/parsers.coffee
  module.exports.version = (out) ->\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -611,7 +652,7 @@ Index: text.txt
  would not be helping to\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -681,7 +722,7 @@ Index: text.txt
 +hello universe`;
 
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -710,7 +751,7 @@ new file mode 100644
 index 0000000..e6a2e28\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'new'
         chunks: []
@@ -731,7 +772,7 @@ deleted file mode 100644
 index e6a2e28..0000000\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'deleted'
         chunks: []
@@ -753,7 +794,7 @@ rename from test.txt
 rename to text2.txt\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'renamed'
         chunks: []
@@ -780,7 +821,7 @@ index 123..456
 + line2\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'renamed'
         chunks:
@@ -814,7 +855,7 @@ rename from a/My Folder/File
 rename to My Folder/a/File\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'renamed'
         chunks: []
@@ -838,7 +879,7 @@ rename to My Folder/a/File
 + line2\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'renamed'
         chunks:
@@ -874,7 +915,7 @@ index 9daeafb..88bd214 100644
 +test\\n1234
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -924,7 +965,7 @@ index 123..456 789
 + line22\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'modified'
         chunks:
@@ -990,7 +1031,7 @@ index bacb5fc,b8b0f61..97366e3
   three\
 `;
     const files = parse(diff);
-    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(snapshot(files)).toMatchInlineSnapshot(`
       "
       - type: 'combined'
         chunks:

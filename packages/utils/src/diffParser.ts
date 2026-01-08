@@ -53,6 +53,7 @@ interface DiffFileBase {
   newMode: string | undefined;
   index: string[] | undefined;
   diff: string | undefined;
+  rawDiff: string;
 }
 
 interface DiffFileModified extends DiffFileBase {
@@ -100,9 +101,9 @@ export type DiffFile =
  * Parse unified diff text (git, hg, svn) into structured file hunks.
  *
  * @example
- * ```ts
- * const files = diffParser('@@ -1 +1 @@\\n-old\\n+new');
- * ```
+ *   ```ts
+ *   const files = diffParser('@@ -1 +1 @@\\n-old\\n+new');
+ *   ```;
  */
 export function diffParser(input: string): DiffFile[] {
   if (!input) return [];
@@ -148,6 +149,7 @@ export function diffParser(input: string): DiffFile[] {
       newMode: undefined,
       index: undefined,
       diff: undefined,
+      rawDiff: '',
     };
     fromLineCount = 0;
     pendingFroms = undefined;
@@ -209,6 +211,10 @@ export function diffParser(input: string): DiffFile[] {
     }
   };
 
+  const indexFile = (line: string): void => {
+    start(line);
+  };
+
   const renameFrom = (line: string): void => {
     restart();
     if (currentFile) {
@@ -242,7 +248,8 @@ export function diffParser(input: string): DiffFile[] {
         return;
       }
 
-      const froms = pendingFroms ?? (currentFile.from ? [currentFile.from] : []);
+      const froms =
+        pendingFroms ?? (currentFile.from ? [currentFile.from] : []);
       if (!froms.includes(fileName)) {
         froms.push(fileName);
       }
@@ -261,10 +268,7 @@ export function diffParser(input: string): DiffFile[] {
   const toNumOfLines = (number: string | undefined): number =>
     Number(number || 1);
 
-  const parseRange = (
-    range: string,
-    prefix: '-' | '+',
-  ): ParentRange | null => {
+  const parseRange = (range: string, prefix: '-' | '+'): ParentRange | null => {
     if (!range.startsWith(prefix)) return null;
     const [rangeStart, rangeLines] = range.slice(1).split(',');
     const startNumber = Number(rangeStart);
@@ -497,6 +501,7 @@ export function diffParser(input: string): DiffFile[] {
   type ContentHandler = (line: string, match: RegExpMatchArray) => void;
 
   const schemaHeaders: [RegExp, HeaderHandler][] = [
+    [/^Index:\s/, indexFile],
     [/^diff\s/, start],
     [/^new file mode (\d+)$/, newFile],
     [/^deleted file mode (\d+)$/, deletedFile],
@@ -566,6 +571,12 @@ export function diffParser(input: string): DiffFile[] {
       parseContentLine(line);
     } else {
       parseHeaderLine(line);
+    }
+    if (currentFile) {
+      currentFile.rawDiff =
+        currentFile.rawDiff.length === 0 ?
+          line
+        : `${currentFile.rawDiff}\n${line}`;
     }
   };
 
