@@ -1,4 +1,4 @@
-import { assert, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { diffParser as parse } from './diffParser';
 import { compactSnapshot } from './testUtils';
 
@@ -24,7 +24,8 @@ index 123..456 789
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'modified'
+        chunks:
           - content: '@@ -1,2 +1,2 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '- line1' }
@@ -37,9 +38,9 @@ index 123..456 789
         additions: 1
         from: 'file'
         to: 'file'
-        index: ['123..456', '789']
-        newMode: '789'
         oldMode: '789'
+        newMode: '789'
+        index: ['123..456', '789']
         diff: |-
           @@ -1,2 +1,2 @@
           - line1
@@ -59,11 +60,31 @@ index 123..456 789
 + line2\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('file');
-    expect(file.to).toBe('file');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - type: 'modified'
+        chunks:
+          - content: '@@ -1,2 +1,2 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '- line1' }
+              - { type: 'add', add: '✅', ln: 1, content: '+ line2' }
+            oldStart: 1
+            oldLines: 2
+            newStart: 1
+            newLines: 2
+        deletions: 1
+        additions: 1
+        from: 'file'
+        to: 'file'
+        oldMode: '789'
+        newMode: '789'
+        index: ['123..456', '789']
+        diff: |-
+          @@ -1,2 +1,2 @@
+          - line1
+          + line2
+      "
+    `);
   });
 
   test('should parse simple git-like diff with file enclosed by double-quote', () => {
@@ -76,13 +97,13 @@ rename to "file2"\
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks: []
+      - type: 'renamed'
+        chunks: []
         deletions: 0
         additions: 0
         from: 'file1'
         to: 'file2'
         similarityIndex: 100
-        renamed: '✅'
       "
     `);
   });
@@ -94,13 +115,19 @@ index 1c352c2..e1fb381 100644
 Binary files a/screenshots/split-view.png and b/screenshots/split-view.png differ\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('screenshots/split-view.png');
-    expect(file.to).toBe('screenshots/split-view.png');
-    expect(file.binary).toBe(true);
-    expect(file.chunks.length).toBe(0);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - type: 'binary'
+        chunks: []
+        deletions: 0
+        additions: 0
+        from: 'screenshots/split-view.png'
+        to: 'screenshots/split-view.png'
+        oldMode: '100644'
+        newMode: '100644'
+        index: ['1c352c2..e1fb381', '100644']
+      "
+    `);
   });
 
   test('should parse file names for changed binaries with spaces in their names', () => {
@@ -112,15 +139,15 @@ Binary files a/Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects '
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks: []
+      - type: 'binary'
+        chunks: []
         deletions: 0
         additions: 0
         from: "Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png"
         to: "Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png"
-        index: ['fc72ba34b..ec373e9a4', '100644']
-        newMode: '100644'
         oldMode: '100644'
-        binary: '✅'
+        newMode: '100644'
+        index: ['fc72ba34b..ec373e9a4', '100644']
       "
     `);
   });
@@ -139,7 +166,8 @@ index 0000000..db81be4
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'new'
+        chunks:
           - content: '@@ -0,0 +1,2 @@'
             changes:
               - { type: 'add', add: '✅', ln: 1, content: '+line1' }
@@ -152,7 +180,6 @@ index 0000000..db81be4
         additions: 2
         from: '/dev/null'
         to: 'test'
-        new: '✅'
         newMode: '100644'
         index: ['0000000..db81be4']
         diff: |-
@@ -177,7 +204,8 @@ index db81be4..0000000
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'deleted'
+        chunks:
           - content: '@@ -1,2 +0,0 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '-line1' }
@@ -190,7 +218,6 @@ index db81be4..0000000
         additions: 0
         from: 'test'
         to: '/dev/null'
-        deleted: '✅'
         oldMode: '100644'
         index: ['db81be4..0000000']
         diff: |-
@@ -216,7 +243,8 @@ index 123..456
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'modified'
+        chunks:
           - content: '@@ -1,2 +1,2 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '- line1' }
@@ -260,7 +288,8 @@ index 0000000..db81be4
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'deleted'
+        chunks:
           - content: '@@ -1 +0,0 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '-line1' }
@@ -272,13 +301,13 @@ index 0000000..db81be4
         additions: 0
         from: 'file1'
         to: '/dev/null'
-        deleted: '✅'
         oldMode: '100644'
         index: ['db81be4..0000000']
         diff: |-
           @@ -1 +0,0 @@
           -line1
-      - chunks:
+      - type: 'new'
+        chunks:
           - content: '@@ -0,0 +1 @@'
             changes:
               - { type: 'add', add: '✅', ln: 1, content: '+line1' }
@@ -290,7 +319,6 @@ index 0000000..db81be4
         additions: 1
         from: '/dev/null'
         to: 'file2'
-        new: '✅'
         newMode: '100644'
         index: ['0000000..db81be4']
         diff: |-
@@ -320,7 +348,8 @@ index 123..456 789
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'modified'
+        chunks:
           - content: '@@ -1,1 +1,1 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '- line1' }
@@ -333,14 +362,15 @@ index 123..456 789
         additions: 1
         from: 'file1'
         to: 'file1'
-        index: ['123..456', '789']
-        newMode: '789'
         oldMode: '789'
+        newMode: '789'
+        index: ['123..456', '789']
         diff: |-
           @@ -1,1 +1,1 @@
           - line1
           + line2
-      - chunks:
+      - type: 'modified'
+        chunks:
           - content: '@@ -1,1 +1,1 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '- line1' }
@@ -353,9 +383,9 @@ index 123..456 789
         additions: 1
         from: 'file2'
         to: 'file2'
-        index: ['123..456', '789']
-        newMode: '789'
         oldMode: '789'
+        newMode: '789'
+        index: ['123..456', '789']
         diff: |-
           @@ -1,1 +1,1 @@
           - line1
@@ -379,7 +409,8 @@ index 123..456 789
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'modified'
+        chunks:
           - content: '@@ -1,1 +1,1 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '- line1' }
@@ -400,9 +431,9 @@ index 123..456 789
         additions: 1
         from: 'file1'
         to: 'file1'
-        index: ['123..456', '789']
-        newMode: '789'
         oldMode: '789'
+        newMode: '789'
+        index: ['123..456', '789']
         diff: |-
           @@ -1,1 +1,1 @@
           - line1
@@ -436,24 +467,69 @@ index 123..456 789
 +The door of all subtleties!\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('lao');
-    expect(file.to).toBe('tzu');
-    expect(file.chunks.length).toBe(2);
-    const chunk0 = file.chunks[0];
-    assert(chunk0);
-    expect(chunk0.oldStart).toBe(1);
-    expect(chunk0.oldLines).toBe(7);
-    expect(chunk0.newStart).toBe(1);
-    expect(chunk0.newLines).toBe(6);
-    const chunk1 = file.chunks[1];
-    assert(chunk1);
-    expect(chunk1.oldStart).toBe(9);
-    expect(chunk1.oldLines).toBe(3);
-    expect(chunk1.newStart).toBe(8);
-    expect(chunk1.newLines).toBe(6);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - type: 'modified'
+        chunks:
+          - content: '@@ -1,7 +1,6 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '-The Way that can be told of is not the eternal Way;' }
+              - { type: 'del', del: '✅', ln: 2, content: '-The name that can be named is not the eternal name.' }
+              - type: 'normal'
+                normal: '✅'
+                ln1: 3
+                ln2: 1
+                content: ' The Nameless is the origin of Heaven and Earth;'
+              - { type: 'del', del: '✅', ln: 4, content: '-The Named is the mother of all things.' }
+              - { type: 'add', add: '✅', ln: 2, content: '+The named is the mother of all things.' }
+              - { type: 'add', add: '✅', ln: 3, content: '+' }
+              - type: 'normal'
+                normal: '✅'
+                ln1: 5
+                ln2: 4
+                content: ' Therefore let there always be non-being,'
+              - { type: 'normal', normal: '✅', ln1: 6, ln2: 5, content: '	so we may see their subtlety,' }
+              - { type: 'normal', normal: '✅', ln1: 7, ln2: 6, content: ' And let there always be being,' }
+            oldStart: 1
+            oldLines: 7
+            newStart: 1
+            newLines: 6
+          - content: '@@ -9,3 +8,6 @@'
+            changes:
+              - { type: 'normal', normal: '✅', ln1: 9, ln2: 8, content: ' The two are the same,' }
+              - { type: 'normal', normal: '✅', ln1: 10, ln2: 9, content: ' But after they are produced,' }
+              - { type: 'normal', normal: '✅', ln1: 11, ln2: 10, content: '	they have different names.' }
+              - { type: 'add', add: '✅', ln: 11, content: '+They both may be called deep and profound.' }
+              - { type: 'add', add: '✅', ln: 12, content: '+Deeper and more profound,' }
+              - { type: 'add', add: '✅', ln: 13, content: '+The door of all subtleties!' }
+            oldStart: 9
+            oldLines: 3
+            newStart: 8
+            newLines: 6
+        deletions: 3
+        additions: 5
+        from: 'lao'
+        to: 'tzu'
+        diff: |-
+          @@ -1,7 +1,6 @@
+          -The Way that can be told of is not the eternal Way;
+          -The name that can be named is not the eternal name.
+           The Nameless is the origin of Heaven and Earth;
+          -The Named is the mother of all things.
+          +The named is the mother of all things.
+          +
+           Therefore let there always be non-being,
+          	so we may see their subtlety,
+           And let there always be being,
+          @@ -9,3 +8,6 @@
+           The two are the same,
+           But after they are produced,
+          	they have different names.
+          +They both may be called deep and profound.
+          +Deeper and more profound,
+          +The door of all subtleties!
+      "
+    `);
   });
 
   test('should parse hg diff output', () => {
@@ -473,14 +549,42 @@ diff -r 514fc757521e lib/parsers.coffee
  module.exports.version = (out) ->\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    const chunk = file.chunks[0];
-    assert(chunk);
-    expect(chunk.content).toBe('@@ -43,6 +43,9 @@');
-    expect(file.from).toBe('lib/parsers.coffee');
-    expect(file.to).toBe('lib/parsers.coffee');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - type: 'modified'
+        chunks:
+          - content: '@@ -43,6 +43,9 @@'
+            changes:
+              - type: 'normal'
+                normal: '✅'
+                ln1: 43
+                ln2: 43
+                content: '             files[file] = { added: added, deleted: deleted }'
+              - { type: 'normal', normal: '✅', ln1: 44, ln2: 44, content: '         files' }
+              - { type: 'add', add: '✅', ln: 45, content: '+    diff: (out) ->' }
+              - { type: 'add', add: '✅', ln: 46, content: '+        files = {}' }
+              - { type: 'add', add: '✅', ln: 47, content: '+' }
+              - { type: 'normal', normal: '✅', ln1: 45, ln2: 48, content: ' module.exports = Parsers' }
+              - { type: 'normal', normal: '✅', ln1: 46, ln2: 49, content: ' module.exports.version = (out) ->' }
+            oldStart: 43
+            oldLines: 6
+            newStart: 43
+            newLines: 9
+        deletions: 0
+        additions: 3
+        from: 'lib/parsers.coffee'
+        to: 'lib/parsers.coffee'
+        diff: |-
+          @@ -43,6 +43,9 @@
+                       files[file] = { added: added, deleted: deleted }
+                   files
+          +    diff: (out) ->
+          +        files = {}
+          +
+           module.exports = Parsers
+           module.exports.version = (out) ->
+      "
+    `);
   });
 
   test('should parse svn diff output', () => {
@@ -507,14 +611,68 @@ Index: text.txt
  would not be helping to\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(2);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('new.txt');
-    expect(file.to).toBe('new.txt');
-    const chunk = file.chunks[0];
-    assert(chunk);
-    expect(chunk.changes.length).toBe(1);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - type: 'modified'
+        chunks:
+          - content: '@@ -0,0 +1 @@'
+            changes:
+              - { type: 'add', add: '✅', ln: 1, content: '+test' }
+            oldStart: 0
+            oldLines: 0
+            newStart: 1
+            newLines: 1
+        deletions: 0
+        additions: 1
+        from: 'new.txt'
+        to: 'new.txt'
+        diff: |-
+          @@ -0,0 +1 @@
+          +test
+      - type: 'modified'
+        chunks:
+          - content: '@@ -1,7 +1,5 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '-This part of the' }
+              - { type: 'del', del: '✅', ln: 2, content: '-document has stayed the' }
+              - { type: 'del', del: '✅', ln: 3, content: '-same from version to' }
+              - type: 'del'
+                del: '✅'
+                ln: 4
+                content: "-version.  It shouldn't"
+              - { type: 'add', add: '✅', ln: 1, content: '+This is an important' }
+              - type: 'add'
+                add: '✅'
+                ln: 2
+                content: "+notice! It shouldn't"
+              - type: 'normal'
+                normal: '✅'
+                ln1: 5
+                ln2: 3
+                content: " be shown if it doesn't"
+              - { type: 'normal', normal: '✅', ln1: 6, ln2: 4, content: ' change.  Otherwise, that' }
+              - { type: 'normal', normal: '✅', ln1: 7, ln2: 5, content: ' would not be helping to' }
+            oldStart: 1
+            oldLines: 7
+            newStart: 1
+            newLines: 5
+        deletions: 4
+        additions: 2
+        from: 'text.txt'
+        to: 'text.txt'
+        diff: |-
+          @@ -1,7 +1,5 @@
+          -This part of the
+          -document has stayed the
+          -same from version to
+          -version.  It shouldn't
+          +This is an important
+          +notice! It shouldn't
+           be shown if it doesn't
+           change.  Otherwise, that
+           would not be helping to
+      "
+    `);
   });
 
   test('should parse GitHub API patch diff when listing files of a pull request', () => {
@@ -525,7 +683,8 @@ Index: text.txt
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'modified'
+        chunks:
           - content: '@@ -1 +1 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '-hello world' }
@@ -553,12 +712,12 @@ index 0000000..e6a2e28\
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks: []
+      - type: 'new'
+        chunks: []
         deletions: 0
         additions: 0
         from: '/dev/null'
         to: 'newFile.txt'
-        new: '✅'
         newMode: '100644'
         index: ['0000000..e6a2e28']
       "
@@ -574,12 +733,12 @@ index e6a2e28..0000000\
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks: []
+      - type: 'deleted'
+        chunks: []
         deletions: 0
         additions: 0
         from: 'deletedFile.txt'
         to: '/dev/null'
-        deleted: '✅'
         oldMode: '100644'
         index: ['e6a2e28..0000000']
       "
@@ -594,14 +753,17 @@ rename from test.txt
 rename to text2.txt\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('test.txt');
-    expect(file.to).toBe('text2.txt');
-    expect(file.chunks.length).toBe(0);
-    expect(file.renamed).toBe(true);
-    expect(file.similarityIndex).toBe(100);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - type: 'renamed'
+        chunks: []
+        deletions: 0
+        additions: 0
+        from: 'test.txt'
+        to: 'text2.txt'
+        similarityIndex: 100
+      "
+    `);
   });
 
   test('should parse rename diff with partial similarity', () => {
@@ -618,15 +780,30 @@ index 123..456
 + line2\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('old.txt');
-    expect(file.to).toBe('new.txt');
-    expect(file.renamed).toBe(true);
-    expect(file.similarityIndex).toBe(85);
-    expect(file.deletions).toBe(1);
-    expect(file.additions).toBe(1);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - type: 'renamed'
+        chunks:
+          - content: '@@ -1,2 +1,2 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '- line1' }
+              - { type: 'add', add: '✅', ln: 1, content: '+ line2' }
+            oldStart: 1
+            oldLines: 2
+            newStart: 1
+            newLines: 2
+        deletions: 1
+        additions: 1
+        from: 'old.txt'
+        to: 'new.txt'
+        index: ['123..456']
+        diff: |-
+          @@ -1,2 +1,2 @@
+          - line1
+          + line2
+        similarityIndex: 85
+      "
+    `);
   });
 
   test('should parse rename diff with space in path with no changes', () => {
@@ -639,13 +816,13 @@ rename to My Folder/a/File\
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks: []
+      - type: 'renamed'
+        chunks: []
         deletions: 0
         additions: 0
         from: 'My Folder/File'
         to: 'My Folder/a/File'
         similarityIndex: 100
-        renamed: '✅'
       "
     `);
   });
@@ -663,7 +840,8 @@ rename to My Folder/a/File
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'renamed'
+        chunks:
           - content: '@@ -1,2 +1,2 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '- line1' }
@@ -676,12 +854,11 @@ rename to My Folder/a/File
         additions: 1
         from: 'My Folder/File'
         to: 'My Folder/a/File'
-        similarityIndex: 100
-        renamed: '✅'
         diff: |-
           @@ -1,2 +1,2 @@
           - line1
           + line2
+        similarityIndex: 100
       "
     `);
   });
@@ -699,7 +876,8 @@ index 9daeafb..88bd214 100644
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'modified'
+        chunks:
           - content: '@@ -1 +1 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '-test' }
@@ -715,9 +893,9 @@ index 9daeafb..88bd214 100644
         additions: 1
         from: 'file \\"space\\"'
         to: 'file \\"space\\"'
-        index: ['9daeafb..88bd214', '100644']
-        newMode: '100644'
         oldMode: '100644'
+        newMode: '100644'
+        index: ['9daeafb..88bd214', '100644']
         diff: |-
           @@ -1 +1 @@
           -test
@@ -748,7 +926,8 @@ index 123..456 789
     const files = parse(diff);
     expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'modified'
+        chunks:
           - content: '@@ -1,2 +1,1 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '- line11' }
@@ -762,15 +941,16 @@ index 123..456 789
         additions: 1
         from: 'file1'
         to: 'file1'
-        index: ['123..456', '789']
-        newMode: '789'
         oldMode: '789'
+        newMode: '789'
+        index: ['123..456', '789']
         diff: |-
           @@ -1,2 +1,1 @@
           - line11
           --- line12
           + line21
-      - chunks:
+      - type: 'modified'
+        chunks:
           - content: '@@ -1,2 +1,1 @@'
             changes:
               - { type: 'del', del: '✅', ln: 1, content: '- line11' }
@@ -784,9 +964,9 @@ index 123..456 789
         additions: 2
         from: 'file2'
         to: 'file2'
-        index: ['123..456', '789']
-        newMode: '789'
         oldMode: '789'
+        newMode: '789'
+        index: ['123..456', '789']
         diff: |-
           @@ -1,2 +1,1 @@
           - line11
@@ -810,9 +990,10 @@ index bacb5fc,b8b0f61..97366e3
   three\
 `;
     const files = parse(diff);
-        expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
       "
-      - chunks:
+      - type: 'combined'
+        chunks:
           - content: '@@@ -1,3 -1,3 +1,3 @@@'
             changes:
               - { type: 'normal', normal: '✅', ln1: 1, ln2: 1, content: '  one' }
@@ -834,7 +1015,6 @@ index bacb5fc,b8b0f61..97366e3
         from: 'file.txt'
         to: 'file.txt'
         index: ['bacb5fc,b8b0f61..97366e3']
-        combined: '✅'
         diff: |-
           @@@ -1,3 -1,3 +1,3 @@@
             one

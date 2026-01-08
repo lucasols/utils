@@ -34,24 +34,60 @@ interface FileChange {
   parentLines?: number[];
 }
 
-export interface DiffFile {
+type DiffFileType =
+  | 'modified'
+  | 'new'
+  | 'deleted'
+  | 'renamed'
+  | 'binary'
+  | 'combined';
+
+interface DiffFileBase {
+  type: DiffFileType;
   chunks: Chunk[];
   deletions: number;
   additions: number;
-  from?: string;
-  froms?: string[];
-  to?: string;
-  new?: boolean;
-  deleted?: boolean;
-  renamed?: boolean;
-  binary?: boolean;
-  combined?: boolean;
-  oldMode?: string;
-  newMode?: string;
-  index?: string[];
-  similarityIndex?: number;
-  diff?: string;
+  from: string | undefined;
+  to: string | undefined;
+  oldMode: string | undefined;
+  newMode: string | undefined;
+  index: string[] | undefined;
+  diff: string | undefined;
 }
+
+interface DiffFileModified extends DiffFileBase {
+  type: 'modified';
+}
+
+interface DiffFileNew extends DiffFileBase {
+  type: 'new';
+}
+
+interface DiffFileDeleted extends DiffFileBase {
+  type: 'deleted';
+}
+
+interface DiffFileRenamed extends DiffFileBase {
+  type: 'renamed';
+  similarityIndex: number | undefined;
+}
+
+interface DiffFileBinary extends DiffFileBase {
+  type: 'binary';
+}
+
+interface DiffFileCombined extends DiffFileBase {
+  type: 'combined';
+  froms: string[] | undefined;
+}
+
+export type DiffFile =
+  | DiffFileModified
+  | DiffFileNew
+  | DiffFileDeleted
+  | DiffFileRenamed
+  | DiffFileBinary
+  | DiffFileCombined;
 
 export function diffParser(input: string): DiffFile[] {
   if (!input) return [];
@@ -67,6 +103,7 @@ export function diffParser(input: string): DiffFile[] {
   let addedLineCounter = 0;
   let currentFileChanges: FileChange | null = null;
   let fromLineCount = 0;
+  let pendingFroms: string[] | undefined;
 
   const normal = (line: string): void => {
     currentChunk?.changes.push({
@@ -86,13 +123,19 @@ export function diffParser(input: string): DiffFile[] {
     const [fromFileName, toFileName] = parseFiles(line) ?? [];
 
     currentFile = {
+      type: 'modified',
       chunks: [],
       deletions: 0,
       additions: 0,
       from: fromFileName,
       to: toFileName,
+      oldMode: undefined,
+      newMode: undefined,
+      index: undefined,
+      diff: undefined,
     };
     fromLineCount = 0;
+    pendingFroms = undefined;
 
     files.push(currentFile);
   };
@@ -104,7 +147,7 @@ export function diffParser(input: string): DiffFile[] {
   const newFile = (_: string, match: RegExpMatchArray): void => {
     restart();
     if (currentFile) {
-      currentFile.new = true;
+      currentFile.type = 'new';
       currentFile.newMode = match[1];
       currentFile.from = '/dev/null';
     }
@@ -113,7 +156,7 @@ export function diffParser(input: string): DiffFile[] {
   const deletedFile = (_: string, match: RegExpMatchArray): void => {
     restart();
     if (currentFile) {
-      currentFile.deleted = true;
+      currentFile.type = 'deleted';
       currentFile.oldMode = match[1];
       currentFile.to = '/dev/null';
     }
@@ -146,30 +189,31 @@ export function diffParser(input: string): DiffFile[] {
   const similarityIndex = (_: string, match: RegExpMatchArray): void => {
     restart();
     if (currentFile) {
-      currentFile.similarityIndex = Number(match[1]);
+      const renamedFile = ensureRenamedFile(currentFile);
+      renamedFile.similarityIndex = Number(match[1]);
     }
   };
 
   const renameFrom = (line: string): void => {
     restart();
     if (currentFile) {
-      currentFile.renamed = true;
-      currentFile.from = parseOldOrNewFile(line, 'rename from ');
+      const renamedFile = ensureRenamedFile(currentFile);
+      renamedFile.from = parseOldOrNewFile(line, 'rename from ');
     }
   };
 
   const renameTo = (line: string): void => {
     restart();
     if (currentFile) {
-      currentFile.renamed = true;
-      currentFile.to = parseOldOrNewFile(line, 'rename to ');
+      const renamedFile = ensureRenamedFile(currentFile);
+      renamedFile.to = parseOldOrNewFile(line, 'rename to ');
     }
   };
 
   const binaryFiles = (): void => {
     restart();
     if (currentFile) {
-      currentFile.binary = true;
+      currentFile.type = 'binary';
     }
   };
 
@@ -183,11 +227,11 @@ export function diffParser(input: string): DiffFile[] {
         return;
       }
 
-      const froms = currentFile.froms ?? (currentFile.from ? [currentFile.from] : []);
+      const froms = pendingFroms ?? (currentFile.from ? [currentFile.from] : []);
       if (!froms.includes(fileName)) {
         froms.push(fileName);
       }
-      currentFile.froms = froms;
+      pendingFroms = froms;
       fromLineCount++;
     }
   };
@@ -207,10 +251,10 @@ export function diffParser(input: string): DiffFile[] {
     prefix: '-' | '+',
   ): ParentRange | null => {
     if (!range.startsWith(prefix)) return null;
-    const [start, lines] = range.slice(1).split(',');
-    const startNumber = Number(start);
+    const [rangeStart, rangeLines] = range.slice(1).split(',');
+    const startNumber = Number(rangeStart);
     if (!Number.isFinite(startNumber)) return null;
-    return { start: startNumber, lines: toNumOfLines(lines) };
+    return { start: startNumber, lines: toNumOfLines(rangeLines) };
   };
 
   const parseCombinedChunkHeader = (
@@ -223,8 +267,8 @@ export function diffParser(input: string): DiffFile[] {
       }
     | undefined => {
     const prefixMatch = line.match(/^(@{3,})\s/);
-    if (!prefixMatch) return;
-    const atCount = prefixMatch[1].length;
+    const atCount = prefixMatch?.[1]?.length;
+    if (!atCount) return;
     const suffixMatch = line.match(new RegExp(`\\s@{${atCount}}$`));
     if (!suffixMatch) return;
 
@@ -287,7 +331,8 @@ export function diffParser(input: string): DiffFile[] {
       parentLines: parsedHeader.parentRanges.map((range) => range.lines),
     };
     if (currentFile) {
-      currentFile.combined = true;
+      const combinedFile = ensureCombinedFile(currentFile);
+      combinedFile.froms = pendingFroms;
     }
     currentFile?.chunks.push(currentChunk);
   };
@@ -425,8 +470,10 @@ export function diffParser(input: string): DiffFile[] {
     }
 
     for (let i = 0; i < parentLines.length; i++) {
-      if (isLineInParent(prefix[i] ?? ' ')) {
-        parentLines[i]--;
+      if (!isLineInParent(prefix[i] ?? ' ')) continue;
+      const parentLine = parentLines[i];
+      if (parentLine !== undefined) {
+        parentLines[i] = parentLine - 1;
       }
     }
   };
@@ -462,15 +509,13 @@ export function diffParser(input: string): DiffFile[] {
   const parseContentLine = (line: string): void => {
     if (currentFileChanges?.combined) {
       parseCombinedContentLine(line);
-      if (currentFileChanges) {
-        const parentLines = currentFileChanges.parentLines;
-        if (
-          parentLines &&
-          parentLines.every((count) => count === 0) &&
-          currentFileChanges.newLines === 0
-        ) {
-          currentFileChanges = null;
-        }
+      const parentLines = currentFileChanges.parentLines;
+      if (
+        parentLines &&
+        parentLines.every((count) => count === 0) &&
+        currentFileChanges.newLines === 0
+      ) {
+        currentFileChanges = null;
       }
       return;
     }
@@ -528,6 +573,20 @@ export function diffParser(input: string): DiffFile[] {
 
   return files;
 }
+
+const ensureRenamedFile = (file: DiffFile): DiffFileRenamed => {
+  const renamedFile = file as DiffFileRenamed;
+  renamedFile.type = 'renamed';
+  renamedFile.similarityIndex ??= undefined;
+  return renamedFile;
+};
+
+const ensureCombinedFile = (file: DiffFile): DiffFileCombined => {
+  const combinedFile = file as DiffFileCombined;
+  combinedFile.type = 'combined';
+  combinedFile.froms ??= undefined;
+  return combinedFile;
+};
 
 const fileNameDiffRegex =
   /(a|i|w|c|o|1|2)\/.*(?=["']? ["']?(b|i|w|c|o|1|2)\/)|(b|i|w|c|o|1|2)\/.*$/g;
