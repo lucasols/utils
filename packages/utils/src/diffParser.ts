@@ -81,6 +81,13 @@ interface DiffFileCombined extends DiffFileBase {
   froms: string[] | undefined;
 }
 
+/**
+ * Parsed diff file metadata and hunks.
+ *
+ * The `type` discriminator indicates the kind of change this diff represents.
+ * Combined diffs (e.g. `diff --cc`) may include multiple parent paths via
+ * `froms`.
+ */
 export type DiffFile =
   | DiffFileModified
   | DiffFileNew
@@ -89,6 +96,14 @@ export type DiffFile =
   | DiffFileBinary
   | DiffFileCombined;
 
+/**
+ * Parse unified diff text (git, hg, svn) into structured file hunks.
+ *
+ * @example
+ * ```ts
+ * const files = diffParser('@@ -1 +1 @@\\n-old\\n+new');
+ * ```
+ */
 export function diffParser(input: string): DiffFile[] {
   if (!input) return [];
   if (typeof input !== 'string' || input.match(/^\s+$/)) return [];
