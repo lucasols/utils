@@ -31,9 +31,13 @@ export interface DiffFile {
   to?: string;
   new?: boolean;
   deleted?: boolean;
+  renamed?: boolean;
+  binary?: boolean;
   oldMode?: string;
   newMode?: string;
   index?: string[];
+  similarityIndex?: number;
+  diff?: string;
 }
 
 export function diffParser(input: string): DiffFile[] {
@@ -121,6 +125,36 @@ export function diffParser(input: string): DiffFile[] {
       if (match[1]) {
         currentFile.oldMode = currentFile.newMode = match[1].trim();
       }
+    }
+  };
+
+  const similarityIndex = (_: string, match: RegExpMatchArray): void => {
+    restart();
+    if (currentFile) {
+      currentFile.similarityIndex = Number(match[1]);
+    }
+  };
+
+  const renameFrom = (line: string): void => {
+    restart();
+    if (currentFile) {
+      currentFile.renamed = true;
+      currentFile.from = parseOldOrNewFile(line, 'rename from ');
+    }
+  };
+
+  const renameTo = (line: string): void => {
+    restart();
+    if (currentFile) {
+      currentFile.renamed = true;
+      currentFile.to = parseOldOrNewFile(line, 'rename to ');
+    }
+  };
+
+  const binaryFiles = (): void => {
+    restart();
+    if (currentFile) {
+      currentFile.binary = true;
     }
   };
 
@@ -219,6 +253,10 @@ export function diffParser(input: string): DiffFile[] {
     [/^deleted file mode (\d+)$/, deletedFile],
     [/^old mode (\d+)$/, oldMode],
     [/^new mode (\d+)$/, newMode],
+    [/^similarity index (\d+)%/, similarityIndex],
+    [/^rename from /, renameFrom],
+    [/^rename to /, renameTo],
+    [/^Binary files .* and .* differ$/, binaryFiles],
     [/^index\s[\da-zA-Z]+\.\.[\da-zA-Z]+(\s(\d+))?$/, index],
     [/^---\s/, fromFile],
     [/^\+\+\+\s/, toFile],
@@ -286,8 +324,13 @@ const parseFiles = (line?: string): string[] | undefined => {
 
 const quotedFileNameRegex = /^\\?['"]|\\?['"]$/g;
 
-const parseOldOrNewFile = (line: string): string => {
-  let fileName = leftTrimChars(line, '-+').trim();
+const parseOldOrNewFile = (line: string, prefix?: string): string => {
+  let fileName: string;
+  if (prefix) {
+    fileName = line.slice(prefix.length);
+  } else {
+    fileName = leftTrimChars(line, '-+').trim();
+  }
   fileName = removeTimeStamp(fileName);
   return fileName
     .replace(quotedFileNameRegex, '')

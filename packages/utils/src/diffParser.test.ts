@@ -70,11 +70,32 @@ rename from "file1"
 rename to "file2"\
 `;
     const files = parse(diff);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks: []
+        deletions: 0
+        additions: 0
+        from: 'file1'
+        to: 'file2'
+        similarityIndex: 100
+        renamed: '✅'
+      "
+    `);
+  });
+
+  test('should parse binary file diff with binary flag', () => {
+    const diff = `\
+diff --git a/screenshots/split-view.png b/screenshots/split-view.png
+index 1c352c2..e1fb381 100644
+Binary files a/screenshots/split-view.png and b/screenshots/split-view.png differ\
+`;
+    const files = parse(diff);
     expect(files.length).toBe(1);
     const file = files[0];
     assert(file);
-    expect(file.from).toBe('file1');
-    expect(file.to).toBe('file2');
+    expect(file.from).toBe('screenshots/split-view.png');
+    expect(file.to).toBe('screenshots/split-view.png');
+    expect(file.binary).toBe(true);
     expect(file.chunks.length).toBe(0);
   });
 
@@ -85,17 +106,19 @@ index fc72ba34b..ec373e9a4 100644
 Binary files a/Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png and b/Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png differ\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe(
-      "Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png",
-    );
-    expect(file.to).toBe(
-      "Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png",
-    );
-    expect(file.oldMode).toBe('100644');
-    expect(file.newMode).toBe('100644');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks: []
+        deletions: 0
+        additions: 0
+        from: "Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png"
+        to: "Artsy_Tests/ReferenceImages/ARTopMenuViewControllerSpec/selects 'home' by default as ipad@2x.png"
+        index: ['fc72ba34b..ec373e9a4', '100644']
+        newMode: '100644'
+        oldMode: '100644'
+        binary: '✅'
+      "
+    `);
   });
 
   test('should parse diff with new file mode line', () => {
@@ -110,19 +133,26 @@ index 0000000..db81be4
 +line2\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.new).toBeTruthy();
-    expect(file.newMode).toBe('100644');
-    expect(file.from).toBe('/dev/null');
-    expect(file.to).toBe('test');
-    const chunk = file.chunks[0];
-    assert(chunk);
-    expect(chunk.content).toBe('@@ -0,0 +1,2 @@');
-    expect(chunk.changes.length).toBe(2);
-    expect(chunk.changes[0]?.content).toBe('+line1');
-    expect(chunk.changes[1]?.content).toBe('+line2');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -0,0 +1,2 @@'
+            changes:
+              - { type: 'add', add: '✅', ln: 1, content: '+line1' }
+              - { type: 'add', add: '✅', ln: 2, content: '+line2' }
+            oldStart: 0
+            oldLines: 0
+            newStart: 1
+            newLines: 2
+        deletions: 0
+        additions: 2
+        from: '/dev/null'
+        to: 'test'
+        new: '✅'
+        newMode: '100644'
+        index: ['0000000..db81be4']
+      "
+    `);
   });
 
   test('should parse diff with deleted file mode line', () => {
@@ -137,19 +167,26 @@ index db81be4..0000000
 -line2\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.deleted).toBeTruthy();
-    expect(file.oldMode).toBe('100644');
-    expect(file.from).toBe('test');
-    expect(file.to).toBe('/dev/null');
-    const chunk = file.chunks[0];
-    assert(chunk);
-    expect(chunk.content).toBe('@@ -1,2 +0,0 @@');
-    expect(chunk.changes.length).toBe(2);
-    expect(chunk.changes[0]?.content).toBe('-line1');
-    expect(chunk.changes[1]?.content).toBe('-line2');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -1,2 +0,0 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '-line1' }
+              - { type: 'del', del: '✅', ln: 2, content: '-line2' }
+            oldStart: 1
+            oldLines: 2
+            newStart: 0
+            newLines: 0
+        deletions: 2
+        additions: 0
+        from: 'test'
+        to: '/dev/null'
+        deleted: '✅'
+        oldMode: '100644'
+        index: ['db81be4..0000000']
+      "
+    `);
   });
 
   test('should parse diff with old and new mode lines', () => {
@@ -165,22 +202,26 @@ index 123..456
 + line2\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.oldMode).toBe('100644');
-    expect(file.newMode).toBe('100755');
-    expect(file.from).toBe('file');
-    expect(file.to).toBe('file');
-    expect(file.deletions).toBe(1);
-    expect(file.additions).toBe(1);
-    expect(file.chunks.length).toBe(1);
-    const chunk = file.chunks[0];
-    assert(chunk);
-    expect(chunk.content).toBe('@@ -1,2 +1,2 @@');
-    expect(chunk.changes.length).toBe(2);
-    expect(chunk.changes[0]?.content).toBe('- line1');
-    expect(chunk.changes[1]?.content).toBe('+ line2');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -1,2 +1,2 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '- line1' }
+              - { type: 'add', add: '✅', ln: 1, content: '+ line2' }
+            oldStart: 1
+            oldLines: 2
+            newStart: 1
+            newLines: 2
+        deletions: 1
+        additions: 1
+        from: 'file'
+        to: 'file'
+        oldMode: '100644'
+        newMode: '100755'
+        index: ['123..456']
+      "
+    `);
   });
 
   test('should parse diff with single line files', () => {
@@ -201,37 +242,40 @@ index 0000000..db81be4
 +line1\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(2);
-
-    const file1 = files[0];
-    assert(file1);
-    expect(file1.deleted).toBeTruthy();
-    expect(file1.oldMode).toBe('100644');
-    expect(file1.from).toBe('file1');
-    expect(file1.to).toBe('/dev/null');
-    const chunk1 = file1.chunks[0];
-    assert(chunk1);
-    expect(chunk1.content).toBe('@@ -1 +0,0 @@');
-    expect(chunk1.changes.length).toBe(1);
-    expect(chunk1.changes[0]?.content).toBe('-line1');
-    expect(chunk1.changes[0]?.type).toBe('del');
-
-    const file2 = files[1];
-    assert(file2);
-    expect(file2.new).toBeTruthy();
-    expect(file2.newMode).toBe('100644');
-    expect(file2.from).toBe('/dev/null');
-    expect(file2.to).toBe('file2');
-    const chunk2 = file2.chunks[0];
-    assert(chunk2);
-    expect(chunk2.content).toBe('@@ -0,0 +1 @@');
-    expect(chunk2.oldStart).toBe(0);
-    expect(chunk2.oldLines).toBe(0);
-    expect(chunk2.newStart).toBe(1);
-    expect(chunk2.newLines).toBe(1);
-    expect(chunk2.changes.length).toBe(1);
-    expect(chunk2.changes[0]?.content).toBe('+line1');
-    expect(chunk2.changes[0]?.type).toBe('add');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -1 +0,0 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '-line1' }
+            oldStart: 1
+            oldLines: 1
+            newStart: 0
+            newLines: 0
+        deletions: 1
+        additions: 0
+        from: 'file1'
+        to: '/dev/null'
+        deleted: '✅'
+        oldMode: '100644'
+        index: ['db81be4..0000000']
+      - chunks:
+          - content: '@@ -0,0 +1 @@'
+            changes:
+              - { type: 'add', add: '✅', ln: 1, content: '+line1' }
+            oldStart: 0
+            oldLines: 0
+            newStart: 1
+            newLines: 1
+        deletions: 0
+        additions: 1
+        from: '/dev/null'
+        to: 'file2'
+        new: '✅'
+        newMode: '100644'
+        index: ['0000000..db81be4']
+      "
+    `);
   });
 
   test('should parse multiple files in diff', () => {
@@ -252,33 +296,42 @@ index 123..456 789
 + line2\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(2);
-
-    const file1 = files[0];
-    assert(file1);
-    expect(file1.from).toBe('file1');
-    expect(file1.to).toBe('file1');
-    expect(file1.oldMode).toBe('789');
-    expect(file1.newMode).toBe('789');
-    const chunk1 = file1.chunks[0];
-    assert(chunk1);
-    expect(chunk1.content).toBe('@@ -1,1 +1,1 @@');
-    expect(chunk1.changes.length).toBe(2);
-    expect(chunk1.changes[0]?.content).toBe('- line1');
-    expect(chunk1.changes[1]?.content).toBe('+ line2');
-
-    const file2 = files[1];
-    assert(file2);
-    expect(file2.from).toBe('file2');
-    expect(file2.to).toBe('file2');
-    expect(file2.oldMode).toBe('789');
-    expect(file2.newMode).toBe('789');
-    const chunk2 = file2.chunks[0];
-    assert(chunk2);
-    expect(chunk2.content).toBe('@@ -1,1 +1,1 @@');
-    expect(chunk2.changes.length).toBe(2);
-    expect(chunk2.changes[0]?.content).toBe('- line1');
-    expect(chunk2.changes[1]?.content).toBe('+ line2');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -1,1 +1,1 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '- line1' }
+              - { type: 'add', add: '✅', ln: 1, content: '+ line2' }
+            oldStart: 1
+            oldLines: 1
+            newStart: 1
+            newLines: 1
+        deletions: 1
+        additions: 1
+        from: 'file1'
+        to: 'file1'
+        index: ['123..456', '789']
+        newMode: '789'
+        oldMode: '789'
+      - chunks:
+          - content: '@@ -1,1 +1,1 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '- line1' }
+              - { type: 'add', add: '✅', ln: 1, content: '+ line2' }
+            oldStart: 1
+            oldLines: 1
+            newStart: 1
+            newLines: 1
+        deletions: 1
+        additions: 1
+        from: 'file2'
+        to: 'file2'
+        index: ['123..456', '789']
+        newMode: '789'
+        oldMode: '789'
+      "
+    `);
   });
 
   test('should parse diff with EOF flag', () => {
@@ -294,23 +347,34 @@ index 123..456 789
 \\ No newline at end of file
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('file1');
-    expect(file.to).toBe('file1');
-    expect(file.oldMode).toBe('789');
-    expect(file.newMode).toBe('789');
-    const chunk = file.chunks[0];
-    assert(chunk);
-    expect(chunk.content).toBe('@@ -1,1 +1,1 @@');
-    expect(chunk.changes.length).toBe(4);
-    expect(chunk.changes[0]?.content).toBe('- line1');
-    expect(chunk.changes[1]?.type).toBe('del');
-    expect(chunk.changes[1]?.content).toBe('\\ No newline at end of file');
-    expect(chunk.changes[2]?.content).toBe('+ line2');
-    expect(chunk.changes[3]?.type).toBe('add');
-    expect(chunk.changes[3]?.content).toBe('\\ No newline at end of file');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -1,1 +1,1 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '- line1' }
+              - type: 'del'
+                del: '✅'
+                ln: 1
+                content: '\\ No newline at end of file'
+              - { type: 'add', add: '✅', ln: 1, content: '+ line2' }
+              - type: 'add'
+                add: '✅'
+                ln: 1
+                content: '\\ No newline at end of file'
+            oldStart: 1
+            oldLines: 1
+            newStart: 1
+            newLines: 1
+        deletions: 1
+        additions: 1
+        from: 'file1'
+        to: 'file1'
+        index: ['123..456', '789']
+        newMode: '789'
+        oldMode: '789'
+      "
+    `);
   });
 
   test('should parse gnu sample diff', () => {
@@ -423,23 +487,21 @@ Index: text.txt
 +hello universe`;
 
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    const chunk = file.chunks[0];
-    assert(chunk);
-    expect(chunk.content).toBe('@@ -1 +1 @@');
-    expect(file.from).toBeUndefined();
-    expect(file.to).toBeUndefined();
-    expect(file.oldMode).toBeUndefined();
-    expect(file.newMode).toBeUndefined();
-    expect(file.deletions).toBe(1);
-    expect(file.additions).toBe(1);
-    expect(chunk.oldStart).toBe(1);
-    expect(chunk.oldLines).toBe(1);
-    expect(chunk.newStart).toBe(1);
-    expect(chunk.newLines).toBe(1);
-    expect(chunk.changes.length).toBe(2);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -1 +1 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '-hello world' }
+              - { type: 'add', add: '✅', ln: 1, content: '+hello universe' }
+            oldStart: 1
+            oldLines: 1
+            newStart: 1
+            newLines: 1
+        deletions: 1
+        additions: 1
+      "
+    `);
   });
 
   test('should parse file names for n new empty file', () => {
@@ -449,12 +511,18 @@ new file mode 100644
 index 0000000..e6a2e28\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('/dev/null');
-    expect(file.to).toBe('newFile.txt');
-    expect(file.newMode).toBe('100644');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks: []
+        deletions: 0
+        additions: 0
+        from: '/dev/null'
+        to: 'newFile.txt'
+        new: '✅'
+        newMode: '100644'
+        index: ['0000000..e6a2e28']
+      "
+    `);
   });
 
   test('should parse file names for a deleted file', () => {
@@ -464,12 +532,61 @@ deleted file mode 100644
 index e6a2e28..0000000\
 `;
     const files = parse(diff);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks: []
+        deletions: 0
+        additions: 0
+        from: 'deletedFile.txt'
+        to: '/dev/null'
+        deleted: '✅'
+        oldMode: '100644'
+        index: ['e6a2e28..0000000']
+      "
+    `);
+  });
+
+  test('should parse rename diff with renamed and similarityIndex', () => {
+    const diff = `\
+diff --git a/test.txt b/text2.txt
+similarity index 100%
+rename from test.txt
+rename to text2.txt\
+`;
+    const files = parse(diff);
     expect(files.length).toBe(1);
     const file = files[0];
     assert(file);
-    expect(file.from).toBe('deletedFile.txt');
-    expect(file.to).toBe('/dev/null');
-    expect(file.oldMode).toBe('100644');
+    expect(file.from).toBe('test.txt');
+    expect(file.to).toBe('text2.txt');
+    expect(file.chunks.length).toBe(0);
+    expect(file.renamed).toBe(true);
+    expect(file.similarityIndex).toBe(100);
+  });
+
+  test('should parse rename diff with partial similarity', () => {
+    const diff = `\
+diff --git a/old.txt b/new.txt
+similarity index 85%
+rename from old.txt
+rename to new.txt
+index 123..456
+--- a/old.txt
++++ b/new.txt
+@@ -1,2 +1,2 @@
+- line1
++ line2\
+`;
+    const files = parse(diff);
+    expect(files.length).toBe(1);
+    const file = files[0];
+    assert(file);
+    expect(file.from).toBe('old.txt');
+    expect(file.to).toBe('new.txt');
+    expect(file.renamed).toBe(true);
+    expect(file.similarityIndex).toBe(85);
+    expect(file.deletions).toBe(1);
+    expect(file.additions).toBe(1);
   });
 
   test('should parse rename diff with space in path with no changes', () => {
@@ -480,12 +597,17 @@ rename from a/My Folder/File
 rename to My Folder/a/File\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('My Folder/File');
-    expect(file.to).toBe('My Folder/a/File');
-    expect(file.chunks.length).toBe(0);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks: []
+        deletions: 0
+        additions: 0
+        from: 'My Folder/File'
+        to: 'My Folder/a/File'
+        similarityIndex: 100
+        renamed: '✅'
+      "
+    `);
   });
 
   test('should parse rename diff with space in path with changes', () => {
@@ -499,18 +621,25 @@ rename to My Folder/a/File
 + line2\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe('My Folder/File');
-    expect(file.to).toBe('My Folder/a/File');
-    expect(file.chunks.length).toBe(1);
-    const chunk = file.chunks[0];
-    assert(chunk);
-    expect(chunk.content).toBe('@@ -1,2 +1,2 @@');
-    expect(chunk.changes.length).toBe(2);
-    expect(chunk.changes[0]?.content).toBe('- line1');
-    expect(chunk.changes[1]?.content).toBe('+ line2');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -1,2 +1,2 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '- line1' }
+              - { type: 'add', add: '✅', ln: 1, content: '+ line2' }
+            oldStart: 1
+            oldLines: 2
+            newStart: 1
+            newLines: 2
+        deletions: 1
+        additions: 1
+        from: 'My Folder/File'
+        to: 'My Folder/a/File'
+        similarityIndex: 100
+        renamed: '✅'
+      "
+    `);
   });
 
   test('should parse diff with single line quote escaped file names', () => {
@@ -524,13 +653,29 @@ index 9daeafb..88bd214 100644
 +test\\n1234
 `;
     const files = parse(diff);
-    expect(files.length).toBe(1);
-    const file = files[0];
-    assert(file);
-    expect(file.from).toBe(`file \\"space\\"`);
-    expect(file.to).toBe(`file \\"space\\"`);
-    expect(file.oldMode).toBe('100644');
-    expect(file.newMode).toBe('100644');
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -1 +1 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '-test' }
+              - type: 'add'
+                add: '✅'
+                ln: 1
+                content: '+test\\n1234'
+            oldStart: 1
+            oldLines: 1
+            newStart: 1
+            newLines: 1
+        deletions: 1
+        additions: 1
+        from: 'file \\"space\\"'
+        to: 'file \\"space\\"'
+        index: ['9daeafb..88bd214', '100644']
+        newMode: '100644'
+        oldMode: '100644'
+      "
+    `);
   });
 
   test("should parse files with additional '-' and '+'", () => {
@@ -553,26 +698,43 @@ index 123..456 789
 + line22\
 `;
     const files = parse(diff);
-    expect(files.length).toBe(2);
-    const file1 = files[0];
-    assert(file1);
-    const file2 = files[1];
-    assert(file2);
-
-    expect(file1.from).toBe(`file1`);
-    expect(file1.to).toBe(`file1`);
-    expect(file1.oldMode).toBe('789');
-    expect(file1.newMode).toBe('789');
-    const chunk1 = file1.chunks[0];
-    assert(chunk1);
-    expect(chunk1.changes.length).toBe(3);
-
-    expect(file2.from).toBe(`file2`);
-    expect(file2.to).toBe(`file2`);
-    expect(file2.oldMode).toBe('789');
-    expect(file2.newMode).toBe('789');
-    const chunk2 = file2.chunks[0];
-    assert(chunk2);
-    expect(chunk2.changes.length).toBe(3);
+    expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@ -1,2 +1,1 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '- line11' }
+              - { type: 'del', del: '✅', ln: 2, content: '--- line12' }
+              - { type: 'add', add: '✅', ln: 1, content: '+ line21' }
+            oldStart: 1
+            oldLines: 2
+            newStart: 1
+            newLines: 1
+        deletions: 2
+        additions: 1
+        from: 'file1'
+        to: 'file1'
+        index: ['123..456', '789']
+        newMode: '789'
+        oldMode: '789'
+      - chunks:
+          - content: '@@ -1,2 +1,1 @@'
+            changes:
+              - { type: 'del', del: '✅', ln: 1, content: '- line11' }
+              - { type: 'add', add: '✅', ln: 1, content: '+++ line21' }
+              - { type: 'add', add: '✅', ln: 2, content: '+ line22' }
+            oldStart: 1
+            oldLines: 2
+            newStart: 1
+            newLines: 1
+        deletions: 1
+        additions: 2
+        from: 'file2'
+        to: 'file2'
+        index: ['123..456', '789']
+        newMode: '789'
+        oldMode: '789'
+      "
+    `);
   });
 });
