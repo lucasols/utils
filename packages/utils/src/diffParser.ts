@@ -9,6 +9,11 @@ interface Change {
   content: string;
 }
 
+interface ParentRange {
+  start: number;
+  lines: number;
+}
+
 interface Chunk {
   content: string;
   changes: Change[];
@@ -16,11 +21,17 @@ interface Chunk {
   oldLines: number;
   newStart: number;
   newLines: number;
+  combined?: boolean;
+  parentCount?: number;
+  oldRanges?: ParentRange[];
 }
 
 interface FileChange {
   oldLines: number;
   newLines: number;
+  combined?: boolean;
+  parentCount?: number;
+  parentLines?: number[];
 }
 
 export interface DiffFile {
@@ -28,11 +39,13 @@ export interface DiffFile {
   deletions: number;
   additions: number;
   from?: string;
+  froms?: string[];
   to?: string;
   new?: boolean;
   deleted?: boolean;
   renamed?: boolean;
   binary?: boolean;
+  combined?: boolean;
   oldMode?: string;
   newMode?: string;
   index?: string[];
@@ -53,6 +66,7 @@ export function diffParser(input: string): DiffFile[] {
   let deletedLineCounter = 0;
   let addedLineCounter = 0;
   let currentFileChanges: FileChange | null = null;
+  let fromLineCount = 0;
 
   const normal = (line: string): void => {
     currentChunk?.changes.push({
@@ -78,6 +92,7 @@ export function diffParser(input: string): DiffFile[] {
       from: fromFileName,
       to: toFileName,
     };
+    fromLineCount = 0;
 
     files.push(currentFile);
   };
@@ -161,7 +176,19 @@ export function diffParser(input: string): DiffFile[] {
   const fromFile = (line: string): void => {
     restart();
     if (currentFile) {
-      currentFile.from = parseOldOrNewFile(line);
+      const fileName = parseOldOrNewFile(line);
+      if (fromLineCount === 0) {
+        currentFile.from = fileName;
+        fromLineCount = 1;
+        return;
+      }
+
+      const froms = currentFile.froms ?? (currentFile.from ? [currentFile.from] : []);
+      if (!froms.includes(fileName)) {
+        froms.push(fileName);
+      }
+      currentFile.froms = froms;
+      fromLineCount++;
     }
   };
 
@@ -174,6 +201,96 @@ export function diffParser(input: string): DiffFile[] {
 
   const toNumOfLines = (number: string | undefined): number =>
     Number(number || 1);
+
+  const parseRange = (
+    range: string,
+    prefix: '-' | '+',
+  ): ParentRange | null => {
+    if (!range.startsWith(prefix)) return null;
+    const [start, lines] = range.slice(1).split(',');
+    const startNumber = Number(start);
+    if (!Number.isFinite(startNumber)) return null;
+    return { start: startNumber, lines: toNumOfLines(lines) };
+  };
+
+  const parseCombinedChunkHeader = (
+    line: string,
+  ):
+    | {
+        parentRanges: ParentRange[];
+        newRange: ParentRange;
+        parentCount: number;
+      }
+    | undefined => {
+    const prefixMatch = line.match(/^(@{3,})\s/);
+    if (!prefixMatch) return;
+    const atCount = prefixMatch[1].length;
+    const suffixMatch = line.match(new RegExp(`\\s@{${atCount}}$`));
+    if (!suffixMatch) return;
+
+    const ranges = line.slice(atCount, line.length - atCount).trim();
+    const parts = ranges.split(/\s+/);
+    if (parts.length < 2) return;
+
+    const newPart = parts.at(-1);
+    if (!newPart?.startsWith('+')) return;
+
+    const parentParts = parts.slice(0, -1);
+    const parentRanges: ParentRange[] = [];
+
+    for (const part of parentParts) {
+      const range = parseRange(part, '-');
+      if (!range) return;
+      parentRanges.push(range);
+    }
+
+    const newRange = parseRange(newPart, '+');
+    if (!newRange) return;
+
+    return {
+      parentRanges,
+      newRange,
+      parentCount: parentRanges.length,
+    };
+  };
+
+  const combinedChunk = (line: string): void => {
+    if (!currentFile) {
+      start(line);
+    }
+
+    const parsedHeader = parseCombinedChunkHeader(line);
+    if (!parsedHeader) return;
+
+    const [firstParent] = parsedHeader.parentRanges;
+    const oldStartNum = firstParent?.start ?? 0;
+    const oldLinesNum = firstParent?.lines ?? 0;
+
+    deletedLineCounter = oldStartNum;
+    addedLineCounter = parsedHeader.newRange.start;
+    currentChunk = {
+      content: line,
+      changes: [],
+      oldStart: oldStartNum,
+      oldLines: oldLinesNum,
+      newStart: parsedHeader.newRange.start,
+      newLines: parsedHeader.newRange.lines,
+      combined: true,
+      parentCount: parsedHeader.parentCount,
+      oldRanges: parsedHeader.parentRanges,
+    };
+    currentFileChanges = {
+      oldLines: oldLinesNum,
+      newLines: parsedHeader.newRange.lines,
+      combined: true,
+      parentCount: parsedHeader.parentCount,
+      parentLines: parsedHeader.parentRanges.map((range) => range.lines),
+    };
+    if (currentFile) {
+      currentFile.combined = true;
+    }
+    currentFile?.chunks.push(currentChunk);
+  };
 
   const chunk = (line: string, match: RegExpMatchArray): void => {
     if (!currentFile) {
@@ -244,6 +361,76 @@ export function diffParser(input: string): DiffFile[] {
     });
   };
 
+  const parseCombinedContentLine = (line: string): void => {
+    if (!currentChunk || !currentFile || !currentFileChanges) return;
+
+    if (line.match(/^\\ No newline at end of file$/)) {
+      eof(line);
+      return;
+    }
+
+    const parentCount =
+      currentChunk.parentCount ??
+      currentFileChanges.parentCount ??
+      currentFileChanges.parentLines?.length ??
+      0;
+
+    const parentLines = currentFileChanges.parentLines;
+
+    if (!parentLines || parentCount <= 0) return;
+
+    const prefix = line.slice(0, parentCount);
+    const lineInResult = !prefix.includes('-');
+    const isLineInParent = (marker: string): boolean => {
+      if (marker === '-') return true;
+      if (marker === '+') return false;
+      return lineInResult;
+    };
+    const lineInFirstParent = isLineInParent(prefix[0] ?? ' ');
+
+    if (lineInResult && !lineInFirstParent) {
+      currentChunk.changes.push({
+        type: 'add',
+        add: true,
+        ln: addedLineCounter++,
+        content: line,
+      });
+      currentFile.additions++;
+      currentFileChanges.newLines--;
+    } else if (!lineInResult && lineInFirstParent) {
+      currentChunk.changes.push({
+        type: 'del',
+        del: true,
+        ln: deletedLineCounter++,
+        content: line,
+      });
+      currentFile.deletions++;
+      currentFileChanges.oldLines--;
+    } else if (lineInResult && lineInFirstParent) {
+      currentChunk.changes.push({
+        type: 'normal',
+        normal: true,
+        ln1: deletedLineCounter++,
+        ln2: addedLineCounter++,
+        content: line,
+      });
+      currentFileChanges.oldLines--;
+      currentFileChanges.newLines--;
+    } else {
+      currentChunk.changes.push({
+        type: 'normal',
+        normal: true,
+        content: line,
+      });
+    }
+
+    for (let i = 0; i < parentLines.length; i++) {
+      if (isLineInParent(prefix[i] ?? ' ')) {
+        parentLines[i]--;
+      }
+    }
+  };
+
   type HeaderHandler = (line: string, match: RegExpMatchArray) => void;
   type ContentHandler = (line: string, match: RegExpMatchArray) => void;
 
@@ -257,9 +444,10 @@ export function diffParser(input: string): DiffFile[] {
     [/^rename from /, renameFrom],
     [/^rename to /, renameTo],
     [/^Binary files .* and .* differ$/, binaryFiles],
-    [/^index\s[\da-zA-Z]+\.\.[\da-zA-Z]+(\s(\d+))?$/, index],
+    [/^index\s[\da-zA-Z]+(?:,[\da-zA-Z]+)*\.\.[\da-zA-Z]+(?:\s(\d+))?$/, index],
     [/^---\s/, fromFile],
     [/^\+\+\+\s/, toFile],
+    [/^@{3,}\s/, combinedChunk],
     [/^@@\s+-(\d+),?(\d+)?\s+\+(\d+),?(\d+)?\s@@/, chunk],
     [/^\\ No newline at end of file$/, eof],
   ];
@@ -272,6 +460,21 @@ export function diffParser(input: string): DiffFile[] {
   ];
 
   const parseContentLine = (line: string): void => {
+    if (currentFileChanges?.combined) {
+      parseCombinedContentLine(line);
+      if (currentFileChanges) {
+        const parentLines = currentFileChanges.parentLines;
+        if (
+          parentLines &&
+          parentLines.every((count) => count === 0) &&
+          currentFileChanges.newLines === 0
+        ) {
+          currentFileChanges = null;
+        }
+      }
+      return;
+    }
+
     for (const [pattern, handler] of schemaContent) {
       const match = line.match(pattern);
       if (match) {

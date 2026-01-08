@@ -795,4 +795,54 @@ index 123..456 789
       "
     `);
   });
+
+  test('should parse combined git diff', () => {
+    const diff = `\
+diff --cc file.txt
+index bacb5fc,b8b0f61..97366e3
+--- a/file.txt
++++ b/file.txt
+@@@ -1,3 -1,3 +1,3 @@@
+  one
+- two-branch1
+ -two-branch2
+++two-merged
+  three\
+`;
+    const files = parse(diff);
+        expect(compactSnapshot(files)).toMatchInlineSnapshot(`
+      "
+      - chunks:
+          - content: '@@@ -1,3 -1,3 +1,3 @@@'
+            changes:
+              - { type: 'normal', normal: '✅', ln1: 1, ln2: 1, content: '  one' }
+              - { type: 'del', del: '✅', ln: 2, content: '- two-branch1' }
+              - { type: 'normal', normal: '✅', content: ' -two-branch2' }
+              - { type: 'add', add: '✅', ln: 2, content: '++two-merged' }
+              - { type: 'normal', normal: '✅', ln1: 3, ln2: 3, content: '  three' }
+            oldStart: 1
+            oldLines: 3
+            newStart: 1
+            newLines: 3
+            combined: '✅'
+            parentCount: 2
+            oldRanges:
+              - { start: 1, lines: 3 }
+              - { start: 1, lines: 3 }
+        deletions: 1
+        additions: 1
+        from: 'file.txt'
+        to: 'file.txt'
+        index: ['bacb5fc,b8b0f61..97366e3']
+        combined: '✅'
+        diff: |-
+          @@@ -1,3 -1,3 +1,3 @@@
+            one
+          - two-branch1
+           -two-branch2
+          ++two-merged
+            three
+      "
+    `);
+  });
 });
