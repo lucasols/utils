@@ -48,6 +48,7 @@
     "./enhancedMap": "./dist/enhancedMap.mjs",
     "./exhaustiveMatch": "./dist/exhaustiveMatch.mjs",
     "./filterObjectOrArrayKeys": "./dist/filterObjectOrArrayKeys.mjs",
+    "./fuzzySearch": "./dist/fuzzySearch.mjs",
     "./getAutoIncrementId": "./dist/getAutoIncrementId.mjs",
     "./getCompositeKey": "./dist/getCompositeKey.mjs",
     "./getValueStableKey": "./dist/getValueStableKey.mjs",

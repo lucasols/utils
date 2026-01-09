@@ -20,6 +20,7 @@
 - [enhancedMap](enhancedMap.md)
 - [exhaustiveMatch](exhaustiveMatch/index.md)
 - [filterObjectOrArrayKeys](filterObjectOrArrayKeys.md)
+- [fuzzySearch](fuzzySearch/index.md)
 - [getAutoIncrementId](getAutoIncrementId.md)
 - [getCompositeKey](getCompositeKey.md)
 - [getValueStableKey](getValueStableKey.md)
