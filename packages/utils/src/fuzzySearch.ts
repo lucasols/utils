@@ -17,18 +17,6 @@ type SearchOptions<T> = {
  * Uses uFuzzy for efficient fuzzy matching with Latin character normalization.
  * Falls back to simple string inclusion matching if an error occurs.
  *
- * @param options - Configuration options for the fuzzy search
- * @param options.items - Array of items to search through
- * @param options.getStringToMatch - Function that extracts the string to match
- *   from each item
- * @param options.searchQuery - The search query string (null or empty string
- *   returns all items)
- * @param options.uFuzzy - Configured uFuzzy instance (use `getUFuzzyInstance`
- *   to create one)
- * @param options.ignoreBestMatch - If true, skips calculating the best match
- *   score for performance
- * @param options.throwOnError - If true, throws errors instead of falling back
- *   to simple string matching
  * @returns Object containing filtered/sorted items and the best match score
  *   (higher is better)
  */
