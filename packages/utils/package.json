@@ -108,8 +108,8 @@
     "mitata": "catalog:",
     "prettier": "catalog:",
     "prettier-plugin-organize-imports": "catalog:",
-    "tsm": "catalog:",
     "tsdown": "catalog:",
+    "tsm": "catalog:",
     "typedoc": "catalog:",
     "typedoc-plugin-markdown": "catalog:",
     "typedoc-plugin-missing-exports": "catalog:",
@@ -119,6 +119,7 @@
     "vitest": "catalog:"
   },
   "dependencies": {
+    "@leeoniya/ufuzzy": "^1.0.19",
     "evtmitter": "catalog:",
     "t-result": "catalog:"
   }

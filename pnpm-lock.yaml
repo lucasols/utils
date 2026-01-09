@@ -430,6 +430,9 @@ importers:
 
   packages/utils:
     dependencies:
+      '@leeoniya/ufuzzy':
+        specifier: ^1.0.19
+        version: 1.0.19
       evtmitter:
         specifier: 'catalog:'
         version: 1.0.2
@@ -994,6 +997,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@leeoniya/ufuzzy@1.0.19':
+    resolution: {integrity: sha512-0pikDeYt0IHEUPza5RTCDXc/17S1pTrYnReEMp8Aa6k1ovzw5QdZLwicW8TjljwEZRb6oYag0xmALohrcq/yOQ==}
 
   '@ls-stack/extended-lint@0.67.2':
     resolution: {integrity: sha512-gQvSpe/F97BMfHY9sjnapWiNfrFI8jf3Tw0NQj0DVyhXnasPzaw257PHUoLXJKQweJOn6B3CPgAzv8aaVzSvRw==}
@@ -3619,6 +3625,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@leeoniya/ufuzzy@1.0.19': {}
 
   '@ls-stack/extended-lint@0.67.2(eslint@9.18.0(jiti@2.5.1))(typescript@5.7.3)':
     dependencies:
