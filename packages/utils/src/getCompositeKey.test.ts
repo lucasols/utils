@@ -1,6 +1,15 @@
 import { describe, expect, test } from 'vitest';
 import { getCompositeKey } from './getCompositeKey';
 
+test('literal values', () => {
+  expect(getCompositeKey(1)).toEqual('$1');
+  expect(getCompositeKey('1')).toEqual('"1');
+  expect(getCompositeKey(true)).toEqual('$true');
+  expect(getCompositeKey(false)).toEqual('$false');
+  expect(getCompositeKey(null)).toEqual('$null');
+  expect(getCompositeKey(undefined)).toEqual('$undefined');
+});
+
 test('getCacheId ignore undefined obj values', () => {
   expect(
     getCompositeKey({
