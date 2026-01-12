@@ -424,8 +424,8 @@ export function compactSnapshot(
 ) {
   let processedValue = value;
 
-  // Apply key filtering before boolean processing
-  if (rejectKeys || filterKeys) {
+  // Apply key filtering/sorting before boolean processing
+  if (rejectKeys || filterKeys || sortKeys || sortPatterns) {
     if (isPlainObject(processedValue) || Array.isArray(processedValue)) {
       processedValue = filterObjectOrArrayKeys(processedValue, {
         rejectKeys,

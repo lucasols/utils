@@ -849,4 +849,146 @@ describe('compactSnapshot', () => {
       `);
     });
   });
+
+  describe('sortKeys functionality', () => {
+    test('should sort keys alphabetically ascending', () => {
+      const data = {
+        zebra: 1,
+        apple: 2,
+        mango: 3,
+        banana: 4,
+      };
+
+      expect(compactSnapshot(data, { sortKeys: 'asc' })).toMatchInlineSnapshot(`
+        "
+        apple: 2
+        banana: 4
+        mango: 3
+        zebra: 1
+        "
+      `);
+    });
+
+    test('should sort keys alphabetically descending', () => {
+      const data = {
+        zebra: 1,
+        apple: 2,
+        mango: 3,
+        banana: 4,
+      };
+
+      expect(compactSnapshot(data, { sortKeys: 'desc' })).toMatchInlineSnapshot(`
+        "
+        zebra: 1
+        mango: 3
+        banana: 4
+        apple: 2
+        "
+      `);
+    });
+
+    test('should sort simple values first', () => {
+      const data = {
+        nested: { a: 1, b: 2 },
+        name: 'John',
+        items: [1, 2, 3],
+        age: 30,
+        deep: { level: { value: 'deep' } },
+      };
+
+      expect(compactSnapshot(data, { sortKeys: 'simpleValuesFirst' }))
+        .toMatchInlineSnapshot(`
+          "
+          age: 30
+          name: 'John'
+
+          deep:
+            level: { value: 'deep' }
+
+          nested: { a: 1, b: 2 }
+          items: [1, 2, 3]
+          "
+        `);
+    });
+
+    test('should preserve original order when sortKeys is false', () => {
+      const data = {
+        zebra: 1,
+        apple: 2,
+        nested: { x: 1 },
+        mango: 3,
+      };
+
+      expect(compactSnapshot(data, { sortKeys: false })).toMatchInlineSnapshot(`
+        "
+        zebra: 1
+        apple: 2
+        nested: { x: 1 }
+        mango: 3
+        "
+      `);
+    });
+
+    test('should apply sortKeys to nested objects', () => {
+      const data = {
+        user: {
+          zebra: 'z',
+          apple: 'a',
+          mango: 'm',
+        },
+        settings: {
+          theme: 'dark',
+          notifications: true,
+          language: 'en',
+        },
+      };
+
+      expect(compactSnapshot(data, { sortKeys: 'asc' })).toMatchInlineSnapshot(`
+        "
+        settings: { language: 'en', notifications: '✅', theme: 'dark' }
+        user: { apple: 'a', mango: 'm', zebra: 'z' }
+        "
+      `);
+    });
+
+    test('should work with rejectKeys and sortKeys together', () => {
+      const data = {
+        zebra: 1,
+        password: 'secret',
+        apple: 2,
+        token: 'abc123',
+        mango: 3,
+      };
+
+      expect(
+        compactSnapshot(data, {
+          rejectKeys: ['password', 'token'],
+          sortKeys: 'desc',
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        zebra: 1
+        mango: 3
+        apple: 2
+        "
+      `);
+    });
+
+    test('should sort arrays of objects with sortKeys', () => {
+      const data = {
+        users: [
+          { name: 'John', age: 30, active: true },
+          { name: 'Jane', age: 25, active: false },
+        ],
+      };
+
+      expect(compactSnapshot(data, { sortKeys: 'asc' })).toMatchInlineSnapshot(`
+        "
+        users:
+          - { active: '✅', age: 30, name: 'John' }
+          - { active: '❌', age: 25, name: 'Jane' }
+        "
+      `);
+    });
+  });
 });
