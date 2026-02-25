@@ -10,25 +10,21 @@ import { useOnUnMount } from './useOnUnMount';
  * @example
  *   ```tsx
  *   function SearchResults({ query }: { query: string }) {
- *     const { debouncedValue, isPending } = useDebouncedValue(query, 300);
+ *     const [debouncedQuery, flush, isPending] = useDebouncedValue(query, 300);
  *
- *     // debouncedValue updates 300ms after the last query change
- *     return isPending ? <Spinner /> : <Results query={debouncedValue} />;
+ *     // debouncedQuery updates 300ms after the last query change
+ *     return isPending ? <Spinner /> : <Results query={debouncedQuery} />;
  *   }
  *   ```;
  *
  * @param value - The value to debounce
  * @param debounceMs - The debounce delay in milliseconds
- * @returns Object with debouncedValue, isPending, and flush
+ * @returns Tuple of [debouncedValue, flush, isPending]
  */
 export function useDebouncedValue<T>(
   value: T,
   debounceMs: number,
-): {
-  debouncedValue: T;
-  isPending: boolean;
-  flush: () => void;
-} {
+): readonly [debouncedValue: T, flush: () => void, isPending: boolean] {
   const [debouncedValue, setDebouncedValue] = useState(value);
   const [isPending, setIsPending] = useState(false);
 
@@ -53,9 +49,5 @@ export function useDebouncedValue<T>(
     debouncedSetter.flush();
   }, [debouncedSetter]);
 
-  return {
-    debouncedValue,
-    isPending,
-    flush,
-  };
+  return [debouncedValue, flush, isPending] as const;
 }
