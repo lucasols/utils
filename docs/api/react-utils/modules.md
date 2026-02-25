@@ -13,6 +13,7 @@
 - [useConst](useConst.md)
 - [useDebouncedCallback](useDebouncedCallback/index.md)
 - [useDebouncedControlledValue](useDebouncedControlledValue.md)
+- [useDebouncedValue](useDebouncedValue.md)
 - [useLatestValue](useLatestValue/index.md)
 - [useOnChange](useOnChange/index.md)
 - [useOnClickOutside](useOnClickOutside/index.md)
