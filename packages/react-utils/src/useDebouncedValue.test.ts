@@ -7,8 +7,9 @@ describe('useDebouncedValue', () => {
   test('returns initial value immediately', () => {
     const { result } = renderHook(() => useDebouncedValue('hello', 100));
 
-    expect(result.current.debouncedValue).toBe('hello');
-    expect(result.current.isPending).toBe(false);
+    const [debouncedValue, , isPending] = result.current;
+    expect(debouncedValue).toBe('hello');
+    expect(isPending).toBe(false);
   });
 
   test('updates debounced value after delay', async () => {
@@ -19,13 +20,13 @@ describe('useDebouncedValue', () => {
 
     rerender({ value: 'b' });
 
-    expect(result.current.debouncedValue).toBe('a');
-    expect(result.current.isPending).toBe(true);
+    expect(result.current[0]).toBe('a');
+    expect(result.current[2]).toBe(true);
 
     await act(() => sleep(110));
 
-    expect(result.current.debouncedValue).toBe('b');
-    expect(result.current.isPending).toBe(false);
+    expect(result.current[0]).toBe('b');
+    expect(result.current[2]).toBe(false);
   });
 
   test('batches rapid changes and only uses last value', async () => {
@@ -38,13 +39,13 @@ describe('useDebouncedValue', () => {
     rerender({ value: 'c' });
     rerender({ value: 'd' });
 
-    expect(result.current.debouncedValue).toBe('a');
-    expect(result.current.isPending).toBe(true);
+    expect(result.current[0]).toBe('a');
+    expect(result.current[2]).toBe(true);
 
     await act(() => sleep(110));
 
-    expect(result.current.debouncedValue).toBe('d');
-    expect(result.current.isPending).toBe(false);
+    expect(result.current[0]).toBe('d');
+    expect(result.current[2]).toBe(false);
   });
 
   test('isPending reflects pending state', async () => {
@@ -53,13 +54,13 @@ describe('useDebouncedValue', () => {
       { initialProps: { value: 'a' } },
     );
 
-    expect(result.current.isPending).toBe(false);
+    expect(result.current[2]).toBe(false);
 
     rerender({ value: 'b' });
-    expect(result.current.isPending).toBe(true);
+    expect(result.current[2]).toBe(true);
 
     await act(() => sleep(110));
-    expect(result.current.isPending).toBe(false);
+    expect(result.current[2]).toBe(false);
   });
 
   test('flush immediately settles the debounced value', async () => {
@@ -70,15 +71,15 @@ describe('useDebouncedValue', () => {
 
     rerender({ value: 'b' });
 
-    expect(result.current.debouncedValue).toBe('a');
-    expect(result.current.isPending).toBe(true);
+    expect(result.current[0]).toBe('a');
+    expect(result.current[2]).toBe(true);
 
     act(() => {
-      result.current.flush();
+      result.current[1]();
     });
 
-    expect(result.current.debouncedValue).toBe('b');
-    expect(result.current.isPending).toBe(false);
+    expect(result.current[0]).toBe('b');
+    expect(result.current[2]).toBe(false);
   });
 
   test('updates debounceMs on rerender', async () => {
@@ -91,13 +92,13 @@ describe('useDebouncedValue', () => {
 
     await act(() => sleep(50));
 
-    expect(result.current.debouncedValue).toBe('a');
+    expect(result.current[0]).toBe('a');
 
     rerender({ value: 'b', ms: 10 });
 
     await act(() => sleep(20));
 
-    expect(result.current.debouncedValue).toBe('b');
+    expect(result.current[0]).toBe('b');
   });
 
   test('cancels pending update on unmount', async () => {
@@ -108,8 +109,8 @@ describe('useDebouncedValue', () => {
 
     rerender({ value: 'b' });
 
-    expect(result.current.debouncedValue).toBe('a');
-    expect(result.current.isPending).toBe(true);
+    expect(result.current[0]).toBe('a');
+    expect(result.current[2]).toBe(true);
 
     unmount();
 
