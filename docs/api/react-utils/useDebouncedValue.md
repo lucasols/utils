@@ -7,7 +7,7 @@
 ### useDebouncedValue()
 
 ```ts
-function useDebouncedValue<T>(value, debounceMs): object;
+function useDebouncedValue<T>(value, debounceMs): readonly [T, () => void, boolean];
 ```
 
 Defined in: [packages/react-utils/src/useDebouncedValue.ts:24](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDebouncedValue.ts#L24)
@@ -37,39 +37,17 @@ The debounce delay in milliseconds
 
 #### Returns
 
-`object`
+readonly \[`T`, () => `void`, `boolean`\]
 
-Object with debouncedValue, isPending, and flush
-
-##### debouncedValue
-
-```ts
-debouncedValue: T;
-```
-
-##### flush()
-
-```ts
-flush: () => void;
-```
-
-###### Returns
-
-`void`
-
-##### isPending
-
-```ts
-isPending: boolean;
-```
+Tuple of [debouncedValue, flush, isPending]
 
 #### Example
 
 ```tsx
   function SearchResults({ query }: { query: string }) {
-    const { debouncedValue, isPending } = useDebouncedValue(query, 300);
+    const [debouncedQuery, flush, isPending] = useDebouncedValue(query, 300);
 
-    // debouncedValue updates 300ms after the last query change
-    return isPending ? <Spinner /> : <Results query={debouncedValue} />;
+    // debouncedQuery updates 300ms after the last query change
+    return isPending ? <Spinner /> : <Results query={debouncedQuery} />;
   }
   ```;
