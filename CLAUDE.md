@@ -76,9 +76,6 @@ Each package follows a flat module structure:
 - **Framework**: Vitest for unit testing
 - Do not run tests with `pnpm vitest` use `pnpm test` instead
 
-- **Timing in Tests**:
-  - Do not use `vi.useFakeTimers()`
-  - Instead, use `await sleep()` with small intervals when simulating time-based behaviors
 - prefer `toMatchInlineSnapshot` over `toEqual`
   - when using `toMatchInlineSnapshot` use `compactSnapshot` from `src/testUtils.ts` to get a more readable snapshot, it will produce a yaml string
   - compactSnapshot will convert booleans to emojis true(✅) and false(❌)

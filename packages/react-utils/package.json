@@ -36,6 +36,7 @@
     "./useConst": "./dist/useConst.mjs",
     "./useDebouncedCallback": "./dist/useDebouncedCallback.mjs",
     "./useDebouncedControlledValue": "./dist/useDebouncedControlledValue.mjs",
+    "./useDebouncedValue": "./dist/useDebouncedValue.mjs",
     "./useLatestValue": "./dist/useLatestValue.mjs",
     "./useOnChange": "./dist/useOnChange.mjs",
     "./useOnClickOutside": "./dist/useOnClickOutside.mjs",
