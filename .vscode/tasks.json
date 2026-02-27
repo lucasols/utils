@@ -78,7 +78,8 @@
       "command": "pnpm publish-package",
       "group": "build",
       "presentation": {
-        "clear": true
+        "clear": true,
+        "focus": true
       }
     },
     {
