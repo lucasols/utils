@@ -12,7 +12,8 @@
     "eslint": "CI=true eslint src/ --color --max-warnings=0 --fix",
     "build": "tsdown",
     "docs": "typedoc",
-    "docs:watch": "typedoc --watch"
+    "docs:watch": "typedoc --watch",
+    "update-exports": "node ../../scripts/updatePackageExports.ts"
   },
   "files": [
     "dist",

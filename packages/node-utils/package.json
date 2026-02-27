@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "build": "tsdown",
     "docs": "typedoc",
-    "docs:watch": "typedoc --watch"
+    "docs:watch": "typedoc --watch",
+    "update-exports": "node ../../scripts/updatePackageExports.ts"
   },
   "files": [
     "dist",

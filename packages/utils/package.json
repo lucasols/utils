@@ -14,7 +14,8 @@
     "build": "tsdown",
     "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts",
     "docs": "typedoc",
-    "docs:watch": "typedoc --watch"
+    "docs:watch": "typedoc --watch",
+    "update-exports": "node ../../scripts/updatePackageExports.ts"
   },
   "files": [
     "dist",

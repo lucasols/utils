@@ -73,9 +73,9 @@
       "group": "build"
     },
     {
-      "label": "bump version and publish selected package",
+      "label": "publish package",
       "type": "shell",
-      "command": "pnpm publish-package ${input:packageNameShort} ${input:version}",
+      "command": "pnpm publish-package",
       "group": "build",
       "presentation": {
         "clear": true
@@ -96,21 +96,9 @@
       "options": ["utils", "node-utils", "browser-utils", "react-utils"]
     },
     {
-      "id": "version",
-      "type": "pickString",
-      "description": "Select version type",
-      "options": ["patch", "minor", "major"]
-    },
-    {
       "id": "fileName",
       "type": "promptString",
       "description": "Enter the file name"
-    },
-    {
-      "id": "packageNameShort",
-      "type": "pickString",
-      "description": "Select package to publish",
-      "options": ["utils", "node-utils", "browser-utils", "react-utils"]
     }
   ]
 }
