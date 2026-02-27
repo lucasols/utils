@@ -64,3 +64,11 @@ export function __FIX_THIS_TYPING__(value: unknown): __LEGIT_ANY__ {
  * symbol, bigint, ...) Equivalent to `object` type
  */
 export type AnyNonPrimitiveValue = object;
+
+/**
+ * Cast any value to a string. Use this when you have legit usage of string
+ * casting.
+ */
+export function __UNSAFE_TO_STRING__(value: unknown): string {
+  return String(value);
+}
