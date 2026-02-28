@@ -35,7 +35,7 @@
   "devDependencies": {
     "@eslint/js": "catalog:",
     "@ls-stack/extended-lint": "catalog:",
-    "@ls-stack/pkg-manager": "^0.2.1",
+    "@ls-stack/pkg-manager": "^0.4.0",
     "@types/eslint": "catalog:",
     "@types/eslint__js": "catalog:",
     "@types/node": "catalog:",
