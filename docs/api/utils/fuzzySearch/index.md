@@ -14,7 +14,7 @@
 function fuzzySearchItems<T>(__namedParameters): T[];
 ```
 
-Defined in: [packages/utils/src/fuzzySearch.ts:127](https://github.com/lucasols/utils/blob/main/packages/utils/src/fuzzySearch.ts#L127)
+Defined in: [packages/utils/src/fuzzySearch.ts:115](https://github.com/lucasols/utils/blob/main/packages/utils/src/fuzzySearch.ts#L115)
 
 Performs fuzzy search on a list of items and returns matched items.
 
@@ -42,10 +42,10 @@ items.
 ### fuzzySearchItemsWithResultMetadata()
 
 ```ts
-function fuzzySearchItemsWithResultMetadata<T>(options): object;
+function fuzzySearchItemsWithResultMetadata<T>(__namedParameters): object;
 ```
 
-Defined in: [packages/utils/src/fuzzySearch.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/fuzzySearch.ts#L35)
+Defined in: [packages/utils/src/fuzzySearch.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/fuzzySearch.ts#L23)
 
 Performs fuzzy search on a list of items and returns matched items with score
 metadata.
@@ -61,11 +61,9 @@ Falls back to simple string inclusion matching if an error occurs.
 
 #### Parameters
 
-##### options
+##### \_\_namedParameters
 
 [`SearchOptions`](-internal-.md#searchoptions)\<`T`\>
-
-Configuration options for the fuzzy search
 
 #### Returns
 
@@ -94,7 +92,7 @@ items: T[];
 function getUFuzzyInstance(): uFuzzy;
 ```
 
-Defined in: [packages/utils/src/fuzzySearch.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/fuzzySearch.ts#L149)
+Defined in: [packages/utils/src/fuzzySearch.ts:137](https://github.com/lucasols/utils/blob/main/packages/utils/src/fuzzySearch.ts#L137)
 
 Creates a configured uFuzzy instance with custom sorting for optimal fuzzy
 matching.

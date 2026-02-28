@@ -1,7 +1,7 @@
 {
   "name": "@ls-stack/utils",
   "description": "Universal TypeScript utilities for browser and Node.js",
-  "version": "3.68.0",
+  "version": "3.69.0",
   "license": "MIT",
   "scripts": {
     "test:ui": "vitest --ui",
@@ -62,6 +62,7 @@
     "./levenshtein": "./dist/levenshtein.mjs",
     "./matchPath": "./dist/matchPath.mjs",
     "./mathUtils": "./dist/mathUtils.mjs",
+    "./mockList": "./dist/mockList.mjs",
     "./mutationUtils": "./dist/mutationUtils.mjs",
     "./objUtils": "./dist/objUtils.mjs",
     "./parallelAsyncCalls": "./dist/parallelAsyncCalls.mjs",

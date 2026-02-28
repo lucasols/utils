@@ -34,6 +34,7 @@
 - [main](main.md)
 - [matchPath](matchPath/index.md)
 - [mathUtils](mathUtils.md)
+- [mockList](mockList/index.md)
 - [mutationUtils](mutationUtils.md)
 - [objUtils](objUtils.md)
 - [parallelAsyncCalls](parallelAsyncCalls/index.md)

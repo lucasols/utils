@@ -228,3 +228,26 @@ The type to cast to
 ##### Returns
 
 `R`
+
+***
+
+### \_\_UNSAFE\_TO\_STRING\_\_()
+
+```ts
+function __UNSAFE_TO_STRING__(value): string;
+```
+
+Defined in: [packages/utils/src/saferTyping.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/saferTyping.ts#L72)
+
+Cast any value to a string. Use this when you have legit usage of string
+casting.
+
+#### Parameters
+
+##### value
+
+`unknown`
+
+#### Returns
+
+`string`
