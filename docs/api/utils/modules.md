@@ -23,6 +23,7 @@
 - [fuzzySearch](fuzzySearch/index.md)
 - [getAutoIncrementId](getAutoIncrementId.md)
 - [getCompositeKey](getCompositeKey.md)
+- [getDiffs](getDiffs/index.md)
 - [getValueStableKey](getValueStableKey.md)
 - [hash](hash.md)
 - [interpolate](interpolate/index.md)

@@ -1,7 +1,7 @@
 {
   "name": "@ls-stack/utils",
   "description": "Universal TypeScript utilities for browser and Node.js",
-  "version": "3.69.0",
+  "version": "3.70.0",
   "license": "MIT",
   "scripts": {
     "test:ui": "vitest --ui",
@@ -52,6 +52,7 @@
     "./fuzzySearch": "./dist/fuzzySearch.mjs",
     "./getAutoIncrementId": "./dist/getAutoIncrementId.mjs",
     "./getCompositeKey": "./dist/getCompositeKey.mjs",
+    "./getDiffs": "./dist/getDiffs.mjs",
     "./getValueStableKey": "./dist/getValueStableKey.mjs",
     "./hash": "./dist/hash.mjs",
     "./interpolate": "./dist/interpolate.mjs",
