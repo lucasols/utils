@@ -9,18 +9,7 @@ import { defer } from './promiseUtils';
 import { isPlainObject } from './typeGuards';
 import { yamlStringify, YamlStringifyOptions } from './yamlStringify';
 
-export function createLoggerStore({
-  filterKeys: defaultFilterKeys,
-  rejectKeys: defaultRejectKeys,
-  splitLongLines: defaultSplitLongLines = true,
-  maxLineLengthBeforeSplit: defaultMaxLineLengthBeforeSplit = 80,
-  fromLastSnapshot: defaultFromLastSnapshot = false,
-  arrays: defaultArrays = { firstNItems: 1 },
-  changesOnly: defaultChangesOnly = false,
-  useEmojiForBooleans: defaultUseEmojiForBooleans = true,
-  dedupeKey: defaultDedupeKey,
-  ignoreMarkersInChanges: defaultIgnoreMarkersInChanges = false,
-}: {
+export type LoggerStoreOptions = {
   filterKeys?: string[];
   rejectKeys?: string[];
   splitLongLines?: true;
@@ -31,7 +20,28 @@ export function createLoggerStore({
   useEmojiForBooleans?: boolean;
   dedupeKey?: string;
   ignoreMarkersInChanges?: boolean;
-} = {}) {
+};
+
+let globalLoggerStoreDefaults: LoggerStoreOptions = {};
+
+export function setDefaultLoggerStoreOptions(
+  options: Partial<LoggerStoreOptions>,
+) {
+  globalLoggerStoreDefaults = { ...globalLoggerStoreDefaults, ...options };
+}
+
+export function createLoggerStore({
+  filterKeys: defaultFilterKeys = globalLoggerStoreDefaults.filterKeys,
+  rejectKeys: defaultRejectKeys = globalLoggerStoreDefaults.rejectKeys,
+  splitLongLines: defaultSplitLongLines = globalLoggerStoreDefaults.splitLongLines ?? true,
+  maxLineLengthBeforeSplit: defaultMaxLineLengthBeforeSplit = globalLoggerStoreDefaults.maxLineLengthBeforeSplit ?? 80,
+  fromLastSnapshot: defaultFromLastSnapshot = globalLoggerStoreDefaults.fromLastSnapshot ?? false,
+  arrays: defaultArrays = globalLoggerStoreDefaults.arrays ?? { firstNItems: 1 },
+  changesOnly: defaultChangesOnly = globalLoggerStoreDefaults.changesOnly ?? false,
+  useEmojiForBooleans: defaultUseEmojiForBooleans = globalLoggerStoreDefaults.useEmojiForBooleans ?? true,
+  dedupeKey: defaultDedupeKey = globalLoggerStoreDefaults.dedupeKey,
+  ignoreMarkersInChanges: defaultIgnoreMarkersInChanges = globalLoggerStoreDefaults.ignoreMarkersInChanges ?? false,
+}: LoggerStoreOptions = {}) {
   let logs: Record<string, unknown>[] = [];
   let logsTime: number[] = [];
   let startTime = Date.now();
