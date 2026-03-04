@@ -71,6 +71,36 @@ describe('createLoggerStore', () => {
     `);
   });
 
+  test('changesSnapshot with dedupe key resets on marker by default', () => {
+    const store = createLoggerStore({ dedupeKey: 'i' });
+
+    store.add([
+      { id: 1, name: 'John' },
+      { id: 2, name: 'Jane' },
+    ]);
+    store.addMark('Mark');
+    store.add([
+      { id: 1, name: 'John' },
+      { id: 2, name: 'Jane' },
+    ]);
+    store.add([
+      { id: 1, name: 'John' },
+      { id: 2, name: 'Jane' },
+    ]);
+
+    expect(store.changesSnapshot).toMatchInlineSnapshot(`
+      "
+      -> i: 1 ⋅ id: 1 ⋅ name: John
+      -> i: 2 ⋅ id: 2 ⋅ name: Jane
+
+      >>> Mark
+
+      -> i: 1 ⋅ id: 1 ⋅ name: John
+      -> i: 2 ⋅ id: 2 ⋅ name: Jane
+      "
+    `);
+  });
+
   test('changesSnapshot with ignore marker', () => {
     const store = createLoggerStore({ ignoreMarkersInChanges: true });
 

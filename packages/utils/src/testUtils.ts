@@ -126,6 +126,9 @@ export function createLoggerStore({
 
       for (const item of logs) {
         if (item._lastSnapshotMark || item._mark) {
+          if (item._mark && !ignoreMarkersInChanges) {
+            lastSeen.clear();
+          }
           rendersToUse.push(item);
           continue;
         }
