@@ -18,6 +18,8 @@ export function createLoggerStore({
   arrays: defaultArrays = { firstNItems: 1 },
   changesOnly: defaultChangesOnly = false,
   useEmojiForBooleans: defaultUseEmojiForBooleans = true,
+  dedupeKey: defaultDedupeKey,
+  ignoreMarkersInChanges: defaultIgnoreMarkersInChanges = false,
 }: {
   filterKeys?: string[];
   rejectKeys?: string[];
@@ -27,6 +29,8 @@ export function createLoggerStore({
   arrays?: 'all' | 'firstAndLast' | 'length' | { firstNItems: number };
   changesOnly?: boolean;
   useEmojiForBooleans?: boolean;
+  dedupeKey?: string;
+  ignoreMarkersInChanges?: boolean;
 } = {}) {
   let logs: Record<string, unknown>[] = [];
   let logsTime: number[] = [];
@@ -82,6 +86,7 @@ export function createLoggerStore({
   function getSnapshot({
     arrays = defaultArrays,
     changesOnly = defaultChangesOnly,
+    dedupeKey = defaultDedupeKey,
     filterKeys = defaultFilterKeys,
     rejectKeys = defaultRejectKeys,
     includeLastSnapshotEndMark = true,
@@ -89,9 +94,11 @@ export function createLoggerStore({
     maxLineLengthBeforeSplit = defaultMaxLineLengthBeforeSplit,
     fromLastSnapshot = defaultFromLastSnapshot,
     useEmojiForBooleans = defaultUseEmojiForBooleans,
+    ignoreMarkersInChanges = defaultIgnoreMarkersInChanges,
   }: {
     arrays?: 'all' | 'firstAndLast' | 'length' | { firstNItems: number };
     changesOnly?: boolean;
+    dedupeKey?: string;
     filterKeys?: string[];
     rejectKeys?: string[];
     includeLastSnapshotEndMark?: boolean;
@@ -99,16 +106,51 @@ export function createLoggerStore({
     maxLineLengthBeforeSplit?: number;
     fromLastSnapshot?: boolean;
     useEmojiForBooleans?: boolean;
+    ignoreMarkersInChanges?: boolean;
   } = {}) {
     let rendersToUse = logs;
 
-    if (changesOnly || filterKeys || rejectKeys) {
+    if (changesOnly && dedupeKey) {
       rendersToUse = [];
+      const lastSeen = new Map<unknown, Record<string, unknown>>();
+
+      for (const item of logs) {
+        if (item._lastSnapshotMark || item._mark) {
+          rendersToUse.push(item);
+          continue;
+        }
+
+        let filteredItem: Record<string, unknown> = item;
+
+        if (filterKeys) {
+          filteredItem = pick(filteredItem, filterKeys);
+        }
+
+        if (rejectKeys) {
+          filteredItem = omit(filteredItem, rejectKeys);
+        }
+
+        const keyValue = filteredItem[dedupeKey];
+        const itemWithoutIndex = omit(filteredItem, ['i']);
+        const prev = lastSeen.get(keyValue);
+
+        if (!prev || !deepEqual(prev, itemWithoutIndex)) {
+          rendersToUse.push(filteredItem);
+          lastSeen.set(keyValue, itemWithoutIndex);
+        }
+      }
+    } else if (changesOnly || filterKeys || rejectKeys) {
+      rendersToUse = [];
+      let lastNonMarkItem: Record<string, unknown> | undefined;
 
       for (let { item, prev } of arrayWithPrevAndIndex(logs)) {
         if (item._lastSnapshotMark || item._mark) {
           rendersToUse.push(item);
           continue;
+        }
+
+        if (ignoreMarkersInChanges) {
+          prev = lastNonMarkItem ?? null;
         }
 
         if (filterKeys) {
@@ -124,6 +166,8 @@ export function createLoggerStore({
         if (!deepEqual(prev, item)) {
           rendersToUse.push(item);
         }
+
+        lastNonMarkItem = item;
       }
     }
 

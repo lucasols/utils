@@ -51,6 +51,45 @@ describe('createLoggerStore', () => {
     `);
   });
 
+  test('changesSnapshot with dedupe key', () => {
+    const store = createLoggerStore({ dedupeKey: 'i' });
+
+    store.add([
+      { id: 1, name: 'John' },
+      { id: 2, name: 'Jane' },
+    ]);
+    store.add([
+      { id: 1, name: 'John' },
+      { id: 2, name: 'Jane' },
+    ]);
+
+    expect(store.changesSnapshot).toMatchInlineSnapshot(`
+      "
+      -> i: 1 ⋅ id: 1 ⋅ name: John
+      -> i: 2 ⋅ id: 2 ⋅ name: Jane
+      "
+    `);
+  });
+
+  test('changesSnapshot with ignore marker', () => {
+    const store = createLoggerStore({ ignoreMarkersInChanges: true });
+
+    store.add({ name: 'John' });
+    store.addMark('Mark');
+    store.add({ name: 'John' });
+    store.add({ name: 'Joe' });
+
+    expect(store.changesSnapshot).toMatchInlineSnapshot(`
+      "
+      -> name: John
+
+      >>> Mark
+
+      -> name: Joe
+      "
+    `);
+  });
+
   test('snapshot from last', () => {
     const store = createLoggerStore({ fromLastSnapshot: true });
 
@@ -877,14 +916,15 @@ describe('compactSnapshot', () => {
         banana: 4,
       };
 
-      expect(compactSnapshot(data, { sortKeys: 'desc' })).toMatchInlineSnapshot(`
-        "
-        zebra: 1
-        mango: 3
-        banana: 4
-        apple: 2
-        "
-      `);
+      expect(compactSnapshot(data, { sortKeys: 'desc' }))
+        .toMatchInlineSnapshot(`
+          "
+          zebra: 1
+          mango: 3
+          banana: 4
+          apple: 2
+          "
+        `);
     });
 
     test('should sort simple values first', () => {
