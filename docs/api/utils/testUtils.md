@@ -108,7 +108,7 @@ Defined in: [packages/utils/src/testUtils.ts:20](https://github.com/lucasols/uti
 function compactSnapshot(value, options): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:437](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L437)
+Defined in: [packages/utils/src/testUtils.ts:440](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L440)
 
 Produces a more compact and readable snapshot of a value using yaml. By
 default booleans are shown as `✅` and `❌`, use `showBooleansAs` to
@@ -392,7 +392,7 @@ get snapshotFromLast(): string;
 function getResultFn<T>(fnGetter, wrapper?): T;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:332](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L332)
+Defined in: [packages/utils/src/testUtils.ts:335](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L335)
 
 #### Type Parameters
 
@@ -442,7 +442,7 @@ Defined in: [packages/utils/src/testUtils.ts:27](https://github.com/lucasols/uti
 function waitController(): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:347](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L347)
+Defined in: [packages/utils/src/testUtils.ts:350](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L350)
 
 #### Returns
 
