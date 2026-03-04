@@ -2,6 +2,104 @@
 
 # testUtils
 
+## Type Aliases
+
+### LoggerStoreOptions
+
+```ts
+type LoggerStoreOptions = object;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L12)
+
+#### Properties
+
+##### arrays?
+
+```ts
+optional arrays: 
+  | "all"
+  | "firstAndLast"
+  | "length"
+  | {
+  firstNItems: number;
+};
+```
+
+Defined in: [packages/utils/src/testUtils.ts:18](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L18)
+
+##### changesOnly?
+
+```ts
+optional changesOnly: boolean;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:19](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L19)
+
+##### dedupeKey?
+
+```ts
+optional dedupeKey: string;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L21)
+
+##### filterKeys?
+
+```ts
+optional filterKeys: string[];
+```
+
+Defined in: [packages/utils/src/testUtils.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L13)
+
+##### fromLastSnapshot?
+
+```ts
+optional fromLastSnapshot: boolean;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:17](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L17)
+
+##### ignoreMarkersInChanges?
+
+```ts
+optional ignoreMarkersInChanges: boolean;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:22](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L22)
+
+##### maxLineLengthBeforeSplit?
+
+```ts
+optional maxLineLengthBeforeSplit: number;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:16](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L16)
+
+##### rejectKeys?
+
+```ts
+optional rejectKeys: string[];
+```
+
+Defined in: [packages/utils/src/testUtils.ts:14](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L14)
+
+##### splitLongLines?
+
+```ts
+optional splitLongLines: true;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:15](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L15)
+
+##### useEmojiForBooleans?
+
+```ts
+optional useEmojiForBooleans: boolean;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L20)
+
 ## Functions
 
 ### compactSnapshot()
@@ -10,7 +108,7 @@
 function compactSnapshot(value, options): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:383](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L383)
+Defined in: [packages/utils/src/testUtils.ts:437](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L437)
 
 Produces a more compact and readable snapshot of a value using yaml. By
 default booleans are shown as `✅` and `❌`, use `showBooleansAs` to
@@ -89,48 +187,13 @@ The compact snapshot of the value.
 function createLoggerStore(__namedParameters): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L12)
+Defined in: [packages/utils/src/testUtils.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L33)
 
 #### Parameters
 
 ##### \_\_namedParameters
 
-###### arrays?
-
-  \| `"length"`
-  \| `"all"`
-  \| \{
-  `firstNItems`: `number`;
-\}
-  \| `"firstAndLast"` = `...`
-
-###### changesOnly?
-
-`boolean` = `false`
-
-###### filterKeys?
-
-`string`[]
-
-###### fromLastSnapshot?
-
-`boolean` = `false`
-
-###### maxLineLengthBeforeSplit?
-
-`number` = `80`
-
-###### rejectKeys?
-
-`string`[]
-
-###### splitLongLines?
-
-`true` = `true`
-
-###### useEmojiForBooleans?
-
-`boolean` = `true`
+[`LoggerStoreOptions`](#loggerstoreoptions) = `{}`
 
 #### Returns
 
@@ -191,6 +254,10 @@ getSnapshot: (__namedParameters) => string;
 
 `boolean` = `defaultChangesOnly`
 
+###### dedupeKey?
+
+`string` = `defaultDedupeKey`
+
 ###### filterKeys?
 
 `string`[] = `defaultFilterKeys`
@@ -198,6 +265,10 @@ getSnapshot: (__namedParameters) => string;
 ###### fromLastSnapshot?
 
 `boolean` = `defaultFromLastSnapshot`
+
+###### ignoreMarkersInChanges?
+
+`boolean` = `defaultIgnoreMarkersInChanges`
 
 ###### includeLastSnapshotEndMark?
 
@@ -321,7 +392,7 @@ get snapshotFromLast(): string;
 function getResultFn<T>(fnGetter, wrapper?): T;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:278](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L278)
+Defined in: [packages/utils/src/testUtils.ts:332](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L332)
 
 #### Type Parameters
 
@@ -345,13 +416,33 @@ Defined in: [packages/utils/src/testUtils.ts:278](https://github.com/lucasols/ut
 
 ***
 
+### setDefaultLoggerStoreOptions()
+
+```ts
+function setDefaultLoggerStoreOptions(options): void;
+```
+
+Defined in: [packages/utils/src/testUtils.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L27)
+
+#### Parameters
+
+##### options
+
+`Partial`\<[`LoggerStoreOptions`](#loggerstoreoptions)\>
+
+#### Returns
+
+`void`
+
+***
+
 ### waitController()
 
 ```ts
 function waitController(): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:293](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L293)
+Defined in: [packages/utils/src/testUtils.ts:347](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L347)
 
 #### Returns
 
