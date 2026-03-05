@@ -157,3 +157,12 @@ export function objectHasKey<T extends string>(
 ): obj is object & { [K in T]: unknown } {
   return key in obj;
 }
+
+/**
+ * Type helper to cast a value to a type that may be undefined. Use this when
+ * some value may have incorrectly typed as non-undefined, but you have
+ * certainty that it can be undefined.
+ */
+export function asPossiblyUndefined<T>(value: T): T | undefined {
+  return value;
+}
