@@ -114,6 +114,36 @@ Defined in: [packages/utils/src/typingFnUtils.ts:128](https://github.com/lucasol
 
 ***
 
+### asPossiblyUndefined()
+
+```ts
+function asPossiblyUndefined<T>(value): undefined | T;
+```
+
+Defined in: [packages/utils/src/typingFnUtils.ts:166](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L166)
+
+Type helper to cast a value to a type that may be undefined. Use this when
+some value may have incorrectly typed as non-undefined, but you have
+certainty that it can be undefined.
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+#### Parameters
+
+##### value
+
+`T`
+
+#### Returns
+
+`undefined` \| `T`
+
+***
+
 ### asType()
 
 ```ts
