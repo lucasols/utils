@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "build": "tsdown",
     "bench:deepEqual": "tsm --no-warnings benchmarks/deepEqual.ts",
+    "bench:hash": "tsm --no-warnings benchmarks/hash.ts",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch",
     "update-exports": "node ../../scripts/updatePackageExports.ts"
