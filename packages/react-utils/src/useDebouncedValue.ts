@@ -1,3 +1,4 @@
+import type { DebounceOptions } from '@ls-stack/utils/debounce';
 import { useCallback, useState } from 'react';
 import { useDebouncedCallback } from './useDebouncedCallback';
 import { useOnChange } from './useOnChange';
@@ -27,11 +28,13 @@ const noopFlush = () => {};
  * @param value - The value to debounce
  * @param debounceMs - The debounce delay in milliseconds. Use `0` to disable
  *   debouncing and pass the value through immediately.
+ * @param options - Debounce options (leading, trailing, maxWait)
  * @returns Tuple of [debouncedValue, flush, isPending]
  */
 export function useDebouncedValue<T>(
   value: T,
   debounceMs: number,
+  options?: DebounceOptions,
 ): readonly [debouncedValue: T, flush: () => void, isPending: boolean] {
   const [debouncedValue, setDebouncedValue] = useState(value);
   const [isPending, setIsPending] = useState(false);
@@ -44,6 +47,7 @@ export function useDebouncedValue<T>(
       setIsPending(false);
     }, []),
     debounceMs,
+    options,
   );
 
   useOnChange(value, ({ current }) => {

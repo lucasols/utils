@@ -153,6 +153,43 @@ describe('useDebouncedValue', () => {
     expect(result.current[2]).toBe(false);
   });
 
+  test('maxWait forces update even with continuous changes', async () => {
+    const { result, rerender } = renderHook(
+      ({ value }) => useDebouncedValue(value, 300, { maxWait: 300 }),
+      { initialProps: { value: 'a' } },
+    );
+
+    // Keep changing the value every 100ms so the debounce timer keeps resetting.
+    // Without maxWait, the trailing edge would never fire until changes stop for 300ms.
+    // With maxWait: 300, it fires 300ms after the first call regardless.
+    rerender({ value: 'b' });
+    await act(() => sleep(100));
+    rerender({ value: 'c' });
+    await act(() => sleep(100));
+    rerender({ value: 'd' });
+    await act(() => sleep(110));
+
+    // ~310ms from first call, maxWait (300ms) has been reached
+    expect(result.current[0]).toBe('d');
+    expect(result.current[2]).toBe(false);
+  });
+
+  test('leading option triggers update immediately on first change', async () => {
+    const { result, rerender } = renderHook(
+      ({ value }) =>
+        useDebouncedValue(value, 200, { leading: true, trailing: false }),
+      { initialProps: { value: 'a' } },
+    );
+
+    rerender({ value: 'b' });
+
+    // With leading: true, the debounced callback fires immediately on first call
+    // so after the onChange -> debouncedSetter fires leading -> setter runs
+    await act(() => sleep(10));
+
+    expect(result.current[0]).toBe('b');
+  });
+
   test('cancels pending update on unmount', async () => {
     const { result, rerender, unmount } = renderHook(
       ({ value }) => useDebouncedValue(value, 100),
