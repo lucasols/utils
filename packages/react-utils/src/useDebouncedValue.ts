@@ -3,9 +3,16 @@ import { useDebouncedCallback } from './useDebouncedCallback';
 import { useOnChange } from './useOnChange';
 import { useOnUnMount } from './useOnUnMount';
 
+const noopFlush = () => {};
+
 /**
  * Hook that debounces a reactive value, returning a delayed version that only
  * updates after the specified delay has passed without changes.
+ *
+ * Pass `0` as `debounceMs` to disable debouncing entirely, which makes the
+ * hook act as a passthrough (the returned value always matches the input).
+ * This is useful for conditionally disabling debouncing without changing the
+ * call site.
  *
  * @example
  *   ```tsx
@@ -18,7 +25,8 @@ import { useOnUnMount } from './useOnUnMount';
  *   ```;
  *
  * @param value - The value to debounce
- * @param debounceMs - The debounce delay in milliseconds
+ * @param debounceMs - The debounce delay in milliseconds. Use `0` to disable
+ *   debouncing and pass the value through immediately.
  * @returns Tuple of [debouncedValue, flush, isPending]
  */
 export function useDebouncedValue<T>(
@@ -27,6 +35,8 @@ export function useDebouncedValue<T>(
 ): readonly [debouncedValue: T, flush: () => void, isPending: boolean] {
   const [debouncedValue, setDebouncedValue] = useState(value);
   const [isPending, setIsPending] = useState(false);
+
+  const disabled = debounceMs === 0;
 
   const debouncedSetter = useDebouncedCallback(
     useCallback((newValue: T) => {
@@ -37,6 +47,11 @@ export function useDebouncedValue<T>(
   );
 
   useOnChange(value, ({ current }) => {
+    if (disabled) {
+      setDebouncedValue(() => current);
+      return;
+    }
+
     setIsPending(true);
     debouncedSetter(current);
   });
@@ -49,5 +64,5 @@ export function useDebouncedValue<T>(
     debouncedSetter.flush();
   }, [debouncedSetter]);
 
-  return [debouncedValue, flush, isPending] as const;
+  return [disabled ? value : debouncedValue, disabled ? noopFlush : flush, disabled ? false : isPending] as const;
 }

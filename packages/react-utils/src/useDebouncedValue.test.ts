@@ -101,6 +101,58 @@ describe('useDebouncedValue', () => {
     expect(result.current[0]).toBe('b');
   });
 
+  test('debounceMs=0 passes value through immediately', () => {
+    const { result, rerender } = renderHook(
+      ({ value }) => useDebouncedValue(value, 0),
+      { initialProps: { value: 'a' } },
+    );
+
+    expect(result.current[0]).toBe('a');
+    expect(result.current[2]).toBe(false);
+
+    rerender({ value: 'b' });
+
+    expect(result.current[0]).toBe('b');
+    expect(result.current[2]).toBe(false);
+
+    rerender({ value: 'c' });
+
+    expect(result.current[0]).toBe('c');
+    expect(result.current[2]).toBe(false);
+  });
+
+  test('debounceMs=0 flush is a safe noop', () => {
+    const { result, rerender } = renderHook(
+      ({ value }) => useDebouncedValue(value, 0),
+      { initialProps: { value: 'a' } },
+    );
+
+    rerender({ value: 'b' });
+
+    // flush should not throw
+    act(() => {
+      result.current[1]();
+    });
+
+    expect(result.current[0]).toBe('b');
+  });
+
+  test('switching from debounced to debounceMs=0 passes value through', async () => {
+    const { result, rerender } = renderHook(
+      ({ value, ms }) => useDebouncedValue(value, ms),
+      { initialProps: { value: 'a', ms: 100 } },
+    );
+
+    rerender({ value: 'b', ms: 100 });
+    expect(result.current[0]).toBe('a');
+    expect(result.current[2]).toBe(true);
+
+    // Switch to disabled
+    rerender({ value: 'b', ms: 0 });
+    expect(result.current[0]).toBe('b');
+    expect(result.current[2]).toBe(false);
+  });
+
   test('cancels pending update on unmount', async () => {
     const { result, rerender, unmount } = renderHook(
       ({ value }) => useDebouncedValue(value, 100),
