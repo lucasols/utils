@@ -13,7 +13,7 @@ function useDebouncedValue<T>(
    options?): readonly [T, () => void, boolean];
 ```
 
-Defined in: [packages/react-utils/src/useDebouncedValue.ts:34](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDebouncedValue.ts#L34)
+Defined in: [packages/react-utils/src/useDebouncedValue.ts:35](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDebouncedValue.ts#L35)
 
 Hook that debounces a reactive value, returning a delayed version that only
 updates after the specified delay has passed without changes.

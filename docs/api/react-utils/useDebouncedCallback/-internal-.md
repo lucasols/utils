@@ -150,9 +150,7 @@ optional leading: boolean;
 
 Defined in: packages/utils/dist/debounce.d.mts:4
 
-###### See
-
-_.leading
+Invoke on the leading edge of the timeout. Defaults to `false`.
 
 ##### maxWait?
 
@@ -162,9 +160,7 @@ optional maxWait: number;
 
 Defined in: packages/utils/dist/debounce.d.mts:6
 
-###### See
-
-_.maxWait
+Maximum time the function can be delayed before it's forced to invoke (in ms).
 
 ##### trailing?
 
@@ -174,6 +170,4 @@ optional trailing: boolean;
 
 Defined in: packages/utils/dist/debounce.d.mts:8
 
-###### See
-
-_.trailing
+Invoke on the trailing edge of the timeout. Defaults to `true`.
