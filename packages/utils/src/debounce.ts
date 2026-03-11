@@ -1,9 +1,9 @@
 export type DebounceOptions = {
-  /** @see _.leading */
+  /** Invoke on the leading edge of the timeout. Defaults to `false`. */
   leading?: boolean;
-  /** @see _.maxWait */
+  /** Maximum time the function can be delayed before it's forced to invoke (in ms). */
   maxWait?: number;
-  /** @see _.trailing */
+  /** Invoke on the trailing edge of the timeout. Defaults to `true`. */
   trailing?: boolean;
 };
 

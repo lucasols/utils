@@ -190,6 +190,49 @@ describe('useDebouncedValue', () => {
     expect(result.current[0]).toBe('b');
   });
 
+  test('isPending becomes false immediately when value bounces back', async () => {
+    const { result, rerender } = renderHook(
+      ({ value }) => useDebouncedValue(value, 100),
+      { initialProps: { value: 'a' } },
+    );
+
+    rerender({ value: 'b' });
+    expect(result.current[0]).toBe('a');
+    expect(result.current[2]).toBe(true);
+
+    // Value bounces back to match debouncedValue before debounce fires
+    rerender({ value: 'a' });
+    expect(result.current[0]).toBe('a');
+    expect(result.current[2]).toBe(false);
+
+    // After debounce delay, nothing changes
+    await act(() => sleep(110));
+    expect(result.current[0]).toBe('a');
+    expect(result.current[2]).toBe(false);
+  });
+
+  test('debounceMs=0 does not cause extra re-renders on value change', () => {
+    let renderCount = 0;
+    const { result, rerender } = renderHook(
+      ({ value }) => {
+        renderCount++;
+        return useDebouncedValue(value, 0);
+      },
+      { initialProps: { value: 'a' } },
+    );
+
+    expect(result.current[0]).toBe('a');
+    const countAfterMount = renderCount;
+
+    rerender({ value: 'b' });
+    expect(result.current[0]).toBe('b');
+    expect(renderCount).toBe(countAfterMount + 1);
+
+    rerender({ value: 'c' });
+    expect(result.current[0]).toBe('c');
+    expect(renderCount).toBe(countAfterMount + 2);
+  });
+
   test('cancels pending update on unmount', async () => {
     const { result, rerender, unmount } = renderHook(
       ({ value }) => useDebouncedValue(value, 100),

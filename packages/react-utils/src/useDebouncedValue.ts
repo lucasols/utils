@@ -1,5 +1,6 @@
 import type { DebounceOptions } from '@ls-stack/utils/debounce';
-import { useCallback, useState } from 'react';
+import { deepEqual } from '@ls-stack/utils/deepEqual';
+import { useCallback, useMemo, useState } from 'react';
 import { useDebouncedCallback } from './useDebouncedCallback';
 import { useOnChange } from './useOnChange';
 import { useOnUnMount } from './useOnUnMount';
@@ -37,26 +38,30 @@ export function useDebouncedValue<T>(
   options?: DebounceOptions,
 ): readonly [debouncedValue: T, flush: () => void, isPending: boolean] {
   const [debouncedValue, setDebouncedValue] = useState(value);
-  const [isPending, setIsPending] = useState(false);
 
   const disabled = debounceMs === 0;
 
   const debouncedSetter = useDebouncedCallback(
     useCallback((newValue: T) => {
       setDebouncedValue(() => newValue);
-      setIsPending(false);
     }, []),
     debounceMs,
     options,
   );
 
+  useOnChange(disabled, () => {
+    if (disabled) {
+      debouncedSetter.cancel();
+    } else {
+      setDebouncedValue(() => value);
+    }
+  });
+
   useOnChange(value, ({ current }) => {
     if (disabled) {
-      setDebouncedValue(() => current);
       return;
     }
 
-    setIsPending(true);
     debouncedSetter(current);
   });
 
@@ -68,5 +73,7 @@ export function useDebouncedValue<T>(
     debouncedSetter.flush();
   }, [debouncedSetter]);
 
-  return [disabled ? value : debouncedValue, disabled ? noopFlush : flush, disabled ? false : isPending] as const;
+  const isPending = useMemo(() => !disabled && !deepEqual(value, debouncedValue), [disabled, value, debouncedValue]);
+
+  return [disabled ? value : debouncedValue, disabled ? noopFlush : flush, isPending] as const;
 }
