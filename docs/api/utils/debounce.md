@@ -150,9 +150,7 @@ optional leading: boolean;
 
 Defined in: [packages/utils/src/debounce.ts:3](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L3)
 
-###### See
-
-_.leading
+Invoke on the leading edge of the timeout. Defaults to `false`.
 
 ##### maxWait?
 
@@ -162,9 +160,7 @@ optional maxWait: number;
 
 Defined in: [packages/utils/src/debounce.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L5)
 
-###### See
-
-_.maxWait
+Maximum time the function can be delayed before it's forced to invoke (in ms).
 
 ##### trailing?
 
@@ -174,9 +170,7 @@ optional trailing: boolean;
 
 Defined in: [packages/utils/src/debounce.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L7)
 
-###### See
-
-_.trailing
+Invoke on the trailing edge of the timeout. Defaults to `true`.
 
 ## Functions
 
