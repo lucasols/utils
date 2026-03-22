@@ -153,6 +153,7 @@ export type Cache<T> = {
     cacheKey: string,
     value: (utils: Utils<T>) => Promise<T | WithExpiration<T>>,
   ) => Promise<T>;
+  clone: () => Cache<T>;
   [' cache']: {
     map: Map<string, { value: T | Promise<T>; timestamp: number }>;
   };
@@ -211,22 +212,23 @@ export type Cache<T> = {
  *     },
  *   );
  *
- * @param options - Configuration options for the cache
- * @param options.maxCacheSize - Maximum number of items to store. When
+ * @param cacheOptions - Configuration options for the cache
+ * @param cacheOptions.maxCacheSize - Maximum number of items to store. When
  *   exceeded, oldest items are removed first. Defaults to 1000.
- * @param options.maxItemAge - Default expiration time for all cached items.
+ * @param cacheOptions.maxItemAge - Default expiration time for all cached items.
  *   Items older than this will be automatically removed.
- * @param options.expirationThrottle - Minimum time in milliseconds between
+ * @param cacheOptions.expirationThrottle - Minimum time in milliseconds between
  *   expiration cleanup runs. Prevents excessive cleanup operations. Defaults to
  *   10,000ms.
  * @returns A cache instance with various methods for storing and retrieving
  *   values
  */
-export function createCache<T>({
-  maxCacheSize = 1000,
-  maxItemAge,
-  expirationThrottle = 10_000,
-}: Options = {}): Cache<T> {
+export function createCache<T>(cacheOptions: Options = {}): Cache<T> {
+  const {
+    maxCacheSize = 1000,
+    maxItemAge,
+    expirationThrottle = 10_000,
+  } = cacheOptions;
   type CacheEntry = {
     value: T | Promise<T>;
     timestamp: number;
@@ -554,6 +556,23 @@ export function createCache<T>({
      * automatically during cache operations.
      */
     cleanExpiredItems,
+    /**
+     * Creates an independent copy of this cache with the same options.
+     * Only resolved (non-promise) and non-expired entries are copied.
+     * Timestamps and per-entry expirations are preserved.
+     */
+    clone() {
+      const now = Date.now();
+      const cloned = createCache<T>(cacheOptions);
+
+      for (const [key, entry] of cache) {
+        if (!isPromise(entry.value) && !isExpired(entry, now)) {
+          cloned[' cache'].map.set(key, { ...entry });
+        }
+      }
+
+      return cloned;
+    },
     /** @internal */
     ' cache': { map: cache },
   };
@@ -582,12 +601,13 @@ type FastCacheOptions = { maxCacheSize?: number };
  *   // Clear all cached values
  *   cache.clear();
  *
- * @param options - Configuration options for the cache
- * @param options.maxCacheSize - Maximum number of items to store in the cache.
+ * @param fastCacheOptions - Configuration options for the cache
+ * @param fastCacheOptions.maxCacheSize - Maximum number of items to store in the cache.
  *   When exceeded, oldest items are removed first. Defaults to 1000.
  * @returns An object with cache methods
  */
-export function fastCache<T>({ maxCacheSize = 1000 }: FastCacheOptions = {}) {
+export function fastCache<T>(fastCacheOptions: FastCacheOptions = {}) {
+  const { maxCacheSize = 1000 } = fastCacheOptions;
   const cache = new Map<string, T>();
 
   function trimCache() {
@@ -654,5 +674,17 @@ export function fastCache<T>({ maxCacheSize = 1000 }: FastCacheOptions = {}) {
     get size() {
       return cache.size;
     },
+    /** Creates an independent copy of this cache with the same options. */
+    clone() {
+      const cloned = fastCache<T>(fastCacheOptions);
+
+      for (const [key, value] of cache) {
+        cloned[' cache'].set(key, value);
+      }
+
+      return cloned;
+    },
+    /** @internal */
+    [' cache']: cache,
   };
 }

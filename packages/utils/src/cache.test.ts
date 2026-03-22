@@ -830,6 +830,51 @@ describe('options.rejectWhen', () => {
     cache.clear();
     expect(cache.size).toBe(0);
   });
+
+  test('should clone with resolved entries only', () => {
+    const cache = createCache<string>();
+
+    cache.getOrInsert('key1', () => 'value1');
+    cache.getOrInsert('key2', () => 'value2');
+
+    const cloned = cache.clone();
+
+    expect(cloned.get('key1')).toBe('value1');
+    expect(cloned.get('key2')).toBe('value2');
+    expect(cloned.size).toBe(2);
+
+    // Cloned cache is independent
+    cache.set('key3', 'value3');
+    expect(cloned.has('key3')).toBe(false);
+
+    cloned.set('key4', 'value4');
+    expect(cache.has('key4')).toBe(false);
+
+    // Delete on clone does not affect original
+    cloned.delete('key1');
+    expect(cloned.has('key1')).toBe(false);
+    expect(cache.get('key1')).toBe('value1');
+
+    // Clear on clone does not affect original
+    cloned.clear();
+    expect(cloned.size).toBe(0);
+    expect(cache.size).toBe(3);
+  });
+
+  test('should not clone expired entries', () => {
+    vi.useFakeTimers();
+
+    const cache = createCache<string>({ maxItemAge: { seconds: 10 } });
+
+    cache.getOrInsert('key1', () => 'value1');
+
+    vi.advanceTimersByTime(11_000);
+
+    const cloned = cache.clone();
+    expect(cloned.size).toBe(0);
+
+    vi.useRealTimers();
+  });
 });
 
 describe('fastCache', () => {
@@ -1184,5 +1229,35 @@ describe('fastCache', () => {
       expect(cache.getOrInsert(`key${i}`, mockFn)).toBe(`value${i}`);
       expect(mockFn).not.toHaveBeenCalled();
     }
+  });
+
+  test('should clone all entries', () => {
+    const cache = fastCache<string>();
+
+    cache.getOrInsert('key1', () => 'value1');
+    cache.getOrInsert('key2', () => 'value2');
+
+    const cloned = cache.clone();
+
+    expect(cloned.get('key1')).toBe('value1');
+    expect(cloned.get('key2')).toBe('value2');
+    expect(cloned.size).toBe(2);
+
+    // Cloned cache is independent
+    cache.getOrInsert('key3', () => 'value3');
+    expect(cloned.has('key3')).toBe(false);
+
+    cloned.getOrInsert('key4', () => 'value4');
+    expect(cache.has('key4')).toBe(false);
+
+    // Delete on clone does not affect original
+    cloned.delete('key1');
+    expect(cloned.has('key1')).toBe(false);
+    expect(cache.get('key1')).toBe('value1');
+
+    // Clear on clone does not affect original
+    cloned.clear();
+    expect(cloned.size).toBe(0);
+    expect(cache.size).toBe(3);
   });
 });
