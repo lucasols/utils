@@ -764,6 +764,54 @@ describe('options.rejectWhen', () => {
     expect(mockFn).toHaveBeenCalledTimes(2);
     expect(cache[' cache'].map.size).toBe(1);
   });
+
+  test('should delete a single key', () => {
+    const cache = createCache<string>();
+    cache.getOrInsert('key1', () => 'value1');
+    cache.getOrInsert('key2', () => 'value2');
+
+    cache.delete('key1');
+
+    expect(cache.has('key1')).toBe(false);
+    expect(cache.has('key2')).toBe(true);
+
+    const mockFn = vi.fn(() => 'new-value1');
+    expect(cache.getOrInsert('key1', mockFn)).toBe('new-value1');
+    expect(mockFn).toHaveBeenCalledTimes(1);
+  });
+
+  test('should delete multiple keys at once', () => {
+    const cache = createCache<string>();
+    cache.getOrInsert('key1', () => 'value1');
+    cache.getOrInsert('key2', () => 'value2');
+    cache.getOrInsert('key3', () => 'value3');
+
+    cache.delete('key1', 'key3');
+
+    expect(cache.has('key1')).toBe(false);
+    expect(cache.has('key2')).toBe(true);
+    expect(cache.has('key3')).toBe(false);
+  });
+
+  test('should return false from has for expired items', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime('2025-01-01T00:00:00.000Z');
+
+    const cache = createCache<string>({ maxItemAge: { seconds: 10 } });
+    cache.getOrInsert('key1', () => 'value1');
+
+    expect(cache.has('key1')).toBe(true);
+
+    vi.advanceTimersByTime(11_000);
+
+    expect(cache.has('key1')).toBe(false);
+  });
+
+  test('should silently ignore deleting non-existent keys', () => {
+    const cache = createCache<string>();
+    cache.delete('non-existent');
+    expect(cache.has('non-existent')).toBe(false);
+  });
 });
 
 describe('fastCache', () => {
@@ -1048,6 +1096,34 @@ describe('fastCache', () => {
     const mockFnA = vi.fn(() => 'new-a');
     expect(cache2.getOrInsert('a', mockFnA)).toBe('new-a');
     expect(mockFnA).toHaveBeenCalledTimes(1); // Was evicted and recomputed
+  });
+
+  test('should delete a single key', () => {
+    const cache = fastCache<string>();
+    cache.getOrInsert('key1', () => 'value1');
+    cache.getOrInsert('key2', () => 'value2');
+
+    cache.delete('key1');
+
+    expect(cache.has('key1')).toBe(false);
+    expect(cache.has('key2')).toBe(true);
+
+    const mockFn = vi.fn(() => 'new-value1');
+    expect(cache.getOrInsert('key1', mockFn)).toBe('new-value1');
+    expect(mockFn).toHaveBeenCalledTimes(1);
+  });
+
+  test('should delete multiple keys at once', () => {
+    const cache = fastCache<string>();
+    cache.getOrInsert('key1', () => 'value1');
+    cache.getOrInsert('key2', () => 'value2');
+    cache.getOrInsert('key3', () => 'value3');
+
+    cache.delete('key1', 'key3');
+
+    expect(cache.has('key1')).toBe(false);
+    expect(cache.has('key2')).toBe(true);
+    expect(cache.has('key3')).toBe(false);
   });
 
   test('should use default maxCacheSize when not specified', () => {

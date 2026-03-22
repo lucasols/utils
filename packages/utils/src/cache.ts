@@ -142,6 +142,8 @@ export type Cache<T> = {
     options?: GetOptions<T>,
   ) => Promise<T>;
   clear: () => void;
+  delete: (...cacheKeys: string[]) => void;
+  has: (cacheKey: string) => boolean;
   get: (cacheKey: string) => T | undefined;
   set: (cacheKey: string, value: T | WithExpiration<T>) => void;
   cleanExpiredItems: () => void;
@@ -428,6 +430,27 @@ export function createCache<T>({
       cache.clear();
     },
     /**
+     * Removes one or more items from the cache.
+     *
+     * @param cacheKeys - Keys of the items to remove
+     */
+    delete(...cacheKeys) {
+      for (const key of cacheKeys) {
+        cache.delete(key);
+      }
+    },
+    /**
+     * Checks whether a non-expired item exists for the given key.
+     *
+     * @param cacheKey - Key to check
+     * @returns True if a valid (non-expired) entry exists
+     */
+    has(cacheKey) {
+      const entry = cache.get(cacheKey);
+      if (!entry) return false;
+      return !isExpired(entry, Date.now());
+    },
+    /**
      * Gets a value from the cache without computing it if missing. Returns
      * undefined if the key doesn't exist or has expired.
      *
@@ -598,5 +621,22 @@ export function fastCache<T>({ maxCacheSize = 1000 }: FastCacheOptions = {}) {
     getOrInsert,
     /** Clears all cached values */
     clear: () => cache.clear(),
+    /**
+     * Removes one or more items from the cache.
+     *
+     * @param cacheKeys - Keys of the items to remove
+     */
+    delete: (...cacheKeys: string[]) => {
+      for (const key of cacheKeys) {
+        cache.delete(key);
+      }
+    },
+    /**
+     * Checks whether an item exists for the given key.
+     *
+     * @param cacheKey - Key to check
+     * @returns True if the entry exists
+     */
+    has: (cacheKey: string) => cache.has(cacheKey),
   };
 }
