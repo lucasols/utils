@@ -169,7 +169,7 @@ Defined in: [packages/utils/src/cache.ts:133](https://github.com/lucasols/utils/
  cache: object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:156](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L156)
+Defined in: [packages/utils/src/cache.ts:157](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L157)
 
 ###### map
 
@@ -203,6 +203,18 @@ Defined in: [packages/utils/src/cache.ts:144](https://github.com/lucasols/utils/
 ###### Returns
 
 `void`
+
+##### clone()
+
+```ts
+clone: () => Cache<T>;
+```
+
+Defined in: [packages/utils/src/cache.ts:156](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L156)
+
+###### Returns
+
+[`Cache`](#cache)\<`T`\>
 
 ##### delete()
 
@@ -438,10 +450,10 @@ const expensive = cachedGetter(() => {
 ### createCache()
 
 ```ts
-function createCache<T>(options): Cache<T>;
+function createCache<T>(cacheOptions): Cache<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:225](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L225)
+Defined in: [packages/utils/src/cache.ts:226](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L226)
 
 Creates a full-featured cache with time-based expiration, async support, and
 advanced features. This is a more powerful alternative to `fastCache` when
@@ -455,7 +467,7 @@ you need expiration, async operations, or advanced caching strategies.
 
 #### Parameters
 
-##### options
+##### cacheOptions
 
 [`Options`](-internal-.md#options) = `{}`
 
@@ -524,10 +536,10 @@ A cache instance with various methods for storing and retrieving
 ### fastCache()
 
 ```ts
-function fastCache<T>(options): object;
+function fastCache<T>(fastCacheOptions): object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:590](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L590)
+Defined in: [packages/utils/src/cache.ts:609](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L609)
 
 Creates a simple, fast cache with FIFO (First In, First Out) eviction policy.
 This is a lightweight alternative to `createCache` for basic caching needs
@@ -541,7 +553,7 @@ without expiration, async support, or advanced features.
 
 #### Parameters
 
-##### options
+##### fastCacheOptions
 
 [`FastCacheOptions`](-internal-.md#fastcacheoptions) = `{}`
 
@@ -668,6 +680,18 @@ The number of items currently in the cache.
 ###### Returns
 
 `number`
+
+##### clone()
+
+```ts
+clone(): { getOrInsert: (cacheKey: string, val: () => T) => T; clear: () => void; delete: (...cacheKeys: string[]) => void; has: (cacheKey: string) => boolean; get: (cacheKey: string) => T | undefined; readonly size: number; clone(): ...; " cache": Map<...>; };
+```
+
+Creates an independent copy of this cache with the same options.
+
+###### Returns
+
+\{ getOrInsert: (cacheKey: string, val: () =\> T) =\> T; clear: () =\> void; delete: (...cacheKeys: string\[\]) =\> void; has: (cacheKey: string) =\> boolean; get: (cacheKey: string) =\> T \| undefined; readonly size: number; clone(): ...; " cache": Map\<...\>; \}
 
 #### Example
 
