@@ -144,6 +144,7 @@ export type Cache<T> = {
   clear: () => void;
   delete: (...cacheKeys: string[]) => void;
   has: (cacheKey: string) => boolean;
+  size: number;
   get: (cacheKey: string) => T | undefined;
   set: (cacheKey: string, value: T | WithExpiration<T>) => void;
   cleanExpiredItems: () => void;
@@ -450,6 +451,10 @@ export function createCache<T>({
       if (!entry) return false;
       return !isExpired(entry, Date.now());
     },
+    /** The number of items currently in the cache (including pending promises). */
+    get size() {
+      return cache.size;
+    },
     /**
      * Gets a value from the cache without computing it if missing. Returns
      * undefined if the key doesn't exist or has expired.
@@ -638,5 +643,16 @@ export function fastCache<T>({ maxCacheSize = 1000 }: FastCacheOptions = {}) {
      * @returns True if the entry exists
      */
     has: (cacheKey: string) => cache.has(cacheKey),
+    /**
+     * Gets a value from the cache without computing it if missing.
+     *
+     * @param cacheKey - Key to look up in the cache
+     * @returns The cached value or undefined if not found
+     */
+    get: (cacheKey: string) => cache.get(cacheKey),
+    /** The number of items currently in the cache. */
+    get size() {
+      return cache.size;
+    },
   };
 }

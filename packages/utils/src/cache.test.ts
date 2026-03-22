@@ -812,6 +812,24 @@ describe('options.rejectWhen', () => {
     cache.delete('non-existent');
     expect(cache.has('non-existent')).toBe(false);
   });
+
+  test('should report correct size', () => {
+    const cache = createCache<string>();
+
+    expect(cache.size).toBe(0);
+
+    cache.getOrInsert('key1', () => 'value1');
+    expect(cache.size).toBe(1);
+
+    cache.getOrInsert('key2', () => 'value2');
+    expect(cache.size).toBe(2);
+
+    cache.delete('key1');
+    expect(cache.size).toBe(1);
+
+    cache.clear();
+    expect(cache.size).toBe(0);
+  });
 });
 
 describe('fastCache', () => {
@@ -1124,6 +1142,32 @@ describe('fastCache', () => {
     expect(cache.has('key1')).toBe(false);
     expect(cache.has('key2')).toBe(true);
     expect(cache.has('key3')).toBe(false);
+  });
+
+  test('should get a value without computing', () => {
+    const cache = fastCache<string>();
+    cache.getOrInsert('key1', () => 'value1');
+
+    expect(cache.get('key1')).toBe('value1');
+    expect(cache.get('missing')).toBeUndefined();
+  });
+
+  test('should report correct size', () => {
+    const cache = fastCache<string>();
+
+    expect(cache.size).toBe(0);
+
+    cache.getOrInsert('key1', () => 'value1');
+    expect(cache.size).toBe(1);
+
+    cache.getOrInsert('key2', () => 'value2');
+    expect(cache.size).toBe(2);
+
+    cache.delete('key1');
+    expect(cache.size).toBe(1);
+
+    cache.clear();
+    expect(cache.size).toBe(0);
   });
 
   test('should use default maxCacheSize when not specified', () => {
