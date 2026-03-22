@@ -10,7 +10,7 @@
 type FastCacheOptions = object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:534](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L534)
+Defined in: [packages/utils/src/cache.ts:562](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L562)
 
 #### Properties
 
@@ -20,7 +20,7 @@ Defined in: [packages/utils/src/cache.ts:534](https://github.com/lucasols/utils/
 optional maxCacheSize: number;
 ```
 
-Defined in: [packages/utils/src/cache.ts:534](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L534)
+Defined in: [packages/utils/src/cache.ts:562](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L562)
 
 ***
 

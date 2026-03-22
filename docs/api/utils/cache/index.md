@@ -169,7 +169,7 @@ Defined in: [packages/utils/src/cache.ts:133](https://github.com/lucasols/utils/
  cache: object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:153](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L153)
+Defined in: [packages/utils/src/cache.ts:156](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L156)
 
 ###### map
 
@@ -186,7 +186,7 @@ map: Map<string, {
 cleanExpiredItems: () => void;
 ```
 
-Defined in: [packages/utils/src/cache.ts:147](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L147)
+Defined in: [packages/utils/src/cache.ts:150](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L150)
 
 ###### Returns
 
@@ -204,13 +204,31 @@ Defined in: [packages/utils/src/cache.ts:144](https://github.com/lucasols/utils/
 
 `void`
 
+##### delete()
+
+```ts
+delete: (...cacheKeys) => void;
+```
+
+Defined in: [packages/utils/src/cache.ts:145](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L145)
+
+###### Parameters
+
+###### cacheKeys
+
+...`string`[]
+
+###### Returns
+
+`void`
+
 ##### get()
 
 ```ts
 get: (cacheKey) => T | undefined;
 ```
 
-Defined in: [packages/utils/src/cache.ts:145](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L145)
+Defined in: [packages/utils/src/cache.ts:148](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L148)
 
 ###### Parameters
 
@@ -228,7 +246,7 @@ Defined in: [packages/utils/src/cache.ts:145](https://github.com/lucasols/utils/
 getAsync: (cacheKey) => Promise<T | undefined>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:148](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L148)
+Defined in: [packages/utils/src/cache.ts:151](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L151)
 
 ###### Parameters
 
@@ -292,13 +310,31 @@ Defined in: [packages/utils/src/cache.ts:139](https://github.com/lucasols/utils/
 
 `Promise`\<`T`\>
 
+##### has()
+
+```ts
+has: (cacheKey) => boolean;
+```
+
+Defined in: [packages/utils/src/cache.ts:146](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L146)
+
+###### Parameters
+
+###### cacheKey
+
+`string`
+
+###### Returns
+
+`boolean`
+
 ##### set()
 
 ```ts
 set: (cacheKey, value) => void;
 ```
 
-Defined in: [packages/utils/src/cache.ts:146](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L146)
+Defined in: [packages/utils/src/cache.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L149)
 
 ###### Parameters
 
@@ -320,7 +356,7 @@ Defined in: [packages/utils/src/cache.ts:146](https://github.com/lucasols/utils/
 setAsync: (cacheKey, value) => Promise<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L149)
+Defined in: [packages/utils/src/cache.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L152)
 
 ###### Parameters
 
@@ -335,6 +371,14 @@ Defined in: [packages/utils/src/cache.ts:149](https://github.com/lucasols/utils/
 ###### Returns
 
 `Promise`\<`T`\>
+
+##### size
+
+```ts
+size: number;
+```
+
+Defined in: [packages/utils/src/cache.ts:147](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L147)
 
 ## Functions
 
@@ -397,7 +441,7 @@ const expensive = cachedGetter(() => {
 function createCache<T>(options): Cache<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:222](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L222)
+Defined in: [packages/utils/src/cache.ts:225](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L225)
 
 Creates a full-featured cache with time-based expiration, async support, and
 advanced features. This is a more powerful alternative to `fastCache` when
@@ -483,7 +527,7 @@ A cache instance with various methods for storing and retrieving
 function fastCache<T>(options): object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:562](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L562)
+Defined in: [packages/utils/src/cache.ts:590](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L590)
 
 Creates a simple, fast cache with FIFO (First In, First Out) eviction policy.
 This is a lightweight alternative to `createCache` for basic caching needs
@@ -519,6 +563,48 @@ Clears all cached values
 
 `void`
 
+##### delete()
+
+```ts
+delete: (...cacheKeys) => void;
+```
+
+Removes one or more items from the cache.
+
+###### Parameters
+
+###### cacheKeys
+
+...`string`[]
+
+Keys of the items to remove
+
+###### Returns
+
+`void`
+
+##### get()
+
+```ts
+get: (cacheKey) => undefined | T;
+```
+
+Gets a value from the cache without computing it if missing.
+
+###### Parameters
+
+###### cacheKey
+
+`string`
+
+Key to look up in the cache
+
+###### Returns
+
+`undefined` \| `T`
+
+The cached value or undefined if not found
+
 ##### getOrInsert()
 
 ```ts
@@ -546,6 +632,42 @@ Function that computes the value if not cached
 `T`
 
 The cached or newly computed value
+
+##### has()
+
+```ts
+has: (cacheKey) => boolean;
+```
+
+Checks whether an item exists for the given key.
+
+###### Parameters
+
+###### cacheKey
+
+`string`
+
+Key to check
+
+###### Returns
+
+`boolean`
+
+True if the entry exists
+
+##### size
+
+###### Get Signature
+
+```ts
+get size(): number;
+```
+
+The number of items currently in the cache.
+
+###### Returns
+
+`number`
 
 #### Example
 
