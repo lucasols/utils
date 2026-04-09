@@ -579,6 +579,172 @@ describe('Classes', () => {
     `);
   });
 
+  describe('Error snapshot', () => {
+    test('includes enumerable custom own props', () => {
+      const err = new Error('x');
+
+      (err as Error & { code: string }).code = 'E_TEST';
+
+      expect(getSnapshot(err, { includeErrorStack: false })).toMatchInlineSnapshot(`
+        "
+        Error#:
+          message: 'x'
+          name: 'Error'
+          code: 'E_TEST'
+        "
+      `);
+    });
+
+    test('recursively serializes Error cause', () => {
+      const inner = new Error('inner');
+
+      (inner as Error & { code: string }).code = 'INNER';
+
+      const outer = new Error('outer');
+
+      outer.cause = inner;
+
+      expect(getSnapshot(outer, { includeErrorStack: false })).toMatchInlineSnapshot(`
+        "
+        Error#:
+          message: 'outer'
+          name: 'Error'
+          cause:
+            Error#:
+              message: 'inner'
+              name: 'Error'
+              code: 'INNER'
+        "
+      `);
+    });
+
+    test('serializes non-Error cause', () => {
+      const err = new Error('wrap');
+
+      err.cause = { reason: 'bad input' };
+
+      expect(getSnapshot(err, { includeErrorStack: false })).toMatchInlineSnapshot(`
+        "
+        Error#:
+          message: 'wrap'
+          name: 'Error'
+          cause:
+            reason: 'bad input'
+        "
+      `);
+    });
+
+    test('cause chain respects maxDepth from yaml root', () => {
+      const e3 = new Error('three');
+      const e2 = new Error('two');
+
+      e2.cause = e3;
+
+      const e1 = new Error('one');
+
+      e1.cause = e2;
+
+      expect(
+        getSnapshot(e1, { maxDepth: 1, includeErrorStack: false }),
+      ).toMatchInlineSnapshot(`
+        "
+        Error#:
+          message: 'one'
+          name: 'Error'
+          cause:
+            Error#:
+              message: 'two'
+              name: 'Error'
+              cause: '{max depth reached}'
+        "
+      `);
+    });
+
+    test('Error cause budget uses yaml depth not chain root', () => {
+      const inner = new Error('inner');
+      const outer = new Error('outer');
+
+      outer.cause = inner;
+
+      expect(
+        getSnapshot(
+          { wrap: { err: outer } },
+          { maxDepth: 2, includeErrorStack: false },
+        ),
+      ).toMatchInlineSnapshot(`
+        "
+        wrap:
+          err{Error}:
+            message: 'outer'
+            name: 'Error'
+            cause: '{max depth reached}'
+        "
+      `);
+    });
+
+    test('omits cause when includeErrorCause is false', () => {
+      const inner = new Error('inner');
+      const outer = new Error('outer');
+
+      outer.cause = inner;
+
+      expect(
+        getSnapshot(outer, {
+          includeErrorCause: false,
+          includeErrorStack: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        Error#:
+          message: 'outer'
+          name: 'Error'
+        "
+      `);
+    });
+
+    test('pickErrorOwnProps array allowlist', () => {
+      const err = new Error('m');
+
+      (err as Error & { code: string; status: number }).code = 'E1';
+      (err as Error & { code: string; status: number }).status = 500;
+
+      expect(
+        getSnapshot(err, {
+          pickErrorOwnProps: ['code'],
+          includeErrorStack: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        Error#:
+          message: 'm'
+          name: 'Error'
+          code: 'E1'
+        "
+      `);
+    });
+
+    test('pickErrorOwnProps predicate', () => {
+      const err = new Error('m');
+
+      (err as Error & { keep: number; drop: string }).keep = 1;
+      (err as Error & { keep: number; drop: string }).drop = 'no';
+
+      expect(
+        getSnapshot(err, {
+          pickErrorOwnProps: (key) => key !== 'drop',
+          includeErrorStack: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        Error#:
+          message: 'm'
+          name: 'Error'
+          keep: 1
+        "
+      `);
+    });
+  });
+
   test('File', () => {
     const base64 =
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';

@@ -7,7 +7,13 @@ export type YamlStringifyOptions = {
   maxLineLength?: number;
   /* show undefined values */
   showUndefined?: boolean;
-  /* max depth of nested objects */
+  /**
+   * Max nesting depth from the YAML root for objects/arrays. For `Error`
+   * values, each `cause` hop uses the depth of that `Error` in the tree (the
+   * depth at which the instance is visited, then +1 per nested `Error`
+   * `cause`). Payload fields skip YAML truncation; only `cause` may become
+   * `{max depth reached}`.
+   */
   maxDepth?: number;
   /* collapse simple non-nested objects with no keys into a single line */
   collapseObjects?: boolean;
@@ -15,7 +21,93 @@ export type YamlStringifyOptions = {
   addRootObjSpaces?: 'before' | 'after' | 'beforeAndAfter' | false;
   /** When serializing `Error`, include `stack`. Default true (direct `yamlStringify`); `compactSnapshot` passes false by default. */
   includeErrorStack?: boolean;
+  /** When serializing `Error`, include `cause` recursively. Default true. */
+  includeErrorCause?: boolean;
+  /**
+   * Limit which extra enumerable own keys appear on `Error` (not `message` /
+   * `name` / `stack` / `cause`). Omit to include all extras. Array = allowlist.
+   */
+  pickErrorOwnProps?:
+    | string[]
+    | ((key: string, value: unknown) => boolean);
 };
+
+type ErrorYamlSnapshotOptions = {
+  includeStack: boolean;
+  includeCause: boolean;
+  pickOwnProps: (key: string, value: unknown) => boolean;
+};
+
+const ERROR_SNAPSHOT_RESERVED = new Set([
+  'message',
+  'name',
+  'stack',
+  'cause',
+]);
+
+function resolvePickErrorOwnProps(
+  pick?: YamlStringifyOptions['pickErrorOwnProps'],
+): (key: string, value: unknown) => boolean {
+  if (pick === undefined) {
+    return () => true;
+  }
+  if (Array.isArray(pick)) {
+    const allowed = new Set(pick);
+    return (key) => allowed.has(key);
+  }
+  return pick;
+}
+
+function errorToSnapshotPayload(
+  err: Error,
+  opts: ErrorYamlSnapshotOptions,
+  yamlDepth: number,
+  maxDepth: number,
+): Record<string, unknown> {
+  const out: Record<string, unknown> = {
+    message: err.message,
+    name: err.name,
+  };
+
+  if (opts.includeStack) {
+    out.stack = err.stack;
+  }
+
+  for (const key of Object.keys(err)) {
+    if (ERROR_SNAPSHOT_RESERVED.has(key)) {
+      continue;
+    }
+
+    const val: unknown = Reflect.get(err, key);
+
+    if (!opts.pickOwnProps(key, val)) {
+      continue;
+    }
+
+    out[key] = val;
+  }
+
+  if (opts.includeCause && 'cause' in err && err.cause !== undefined) {
+    const { cause } = err;
+
+    if (yamlDepth + 1 > maxDepth) {
+      out.cause = '{max depth reached}';
+    } else if (cause instanceof Error) {
+      out.cause = {
+        'Error#': errorToSnapshotPayload(
+          cause,
+          opts,
+          yamlDepth + 1,
+          maxDepth,
+        ),
+      };
+    } else {
+      out.cause = cause;
+    }
+  }
+
+  return out;
+}
 
 export function yamlStringify(
   obj: unknown,
@@ -26,10 +118,18 @@ export function yamlStringify(
     collapseObjects = false,
     addRootObjSpaces = 'beforeAndAfter',
     includeErrorStack = true,
+    includeErrorCause = true,
+    pickErrorOwnProps,
   }: YamlStringifyOptions = {},
 ): string {
+  const errorSnapshot: ErrorYamlSnapshotOptions = {
+    includeStack: includeErrorStack,
+    includeCause: includeErrorCause,
+    pickOwnProps: resolvePickErrorOwnProps(pickErrorOwnProps),
+  };
+
   if (isObject(obj) || Array.isArray(obj) || typeof obj === 'function') {
-    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0, collapseObjects, addRootObjSpaces, false, includeErrorStack)}\n`;
+    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0, collapseObjects, addRootObjSpaces, false, errorSnapshot, false)}\n`;
   }
 
   return JSON.stringify(obj) || 'undefined';
@@ -45,7 +145,8 @@ function stringifyValue(
   collapseObjects: boolean,
   addObjSpaces: 'before' | 'after' | 'beforeAndAfter' | false,
   isArrayItem: boolean,
-  includeErrorStack: boolean,
+  errorSnapshot: ErrorYamlSnapshotOptions,
+  relaxMaxDepth: boolean,
 ): string {
   let result = '';
   const childIndent = `${indent}  `;
@@ -116,11 +217,20 @@ function stringifyValue(
         continue;
       }
 
-      if (depth > maxDepth) {
+      if (
+        !relaxMaxDepth &&
+        depth > maxDepth &&
+        !(objVal instanceof Error)
+      ) {
         objVal = `{max depth reached}`;
       }
 
-      const normalizedValue = normalizeValue(objVal, includeErrorStack);
+      const normalizedValue = normalizeValue(
+        objVal,
+        errorSnapshot,
+        maxDepth,
+        depth + 1,
+      );
 
       if (normalizedValue !== null) {
         objVal = normalizedValue[1];
@@ -137,7 +247,8 @@ function stringifyValue(
         collapseObjects,
         addObjSpaces,
         false,
-        includeErrorStack,
+        errorSnapshot,
+        relaxMaxDepth,
       );
 
       // Check if the current value will be collapsed (including empty objects)
@@ -293,7 +404,11 @@ function stringifyValue(
         .map((item) => {
           let valueToUse = item;
 
-          if (depth > maxDepth) {
+          if (
+            !relaxMaxDepth &&
+            depth > maxDepth &&
+            !(valueToUse instanceof Error)
+          ) {
             valueToUse = `{max depth reached}`;
           }
 
@@ -311,7 +426,8 @@ function stringifyValue(
             collapseObjects,
             addObjSpaces,
             true,
-            includeErrorStack,
+            errorSnapshot,
+            relaxMaxDepth,
           );
         })
         .join(', ');
@@ -326,7 +442,11 @@ function stringifyValue(
 
     if (!arrayWasAdded) {
       for (let item of value) {
-        if (depth > maxDepth) {
+        if (
+          !relaxMaxDepth &&
+          depth > maxDepth &&
+          !(item instanceof Error)
+        ) {
           item = `{max depth reached}`;
         }
 
@@ -343,7 +463,8 @@ function stringifyValue(
             collapseObjects,
             addObjSpaces,
             true,
-            includeErrorStack,
+            errorSnapshot,
+            relaxMaxDepth,
           );
 
           arrayString = arrayString.trimStart();
@@ -360,7 +481,8 @@ function stringifyValue(
             collapseObjects,
             addObjSpaces,
             true,
-            includeErrorStack,
+            errorSnapshot,
+            relaxMaxDepth,
           );
         }
 
@@ -412,7 +534,12 @@ function stringifyValue(
     return String(value).trimEnd();
   }
 
-  const normalizedValue = normalizeValue(value, includeErrorStack);
+  const normalizedValue = normalizeValue(
+    value,
+    errorSnapshot,
+    maxDepth,
+    depth,
+  );
 
   if (normalizedValue !== null) {
     return stringifyValue(
@@ -427,7 +554,8 @@ function stringifyValue(
       collapseObjects,
       addObjSpaces,
       false,
-      includeErrorStack,
+      errorSnapshot,
+      normalizedValue[0] === 'Error',
     );
   }
 
@@ -436,7 +564,9 @@ function stringifyValue(
 
 function normalizeValue(
   value: unknown,
-  includeErrorStack: boolean,
+  errorSnapshot: ErrorYamlSnapshotOptions,
+  maxDepth: number,
+  yamlDepth: number,
 ): [string, unknown] | null {
   if (value === null || isPlainObject(value) || Array.isArray(value)) {
     return null;
@@ -480,14 +610,10 @@ function normalizeValue(
   }
 
   if (value instanceof Error) {
-    const errView: Record<string, unknown> = {
-      message: value.message,
-      name: value.name,
-    };
-    if (includeErrorStack) {
-      errView.stack = value.stack;
-    }
-    return ['Error', errView];
+    return [
+      'Error',
+      errorToSnapshotPayload(value, errorSnapshot, yamlDepth, maxDepth),
+    ];
   }
 
   if (value instanceof File) {

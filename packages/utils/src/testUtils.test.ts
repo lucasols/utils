@@ -1105,5 +1105,59 @@ describe('compactSnapshot', () => {
         "
       `);
     });
+
+    test('includes custom own props and cause by default', () => {
+      const inner = new Error('root');
+
+      (inner as Error & { code: string }).code = 'E_ROOT';
+
+      const outer = new Error('wrap');
+
+      (outer as Error & { code: string }).code = 'E_WRAP';
+      outer.cause = inner;
+
+      expect(compactSnapshot(outer)).toMatchInlineSnapshot(`
+        "
+        Error#:
+          message: 'wrap'
+          name: 'Error'
+          code: 'E_WRAP'
+          cause:
+            Error#: { message: 'root', name: 'Error', code: 'E_ROOT' }
+        "
+      `);
+    });
+
+    test('pickErrorOwnProps allowlist on compactSnapshot', () => {
+      const err = new Error('m');
+
+      (err as Error & { code: string; status: number }).code = 'E1';
+      (err as Error & { code: string; status: number }).status = 500;
+
+      expect(
+        compactSnapshot(err, { pickErrorOwnProps: ['code'] }),
+      ).toMatchInlineSnapshot(`
+        "
+        Error#: { message: 'm', name: 'Error', code: 'E1' }
+        "
+      `);
+    });
+
+    test('pickErrorOwnProps predicate on compactSnapshot', () => {
+      const err = new Error('m');
+
+      (err as Error & { keep: number; drop: string }).keep = 1;
+      (err as Error & { keep: number; drop: string }).drop = 'x';
+
+      expect(
+        compactSnapshot(err, {
+          pickErrorOwnProps: (key) => key !== 'drop',
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        Error#: { message: 'm', name: 'Error', keep: 1 }
+        "
+      `);
+    });
   });
 });

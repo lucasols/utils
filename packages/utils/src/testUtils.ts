@@ -425,6 +425,10 @@ export function waitController(): {
  * @param options.showUndefined - Whether to show undefined values.
  * @param options.includeErrorStack - Whether `Error` values include `stack`
  *   (default false here; `yamlStringify` alone defaults to true).
+ * @param options.includeErrorCause - Whether `Error` values include `cause`
+ *   recursively (default true).
+ * @param options.pickErrorOwnProps - Allowlist of extra `Error` own keys, or a
+ *   predicate `(key, value) => boolean`; omit to include all extras.
  * @param options.showBooleansAs - Whether to show booleans as text, by default
  *   true is `✅` and false is `❌`
  * @param options.rejectKeys - The keys to reject.
@@ -447,6 +451,7 @@ export function compactSnapshot(
     showUndefined = false,
     showBooleansAs = true,
     includeErrorStack = false,
+    includeErrorCause = true,
     replaceValues,
     rejectKeys,
     filterKeys,
@@ -512,6 +517,7 @@ export function compactSnapshot(
     maxLineLength,
     showUndefined,
     includeErrorStack,
+    includeErrorCause,
     ...options,
   })}`;
 }
