@@ -423,6 +423,8 @@ export function waitController(): {
  *   line.
  * @param options.maxLineLength - The maximum length of a line.
  * @param options.showUndefined - Whether to show undefined values.
+ * @param options.includeErrorStack - Whether `Error` values include `stack`
+ *   (default false here; `yamlStringify` alone defaults to true).
  * @param options.showBooleansAs - Whether to show booleans as text, by default
  *   true is `✅` and false is `❌`
  * @param options.rejectKeys - The keys to reject.
@@ -444,6 +446,7 @@ export function compactSnapshot(
     maxLineLength = 100,
     showUndefined = false,
     showBooleansAs = true,
+    includeErrorStack = false,
     replaceValues,
     rejectKeys,
     filterKeys,
@@ -508,6 +511,7 @@ export function compactSnapshot(
     collapseObjects,
     maxLineLength,
     showUndefined,
+    includeErrorStack,
     ...options,
   })}`;
 }

@@ -1061,4 +1061,49 @@ describe('compactSnapshot', () => {
       `);
     });
   });
+
+  describe('errors', () => {
+    test('omits stack by default', () => {
+      const err = new Error('failed');
+
+      err.stack = 'at test.js:1:1';
+
+      expect(compactSnapshot(err)).toMatchInlineSnapshot(`
+        "
+        Error#: { message: 'failed', name: 'Error' }
+        "
+      `);
+    });
+
+    test('includes stack when includeErrorStack is true', () => {
+      const err = new Error('failed');
+
+      err.stack = 'at test.js:1:1';
+
+      expect(compactSnapshot(err, { includeErrorStack: true }))
+        .toMatchInlineSnapshot(`
+          "
+          Error#: { message: 'failed', name: 'Error', stack: 'at test.js:1:1' }
+          "
+        `);
+    });
+
+    test('nested error omits stack by default', () => {
+      const err = new Error('inner');
+
+      err.stack = 'at inner.js:1:1';
+
+      expect(
+        compactSnapshot({
+          ok: false,
+          err,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        ok: '❌'
+        err{Error}: { message: 'inner', name: 'Error' }
+        "
+      `);
+    });
+  });
 });

@@ -13,6 +13,8 @@ export type YamlStringifyOptions = {
   collapseObjects?: boolean;
   /* add spaces in root object */
   addRootObjSpaces?: 'before' | 'after' | 'beforeAndAfter' | false;
+  /** When serializing `Error`, include `stack`. Default true (direct `yamlStringify`); `compactSnapshot` passes false by default. */
+  includeErrorStack?: boolean;
 };
 
 export function yamlStringify(
@@ -23,10 +25,11 @@ export function yamlStringify(
     maxDepth = 50,
     collapseObjects = false,
     addRootObjSpaces = 'beforeAndAfter',
+    includeErrorStack = true,
   }: YamlStringifyOptions = {},
 ): string {
   if (isObject(obj) || Array.isArray(obj) || typeof obj === 'function') {
-    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0, collapseObjects, addRootObjSpaces, false)}\n`;
+    return `${stringifyValue(obj, '', maxLineLength, !!showUndefined, maxDepth, 0, collapseObjects, addRootObjSpaces, false, includeErrorStack)}\n`;
   }
 
   return JSON.stringify(obj) || 'undefined';
@@ -42,6 +45,7 @@ function stringifyValue(
   collapseObjects: boolean,
   addObjSpaces: 'before' | 'after' | 'beforeAndAfter' | false,
   isArrayItem: boolean,
+  includeErrorStack: boolean,
 ): string {
   let result = '';
   const childIndent = `${indent}  `;
@@ -116,7 +120,7 @@ function stringifyValue(
         objVal = `{max depth reached}`;
       }
 
-      const normalizedValue = normalizeValue(objVal);
+      const normalizedValue = normalizeValue(objVal, includeErrorStack);
 
       if (normalizedValue !== null) {
         objVal = normalizedValue[1];
@@ -133,6 +137,7 @@ function stringifyValue(
         collapseObjects,
         addObjSpaces,
         false,
+        includeErrorStack,
       );
 
       // Check if the current value will be collapsed (including empty objects)
@@ -306,6 +311,7 @@ function stringifyValue(
             collapseObjects,
             addObjSpaces,
             true,
+            includeErrorStack,
           );
         })
         .join(', ');
@@ -337,6 +343,7 @@ function stringifyValue(
             collapseObjects,
             addObjSpaces,
             true,
+            includeErrorStack,
           );
 
           arrayString = arrayString.trimStart();
@@ -353,6 +360,7 @@ function stringifyValue(
             collapseObjects,
             addObjSpaces,
             true,
+            includeErrorStack,
           );
         }
 
@@ -404,7 +412,7 @@ function stringifyValue(
     return String(value).trimEnd();
   }
 
-  const normalizedValue = normalizeValue(value);
+  const normalizedValue = normalizeValue(value, includeErrorStack);
 
   if (normalizedValue !== null) {
     return stringifyValue(
@@ -419,13 +427,17 @@ function stringifyValue(
       collapseObjects,
       addObjSpaces,
       false,
+      includeErrorStack,
     );
   }
 
   return JSON.stringify(value);
 }
 
-function normalizeValue(value: unknown): [string, unknown] | null {
+function normalizeValue(
+  value: unknown,
+  includeErrorStack: boolean,
+): [string, unknown] | null {
   if (value === null || isPlainObject(value) || Array.isArray(value)) {
     return null;
   }
@@ -468,14 +480,14 @@ function normalizeValue(value: unknown): [string, unknown] | null {
   }
 
   if (value instanceof Error) {
-    return [
-      'Error',
-      {
-        message: value.message,
-        name: value.name,
-        stack: value.stack,
-      },
-    ];
+    const errView: Record<string, unknown> = {
+      message: value.message,
+      name: value.name,
+    };
+    if (includeErrorStack) {
+      errView.stack = value.stack;
+    }
+    return ['Error', errView];
   }
 
   if (value instanceof File) {

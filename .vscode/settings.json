@@ -1,5 +1,10 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "testing.automaticallyOpenPeekView": "never",
-  "eslint.workingDirectories": [{ "mode": "auto" }]
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }
