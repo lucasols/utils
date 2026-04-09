@@ -108,7 +108,7 @@ Defined in: [packages/utils/src/testUtils.ts:20](https://github.com/lucasols/uti
 function compactSnapshot(value, options): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:440](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L440)
+Defined in: [packages/utils/src/testUtils.ts:446](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L446)
 
 Produces a more compact and readable snapshot of a value using yaml. By
 default booleans are shown as `✅` and `❌`, use `showBooleansAs` to
