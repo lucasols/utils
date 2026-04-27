@@ -332,6 +332,75 @@ test('handles non-plain objects', () => {
   );
 });
 
+test('custom stringifier handles top-level special values', () => {
+  class TestFile {
+    constructor(
+      public name: string,
+      public size: number,
+      public lastModified: number,
+    ) {}
+  }
+
+  const file = new TestFile('avatar.png', 1024, 1710000000000);
+
+  expect(
+    getCompositeKey(file, {
+      stringify: (value) => {
+        if (value instanceof TestFile) {
+          return `file:${value.name}:${value.size}:${value.lastModified}`;
+        }
+        return undefined;
+      },
+    }),
+  ).toMatchInlineSnapshot(`"file:avatar.png:1024:1710000000000"`);
+});
+
+test('custom stringifier handles nested special values', () => {
+  const bytes = new Uint8Array([3, 1, 2]);
+
+  expect(
+    getCompositeKey(
+      {
+        b: bytes,
+        a: 1,
+      },
+      {
+        stringify: (value) => {
+          if (value instanceof Uint8Array) {
+            return `bytes:${Array.from(value).join('.')}`;
+          }
+          return undefined;
+        },
+      },
+    ),
+  ).toMatchInlineSnapshot(`"{a:1,b:bytes:3.1.2}"`);
+});
+
+test('custom stringifier can be used with max sorting depth parameter', () => {
+  const bytes = new Uint8Array([1, 2, 3]);
+
+  expect(
+    getCompositeKey({ z: bytes, a: 1 }, 0, (value) => {
+      if (value instanceof Uint8Array) {
+        return `bytes:${value.byteLength}`;
+      }
+      return undefined;
+    }),
+  ).toMatchInlineSnapshot(`"{z:bytes:3,a:1}"`);
+});
+
+test('custom stringifier falls back when returning undefined', () => {
+  expect(
+    getCompositeKey(
+      {
+        b: 2,
+        a: 1,
+      },
+      { stringify: () => undefined },
+    ),
+  ).toMatchInlineSnapshot(`"{a:1,b:2}"`);
+});
+
 test('handles special primitives', () => {
   const fn = () => 'test';
 
