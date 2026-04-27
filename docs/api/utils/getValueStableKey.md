@@ -7,7 +7,7 @@
 ### ~~getValueStableKey()~~
 
 ```ts
-const getValueStableKey: (input, maxSortingDepth) => string = getCompositeKey;
+const getValueStableKey: (input, options, stringify?) => string = getCompositeKey;
 ```
 
 Defined in: [packages/utils/src/getValueStableKey.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/getValueStableKey.ts#L13)
@@ -24,12 +24,19 @@ Returns a stable key for the input value.
 
 The value to get a stable key for.
 
-##### maxSortingDepth
+##### options
 
-`number` = `3`
+The maximum depth to sort the input value, or options for
+  key generation.
 
-The maximum depth to sort the input value. Default
-  is 3.
+`number` | [`GetCompositeKeyOptions`](getCompositeKey.md#getcompositekeyoptions)
+
+##### stringify?
+
+[`GetCompositeKeyStringifier`](getCompositeKey.md#getcompositekeystringifier)
+
+Custom stringifier used with the legacy maxSortingDepth
+  parameter.
 
 #### Returns
 
