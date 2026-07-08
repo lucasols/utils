@@ -238,7 +238,7 @@ export function hasDuplicates<T>(
 }
 
 export function rejectDuplicates<T>(
-  array: T[],
+  array: T[] | readonly T[],
   getKey: (item: T) => unknown = (item) => item,
 ): T[] {
   const seen = new Set();
