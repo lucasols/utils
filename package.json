@@ -13,7 +13,7 @@
     "build:utils": "pnpm --filter @ls-stack/utils build",
     "build:node-utils": "pnpm --filter @ls-stack/node-utils build",
     "build:browser-utils": "pnpm --filter @ls-stack/browser-utils build",
-    "docs": "pnpm -r docs",
+    "docs": "pnpm -r run docs",
     "docs:utils": "pnpm --filter @ls-stack/utils docs",
     "docs:node-utils": "pnpm --filter @ls-stack/node-utils docs",
     "docs:browser-utils": "pnpm --filter @ls-stack/browser-utils docs",
