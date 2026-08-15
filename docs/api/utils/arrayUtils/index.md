@@ -594,7 +594,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:240](https://github.com/lucasols/u
 
 ##### array
 
-`T`[]
+`T`[] | readonly `T`[]
 
 ##### getKey
 

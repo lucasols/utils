@@ -13,9 +13,12 @@ function deepEqual(
    maxDepth): boolean;
 ```
 
-Defined in: [packages/utils/src/deepEqual.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L34)
+Defined in: [packages/utils/src/deepEqual.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L38)
 
 Deep equality comparison between two values
+
+Object keys with `undefined` values are ignored, following JSON semantics:
+`deepEqual({ a: undefined }, {})` is `true`
 
 #### Parameters
 
@@ -48,6 +51,7 @@ True if values are deeply equal, false otherwise
 ```ts
   deepEqual({a: 1}, {a: 1}) // true
   deepEqual({a: 1}, {a: 2}) // false
+  deepEqual({a: 1, b: undefined}, {a: 1}) // true
   deepEqual([1, {b: 2}], [1, {b: 2}]) // true
   deepEqual(new Map([['a', 1]]), new Map([['a', 1]])) // true
   deepEqual(new Set([1, 2]), new Set([1, 2])) // true
@@ -61,7 +65,7 @@ True if values are deeply equal, false otherwise
 function deepEqualWithMaxDepth(maxDepth): (foo, bar) => boolean;
 ```
 
-Defined in: [packages/utils/src/deepEqual.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L98)
+Defined in: [packages/utils/src/deepEqual.ts:117](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L117)
 
 #### Parameters
 
