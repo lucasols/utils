@@ -7,7 +7,7 @@ export default defineConfig({
     { command: 'pnpm lint', label: 'Linting' },
     { command: 'pnpm build', label: 'Building' },
     { command: 'pnpm update-exports', label: 'Updating exports' },
-    { command: 'pnpm docs', label: 'Generating docs' },
+    { command: 'pnpm run docs', label: 'Generating docs' },
   ],
   monorepo: {
     packages: [
