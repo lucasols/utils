@@ -8,6 +8,7 @@
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
     "build": "pnpm -r build",
+    "update-exports": "pnpm -r update-exports",
     "format": "pnpm -r format",
     "build:utils": "pnpm --filter @ls-stack/utils build",
     "build:node-utils": "pnpm --filter @ls-stack/node-utils build",
