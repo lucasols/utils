@@ -293,9 +293,21 @@ describe('deep equal', () => {
     different({}, null);
     different({}, undefined);
 
-    different({ a: void 0 }, {});
-    different({}, { a: undefined });
-    different({ a: undefined }, { b: undefined });
+    same({ a: void 0 }, {});
+    same({}, { a: undefined });
+    same({ a: undefined }, { b: undefined });
+  });
+
+  test('undefined-valued keys are ignored (JSON semantics)', () => {
+    same({ a: 1, b: undefined }, { a: 1 });
+    same({ a: 1 }, { a: 1, b: undefined });
+    same({ a: undefined }, { a: undefined });
+    same({ nested: { a: 1, b: undefined } }, { nested: { a: 1 } });
+
+    different({ a: undefined }, { a: null });
+    different({ a: 1, b: undefined }, { a: 1, b: 2 });
+    different({ a: 1, b: 2 }, { a: 1, b: undefined });
+    different([undefined], []);
   });
 
   test('Arrays', () => {

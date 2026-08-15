@@ -2,7 +2,7 @@
 
 /**
  * Forked from https://github.com/lukeed/dequal to consider invalid dates as
- * equal
+ * equal and to ignore `undefined`-valued object keys (JSON semantics)
  */
 
 const has = Object.prototype.hasOwnProperty;
@@ -16,10 +16,14 @@ function find(iter: any[], tar: any, maxDepth: number): any {
 /**
  * Deep equality comparison between two values
  *
+ * Object keys with `undefined` values are ignored, following JSON semantics:
+ * `deepEqual({ a: undefined }, {})` is `true`
+ *
  * @example
  *   ```ts
  *   deepEqual({a: 1}, {a: 1}) // true
  *   deepEqual({a: 1}, {a: 2}) // false
+ *   deepEqual({a: 1, b: undefined}, {a: 1}) // true
  *   deepEqual([1, {b: 2}], [1, {b: 2}]) // true
  *   deepEqual(new Map([['a', 1]]), new Map([['a', 1]])) // true
  *   deepEqual(new Set([1, 2]), new Set([1, 2])) // true
@@ -84,11 +88,26 @@ export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
     if (!ctor || typeof foo === 'object') {
       len = 0;
       for (ctor in foo) {
-        if (has.call(foo, ctor) && ++len && !has.call(bar, ctor)) return false;
-        if (!(ctor in bar) || !deepEqual(foo[ctor], bar[ctor], maxDepth - 1))
+        if (!has.call(foo, ctor)) continue;
+        if (has.call(bar, ctor)) {
+          len++;
+          if (!deepEqual(foo[ctor], bar[ctor], maxDepth - 1)) return false;
+        } else if (foo[ctor] !== undefined) {
           return false;
+        }
       }
-      return Object.keys(bar).length === len;
+      // every own key of bar was matched in foo, no extra keys to inspect
+      if (Object.keys(bar).length === len) return true;
+      for (ctor in bar) {
+        if (
+          has.call(bar, ctor) &&
+          !has.call(foo, ctor) &&
+          bar[ctor] !== undefined
+        ) {
+          return false;
+        }
+      }
+      return true;
     }
   }
 
