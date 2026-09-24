@@ -96,7 +96,7 @@ describe('unionsAreTheSame', () => {
     // empty object vs object with properties
     unionsAreTheSame<Record<string, never>, { name: string }>({
       onRightHasExtraErr: { name: 'test' },
-      onRightHasMissingErr: {} as Record<string, never>,
+      onRightHasMissingErr: {},
     });
 
     expect(true).toBe(true);

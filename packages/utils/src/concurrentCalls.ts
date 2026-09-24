@@ -241,7 +241,7 @@ class ConcurrentCalls<R = unknown, E extends ResultValidErrors = Error> {
 
     for (const settledResult of settledResults) {
       if (settledResult.status === 'fulfilled') {
-        succeeded.push(settledResult.value as R);
+        succeeded.push(settledResult.value);
       } else {
         failed.push(settledResult.reason as E);
       }

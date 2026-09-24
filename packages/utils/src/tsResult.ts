@@ -73,7 +73,7 @@ function errMap<
   NewError extends ResultValidErrors,
 >(
   this: Result<any, E>,
-  mapFn: (error: E) => ResultValidErrors,
+  mapFn: (error: E) => NewError,
 ): Result<any, NewError> {
   return this.ok ? (this as any) : err(mapFn(this.error));
 }

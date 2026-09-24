@@ -10,8 +10,8 @@ catalog:
   '@types/eslint': ^9.6.1
   '@types/eslint__js': ^8.42.3
   '@types/node': ^22.10.9
-  '@typescript-eslint/eslint-plugin': ^8.21.0
-  '@typescript-eslint/parser': ^8.21.0
+  '@typescript-eslint/eslint-plugin': ^8.70.1
+  '@typescript-eslint/parser': ^8.70.1
   '@vitest/ui': ^3.0.4
   dequal: ^2.0.3
   eslint: ^9.18.0
@@ -24,13 +24,13 @@ catalog:
   prettier-plugin-organize-imports: ^4.1.0
   t-result: ^0.6.1
   tsm: ^2.3.0
-  tsdown: ^0.18.2
-  typedoc: ^0.28.4
+  tsdown: ^0.23.0
+  typedoc: ^0.28.20
   typedoc-plugin-markdown: ^4.6.3
   typedoc-plugin-missing-exports: ^4.0.0
   typedoc-vitepress-theme: ^1.1.2
-  typescript: ^5.7.3
-  typescript-eslint: ^8.21.0
+  typescript: ^7.0.2
+  typescript-eslint: ^8.70.1
   vite: ^6.0.11
   vitest: ^3.0.4
 

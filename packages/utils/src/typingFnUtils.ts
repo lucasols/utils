@@ -42,7 +42,7 @@ export function strictTypedObjectEntries<T extends Record<string, unknown>>(
 export function typedObjectKeys<T extends Record<string, unknown>>(
   obj: T,
 ): (keyof T)[] {
-  return Object.keys(obj) as any;
+  return Object.keys(obj);
 }
 
 /**
@@ -87,8 +87,8 @@ export function narrowStringToUnion<const T extends string>(
 export function typeOnRightExtendsLeftType<
   BaseType,
   SubType extends BaseType,
->(): unknown {
-  return undefined as SubType as unknown;
+>(): SubType | undefined {
+  return undefined;
 }
 
 /** @deprecated Use typeOnRightExtendsLeftType instead */

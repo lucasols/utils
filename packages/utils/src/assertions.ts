@@ -88,7 +88,7 @@ export function notNullish<T>(
     throw typeof error === 'function' ? error() : new Error(error);
   }
 
-  return value as any;
+  return value;
 }
 
 /**

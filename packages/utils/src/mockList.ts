@@ -53,7 +53,7 @@ export function mockList<T>(
       afterOrEqualIndex: (i, value, otherwise) => {
         if (index >= i) return value;
 
-        return otherwise as any;
+        return otherwise;
       },
       afterOrEqualId: (id, value, otherwise) => {
         if (index + 1 >= id) return value;

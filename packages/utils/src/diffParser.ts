@@ -548,8 +548,7 @@ export function diffParser(input: string): DiffFile[] {
       }
     }
     if (
-      currentFileChanges &&
-      currentFileChanges.oldLines === 0 &&
+      currentFileChanges?.oldLines === 0 &&
       currentFileChanges.newLines === 0
     ) {
       currentFileChanges = null;

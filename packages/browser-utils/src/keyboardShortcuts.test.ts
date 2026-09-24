@@ -16,7 +16,7 @@ describe('keyboardShortcuts utilities', () => {
     vi.resetModules();
     vi.stubGlobal('navigator', {
       platform: 'MacIntel',
-    } as unknown as Navigator);
+    });
     const mod = await import('./keyboardShortcuts.ts');
     expect(mod.parseKeybinding('$mod+d')).toMatchInlineSnapshot(`
       [
@@ -32,7 +32,7 @@ describe('keyboardShortcuts utilities', () => {
 
   test('parseKeybinding parses regex keys', async () => {
     vi.resetModules();
-    vi.stubGlobal('navigator', { platform: 'Win32' } as unknown as Navigator);
+    vi.stubGlobal('navigator', { platform: 'Win32' });
     const mod = await import('./keyboardShortcuts.ts');
     const res = mod.parseKeybinding('(KeyA)');
     expect(String(res[0]![1])).toBe('/^KeyA$/');
@@ -40,7 +40,7 @@ describe('keyboardShortcuts utilities', () => {
 
   test('matchKeyBindingPress matches by key or code and modifiers', async () => {
     vi.resetModules();
-    vi.stubGlobal('navigator', { platform: 'Win32' } as unknown as Navigator);
+    vi.stubGlobal('navigator', { platform: 'Win32' });
     const { parseKeybinding, matchKeyBindingPress } = await import(
       './keyboardShortcuts.ts'
     );
@@ -57,7 +57,7 @@ describe('keyboardShortcuts utilities', () => {
 
   test('createKeybindingsHandler handles sequences, modifiers, and $mod alias', async () => {
     vi.resetModules();
-    vi.stubGlobal('navigator', { platform: 'Win32' } as unknown as Navigator);
+    vi.stubGlobal('navigator', { platform: 'Win32' });
     const { createKeybindingsHandler } = await import('./keyboardShortcuts.ts');
 
     const onShiftD = vi.fn();
@@ -99,7 +99,7 @@ describe('keyboardShortcuts utilities', () => {
 
   test('sequence times out based on configured timeout', async () => {
     vi.resetModules();
-    vi.stubGlobal('navigator', { platform: 'Win32' } as unknown as Navigator);
+    vi.stubGlobal('navigator', { platform: 'Win32' });
     const { createKeybindingsHandler } = await import('./keyboardShortcuts.ts');
 
     const onSeq = vi.fn();
@@ -118,7 +118,7 @@ describe('keyboardShortcuts utilities', () => {
 
   test('keyboardShortcuts subscribes and unsubscribes correctly', async () => {
     vi.resetModules();
-    vi.stubGlobal('navigator', { platform: 'Win32' } as unknown as Navigator);
+    vi.stubGlobal('navigator', { platform: 'Win32' });
     const { keyboardShortcuts } = await import('./keyboardShortcuts.ts');
 
     const onKey = vi.fn();
@@ -138,7 +138,7 @@ describe('keyboardShortcuts utilities', () => {
 
   test('ignoreInputTypingEvents blocks when typing in inputs and allows Escape', async () => {
     vi.resetModules();
-    vi.stubGlobal('navigator', { platform: 'Win32' } as unknown as Navigator);
+    vi.stubGlobal('navigator', { platform: 'Win32' });
     const { ignoreInputTypingEvents } = await import('./keyboardShortcuts.ts');
 
     const inputEl = document.createElement('input');
@@ -149,7 +149,7 @@ describe('keyboardShortcuts utilities', () => {
     const wrapper = ignoreInputTypingEvents(cb);
 
     const e1 = new KeyboardEvent('keydown', { key: 'a', code: 'KeyA' });
-    wrapper(e1 as unknown as KeyboardEvent);
+    wrapper(e1);
     expect(cb).not.toHaveBeenCalled();
     expect(e1.defaultPrevented).toBe(false);
 
@@ -158,14 +158,14 @@ describe('keyboardShortcuts utilities', () => {
       code: 'Escape',
       cancelable: true,
     });
-    wrapper(e2 as unknown as KeyboardEvent);
+    wrapper(e2);
     expect(cb).toHaveBeenCalledTimes(1);
     expect(e2.defaultPrevented).toBe(true);
   });
 
   test('ignoreRichTextInputTypingEvents blocks when typing in contenteditable and allows others', async () => {
     vi.resetModules();
-    vi.stubGlobal('navigator', { platform: 'Win32' } as unknown as Navigator);
+    vi.stubGlobal('navigator', { platform: 'Win32' });
     const { ignoreRichTextInputTypingEvents } = await import(
       './keyboardShortcuts.ts'
     );
@@ -179,7 +179,7 @@ describe('keyboardShortcuts utilities', () => {
     const wrapper = ignoreRichTextInputTypingEvents(cb);
 
     const e1 = new KeyboardEvent('keydown', { key: 'a', code: 'KeyA' });
-    wrapper(e1 as unknown as KeyboardEvent);
+    wrapper(e1);
     expect(cb).not.toHaveBeenCalled();
     expect(e1.defaultPrevented).toBe(false);
 
@@ -191,7 +191,7 @@ describe('keyboardShortcuts utilities', () => {
       code: 'KeyA',
       cancelable: true,
     });
-    wrapper(e2 as unknown as KeyboardEvent);
+    wrapper(e2);
     expect(cb).toHaveBeenCalledTimes(1);
     expect(e2.defaultPrevented).toBe(true);
   });
