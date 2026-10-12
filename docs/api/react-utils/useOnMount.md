@@ -10,7 +10,7 @@
 function useOnMount(callback): void;
 ```
 
-Defined in: [packages/react-utils/src/useOnMount.ts:3](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnMount.ts#L3)
+Defined in: [react-utils/src/useOnMount.ts:3](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnMount.ts#L3)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/react-utils/src/useOnMount.ts:3](https://github.com/lucaso
 function useOnMountLayoutEffect(callback): void;
 ```
 
-Defined in: [packages/react-utils/src/useOnMount.ts:15](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnMount.ts#L15)
+Defined in: [react-utils/src/useOnMount.ts:15](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnMount.ts#L15)
 
 #### Parameters
 

@@ -11,10 +11,10 @@
 ### useAsyncResource()
 
 ```ts
-function useAsyncResource<T>(asyncFn, options): AsyncResult<null | T>;
+function useAsyncResource<T>(asyncFn, options): AsyncResult<T | null>;
 ```
 
-Defined in: [packages/react-utils/src/useAsyncResource.ts:58](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L58)
+Defined in: [react-utils/src/useAsyncResource.ts:58](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L58)
 
 React hook to manage the lifecycle of an async resource (fetching, loading,
 error, success).
@@ -45,7 +45,7 @@ Optional configuration object
 
 #### Returns
 
-[`AsyncResult`](-internal-.md#asyncresult)\<`null` \| `T`\>
+[`AsyncResult`](-internal-.md#asyncresult)\<`T` \| `null`\>
 
 Object with:
 

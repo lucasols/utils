@@ -10,7 +10,7 @@
 type MountAnimStates = "from" | "enter" | "leave" | "unmounted";
 ```
 
-Defined in: [packages/react-utils/src/useAnimateMountUnmount.ts:5](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAnimateMountUnmount.ts#L5)
+Defined in: [react-utils/src/useAnimateMountUnmount.ts:5](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAnimateMountUnmount.ts#L5)
 
 ## Functions
 
@@ -20,7 +20,7 @@ Defined in: [packages/react-utils/src/useAnimateMountUnmount.ts:5](https://githu
 function useAnimateMountUnmount(show, animationMaxDurationMs): [MountAnimStates, boolean];
 ```
 
-Defined in: [packages/react-utils/src/useAnimateMountUnmount.ts:18](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAnimateMountUnmount.ts#L18)
+Defined in: [react-utils/src/useAnimateMountUnmount.ts:18](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAnimateMountUnmount.ts#L18)
 
 React hook to manage mount/unmount animation states for a component.
 

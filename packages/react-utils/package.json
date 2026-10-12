@@ -1,7 +1,7 @@
 {
   "name": "@ls-stack/react-utils",
   "description": "React-specific TypeScript utilities",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "license": "MIT",
   "scripts": {
     "test:ui": "vitest --ui",
@@ -72,8 +72,8 @@
     "prettier": "catalog:",
     "prettier-plugin-organize-imports": "catalog:",
     "react": "^18.3.1",
-    "tsm": "catalog:",
     "tsdown": "catalog:",
+    "tsm": "catalog:",
     "typedoc": "catalog:",
     "typedoc-plugin-markdown": "catalog:",
     "typedoc-plugin-missing-exports": "catalog:",
@@ -83,10 +83,10 @@
     "vitest": "catalog:"
   },
   "dependencies": {
-    "@ls-stack/utils": "workspace:*",
+    "@evtmitter/react": "0.1.0",
     "@ls-stack/browser-utils": "workspace:*",
-    "t-result": "catalog:",
+    "@ls-stack/utils": "workspace:*",
     "evtmitter": "catalog:",
-    "@evtmitter/react": "0.1.0"
+    "t-result": "catalog:"
   }
 }

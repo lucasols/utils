@@ -9,10 +9,10 @@
 #### Call Signature
 
 ```ts
-function usePrevious<T>(value): undefined | T;
+function usePrevious<T>(value): T | undefined;
 ```
 
-Defined in: [packages/react-utils/src/usePrevious.ts:3](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/usePrevious.ts#L3)
+Defined in: [react-utils/src/usePrevious.ts:3](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/usePrevious.ts#L3)
 
 ##### Type Parameters
 
@@ -28,7 +28,7 @@ Defined in: [packages/react-utils/src/usePrevious.ts:3](https://github.com/lucas
 
 ##### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 #### Call Signature
 
@@ -36,7 +36,7 @@ Defined in: [packages/react-utils/src/usePrevious.ts:3](https://github.com/lucas
 function usePrevious<T>(value, initial): T;
 ```
 
-Defined in: [packages/react-utils/src/usePrevious.ts:4](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/usePrevious.ts#L4)
+Defined in: [react-utils/src/usePrevious.ts:4](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/usePrevious.ts#L4)
 
 ##### Type Parameters
 
@@ -69,7 +69,7 @@ function usePreviousChanged<T, I>(
    equalityFn): T | I;
 ```
 
-Defined in: [packages/react-utils/src/usePrevious.ts:13](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/usePrevious.ts#L13)
+Defined in: [react-utils/src/usePrevious.ts:13](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/usePrevious.ts#L13)
 
 #### Type Parameters
 

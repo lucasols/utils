@@ -10,7 +10,7 @@
 type Replacer = object;
 ```
 
-Defined in: [packages/react-utils/src/jsxUtils.ts:5](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L5)
+Defined in: [react-utils/src/jsxUtils.ts:5](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L5)
 
 #### Properties
 
@@ -20,7 +20,7 @@ Defined in: [packages/react-utils/src/jsxUtils.ts:5](https://github.com/lucasols
 fn: (fullMatch, groups) => ReactElement;
 ```
 
-Defined in: [packages/react-utils/src/jsxUtils.ts:7](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L7)
+Defined in: [react-utils/src/jsxUtils.ts:7](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L7)
 
 ###### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/react-utils/src/jsxUtils.ts:7](https://github.com/lucasols
 match: RegExp | string;
 ```
 
-Defined in: [packages/react-utils/src/jsxUtils.ts:6](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L6)
+Defined in: [react-utils/src/jsxUtils.ts:6](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L6)
 
 ## Functions
 
@@ -52,7 +52,7 @@ Defined in: [packages/react-utils/src/jsxUtils.ts:6](https://github.com/lucasols
 function repeatJsx<T>(times, element): ReactNode;
 ```
 
-Defined in: [packages/react-utils/src/jsxUtils.ts:124](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L124)
+Defined in: [react-utils/src/jsxUtils.ts:136](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L136)
 
 #### Type Parameters
 
@@ -82,7 +82,7 @@ Defined in: [packages/react-utils/src/jsxUtils.ts:124](https://github.com/lucaso
 function replaceStringWithJSX(string, replacers): ReactNode;
 ```
 
-Defined in: [packages/react-utils/src/jsxUtils.ts:29](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L29)
+Defined in: [react-utils/src/jsxUtils.ts:41](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L41)
 
 #### Parameters
 

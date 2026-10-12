@@ -14,7 +14,7 @@
 const DelayUnmount: FC<Props>;
 ```
 
-Defined in: [packages/react-utils/src/DelayUnmount.ts:17](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/DelayUnmount.ts#L17)
+Defined in: [react-utils/src/DelayUnmount.ts:17](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/DelayUnmount.ts#L17)
 
 A component that delays unmounting its children by a specified duration.
 

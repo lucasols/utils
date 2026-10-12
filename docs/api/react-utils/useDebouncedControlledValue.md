@@ -10,7 +10,7 @@
 function useDebouncedControlledValue<T>(options): object;
 ```
 
-Defined in: [packages/react-utils/src/useDebouncedControlledValue.ts:53](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDebouncedControlledValue.ts#L53)
+Defined in: [react-utils/src/useDebouncedControlledValue.ts:53](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDebouncedControlledValue.ts#L53)
 
 Hook that manages a controlled value with debounced updates and bidirectional
 synchronization.
@@ -100,12 +100,12 @@ defaultValue: T = initialValue;
 ##### flushDebounce()
 
 ```ts
-flushDebounce: () => undefined | void = debouncedHandleChange.flush;
+flushDebounce: () => void | undefined = debouncedHandleChange.flush;
 ```
 
 ###### Returns
 
-`undefined` \| `void`
+`void` \| `undefined`
 
 ##### isEmpty
 

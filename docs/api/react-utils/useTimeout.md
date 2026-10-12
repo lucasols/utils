@@ -10,7 +10,7 @@
 function useTimeout(ms, noClearOnUnmount): object;
 ```
 
-Defined in: [packages/react-utils/src/useTimeout.ts:28](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useTimeout.ts#L28)
+Defined in: [react-utils/src/useTimeout.ts:28](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useTimeout.ts#L28)
 
 Hook that manages multiple timeouts with a stable API.
 

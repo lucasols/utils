@@ -14,7 +14,7 @@
 function useScheduleToNextRender(options?): (callback, key?) => void;
 ```
 
-Defined in: [packages/react-utils/src/useScheduleToNextRender.ts:9](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useScheduleToNextRender.ts#L9)
+Defined in: [react-utils/src/useScheduleToNextRender.ts:9](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useScheduleToNextRender.ts#L9)
 
 Schedules a callback to be called on the next render.
 

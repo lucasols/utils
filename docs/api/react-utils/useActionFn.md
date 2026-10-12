@@ -10,7 +10,7 @@
 function useActionFn<A, T>(action): object;
 ```
 
-Defined in: [packages/react-utils/src/useActionFn.ts:5](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L5)
+Defined in: [react-utils/src/useActionFn.ts:5](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L5)
 
 #### Type Parameters
 
@@ -35,7 +35,7 @@ Defined in: [packages/react-utils/src/useActionFn.ts:5](https://github.com/lucas
 ##### call()
 
 ```ts
-call: (...args) => Promise<null | Awaited<T>>;
+call: (...args) => Promise<Awaited<T> | null>;
 ```
 
 ###### Parameters
@@ -46,7 +46,7 @@ call: (...args) => Promise<null | Awaited<T>>;
 
 ###### Returns
 
-`Promise`\<`null` \| `Awaited`\<`T`\>\>
+`Promise`\<`Awaited`\<`T`\> \| `null`\>
 
 ##### isInProgress
 
@@ -62,7 +62,7 @@ isInProgress: boolean;
 function useActionFnWithState<T, A, R>(action): object;
 ```
 
-Defined in: [packages/react-utils/src/useActionFn.ts:38](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L38)
+Defined in: [react-utils/src/useActionFn.ts:38](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L38)
 
 #### Type Parameters
 

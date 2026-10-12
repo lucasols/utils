@@ -17,7 +17,7 @@ function useDebouncedCallback<T>(
 options?): DebouncedFunc<T>;
 ```
 
-Defined in: [packages/react-utils/src/useDebouncedCallback.ts:25](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDebouncedCallback.ts#L25)
+Defined in: [react-utils/src/useDebouncedCallback.ts:25](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDebouncedCallback.ts#L25)
 
 Hook that debounces a callback function with a stable reference.
 

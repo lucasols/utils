@@ -17,7 +17,7 @@ function useOnChange<T>(
    options): void;
 ```
 
-Defined in: [packages/react-utils/src/useOnChange.ts:40](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L40)
+Defined in: [react-utils/src/useOnChange.ts:40](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L40)
 
 A replacement for useEffect that doesn't need a dependency array.
 Automatically triggers the callback when the value changes based on deep equality comparison.
@@ -74,7 +74,7 @@ function useOnChangeLayoutEffect<T>(
    options): void;
 ```
 
-Defined in: [packages/react-utils/src/useOnChange.ts:63](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L63)
+Defined in: [react-utils/src/useOnChange.ts:63](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L63)
 
 Layout effect version of useOnChange that runs synchronously before DOM updates.
 Similar to useOnChange but uses useLayoutEffect instead of useEffect for timing-sensitive updates.
@@ -121,7 +121,7 @@ function useOnChangeTo<T, U>(
    options): void;
 ```
 
-Defined in: [packages/react-utils/src/useOnChange.ts:99](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L99)
+Defined in: [react-utils/src/useOnChange.ts:99](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L99)
 
 Triggers callback only when value changes to a specific target value.
 Useful for watching for specific state transitions or reaching particular values.
@@ -188,7 +188,7 @@ function useOnChangeToLayoutEffect<T, U>(
    options): void;
 ```
 
-Defined in: [packages/react-utils/src/useOnChange.ts:124](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L124)
+Defined in: [react-utils/src/useOnChange.ts:124](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L124)
 
 Layout effect version of useOnChangeTo that runs synchronously before DOM updates.
 Combines specific target value watching with useLayoutEffect timing for synchronous execution.

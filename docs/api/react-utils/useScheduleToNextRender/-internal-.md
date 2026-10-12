@@ -6,7 +6,7 @@
 
 ### UseScheduleToNextRenderOptions
 
-Defined in: [packages/react-utils/src/useScheduleToNextRender.ts:4](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useScheduleToNextRender.ts#L4)
+Defined in: [react-utils/src/useScheduleToNextRender.ts:4](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useScheduleToNextRender.ts#L4)
 
 #### Properties
 
@@ -16,4 +16,4 @@ Defined in: [packages/react-utils/src/useScheduleToNextRender.ts:4](https://gith
 optional mode: "multiple" | "single";
 ```
 
-Defined in: [packages/react-utils/src/useScheduleToNextRender.ts:5](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useScheduleToNextRender.ts#L5)
+Defined in: [react-utils/src/useScheduleToNextRender.ts:5](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useScheduleToNextRender.ts#L5)

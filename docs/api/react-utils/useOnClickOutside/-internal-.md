@@ -14,4 +14,4 @@ type Ref =
   | string;
 ```
 
-Defined in: [packages/react-utils/src/useOnClickOutside.ts:4](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnClickOutside.ts#L4)
+Defined in: [react-utils/src/useOnClickOutside.ts:4](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnClickOutside.ts#L4)

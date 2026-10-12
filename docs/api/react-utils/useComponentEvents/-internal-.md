@@ -10,7 +10,7 @@
 type SendEvent<E> = <T>(event, ...args) => void;
 ```
 
-Defined in: [packages/react-utils/src/useComponentEvents.ts:8](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useComponentEvents.ts#L8)
+Defined in: [react-utils/src/useComponentEvents.ts:8](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useComponentEvents.ts#L8)
 
 #### Type Parameters
 

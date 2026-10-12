@@ -14,7 +14,7 @@
 function useComponentEvents<E>(emitter, callback): void;
 ```
 
-Defined in: [packages/react-utils/src/useComponentEvents.ts:55](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useComponentEvents.ts#L55)
+Defined in: [react-utils/src/useComponentEvents.ts:55](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useComponentEvents.ts#L55)
 
 Subscribes to events from an emitter and calls appropriate callbacks when events are emitted.
 Automatically handles cleanup when the component unmounts.
@@ -31,7 +31,7 @@ Automatically handles cleanup when the component unmounts.
 
 The event emitter to listen to, typically from useSendComponentEvents
 
-`undefined` | `Emitter`\<`E`\>
+`Emitter`\<`E`\> | `undefined`
 
 ##### callback
 
@@ -51,7 +51,7 @@ Object mapping event names to their callback functions
 function useSendComponentEvents<E>(): object;
 ```
 
-Defined in: [packages/react-utils/src/useComponentEvents.ts:33](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useComponentEvents.ts#L33)
+Defined in: [react-utils/src/useComponentEvents.ts:33](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useComponentEvents.ts#L33)
 
 Creates an event system for component communication. Returns an emitter for binding
 and a type safe send function for emitting events.

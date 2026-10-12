@@ -10,7 +10,7 @@
 type CleanupFn = () => void;
 ```
 
-Defined in: [packages/react-utils/src/useOnChange.ts:10](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L10)
+Defined in: [react-utils/src/useOnChange.ts:10](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L10)
 
 Function returned from callbacks to clean up side effects
 
@@ -26,7 +26,7 @@ Function returned from callbacks to clean up side effects
 type EqualityFn = (a, b) => boolean;
 ```
 
-Defined in: [packages/react-utils/src/useOnChange.ts:7](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L7)
+Defined in: [react-utils/src/useOnChange.ts:7](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L7)
 
 Function that compares two values for equality
 
@@ -52,7 +52,7 @@ Function that compares two values for equality
 type OnChangeOptions = object;
 ```
 
-Defined in: [packages/react-utils/src/useOnChange.ts:13](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L13)
+Defined in: [react-utils/src/useOnChange.ts:13](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L13)
 
 Options for configuring onChange behavior
 
@@ -64,7 +64,7 @@ Options for configuring onChange behavior
 optional callOnMount: boolean;
 ```
 
-Defined in: [packages/react-utils/src/useOnChange.ts:17](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L17)
+Defined in: [react-utils/src/useOnChange.ts:17](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L17)
 
 Whether to call the callback on component mount. Defaults to false
 
@@ -74,6 +74,6 @@ Whether to call the callback on component mount. Defaults to false
 optional equalityFn: EqualityFn;
 ```
 
-Defined in: [packages/react-utils/src/useOnChange.ts:15](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L15)
+Defined in: [react-utils/src/useOnChange.ts:15](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L15)
 
 Custom equality function for value comparison. Defaults to deepEqual

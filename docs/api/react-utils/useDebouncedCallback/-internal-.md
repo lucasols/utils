@@ -6,7 +6,7 @@
 
 ### DebouncedFunc()\<T\>
 
-Defined in: packages/utils/dist/debounce.d.mts:10
+Defined in: utils/dist/debounce.d.mts:10
 
 #### Type Parameters
 
@@ -15,10 +15,10 @@ Defined in: packages/utils/dist/debounce.d.mts:10
 `T` *extends* (...`args`) => `void`
 
 ```ts
-DebouncedFunc(...args): undefined | ReturnType<T>;
+DebouncedFunc(...args): ReturnType<T> | undefined;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:20
+Defined in: utils/dist/debounce.d.mts:20
 
 Call the original function, but applying the debounce rules.
 
@@ -36,7 +36,7 @@ if the debounced function was not invoked yet.
 
 #### Returns
 
-`undefined` \| `ReturnType`\<`T`\>
+`ReturnType`\<`T`\> \| `undefined`
 
 #### Properties
 
@@ -46,7 +46,7 @@ if the debounced function was not invoked yet.
 cancel: () => void;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:22
+Defined in: utils/dist/debounce.d.mts:22
 
 Throw away any pending invocation of the debounced function.
 
@@ -57,10 +57,10 @@ Throw away any pending invocation of the debounced function.
 ##### flush()
 
 ```ts
-flush: () => undefined | ReturnType<T>;
+flush: () => ReturnType<T> | undefined;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:30
+Defined in: utils/dist/debounce.d.mts:30
 
 If there is a pending invocation of the debounced function, invoke it
 immediately and return its return value.
@@ -70,7 +70,7 @@ debounced function was never invoked.
 
 ###### Returns
 
-`undefined` \| `ReturnType`\<`T`\>
+`ReturnType`\<`T`\> \| `undefined`
 
 ##### pending()
 
@@ -78,7 +78,7 @@ debounced function was never invoked.
 pending: () => boolean;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:32
+Defined in: utils/dist/debounce.d.mts:32
 
 Return true if the debounced function still has a scheduled run.
 
@@ -92,7 +92,7 @@ Return true if the debounced function still has a scheduled run.
 updateCb: (callback) => void;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:34
+Defined in: utils/dist/debounce.d.mts:34
 
 Update the debounced function with a new callback.
 
@@ -112,7 +112,7 @@ Update the debounced function with a new callback.
 updateParams: (wait, options?) => void;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:36
+Defined in: utils/dist/debounce.d.mts:36
 
 Update the debounce wait and options while keeping scheduled runs.
 
@@ -138,7 +138,7 @@ Update the debounce wait and options while keeping scheduled runs.
 type DebounceOptions = object;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:2
+Defined in: utils/dist/debounce.d.mts:2
 
 #### Properties
 
@@ -148,7 +148,7 @@ Defined in: packages/utils/dist/debounce.d.mts:2
 optional leading: boolean;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:4
+Defined in: utils/dist/debounce.d.mts:4
 
 Invoke on the leading edge of the timeout. Defaults to `false`.
 
@@ -158,7 +158,7 @@ Invoke on the leading edge of the timeout. Defaults to `false`.
 optional maxWait: number;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:6
+Defined in: utils/dist/debounce.d.mts:6
 
 Maximum time the function can be delayed before it's forced to invoke (in ms).
 
@@ -168,6 +168,6 @@ Maximum time the function can be delayed before it's forced to invoke (in ms).
 optional trailing: boolean;
 ```
 
-Defined in: packages/utils/dist/debounce.d.mts:8
+Defined in: utils/dist/debounce.d.mts:8
 
 Invoke on the trailing edge of the timeout. Defaults to `true`.

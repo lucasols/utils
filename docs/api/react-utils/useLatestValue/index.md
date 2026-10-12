@@ -14,7 +14,7 @@
 type UseLatestValue<T> = object;
 ```
 
-Defined in: [packages/react-utils/src/useLatestValue.ts:12](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useLatestValue.ts#L12)
+Defined in: [react-utils/src/useLatestValue.ts:12](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useLatestValue.ts#L12)
 
 #### Type Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/react-utils/src/useLatestValue.ts:12](https://github.com/l
 insideEffect: T;
 ```
 
-Defined in: [packages/react-utils/src/useLatestValue.ts:13](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useLatestValue.ts#L13)
+Defined in: [react-utils/src/useLatestValue.ts:13](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useLatestValue.ts#L13)
 
 ## Functions
 
@@ -40,7 +40,7 @@ Defined in: [packages/react-utils/src/useLatestValue.ts:13](https://github.com/l
 function useLatestCb<T>(fn): T;
 ```
 
-Defined in: [packages/react-utils/src/useLatestValue.ts:77](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useLatestValue.ts#L77)
+Defined in: [react-utils/src/useLatestValue.ts:77](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useLatestValue.ts#L77)
 
 Hook that provides a stable callback reference that always calls the latest version of the function.
 
@@ -89,7 +89,7 @@ function MyComponent({ onDataChange, data }: { onDataChange: (data: any) => void
 function useLatestValue<T>(value): UseLatestValue<T>;
 ```
 
-Defined in: [packages/react-utils/src/useLatestValue.ts:41](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useLatestValue.ts#L41)
+Defined in: [react-utils/src/useLatestValue.ts:41](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useLatestValue.ts#L41)
 
 Hook that provides access to the latest value within effects and callbacks.
 

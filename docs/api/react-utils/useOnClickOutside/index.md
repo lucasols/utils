@@ -14,7 +14,7 @@
 function useOnClickOutside(ref, handler): void;
 ```
 
-Defined in: [packages/react-utils/src/useOnClickOutside.ts:38](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnClickOutside.ts#L38)
+Defined in: [react-utils/src/useOnClickOutside.ts:38](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnClickOutside.ts#L38)
 
 React hook that triggers a handler when a click or touch event occurs outside the specified element(s).
 
