@@ -1,6 +1,6 @@
 import { escapeRegExp } from '@ls-stack/utils/regexUtils';
 import type { ReactElement, ReactNode } from 'react';
-import { Children } from 'react';
+import { Children, cloneElement, isValidElement } from 'react';
 
 export type Replacer = {
   match: RegExp | string;
@@ -12,6 +12,18 @@ type NormalizedReplacer = {
   fn: Replacer['fn'];
   order: number;
 };
+
+/**
+ * React 19 still warns about missing keys for elements re-keyed by
+ * `Children.toArray` from an unkeyed array, so give them an explicit key first.
+ */
+function withIndexKeys(nodes: ReactNode[]): ReactNode[] {
+  return nodes.map((node, index) =>
+    isValidElement(node) && node.key === null ?
+      cloneElement(node, { key: index })
+    : node,
+  );
+}
 
 function normalizeRegex(match: RegExp): RegExp {
   const flags = match.flags.includes('g') ? match.flags : `${match.flags}g`;
@@ -118,12 +130,14 @@ export function replaceStringWithJSX(
     jsx.push(string.slice(cursor));
   }
 
-  return Children.toArray(jsx);
+  return Children.toArray(withIndexKeys(jsx));
 }
 
 export function repeatJsx<T extends ReactElement>(
   times: number,
   element: T,
 ): ReactNode {
-  return Children.toArray(Array.from({ length: times }, () => element));
+  return Children.toArray(
+    withIndexKeys(Array.from({ length: times }, () => element)),
+  );
 }

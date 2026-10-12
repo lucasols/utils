@@ -1,6 +1,19 @@
 import { render } from '@testing-library/react';
+import { isValidElement, type ReactNode } from 'react';
 import { describe, expect, test } from 'vitest';
-import { replaceStringWithJSX } from './jsxUtils';
+import { repeatJsx, replaceStringWithJSX } from './jsxUtils';
+
+function getChildKeys(node: ReactNode): (string | null)[] {
+  if (!Array.isArray(node)) {
+    throw new Error('Expected an array of nodes');
+  }
+
+  return node.map((child: ReactNode) => {
+    if (isValidElement(child)) return child.key;
+    if (typeof child === 'string') return `text: ${child}`;
+    throw new Error('Unexpected child');
+  });
+}
 
 describe('replaceStringWithJSX', () => {
   test('returns same string reference when no replacers are provided', () => {
@@ -177,5 +190,56 @@ describe('replaceStringWithJSX', () => {
     expect(container.innerHTML).toMatchInlineSnapshot(
       '"<span data-role="default">#10</span> <span data-role="admin">#20</span>"',
     );
+  });
+});
+
+describe('keys', () => {
+  test('replaceStringWithJSX gives replaced elements explicit keys', () => {
+    const node = replaceStringWithJSX('a @x b @y', [
+      { match: /@(\w)/g, fn: (_, [name]) => <strong>{name}</strong> },
+    ]);
+
+    expect(getChildKeys(node)).toMatchInlineSnapshot(`
+      [
+        "text: a ",
+        ".$1",
+        "text:  b ",
+        ".$3",
+      ]
+    `);
+  });
+
+  test('replaceStringWithJSX keeps keys provided by the replacer', () => {
+    const node = replaceStringWithJSX('a @x b @y', [
+      {
+        match: /@(\w)/g,
+        fn: (_, [name]) => <strong key={name}>{name}</strong>,
+      },
+    ]);
+
+    expect(getChildKeys(node)).toMatchInlineSnapshot(`
+      [
+        "text: a ",
+        ".$x",
+        "text:  b ",
+        ".$y",
+      ]
+    `);
+  });
+
+  test('repeatJsx gives repeated elements explicit keys', () => {
+    const node = repeatJsx(3, <li>item</li>);
+
+    expect(getChildKeys(node)).toMatchInlineSnapshot(`
+      [
+        ".$0",
+        ".$1",
+        ".$2",
+      ]
+    `);
+
+    const { container } = render(<ul>{node}</ul>);
+
+    expect(container.innerHTML).toMatchInlineSnapshot(`"<ul><li>item</li><li>item</li><li>item</li></ul>"`);
   });
 });
