@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
-import { isValidElement, type ReactNode } from 'react';
-import { describe, expect, test } from 'vitest';
+import { Children, isValidElement, type ReactNode } from 'react';
+import { describe, expect, test, vi } from 'vitest';
 import { repeatJsx, replaceStringWithJSX } from './jsxUtils';
 
 function getChildKeys(node: ReactNode): (string | null)[] {
@@ -241,5 +241,45 @@ describe('keys', () => {
     const { container } = render(<ul>{node}</ul>);
 
     expect(container.innerHTML).toMatchInlineSnapshot(`"<ul><li>item</li><li>item</li><li>item</li></ul>"`);
+  });
+});
+
+describe('missing key warnings', () => {
+  function getKeyWarnings(node: ReactNode): unknown[][] {
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    try {
+      render(<div>{node}</div>);
+
+      return consoleError.mock.calls.filter((args) =>
+        args.some(
+          (arg) => typeof arg === 'string' && arg.includes('unique "key"'),
+        ),
+      );
+    } finally {
+      consoleError.mockRestore();
+    }
+  }
+
+  test('React warns when Children.toArray re-keys unkeyed elements', () => {
+    const node = Children.toArray([<span>a</span>, <span>b</span>]);
+
+    expect(getKeyWarnings(node)).toHaveLength(1);
+  });
+
+  test('replaceStringWithJSX does not trigger key warnings', () => {
+    const node = replaceStringWithJSX('a @x b @y', [
+      { match: /@(\w)/g, fn: (_, [name]) => <strong>{name}</strong> },
+    ]);
+
+    expect(getKeyWarnings(node)).toHaveLength(0);
+  });
+
+  test('repeatJsx does not trigger key warnings', () => {
+    const node = repeatJsx(3, <span>item</span>);
+
+    expect(getKeyWarnings(node)).toHaveLength(0);
   });
 });
