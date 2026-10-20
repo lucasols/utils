@@ -1,7 +1,7 @@
 {
   "name": "@ls-stack/node-utils",
   "description": "Node.js-specific TypeScript utilities",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "scripts": {
     "test:ui": "vitest --ui",
@@ -48,8 +48,8 @@
     "eslint-plugin-vitest": "catalog:",
     "prettier": "catalog:",
     "prettier-plugin-organize-imports": "catalog:",
-    "tsm": "catalog:",
     "tsdown": "catalog:",
+    "tsm": "catalog:",
     "typedoc": "catalog:",
     "typedoc-plugin-markdown": "catalog:",
     "typedoc-plugin-missing-exports": "catalog:",
