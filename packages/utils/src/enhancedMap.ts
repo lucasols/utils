@@ -41,6 +41,16 @@ export class EnhancedMap<K, V> extends Map<K, V> {
     return value;
   }
 
+  getOrSet(key: K, fallback: (key: K) => V): V {
+    if (this.has(key)) {
+      return this.getOrThrow(key);
+    }
+
+    const value = fallback(key);
+    this.set(key, value);
+    return value;
+  }
+
   toFilteredValues(predicate: (value: V, key: K) => boolean): V[] {
     const values: V[] = [];
 

@@ -38,11 +38,11 @@ describe('EnhancedMap', () => {
     );
   });
 
-  test('getOrInsert', () => {
+  test('getOrSet', () => {
     const map = new EnhancedMap<string, number>([['one', 1]]);
-    expect(map.getOrInsert('two', () => 2)).toBe(2);
+    expect(map.getOrSet('two', () => 2)).toBe(2);
     expect(map.get('two')).toBe(2);
-    expect(map.getOrInsert('one', () => 10)).toBe(1); // Existing key should not be overwritten
+    expect(map.getOrSet('one', () => 10)).toBe(1); // Existing key should not be overwritten
   });
 
   test('toFilteredValues', () => {

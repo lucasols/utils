@@ -60,7 +60,7 @@ export function createThrottleController({
 
       const serializedCallId = String(callId);
 
-      const window = windows.getOrInsert(serializedCallId, () => ({
+      const window = windows.getOrSet(serializedCallId, () => ({
         windowStartTime: now,
         calls: 0,
       }));

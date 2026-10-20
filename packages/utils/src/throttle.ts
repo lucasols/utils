@@ -129,7 +129,7 @@ export function createThrottledFunctionFactory<
         )
         .join(',');
 
-      const cachedFunction = cache.getOrInsert(key, () =>
+      const cachedFunction = cache.getOrSet(key, () =>
         throttle(callback, wait, options),
       );
 
