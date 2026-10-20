@@ -113,6 +113,27 @@ describe('useTimeout', () => {
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
+  test('should drop timeout ids once they fire or are cleared', async () => {
+    const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
+
+    const { result } = renderHook(() => useTimeout(100));
+
+    result.current.call(vi.fn(), 10);
+    await sleep(20);
+
+    result.current.clear();
+    expect(clearTimeoutSpy).not.toHaveBeenCalled();
+
+    result.current.call(vi.fn());
+    result.current.clear();
+    expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
+
+    result.current.clear();
+    expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
+
+    clearTimeoutSpy.mockRestore();
+  });
+
   test('should maintain stable reference', () => {
     const { result, rerender } = renderHook(() => useTimeout(100));
 

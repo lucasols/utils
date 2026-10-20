@@ -1,6 +1,6 @@
 import { deepEqual } from '@ls-stack/utils/deepEqual';
 import type { __LEGIT_ANY__ } from '@ls-stack/utils/saferTyping';
-import { useEffect, useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { usePrevious } from './usePrevious';
 
 /** Function that compares two values for equality */
@@ -16,6 +16,40 @@ type OnChangeOptions = {
   /** Whether to call the callback on component mount. Defaults to false */
   callOnMount?: boolean;
 };
+
+/**
+ * Runs `callBack` when `hasChanged` and `shouldCall` return true. The cleanup
+ * returned by the callback runs only on the next change or on unmount, not on
+ * every re-render.
+ */
+function useChangeEffect(
+  useEffectHook: typeof useEffect,
+  hasChanged: () => boolean,
+  shouldCall: () => boolean,
+  callBack: () => void | CleanupFn,
+) {
+  const cleanupRef = useRef<CleanupFn | undefined>(undefined);
+
+  useEffectHook(() => {
+    if (!hasChanged()) return;
+
+    const prevCleanup = cleanupRef.current;
+    cleanupRef.current = undefined;
+    prevCleanup?.();
+
+    if (!shouldCall()) return;
+
+    const cleanup = callBack();
+    cleanupRef.current = typeof cleanup === 'function' ? cleanup : undefined;
+  });
+
+  useEffectHook(() => {
+    return () => {
+      cleanupRef.current?.();
+      cleanupRef.current = undefined;
+    };
+  }, []);
+}
 
 /**
  * A replacement for useEffect that doesn't need a dependency array.
@@ -43,11 +77,12 @@ export function useOnChange<T>(
   { equalityFn: areEqual = deepEqual, callOnMount }: OnChangeOptions = {},
 ) {
   const prev = usePrevious(value, !callOnMount ? value : undefined);
-  useEffect(() => {
-    if (!areEqual(value, prev)) {
-      return callBack({ prev, current: value });
-    }
-  });
+  useChangeEffect(
+    useEffect,
+    () => !areEqual(value, prev),
+    () => true,
+    () => callBack({ prev, current: value }),
+  );
 }
 
 /**
@@ -69,11 +104,12 @@ export function useOnChangeLayoutEffect<T>(
   }: Omit<OnChangeOptions, 'layoutEffect'> = {},
 ) {
   const prev = usePrevious(value, !callOnMount ? value : undefined);
-  useLayoutEffect(() => {
-    if (!areEqual(value, prev)) {
-      return callBack({ prev, current: value });
-    }
-  });
+  useChangeEffect(
+    useLayoutEffect,
+    () => !areEqual(value, prev),
+    () => true,
+    () => callBack({ prev, current: value }),
+  );
 }
 
 /**
@@ -103,11 +139,12 @@ export function useOnChangeTo<T, U extends T>(
   { equalityFn: areEqual = deepEqual, callOnMount }: OnChangeOptions = {},
 ) {
   const prev = usePrevious(value, !callOnMount ? value : undefined);
-  useEffect(() => {
-    if (!areEqual(value, prev) && areEqual(value, target)) {
-      return callBack({ prev, target });
-    }
-  });
+  useChangeEffect(
+    useEffect,
+    () => !areEqual(value, prev),
+    () => areEqual(value, target),
+    () => callBack({ prev, target }),
+  );
 }
 
 /**
@@ -128,9 +165,10 @@ export function useOnChangeToLayoutEffect<T, U extends T>(
   { equalityFn: areEqual = deepEqual, callOnMount }: OnChangeOptions = {},
 ) {
   const prev = usePrevious(value, !callOnMount ? value : undefined);
-  useLayoutEffect(() => {
-    if (!areEqual(value, prev) && areEqual(value, target)) {
-      return callBack({ prev, target });
-    }
-  });
+  useChangeEffect(
+    useLayoutEffect,
+    () => !areEqual(value, prev),
+    () => areEqual(value, target),
+    () => callBack({ prev, target }),
+  );
 }

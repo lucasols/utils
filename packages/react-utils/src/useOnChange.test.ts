@@ -115,6 +115,60 @@ describe('useOnChange', () => {
     expect(cleanup).toHaveBeenCalledTimes(1);
   });
 
+  test('should run cleanup only on next change or unmount, not on re-render', () => {
+    const cleanup = vi.fn();
+    const callback = vi.fn(() => cleanup);
+
+    const { rerender, unmount } = renderHook(
+      ({ value, other }) => {
+        void other;
+        useOnChange(value, callback);
+      },
+      { initialProps: { value: 'initial', other: 0 } },
+    );
+
+    rerender({ value: 'changed', other: 0 });
+    rerender({ value: 'changed', other: 1 });
+    rerender({ value: 'changed', other: 2 });
+
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(cleanup).not.toHaveBeenCalled();
+
+    rerender({ value: 'changed again', other: 2 });
+
+    expect(callback).toHaveBeenCalledTimes(2);
+    expect(cleanup).toHaveBeenCalledTimes(1);
+
+    unmount();
+
+    expect(cleanup).toHaveBeenCalledTimes(2);
+  });
+
+  test('should not run cleanup twice if the next callback throws', () => {
+    const cleanup = vi.fn();
+    const callback = vi
+      .fn<() => () => void>()
+      .mockImplementationOnce(() => cleanup)
+      .mockImplementationOnce(() => {
+        throw new Error('callback error');
+      });
+
+    const { rerender, unmount } = renderHook(
+      ({ value }) => useOnChange(value, callback),
+      { initialProps: { value: 'initial' } },
+    );
+
+    rerender({ value: 'changed' });
+
+    expect(() =>
+      rerender({ value: 'changed again' }),
+    ).toThrowErrorMatchingInlineSnapshot(`[Error: callback error]`);
+
+    unmount();
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
   test('should handle multiple value changes', () => {
     const callback = vi.fn();
     const { rerender } = renderHook(
@@ -164,6 +218,27 @@ describe('useOnChange', () => {
 });
 
 describe('useOnChangeLayoutEffect', () => {
+  test('should not run cleanup on re-render without a change', () => {
+    const cleanup = vi.fn();
+    const callback = vi.fn(() => cleanup);
+
+    const { rerender, unmount } = renderHook(
+      ({ value }) => useOnChangeLayoutEffect(value, callback),
+      { initialProps: { value: 'initial' } },
+    );
+
+    rerender({ value: 'changed' });
+    rerender({ value: 'changed' });
+    rerender({ value: 'changed' });
+
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(cleanup).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
   test('should call callback when value changes using layout effect', () => {
     const callback = vi.fn();
     const { rerender } = renderHook(
@@ -235,6 +310,48 @@ describe('useOnChangeLayoutEffect', () => {
 });
 
 describe('useOnChangeTo', () => {
+  test('should not run cleanup on re-render without a change', () => {
+    const cleanup = vi.fn();
+    const callback = vi.fn(() => cleanup);
+
+    const { rerender, unmount } = renderHook(
+      ({ value }) => useOnChangeTo(value, 'target', callback),
+      { initialProps: { value: 'initial' } },
+    );
+
+    rerender({ value: 'target' });
+    rerender({ value: 'target' });
+    rerender({ value: 'target' });
+
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(cleanup).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
+  test('should run cleanup when value changes away from target', () => {
+    const cleanup = vi.fn();
+    const callback = vi.fn(() => cleanup);
+
+    const { rerender, unmount } = renderHook(
+      ({ value }) => useOnChangeTo(value, 'target', callback),
+      { initialProps: { value: 'initial' } },
+    );
+
+    rerender({ value: 'target' });
+    expect(cleanup).not.toHaveBeenCalled();
+
+    rerender({ value: 'other' });
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(cleanup).toHaveBeenCalledTimes(1);
+
+    unmount();
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
   test('should call callback only when value changes to target', () => {
     const callback = vi.fn();
     const target = 'target';
@@ -369,6 +486,48 @@ describe('useOnChangeTo', () => {
 });
 
 describe('useOnChangeToLayoutEffect', () => {
+  test('should not run cleanup on re-render without a change', () => {
+    const cleanup = vi.fn();
+    const callback = vi.fn(() => cleanup);
+
+    const { rerender, unmount } = renderHook(
+      ({ value }) => useOnChangeToLayoutEffect(value, 'target', callback),
+      { initialProps: { value: 'initial' } },
+    );
+
+    rerender({ value: 'target' });
+    rerender({ value: 'target' });
+    rerender({ value: 'target' });
+
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(cleanup).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
+  test('should run cleanup when value changes away from target', () => {
+    const cleanup = vi.fn();
+    const callback = vi.fn(() => cleanup);
+
+    const { rerender, unmount } = renderHook(
+      ({ value }) => useOnChangeToLayoutEffect(value, 'target', callback),
+      { initialProps: { value: 'initial' } },
+    );
+
+    rerender({ value: 'target' });
+    expect(cleanup).not.toHaveBeenCalled();
+
+    rerender({ value: 'other' });
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(cleanup).toHaveBeenCalledTimes(1);
+
+    unmount();
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
   test('should call callback only when value changes to target using layout effect', () => {
     const callback = vi.fn();
     const target = 'target';

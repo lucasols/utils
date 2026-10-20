@@ -37,7 +37,11 @@ export function useTimeout(
 
   const callback = useCallback(
     (cb: () => void, overrideMs = ms) => {
-      timeoutsRef.add(window.setTimeout(cb, overrideMs));
+      const timeoutId = window.setTimeout(() => {
+        timeoutsRef.delete(timeoutId);
+        cb();
+      }, overrideMs);
+      timeoutsRef.add(timeoutId);
     },
     [ms, timeoutsRef],
   );
@@ -46,6 +50,7 @@ export function useTimeout(
     for (const timeout of timeoutsRef) {
       clearTimeout(timeout);
     }
+    timeoutsRef.clear();
   }, [timeoutsRef]);
 
   const clearAndCall = useCallback(

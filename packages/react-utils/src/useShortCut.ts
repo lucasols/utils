@@ -31,8 +31,7 @@ export function useShortCut(
     });
 
     return () => removeKeybindings();
-    // eslint-disable-next-line @ls-stack/exhaustive-deps -- will be fixed later
-  }, []);
+  }, [shortcut, allowDuringTyping]);
 }
 
 export function useShortCuts(

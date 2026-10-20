@@ -79,6 +79,47 @@ describe('useShortCut', () => {
     expect(cb).toHaveBeenCalledTimes(1);
   });
 
+  test('re-subscribes when shortcut changes', async () => {
+    const cb = vi.fn();
+    function Cmp({ shortcut }: { shortcut: string }) {
+      useShortCut(shortcut, cb);
+      return <div />;
+    }
+    const { rerender } = render(<Cmp shortcut="a" />);
+    await sleep(1);
+
+    rerender(<Cmp shortcut="b" />);
+    await sleep(1);
+
+    fireKeydown('a', { code: 'KeyA' });
+    expect(cb).not.toHaveBeenCalled();
+
+    fireKeydown('b', { code: 'KeyB' });
+    expect(cb).toHaveBeenCalledTimes(1);
+  });
+
+  test('re-subscribes when allowDuringTyping changes', async () => {
+    const cb = vi.fn();
+    function Cmp({ allowDuringTyping }: { allowDuringTyping: boolean }) {
+      useShortCut('a', cb, { allowDuringTyping });
+      return <input aria-label="inp" />;
+    }
+    const { getByLabelText, rerender } = render(
+      <Cmp allowDuringTyping={false} />,
+    );
+    await sleep(1);
+    getByLabelText('inp').focus();
+
+    fireKeydown('a', { code: 'KeyA' });
+    expect(cb).not.toHaveBeenCalled();
+
+    rerender(<Cmp allowDuringTyping />);
+    await sleep(1);
+
+    fireKeydown('a', { code: 'KeyA' });
+    expect(cb).toHaveBeenCalledTimes(1);
+  });
+
   test('preventShortcutDefault prevents default and calls callback', async () => {
     const cb = vi.fn();
     function Cmp() {
