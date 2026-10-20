@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2023",
     "moduleResolution": "bundler",
     "module": "ESNext",
     "jsx": "react-jsx",
