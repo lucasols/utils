@@ -7,7 +7,7 @@
 ### castToNumber()
 
 ```ts
-function castToNumber(value): null | number;
+function castToNumber(value): number | null;
 ```
 
 Defined in: [packages/utils/src/castValues.ts:14](https://github.com/lucasols/utils/blob/main/packages/utils/src/castValues.ts#L14)
@@ -20,14 +20,14 @@ Defined in: [packages/utils/src/castValues.ts:14](https://github.com/lucasols/ut
 
 #### Returns
 
-`null` \| `number`
+`number` \| `null`
 
 ***
 
 ### castToString()
 
 ```ts
-function castToString(value): null | string;
+function castToString(value): string | null;
 ```
 
 Defined in: [packages/utils/src/castValues.ts:1](https://github.com/lucasols/utils/blob/main/packages/utils/src/castValues.ts#L1)
@@ -40,4 +40,4 @@ Defined in: [packages/utils/src/castValues.ts:1](https://github.com/lucasols/uti
 
 #### Returns
 
-`null` \| `string`
+`string` \| `null`

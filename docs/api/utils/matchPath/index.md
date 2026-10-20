@@ -25,7 +25,7 @@ A PathMatch contains info about how a PathPattern matched on a URL pathname.
 ##### glob
 
 ```ts
-glob: null | PathMatchGlob;
+glob: PathMatchGlob | null;
 ```
 
 Defined in: [packages/utils/src/matchPath.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L72)
@@ -222,7 +222,7 @@ Defined in: [packages/utils/src/matchPath.ts:17](https://github.com/lucasols/uti
 ### matchPath()
 
 ```ts
-function matchPath<ParamKey, Path>(pattern, pathname): null | PathMatch<ParamKey>;
+function matchPath<ParamKey, Path>(pattern, pathname): PathMatch<ParamKey> | null;
 ```
 
 Defined in: [packages/utils/src/matchPath.ts:83](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L83)
@@ -252,7 +252,7 @@ match.
 
 #### Returns
 
-`null` \| [`PathMatch`](#pathmatch)\<`ParamKey`\>
+[`PathMatch`](#pathmatch)\<`ParamKey`\> \| `null`
 
 #### See
 
@@ -272,7 +272,7 @@ Defined in: [packages/utils/src/matchPath.ts:219](https://github.com/lucasols/ut
 
 ##### path
 
-`undefined` | `null` | `string`
+`string` | `null` | `undefined`
 
 #### Returns
 
@@ -281,7 +281,7 @@ Defined in: [packages/utils/src/matchPath.ts:219](https://github.com/lucasols/ut
 ##### patterns()
 
 ```ts
-patterns: <R>(patterns) => null | R;
+patterns: <R>(patterns) => R | null;
 ```
 
 ###### Type Parameters
@@ -298,4 +298,4 @@ patterns: <R>(patterns) => null | R;
 
 ###### Returns
 
-`null` \| `R`
+`R` \| `null`

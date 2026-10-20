@@ -52,7 +52,7 @@ const typingTest: object;
 
 Defined in: [packages/utils/src/typingTestUtils.ts:97](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingTestUtils.ts#L97)
 
-#### Type declaration
+#### Type Declaration
 
 ##### describe()
 

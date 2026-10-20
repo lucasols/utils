@@ -16,7 +16,7 @@ A branded type representing a string that is guaranteed to be non-empty
 (length > 0). This type provides compile-time safety by preventing empty
 strings from being assigned without proper validation.
 
-#### Type declaration
+#### Type Declaration
 
 ##### \_\_nonEmptyString
 
@@ -123,7 +123,7 @@ The substring that the string must start with
 ### asNonEmptyStringOrNull()
 
 ```ts
-function asNonEmptyStringOrNull(str): null | NonEmptyString;
+function asNonEmptyStringOrNull(str): NonEmptyString | null;
 ```
 
 Defined in: [packages/utils/src/typedStrings.ts:219](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L219)
@@ -142,7 +142,7 @@ The string to convert
 
 #### Returns
 
-`null` \| [`NonEmptyString`](#nonemptystring)
+[`NonEmptyString`](#nonemptystring) \| `null`
 
 The string as `NonEmptyString` or `null` if empty
 

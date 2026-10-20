@@ -30,11 +30,11 @@ Defined in: [packages/utils/src/regexUtils.ts:32](https://github.com/lucasols/ut
 function getRegexMatchAll(str, regexp): Generator<{
   end: number;
   fullMatch: string;
-  groups: (undefined | string)[];
-  namedGroups:   | undefined
-     | {
+  groups: (string | undefined)[];
+  namedGroups:   | {
    [key: string]: string;
-   };
+   }
+     | undefined;
   prevEnd: number;
   start: number;
 }, void, unknown>;
@@ -57,11 +57,11 @@ Defined in: [packages/utils/src/regexUtils.ts:7](https://github.com/lucasols/uti
 `Generator`\<\{
   `end`: `number`;
   `fullMatch`: `string`;
-  `groups`: (`undefined` \| `string`)[];
-  `namedGroups`:   \| `undefined`
-     \| \{
+  `groups`: (`string` \| `undefined`)[];
+  `namedGroups`:   \| \{
    [`key`: `string`]: `string`;
-   \};
+   \}
+     \| `undefined`;
   `prevEnd`: `number`;
   `start`: `number`;
 \}, `void`, `unknown`\>
@@ -93,11 +93,11 @@ Defined in: [packages/utils/src/regexUtils.ts:1](https://github.com/lucasols/uti
 ##### fullMatch
 
 ```ts
-fullMatch: undefined | string;
+fullMatch: string | undefined;
 ```
 
 ##### groups
 
 ```ts
-groups: (undefined | string)[];
+groups: (string | undefined)[];
 ```

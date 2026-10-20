@@ -163,7 +163,7 @@ Result: object;
 
 Defined in: [packages/utils/src/tsResult.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L52)
 
-#### Type declaration
+#### Type Declaration
 
 ##### ~~asyncMap()~~
 

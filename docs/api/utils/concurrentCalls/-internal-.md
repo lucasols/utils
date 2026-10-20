@@ -108,8 +108,8 @@ Defined in: [packages/utils/src/concurrentCalls.ts:179](https://github.com/lucas
 
 ```ts
 runAllSettled(__namedParameters): Promise<{
-  aggregatedError:   | null
-     | ConcurrentCallsAggregateError;
+  aggregatedError:   | ConcurrentCallsAggregateError
+     | null;
   allFailed: boolean;
   failures: E[];
   succeeded: R[];
@@ -128,8 +128,8 @@ Defined in: [packages/utils/src/concurrentCalls.ts:211](https://github.com/lucas
 ###### Returns
 
 `Promise`\<\{
-  `aggregatedError`:   \| `null`
-     \| [`ConcurrentCallsAggregateError`](index.md#concurrentcallsaggregateerror);
+  `aggregatedError`:   \| [`ConcurrentCallsAggregateError`](index.md#concurrentcallsaggregateerror)
+     \| `null`;
   `allFailed`: `boolean`;
   `failures`: `E`[];
   `succeeded`: `R`[];
@@ -246,8 +246,8 @@ Defined in: [packages/utils/src/concurrentCalls.ts:331](https://github.com/lucas
 
 ```ts
 runAllSettled(__namedParameters): Promise<{
-  aggregatedError:   | null
-     | ConcurrentCallsWithMetadataAggregateError<M>;
+  aggregatedError:   | ConcurrentCallsWithMetadataAggregateError<M>
+     | null;
   allFailed: boolean;
   failed: FailedCall<M, E>[];
   failures: FailedCall<M, E>[];
@@ -268,8 +268,8 @@ Defined in: [packages/utils/src/concurrentCalls.ts:378](https://github.com/lucas
 ###### Returns
 
 `Promise`\<\{
-  `aggregatedError`:   \| `null`
-     \| [`ConcurrentCallsWithMetadataAggregateError`](index.md#concurrentcallswithmetadataaggregateerror)\<`M`\>;
+  `aggregatedError`:   \| [`ConcurrentCallsWithMetadataAggregateError`](index.md#concurrentcallswithmetadataaggregateerror)\<`M`\>
+     \| `null`;
   `allFailed`: `boolean`;
   `failed`: [`FailedCall`](#failedcall)\<`M`, `E`\>[];
   `failures`: [`FailedCall`](#failedcall)\<`M`, `E`\>[];

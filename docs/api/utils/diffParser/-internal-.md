@@ -198,7 +198,7 @@ Defined in: [packages/utils/src/diffParser.ts:48](https://github.com/lucasols/ut
 ##### diff
 
 ```ts
-diff: undefined | string;
+diff: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L55)
@@ -206,7 +206,7 @@ Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/ut
 ##### from
 
 ```ts
-from: undefined | string;
+from: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L50)
@@ -214,7 +214,7 @@ Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/ut
 ##### index
 
 ```ts
-index: undefined | string[];
+index: string[] | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L54)
@@ -222,7 +222,7 @@ Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/ut
 ##### newMode
 
 ```ts
-newMode: undefined | string;
+newMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L53)
@@ -230,7 +230,7 @@ Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/ut
 ##### oldMode
 
 ```ts
-oldMode: undefined | string;
+oldMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L52)
@@ -246,7 +246,7 @@ Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/ut
 ##### to
 
 ```ts
-to: undefined | string;
+to: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L51)
@@ -310,7 +310,7 @@ Defined in: [packages/utils/src/diffParser.ts:48](https://github.com/lucasols/ut
 ##### diff
 
 ```ts
-diff: undefined | string;
+diff: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L55)
@@ -322,7 +322,7 @@ Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/ut
 ##### from
 
 ```ts
-from: undefined | string;
+from: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L50)
@@ -334,7 +334,7 @@ Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/ut
 ##### index
 
 ```ts
-index: undefined | string[];
+index: string[] | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L54)
@@ -346,7 +346,7 @@ Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/ut
 ##### newMode
 
 ```ts
-newMode: undefined | string;
+newMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L53)
@@ -358,7 +358,7 @@ Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/ut
 ##### oldMode
 
 ```ts
-oldMode: undefined | string;
+oldMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L52)
@@ -382,7 +382,7 @@ Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/ut
 ##### to
 
 ```ts
-to: undefined | string;
+to: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L51)
@@ -454,7 +454,7 @@ Defined in: [packages/utils/src/diffParser.ts:48](https://github.com/lucasols/ut
 ##### diff
 
 ```ts
-diff: undefined | string;
+diff: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L55)
@@ -466,7 +466,7 @@ Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/ut
 ##### from
 
 ```ts
-from: undefined | string;
+from: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L50)
@@ -478,7 +478,7 @@ Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/ut
 ##### froms
 
 ```ts
-froms: undefined | string[];
+froms: string[] | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:82](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L82)
@@ -486,7 +486,7 @@ Defined in: [packages/utils/src/diffParser.ts:82](https://github.com/lucasols/ut
 ##### index
 
 ```ts
-index: undefined | string[];
+index: string[] | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L54)
@@ -498,7 +498,7 @@ Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/ut
 ##### newMode
 
 ```ts
-newMode: undefined | string;
+newMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L53)
@@ -510,7 +510,7 @@ Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/ut
 ##### oldMode
 
 ```ts
-oldMode: undefined | string;
+oldMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L52)
@@ -534,7 +534,7 @@ Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/ut
 ##### to
 
 ```ts
-to: undefined | string;
+to: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L51)
@@ -606,7 +606,7 @@ Defined in: [packages/utils/src/diffParser.ts:48](https://github.com/lucasols/ut
 ##### diff
 
 ```ts
-diff: undefined | string;
+diff: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L55)
@@ -618,7 +618,7 @@ Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/ut
 ##### from
 
 ```ts
-from: undefined | string;
+from: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L50)
@@ -630,7 +630,7 @@ Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/ut
 ##### index
 
 ```ts
-index: undefined | string[];
+index: string[] | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L54)
@@ -642,7 +642,7 @@ Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/ut
 ##### newMode
 
 ```ts
-newMode: undefined | string;
+newMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L53)
@@ -654,7 +654,7 @@ Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/ut
 ##### oldMode
 
 ```ts
-oldMode: undefined | string;
+oldMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L52)
@@ -678,7 +678,7 @@ Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/ut
 ##### to
 
 ```ts
-to: undefined | string;
+to: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L51)
@@ -750,7 +750,7 @@ Defined in: [packages/utils/src/diffParser.ts:48](https://github.com/lucasols/ut
 ##### diff
 
 ```ts
-diff: undefined | string;
+diff: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L55)
@@ -762,7 +762,7 @@ Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/ut
 ##### from
 
 ```ts
-from: undefined | string;
+from: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L50)
@@ -774,7 +774,7 @@ Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/ut
 ##### index
 
 ```ts
-index: undefined | string[];
+index: string[] | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L54)
@@ -786,7 +786,7 @@ Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/ut
 ##### newMode
 
 ```ts
-newMode: undefined | string;
+newMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L53)
@@ -798,7 +798,7 @@ Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/ut
 ##### oldMode
 
 ```ts
-oldMode: undefined | string;
+oldMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L52)
@@ -822,7 +822,7 @@ Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/ut
 ##### to
 
 ```ts
-to: undefined | string;
+to: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L51)
@@ -894,7 +894,7 @@ Defined in: [packages/utils/src/diffParser.ts:48](https://github.com/lucasols/ut
 ##### diff
 
 ```ts
-diff: undefined | string;
+diff: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L55)
@@ -906,7 +906,7 @@ Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/ut
 ##### from
 
 ```ts
-from: undefined | string;
+from: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L50)
@@ -918,7 +918,7 @@ Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/ut
 ##### index
 
 ```ts
-index: undefined | string[];
+index: string[] | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L54)
@@ -930,7 +930,7 @@ Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/ut
 ##### newMode
 
 ```ts
-newMode: undefined | string;
+newMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L53)
@@ -942,7 +942,7 @@ Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/ut
 ##### oldMode
 
 ```ts
-oldMode: undefined | string;
+oldMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L52)
@@ -966,7 +966,7 @@ Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/ut
 ##### to
 
 ```ts
-to: undefined | string;
+to: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L51)
@@ -1038,7 +1038,7 @@ Defined in: [packages/utils/src/diffParser.ts:48](https://github.com/lucasols/ut
 ##### diff
 
 ```ts
-diff: undefined | string;
+diff: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L55)
@@ -1050,7 +1050,7 @@ Defined in: [packages/utils/src/diffParser.ts:55](https://github.com/lucasols/ut
 ##### from
 
 ```ts
-from: undefined | string;
+from: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L50)
@@ -1062,7 +1062,7 @@ Defined in: [packages/utils/src/diffParser.ts:50](https://github.com/lucasols/ut
 ##### index
 
 ```ts
-index: undefined | string[];
+index: string[] | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L54)
@@ -1074,7 +1074,7 @@ Defined in: [packages/utils/src/diffParser.ts:54](https://github.com/lucasols/ut
 ##### newMode
 
 ```ts
-newMode: undefined | string;
+newMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L53)
@@ -1086,7 +1086,7 @@ Defined in: [packages/utils/src/diffParser.ts:53](https://github.com/lucasols/ut
 ##### oldMode
 
 ```ts
-oldMode: undefined | string;
+oldMode: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L52)
@@ -1110,7 +1110,7 @@ Defined in: [packages/utils/src/diffParser.ts:56](https://github.com/lucasols/ut
 ##### similarityIndex
 
 ```ts
-similarityIndex: undefined | number;
+similarityIndex: number | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:73](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L73)
@@ -1118,7 +1118,7 @@ Defined in: [packages/utils/src/diffParser.ts:73](https://github.com/lucasols/ut
 ##### to
 
 ```ts
-to: undefined | string;
+to: string | undefined;
 ```
 
 Defined in: [packages/utils/src/diffParser.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/diffParser.ts#L51)

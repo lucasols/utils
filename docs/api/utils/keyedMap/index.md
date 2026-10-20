@@ -1,6 +1,10 @@
-[@ls-stack/utils](modules.md) / keyedMap
+[@ls-stack/utils](../modules.md) / keyedMap
 
 # keyedMap
+
+## Modules
+
+- [\<internal\>](-internal-.md)
 
 ## Classes
 
@@ -113,7 +117,9 @@ Removes all entries from the map.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`clear`](#clear-2)
+```ts
+KeyedMap.clear
+```
 
 ##### delete()
 
@@ -137,7 +143,9 @@ Removes the entry for the given key. Returns true if the entry was removed.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`delete`](#delete-2)
+```ts
+KeyedMap.delete
+```
 
 ##### deleteMultiple()
 
@@ -161,7 +169,9 @@ Removes multiple entries. Returns the number of entries removed.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`deleteMultiple`](#deletemultiple-2)
+```ts
+KeyedMap.deleteMultiple
+```
 
 ##### entries()
 
@@ -177,17 +187,19 @@ Defined in: [packages/utils/src/keyedMap.ts:163](https://github.com/lucasols/uti
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`entries`](#entries-2)
+```ts
+KeyedMap.entries
+```
 
 ##### find()
 
 ```ts
 find(predicate): 
-  | undefined
   | {
   key: K;
   value: V;
-};
+}
+  | undefined;
 ```
 
 Defined in: [packages/utils/src/keyedMap.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L102)
@@ -202,15 +214,17 @@ Finds the first entry matching the predicate.
 
 ###### Returns
 
-  \| `undefined`
   \| \{
   `key`: `K`;
   `value`: `V`;
 \}
+  \| `undefined`
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`find`](#find-2)
+```ts
+KeyedMap.find
+```
 
 ##### forEach()
 
@@ -238,12 +252,14 @@ Executes a callback for each entry in the map.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`forEach`](#foreach-2)
+```ts
+KeyedMap.forEach
+```
 
 ##### get()
 
 ```ts
-get(key): undefined | V;
+get(key): V | undefined;
 ```
 
 Defined in: [packages/utils/src/keyedMap.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L58)
@@ -258,11 +274,13 @@ Gets the value for the given key, or undefined if not found.
 
 ###### Returns
 
-`undefined` \| `V`
+`V` \| `undefined`
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`get`](#get-2)
+```ts
+KeyedMap.get
+```
 
 ##### getOrInsert()
 
@@ -290,7 +308,9 @@ Gets the value for the given key, or inserts and returns the fallback value.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`getOrInsert`](#getorinsert-2)
+```ts
+KeyedMap.getOrInsert
+```
 
 ##### getOrThrow()
 
@@ -314,7 +334,9 @@ Gets the value for the given key, or throws if not found.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`getOrThrow`](#getorthrow-2)
+```ts
+KeyedMap.getOrThrow
+```
 
 ##### has()
 
@@ -338,7 +360,9 @@ Checks if the map contains the given key.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`has`](#has-2)
+```ts
+KeyedMap.has
+```
 
 ##### keys()
 
@@ -354,7 +378,9 @@ Defined in: [packages/utils/src/keyedMap.ts:151](https://github.com/lucasols/uti
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`keys`](#keys-2)
+```ts
+KeyedMap.keys
+```
 
 ##### set()
 
@@ -382,7 +408,9 @@ Sets a value for the given key. If the key exists, replaces both key and value.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`set`](#set-2)
+```ts
+KeyedMap.set
+```
 
 ##### setMultiple()
 
@@ -406,7 +434,9 @@ Sets multiple entries at once.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`setMultiple`](#setmultiple-2)
+```ts
+KeyedMap.setMultiple
+```
 
 ##### toFilteredValues()
 
@@ -430,7 +460,9 @@ Returns values that match the predicate.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`toFilteredValues`](#tofilteredvalues-2)
+```ts
+KeyedMap.toFilteredValues
+```
 
 ##### toKeys()
 
@@ -448,7 +480,9 @@ Returns all keys as an array.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`toKeys`](#tokeys-2)
+```ts
+KeyedMap.toKeys
+```
 
 ##### toValues()
 
@@ -466,7 +500,9 @@ Returns all values as an array.
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`toValues`](#tovalues-2)
+```ts
+KeyedMap.toValues
+```
 
 ##### values()
 
@@ -482,7 +518,9 @@ Defined in: [packages/utils/src/keyedMap.ts:157](https://github.com/lucasols/uti
 
 ###### Inherited from
 
-[`KeyedMap`](#keyedmap).[`values`](#values-2)
+```ts
+KeyedMap.values
+```
 
 ***
 
@@ -657,11 +695,11 @@ Defined in: [packages/utils/src/keyedMap.ts:163](https://github.com/lucasols/uti
 
 ```ts
 find(predicate): 
-  | undefined
   | {
   key: K;
   value: V;
-};
+}
+  | undefined;
 ```
 
 Defined in: [packages/utils/src/keyedMap.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L102)
@@ -676,11 +714,11 @@ Finds the first entry matching the predicate.
 
 ###### Returns
 
-  \| `undefined`
   \| \{
   `key`: `K`;
   `value`: `V`;
 \}
+  \| `undefined`
 
 ##### forEach()
 
@@ -709,7 +747,7 @@ Executes a callback for each entry in the map.
 ##### get()
 
 ```ts
-get(key): undefined | V;
+get(key): V | undefined;
 ```
 
 Defined in: [packages/utils/src/keyedMap.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L58)
@@ -724,7 +762,7 @@ Gets the value for the given key, or undefined if not found.
 
 ###### Returns
 
-`undefined` \| `V`
+`V` \| `undefined`
 
 ##### getOrInsert()
 

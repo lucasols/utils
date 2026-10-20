@@ -127,7 +127,7 @@ Defined in: [packages/utils/src/iteratorUtils.ts:13](https://github.com/lucasols
 ```ts
 function withPrevious<T>(iter): Generator<{
   current: T;
-  prev: undefined | T;
+  prev: T | undefined;
 }>;
 ```
 
@@ -149,5 +149,5 @@ Defined in: [packages/utils/src/iteratorUtils.ts:27](https://github.com/lucasols
 
 `Generator`\<\{
   `current`: `T`;
-  `prev`: `undefined` \| `T`;
+  `prev`: `T` \| `undefined`;
 \}\>

@@ -30,13 +30,13 @@ Defined in: [packages/utils/src/enhancedMap.ts:5](https://github.com/lucasols/ut
 new EnhancedMap<K, V>(entries?): EnhancedMap<K, V>;
 ```
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
+Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:51
 
 ###### Parameters
 
 ###### entries?
 
-`null` | readonly readonly \[`K`, `V`\][]
+readonly readonly \[`K`, `V`\][] | `null`
 
 ###### Returns
 
@@ -54,13 +54,13 @@ Map<K, V>.constructor
 new EnhancedMap<K, V>(iterable?): EnhancedMap<K, V>;
 ```
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
+Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
 
 ###### Parameters
 
 ###### iterable?
 
-`null` | `Iterable`\<readonly \[`K`, `V`\], `any`, `any`\>
+`Iterable`\<readonly \[`K`, `V`\], `any`, `any`\> | `null`
 
 ###### Returns
 
@@ -78,11 +78,11 @@ Map<K, V>.constructor
 
 ```ts
 find(predicate): 
-  | undefined
   | {
   key: K;
   value: V;
-};
+}
+  | undefined;
 ```
 
 Defined in: [packages/utils/src/enhancedMap.ts:6](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L6)
@@ -95,16 +95,16 @@ Defined in: [packages/utils/src/enhancedMap.ts:6](https://github.com/lucasols/ut
 
 ###### Returns
 
-  \| `undefined`
   \| \{
   `key`: `K`;
   `value`: `V`;
 \}
+  \| `undefined`
 
-##### getOrInsert()
+##### getOrSet()
 
 ```ts
-getOrInsert(key, fallback): V;
+getOrSet(key, fallback): V;
 ```
 
 Defined in: [packages/utils/src/enhancedMap.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L44)
@@ -117,7 +117,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:44](https://github.com/lucasols/u
 
 ###### fallback
 
-() => `V`
+(`key`) => `V`
 
 ###### Returns
 
@@ -185,7 +185,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:19](https://github.com/lucasols/u
 toFilteredValues(predicate): V[];
 ```
 
-Defined in: [packages/utils/src/enhancedMap.ts:52](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L52)
+Defined in: [packages/utils/src/enhancedMap.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L54)
 
 ###### Parameters
 
@@ -203,7 +203,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:52](https://github.com/lucasols/u
 toKeys(): K[];
 ```
 
-Defined in: [packages/utils/src/enhancedMap.ts:104](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L104)
+Defined in: [packages/utils/src/enhancedMap.ts:106](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L106)
 
 ###### Returns
 
@@ -215,7 +215,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:104](https://github.com/lucasols/
 toMap<T>(mapFunction): T[];
 ```
 
-Defined in: [packages/utils/src/enhancedMap.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L64)
+Defined in: [packages/utils/src/enhancedMap.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L66)
 
 ###### Type Parameters
 
@@ -239,7 +239,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:64](https://github.com/lucasols/u
 toObjMap<ObjKey, ObjValue>(mapFunction): Record<ObjKey, ObjValue>;
 ```
 
-Defined in: [packages/utils/src/enhancedMap.ts:84](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L84)
+Defined in: [packages/utils/src/enhancedMap.ts:86](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L86)
 
 ###### Type Parameters
 
@@ -267,7 +267,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:84](https://github.com/lucasols/u
 toValues(): V[];
 ```
 
-Defined in: [packages/utils/src/enhancedMap.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L100)
+Defined in: [packages/utils/src/enhancedMap.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L102)
 
 ###### Returns
 
@@ -281,7 +281,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:100](https://github.com/lucasols/
 static from<T, K>(array, key): EnhancedMap<T[K], T>;
 ```
 
-Defined in: [packages/utils/src/enhancedMap.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L108)
+Defined in: [packages/utils/src/enhancedMap.ts:110](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L110)
 
 ###### Type Parameters
 
@@ -297,7 +297,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:108](https://github.com/lucasols/
 
 ###### array
 
-`undefined` | `null` | `Iterable`\<`T`, `any`, `any`\> | `T`[]
+`Iterable`\<`T`, `any`, `any`\> | `T`[] | `null` | `undefined`
 
 ###### key
 
@@ -313,7 +313,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:108](https://github.com/lucasols/
 static from<T, K, V>(array, mapFunction): EnhancedMap<K, V>;
 ```
 
-Defined in: [packages/utils/src/enhancedMap.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L112)
+Defined in: [packages/utils/src/enhancedMap.ts:114](https://github.com/lucasols/utils/blob/main/packages/utils/src/enhancedMap.ts#L114)
 
 ###### Type Parameters
 
@@ -333,7 +333,7 @@ Defined in: [packages/utils/src/enhancedMap.ts:112](https://github.com/lucasols/
 
 ###### array
 
-`undefined` | `null` | `T`[] | `Iterable`\<`T`, `any`, `any`\>
+`T`[] | `Iterable`\<`T`, `any`, `any`\> | `null` | `undefined`
 
 ###### mapFunction
 

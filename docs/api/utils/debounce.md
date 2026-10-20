@@ -15,7 +15,7 @@ Defined in: [packages/utils/src/debounce.ts:10](https://github.com/lucasols/util
 `T` *extends* (...`args`) => `void`
 
 ```ts
-DebouncedFunc(...args): undefined | ReturnType<T>;
+DebouncedFunc(...args): ReturnType<T> | undefined;
 ```
 
 Defined in: [packages/utils/src/debounce.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L20)
@@ -36,7 +36,7 @@ if the debounced function was not invoked yet.
 
 #### Returns
 
-`undefined` \| `ReturnType`\<`T`\>
+`ReturnType`\<`T`\> \| `undefined`
 
 #### Properties
 
@@ -57,7 +57,7 @@ Throw away any pending invocation of the debounced function.
 ##### flush()
 
 ```ts
-flush: () => undefined | ReturnType<T>;
+flush: () => ReturnType<T> | undefined;
 ```
 
 Defined in: [packages/utils/src/debounce.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L32)
@@ -70,7 +70,7 @@ debounced function was never invoked.
 
 ###### Returns
 
-`undefined` \| `ReturnType`\<`T`\>
+`ReturnType`\<`T`\> \| `undefined`
 
 ##### pending()
 
@@ -214,7 +214,7 @@ Defined in: [packages/utils/src/debounce.ts:45](https://github.com/lucasols/util
 ### isDebouncedFn()
 
 ```ts
-function isDebouncedFn<T>(fn): fn is T & { cancel: () => void; flush: () => undefined | ReturnType<T>; pending: () => boolean; updateCb: (callback: T) => void; updateParams: (wait: number, options?: DebounceOptions) => void };
+function isDebouncedFn<T>(fn): fn is T & { cancel: () => void; flush: () => ReturnType<T> | undefined; pending: () => boolean; updateCb: (callback: T) => void; updateParams: (wait: number, options?: DebounceOptions) => void };
 ```
 
 Defined in: [packages/utils/src/debounce.ts:215](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L215)
@@ -233,4 +233,4 @@ Defined in: [packages/utils/src/debounce.ts:215](https://github.com/lucasols/uti
 
 #### Returns
 
-fn is T & \{ cancel: () =\> void; flush: () =\> undefined \| ReturnType\<T\>; pending: () =\> boolean; updateCb: (callback: T) =\> void; updateParams: (wait: number, options?: DebounceOptions) =\> void \}
+fn is T & \{ cancel: () =\> void; flush: () =\> ReturnType\<T\> \| undefined; pending: () =\> boolean; updateCb: (callback: T) =\> void; updateParams: (wait: number, options?: DebounceOptions) =\> void \}

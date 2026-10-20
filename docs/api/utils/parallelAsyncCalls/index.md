@@ -23,7 +23,7 @@ a easier to use format.
 
 ##### M
 
-`M` *extends* `undefined` \| [`ValidMetadata`](-internal-.md#validmetadata) = `undefined`
+`M` *extends* [`ValidMetadata`](-internal-.md#validmetadata) \| `undefined` = `undefined`
 
 The type of the call metadata.
 

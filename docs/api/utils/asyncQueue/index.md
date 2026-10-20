@@ -6,7 +6,7 @@
 
 - [\<internal\>](-internal-.md)
 
-## Classes
+## Interfaces
 
 ### AsyncQueue\<T, E, I\>
 
@@ -97,26 +97,6 @@ The type of errors that tasks can produce (defaults to Error)
 
 The type of metadata associated with tasks (defaults to
   unknown)
-
-#### Constructors
-
-##### Constructor
-
-```ts
-new AsyncQueue<T, E, I>(__namedParameters): AsyncQueue<T, E, I>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:259](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L259)
-
-###### Parameters
-
-###### \_\_namedParameters
-
-[`AsyncQueueOptions`](-internal-.md#asyncqueueoptions) = `{}`
-
-###### Returns
-
-[`AsyncQueue`](#asyncqueue)\<`T`, `E`, `I`\>
 
 #### Properties
 
@@ -324,7 +304,7 @@ Number of tasks waiting in the queue to be processed
 ###### Get Signature
 
 ```ts
-get stoppedReason(): undefined | Error;
+get stoppedReason(): Error | undefined;
 ```
 
 Defined in: [packages/utils/src/asyncQueue.ts:916](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L916)
@@ -333,7 +313,7 @@ The error that caused the queue to stop (if any)
 
 ###### Returns
 
-`undefined` \| `Error`
+`Error` \| `undefined`
 
 #### Methods
 
@@ -720,30 +700,6 @@ The type of metadata (required for all tasks)
 
 The type of errors that tasks can produce
 
-#### Constructors
-
-##### Constructor
-
-```ts
-new AsyncQueueWithMeta<T, I, E>(options?): AsyncQueueWithMeta<T, I, E>;
-```
-
-Defined in: [packages/utils/src/asyncQueue.ts:962](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L962)
-
-###### Parameters
-
-###### options?
-
-[`AsyncQueueOptions`](-internal-.md#asyncqueueoptions)
-
-###### Returns
-
-[`AsyncQueueWithMeta`](#asyncqueuewithmeta)\<`T`, `I`, `E`\>
-
-###### Overrides
-
-[`AsyncQueue`](#asyncqueue).[`constructor`](#constructor)
-
 #### Properties
 
 ##### completions
@@ -990,7 +946,7 @@ Number of tasks waiting in the queue to be processed
 ###### Get Signature
 
 ```ts
-get stoppedReason(): undefined | Error;
+get stoppedReason(): Error | undefined;
 ```
 
 Defined in: [packages/utils/src/asyncQueue.ts:916](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L916)
@@ -999,7 +955,7 @@ The error that caused the queue to stop (if any)
 
 ###### Returns
 
-`undefined` \| `Error`
+`Error` \| `undefined`
 
 ###### Inherited from
 
@@ -1064,7 +1020,9 @@ Promise that resolves with the task result
 
 ###### Overrides
 
-[`AsyncQueue`](#asyncqueue).[`add`](#add)
+```ts
+AsyncQueue.add
+```
 
 ##### clear()
 
@@ -1102,7 +1060,9 @@ tasks to complete normally.
 
 ###### Inherited from
 
-[`AsyncQueue`](#asyncqueue).[`clear`](#clear)
+```ts
+AsyncQueue.clear
+```
 
 ##### onIdle()
 
@@ -1146,7 +1106,9 @@ Promise that resolves when the queue is idle
 
 ###### Inherited from
 
-[`AsyncQueue`](#asyncqueue).[`onIdle`](#onidle)
+```ts
+AsyncQueue.onIdle
+```
 
 ##### onSizeLessThan()
 
@@ -1176,7 +1138,9 @@ Threshold that `size` must be below to resolve
 
 ###### Inherited from
 
-[`AsyncQueue`](#asyncqueue).[`onSizeLessThan`](#onsizelessthan)
+```ts
+AsyncQueue.onSizeLessThan
+```
 
 ##### pause()
 
@@ -1210,7 +1174,9 @@ Pause processing new tasks (currently running tasks continue)
 
 ###### Inherited from
 
-[`AsyncQueue`](#asyncqueue).[`pause`](#pause)
+```ts
+AsyncQueue.pause
+```
 
 ##### reset()
 
@@ -1251,7 +1217,9 @@ remaining queued tasks if autoStart was enabled.
 
 ###### Inherited from
 
-[`AsyncQueue`](#asyncqueue).[`reset`](#reset)
+```ts
+AsyncQueue.reset
+```
 
 ##### resultifyAdd()
 
@@ -1318,7 +1286,9 @@ With Callbacks
 
 ###### Overrides
 
-[`AsyncQueue`](#asyncqueue).[`resultifyAdd`](#resultifyadd)
+```ts
+AsyncQueue.resultifyAdd
+```
 
 ##### resume()
 
@@ -1336,7 +1306,9 @@ Resume processing tasks after pause
 
 ###### Inherited from
 
-[`AsyncQueue`](#asyncqueue).[`resume`](#resume)
+```ts
+AsyncQueue.resume
+```
 
 ##### start()
 
@@ -1368,7 +1340,9 @@ Manually start processing tasks (only needed if autoStart: false)
 
 ###### Inherited from
 
-[`AsyncQueue`](#asyncqueue).[`start`](#start)
+```ts
+AsyncQueue.start
+```
 
 ## Functions
 

@@ -107,7 +107,7 @@ const enhancedItems = arrayOps(array);
 ### arrayWithPrev()
 
 ```ts
-function arrayWithPrev<T>(array): [T, null | T][];
+function arrayWithPrev<T>(array): [T, T | null][];
 ```
 
 Defined in: [packages/utils/src/arrayUtils.ts:144](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L144)
@@ -126,7 +126,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:144](https://github.com/lucasols/u
 
 #### Returns
 
-\[`T`, `null` \| `T`\][]
+\[`T`, `T` \| `null`\][]
 
 ***
 
@@ -214,7 +214,7 @@ value to map it.
 function findAfterIndex<T>(
    array, 
    index, 
-   predicate): undefined | T;
+   predicate): T | undefined;
 ```
 
 Defined in: [packages/utils/src/arrayUtils.ts:185](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L185)
@@ -241,14 +241,14 @@ Defined in: [packages/utils/src/arrayUtils.ts:185](https://github.com/lucasols/u
 
 #### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 ***
 
 ### findAndMap()
 
 ```ts
-function findAndMap<T, R>(array, predicate): undefined | R;
+function findAndMap<T, R>(array, predicate): R | undefined;
 ```
 
 Defined in: [packages/utils/src/arrayUtils.ts:304](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L304)
@@ -287,7 +287,7 @@ Function that returns a mapped value or `false` to skip
 
 #### Returns
 
-`undefined` \| `R`
+`R` \| `undefined`
 
 The first mapped value that is not `false`, or `undefined` if no
   item matches
@@ -314,7 +314,7 @@ const users = [
 function findBeforeIndex<T>(
    array, 
    index, 
-   predicate): undefined | T;
+   predicate): T | undefined;
 ```
 
 Defined in: [packages/utils/src/arrayUtils.ts:199](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L199)
@@ -341,7 +341,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:199](https://github.com/lucasols/u
 
 #### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 ***
 
@@ -359,7 +359,7 @@ Get the correct 0 based value for sync with other array in ascending order
 
 ##### index
 
-`undefined` | `number`
+`number` | `undefined`
 
 #### Returns
 

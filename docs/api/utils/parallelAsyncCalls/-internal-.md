@@ -91,7 +91,7 @@ Adds calls return tuples with inferred results
 ###### runAll()
 
 ```ts
-runAll: (props?) => Promise<Result<{ [I in string | number | symbol]: TupleRunAllSuccess<T[I<I>]> }, TupleRunAllFailed<T[number]>>>;
+runAll: (props?) => Promise<Result<{ [I in string | number | symbol]: TupleRunAllSuccess<T[I]> }, TupleRunAllFailed<T[number]>>>;
 ```
 
 ###### Parameters
@@ -102,14 +102,14 @@ runAll: (props?) => Promise<Result<{ [I in string | number | symbol]: TupleRunAl
 
 ###### Returns
 
-`Promise`\<`Result`\<\{ \[I in string \| number \| symbol\]: TupleRunAllSuccess\<T\[I\<I\>\]\> \}, [`TupleRunAllFailed`](#tuplerunallfailed)\<`T`\[`number`\]\>\>\>
+`Promise`\<`Result`\<\{ \[I in string \| number \| symbol\]: TupleRunAllSuccess\<T\[I\]\> \}, [`TupleRunAllFailed`](#tuplerunallfailed)\<`T`\[`number`\]\>\>\>
 
 ###### runAllSettled()
 
 ```ts
 runAllSettled: (props?) => Promise<{
   allFailed: boolean;
-  results: { [I in string | number | symbol]: TupleRunAllSettled<T[I<I>]> };
+  results: { [I in string | number | symbol]: TupleRunAllSettled<T[I]> };
 }>;
 ```
 
@@ -123,7 +123,7 @@ runAllSettled: (props?) => Promise<{
 
 `Promise`\<\{
   `allFailed`: `boolean`;
-  `results`: \{ \[I in string \| number \| symbol\]: TupleRunAllSettled\<T\[I\<I\>\]\> \};
+  `results`: \{ \[I in string \| number \| symbol\]: TupleRunAllSettled\<T\[I\]\> \};
 \}\>
 
 ##### runAll()

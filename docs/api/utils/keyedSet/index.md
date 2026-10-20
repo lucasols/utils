@@ -1,6 +1,10 @@
-[@ls-stack/utils](modules.md) / keyedSet
+[@ls-stack/utils](../modules.md) / keyedSet
 
 # keyedSet
+
+## Modules
+
+- [\<internal\>](-internal-.md)
 
 ## Classes
 
@@ -117,7 +121,9 @@ replaced.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`add`](#add-2)
+```ts
+KeyedSet.add
+```
 
 ##### addMultiple()
 
@@ -141,7 +147,9 @@ Adds multiple items to the set.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`addMultiple`](#addmultiple-2)
+```ts
+KeyedSet.addMultiple
+```
 
 ##### clear()
 
@@ -159,7 +167,9 @@ Removes all items from the set.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`clear`](#clear-2)
+```ts
+KeyedSet.clear
+```
 
 ##### delete()
 
@@ -184,7 +194,9 @@ was removed.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`delete`](#delete-2)
+```ts
+KeyedSet.delete
+```
 
 ##### deleteByKey()
 
@@ -208,7 +220,9 @@ Removes an item by its key. Returns true if the item was removed.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`deleteByKey`](#deletebykey-2)
+```ts
+KeyedSet.deleteByKey
+```
 
 ##### deleteMultiple()
 
@@ -232,7 +246,9 @@ Removes multiple items from the set. Returns the number of items removed.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`deleteMultiple`](#deletemultiple-2)
+```ts
+KeyedSet.deleteMultiple
+```
 
 ##### deleteMultipleByKeys()
 
@@ -256,7 +272,9 @@ Removes multiple items by their keys. Returns the number of items removed.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`deleteMultipleByKeys`](#deletemultiplebykeys-2)
+```ts
+KeyedSet.deleteMultipleByKeys
+```
 
 ##### entries()
 
@@ -272,7 +290,9 @@ Defined in: [packages/utils/src/keyedSet.ts:136](https://github.com/lucasols/uti
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`entries`](#entries-2)
+```ts
+KeyedSet.entries
+```
 
 ##### forEach()
 
@@ -300,12 +320,14 @@ Executes a callback for each item in the set.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`forEach`](#foreach-2)
+```ts
+KeyedSet.forEach
+```
 
 ##### getByKey()
 
 ```ts
-getByKey(key): undefined | T;
+getByKey(key): T | undefined;
 ```
 
 Defined in: [packages/utils/src/keyedSet.ts:73](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedSet.ts#L73)
@@ -320,11 +342,13 @@ Gets an item by its key, or undefined if not found.
 
 ###### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`getByKey`](#getbykey-2)
+```ts
+KeyedSet.getByKey
+```
 
 ##### has()
 
@@ -348,7 +372,9 @@ Checks if an item with the same key exists in the set.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`has`](#has-2)
+```ts
+KeyedSet.has
+```
 
 ##### hasKey()
 
@@ -372,7 +398,9 @@ Checks if an item with the given key exists in the set.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`hasKey`](#haskey-2)
+```ts
+KeyedSet.hasKey
+```
 
 ##### keys()
 
@@ -388,7 +416,9 @@ Defined in: [packages/utils/src/keyedSet.ts:132](https://github.com/lucasols/uti
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`keys`](#keys-2)
+```ts
+KeyedSet.keys
+```
 
 ##### toArray()
 
@@ -406,7 +436,9 @@ Returns all items as an array.
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`toArray`](#toarray-2)
+```ts
+KeyedSet.toArray
+```
 
 ##### values()
 
@@ -422,7 +454,9 @@ Defined in: [packages/utils/src/keyedSet.ts:128](https://github.com/lucasols/uti
 
 ###### Inherited from
 
-[`KeyedSet`](#keyedset).[`values`](#values-2)
+```ts
+KeyedSet.values
+```
 
 ***
 
@@ -698,7 +732,7 @@ Executes a callback for each item in the set.
 ##### getByKey()
 
 ```ts
-getByKey(key): undefined | T;
+getByKey(key): T | undefined;
 ```
 
 Defined in: [packages/utils/src/keyedSet.ts:73](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedSet.ts#L73)
@@ -713,7 +747,7 @@ Gets an item by its key, or undefined if not found.
 
 ###### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 ##### has()
 

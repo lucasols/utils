@@ -22,7 +22,7 @@ type Err<E> = object & AnyResultMethods;
 
 Defined in: [packages/utils/src/tsResult.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L20)
 
-#### Type declaration
+#### Type Declaration
 
 ##### error
 
@@ -66,7 +66,7 @@ type Ok<T> = object & AnyResultMethods;
 
 Defined in: [packages/utils/src/tsResult.ts:4](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L4)
 
-#### Type declaration
+#### Type Declaration
 
 ##### error
 

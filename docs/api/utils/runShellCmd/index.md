@@ -65,7 +65,7 @@ Defined in: [packages/utils/src/runShellCmd.ts:39](https://github.com/lucasols/u
 
 ##### label
 
-`null` | `string`
+`string` | `null`
 
 ##### command
 
@@ -169,7 +169,7 @@ Defined in: [packages/utils/src/runShellCmd.ts:175](https://github.com/lucasols/
 
 ##### label
 
-`null` | `string`
+`string` | `null`
 
 ##### command
 

@@ -32,7 +32,7 @@ user ID or throttling UI updates per component.
 
 ##### T
 
-`T` *extends* `undefined` \| `null` \| `string` \| `number` \| `boolean`
+`T` *extends* `string` \| `number` \| `boolean` \| `null` \| `undefined`
 
 The type of arguments the callback function accepts
 
@@ -71,7 +71,7 @@ An object with a `call` method that accepts the callback arguments
 ##### call()
 
 ```ts
-call: (...args) => undefined | R;
+call: (...args) => R | undefined;
 ```
 
 ###### Parameters
@@ -82,7 +82,7 @@ call: (...args) => undefined | R;
 
 ###### Returns
 
-`undefined` \| `R`
+`R` \| `undefined`
 
 #### Examples
 

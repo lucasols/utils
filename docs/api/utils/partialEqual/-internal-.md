@@ -847,7 +847,7 @@ type Match = BaseMatch & object;
 
 Defined in: [packages/utils/src/partialEqual.ts:125](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L125)
 
-#### Type declaration
+#### Type Declaration
 
 ##### not
 

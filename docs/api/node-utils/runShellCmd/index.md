@@ -68,7 +68,7 @@ Runs a shell command and returns the result.
 
 Optional label for the command (used for logging)
 
-`null` | `string`
+`string` | `null`
 
 ##### command
 
@@ -161,7 +161,7 @@ Runs a command and returns only the stdout, throwing on error.
 
 Optional label for the command
 
-`null` | `string`
+`string` | `null`
 
 ##### command
 

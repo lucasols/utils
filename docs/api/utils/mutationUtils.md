@@ -109,7 +109,7 @@ the updates object and deep equal values are not updated.
 
 The object to update.
 
-`undefined` | `null` | `T`
+`T` | `null` | `undefined`
 
 ##### updates
 

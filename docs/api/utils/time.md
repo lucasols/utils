@@ -169,7 +169,7 @@ Defined in: [packages/utils/src/time.ts:15](https://github.com/lucasols/utils/bl
 ### dateStringOrNullToUnixMs()
 
 ```ts
-function dateStringOrNullToUnixMs(isoString): null | number;
+function dateStringOrNullToUnixMs(isoString): number | null;
 ```
 
 Defined in: [packages/utils/src/time.ts:17](https://github.com/lucasols/utils/blob/main/packages/utils/src/time.ts#L17)
@@ -178,11 +178,11 @@ Defined in: [packages/utils/src/time.ts:17](https://github.com/lucasols/utils/bl
 
 ##### isoString
 
-`undefined` | `null` | `string`
+`string` | `null` | `undefined`
 
 #### Returns
 
-`null` \| `number`
+`number` \| `null`
 
 ***
 

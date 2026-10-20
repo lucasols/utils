@@ -14,7 +14,7 @@
 function getDiffs(
    oldValue, 
    newValue, 
-__namedParameters): undefined | Record<string, unknown>;
+   __namedParameters): Record<string, unknown> | undefined;
 ```
 
 Defined in: [packages/utils/src/getDiffs.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/getDiffs.ts#L27)
@@ -45,4 +45,4 @@ Defined in: [packages/utils/src/getDiffs.ts:27](https://github.com/lucasols/util
 
 #### Returns
 
-`undefined` \| `Record`\<`string`, `unknown`\>
+`Record`\<`string`, `unknown`\> \| `undefined`

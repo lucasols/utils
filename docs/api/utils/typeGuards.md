@@ -374,7 +374,7 @@ True if the value is a Promise or thenable, false otherwise
 ### isTruthy()
 
 ```ts
-function isTruthy<T>(value): value is Exclude<T, undefined | null | false | "" | 0 | 0n>;
+function isTruthy<T>(value): value is Exclude<T, false | "" | 0 | 0n | null | undefined>;
 ```
 
 Defined in: [packages/utils/src/typeGuards.ts:164](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeGuards.ts#L164)
@@ -393,4 +393,4 @@ Defined in: [packages/utils/src/typeGuards.ts:164](https://github.com/lucasols/u
 
 #### Returns
 
-value is Exclude\<T, undefined \| null \| false \| "" \| 0 \| 0n\>
+value is Exclude\<T, false \| "" \| 0 \| 0n \| null \| undefined\>

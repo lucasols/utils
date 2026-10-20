@@ -254,7 +254,7 @@ Defined in: [packages/utils/src/objUtils.ts:107](https://github.com/lucasols/uti
 ### looseGetObjectProperty()
 
 ```ts
-function looseGetObjectProperty<T>(obj, key): undefined | T[keyof T];
+function looseGetObjectProperty<T>(obj, key): T[keyof T] | undefined;
 ```
 
 Defined in: [packages/utils/src/objUtils.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/objUtils.ts#L65)
@@ -277,7 +277,7 @@ Defined in: [packages/utils/src/objUtils.ts:65](https://github.com/lucasols/util
 
 #### Returns
 
-`undefined` \| `T`\[keyof `T`\]
+`T`\[keyof `T`\] \| `undefined`
 
 ***
 

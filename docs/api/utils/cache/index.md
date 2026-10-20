@@ -598,7 +598,7 @@ Keys of the items to remove
 ##### get()
 
 ```ts
-get: (cacheKey) => undefined | T;
+get: (cacheKey) => T | undefined;
 ```
 
 Gets a value from the cache without computing it if missing.
@@ -613,7 +613,7 @@ Key to look up in the cache
 
 ###### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 The cached value or undefined if not found
 

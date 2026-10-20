@@ -12,7 +12,7 @@ const consoleFmt: object;
 
 Defined in: [packages/utils/src/consoleFmt.ts:61](https://github.com/lucasols/utils/blob/main/packages/utils/src/consoleFmt.ts#L61)
 
-#### Type declaration
+#### Type Declaration
 
 ##### ~~bgColor()~~
 

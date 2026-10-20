@@ -30,7 +30,7 @@ those errors and returns undefined
 ### safeJsonStringify()
 
 ```ts
-function safeJsonStringify(value): undefined | string;
+function safeJsonStringify(value): string | undefined;
 ```
 
 Defined in: [packages/utils/src/safeJson.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/safeJson.ts#L7)
@@ -46,4 +46,4 @@ function catches those errors and returns undefined
 
 #### Returns
 
-`undefined` \| `string`
+`string` \| `undefined`

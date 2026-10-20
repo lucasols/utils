@@ -29,7 +29,7 @@ A type representing an array that is guaranteed to have at least one element.
 ### ~~isSubTypeOf()~~
 
 ```ts
-const isSubTypeOf: <BaseType, SubType>() => unknown = typeOnRightExtendsLeftType;
+const isSubTypeOf: <BaseType, SubType>() => SubType | undefined = typeOnRightExtendsLeftType;
 ```
 
 Defined in: [packages/utils/src/typingFnUtils.ts:95](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L95)
@@ -52,7 +52,7 @@ The type that should extend BaseType
 
 #### Returns
 
-`unknown`
+`SubType` \| `undefined`
 
 Returns undefined, only used for type checking
 
@@ -117,7 +117,7 @@ Defined in: [packages/utils/src/typingFnUtils.ts:128](https://github.com/lucasol
 ### asPossiblyUndefined()
 
 ```ts
-function asPossiblyUndefined<T>(value): undefined | T;
+function asPossiblyUndefined<T>(value): T | undefined;
 ```
 
 Defined in: [packages/utils/src/typingFnUtils.ts:166](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L166)
@@ -140,7 +140,7 @@ certainty that it can be undefined.
 
 #### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 ***
 
@@ -239,7 +239,7 @@ Type helper to narrow a string to a key of an object.
 ### narrowStringToUnion()
 
 ```ts
-function narrowStringToUnion<T>(key, union): undefined | T;
+function narrowStringToUnion<T>(key, union): T | undefined;
 ```
 
 Defined in: [packages/utils/src/typingFnUtils.ts:63](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L63)
@@ -256,7 +256,7 @@ Narrow a string to a union of strings
 
 ##### key
 
-`undefined` | `null` | `string`
+`string` | `null` | `undefined`
 
 ##### union
 
@@ -264,7 +264,7 @@ Narrow a string to a union of strings
 
 #### Returns
 
-`undefined` \| `T`
+`T` \| `undefined`
 
 ***
 
@@ -394,7 +394,7 @@ keyof `T`[]
 ### typeOnRightExtendsLeftType()
 
 ```ts
-function typeOnRightExtendsLeftType<BaseType, SubType>(): unknown;
+function typeOnRightExtendsLeftType<BaseType, SubType>(): SubType | undefined;
 ```
 
 Defined in: [packages/utils/src/typingFnUtils.ts:87](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L87)
@@ -417,7 +417,7 @@ The type that should extend BaseType
 
 #### Returns
 
-`unknown`
+`SubType` \| `undefined`
 
 Returns undefined, only used for type checking
 

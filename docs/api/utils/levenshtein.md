@@ -10,7 +10,7 @@
 function getClosestString(
    str, 
    arr, 
-   maxDistance): undefined | string;
+   maxDistance): string | undefined;
 ```
 
 Defined in: [packages/utils/src/levenshtein.ts:134](https://github.com/lucasols/utils/blob/main/packages/utils/src/levenshtein.ts#L134)
@@ -31,7 +31,7 @@ readonly `string`[]
 
 #### Returns
 
-`undefined` \| `string`
+`string` \| `undefined`
 
 ***
 
