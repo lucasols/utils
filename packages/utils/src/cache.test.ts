@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { cachedGetter, createCache, fastCache, WithExpiration } from './cache';
 import { sleep } from './sleep';

@@ -210,6 +210,18 @@ const cases: [
         ]),
         result: true,
       },
+      {
+        name: 'Different keys with undefined values',
+        a: new Map([['first', undefined]]),
+        b: new Map([['second', undefined]]),
+        result: false,
+      },
+      {
+        name: 'Same keys with undefined values',
+        a: new Map([['first', undefined]]),
+        b: new Map([['first', undefined]]),
+        result: true,
+      },
     ],
   ],
   [

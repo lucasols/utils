@@ -1,3 +1,4 @@
+import { shallowEqual } from '@ls-stack/utils/shallowEqual';
 import { throttle } from '@ls-stack/utils/throttle';
 import type { RefObject } from 'react';
 import { useEffect } from 'react';
@@ -32,7 +33,7 @@ export function useInfiniteLoading({
   const containerElement = getContainerElement();
 
   useOnChange(
-    [isLoaded, hasMore, containerElement],
+    [isLoaded, hasMore, containerElement, disable],
     () => {
       if (disable) return;
 
@@ -58,7 +59,8 @@ export function useInfiniteLoading({
         loadMore();
       }
     },
-    { callOnMount: true },
+    // compare the container element by identity, deepEqual would walk its props
+    { callOnMount: true, equalityFn: shallowEqual },
   );
 
   const onScroll = useLatestValue(() => {
@@ -102,6 +104,7 @@ export function useInfiniteLoading({
 
     return () => {
       container.removeEventListener('scroll', onScrollThrottle);
+      onScrollThrottle.cancel();
     };
   }, [containerRef, containerElement, isLoaded, disable, onScroll]);
 }

@@ -16,15 +16,17 @@ export function useArrayToMap<T, K extends string | number>(
 ): Map<K, T>;
 export function useArrayToMap(
   arr: __LEGIT_ANY__[] | null | undefined,
-  getItemId: ((item: __LEGIT_ANY__, index: number) => string | number) | string,
+  getItemId:
+    | ((item: __LEGIT_ANY__, index: number) => string | number)
+    | PropertyKey,
 ): Map<__LEGIT_ANY__, unknown> {
   const latestGetItemId = useLatestValue(
-    typeof getItemId === 'string' ?
-      (item: Record<string, __LEGIT_ANY__>) => {
+    typeof getItemId === 'function' ? getItemId : (
+      (item: Record<PropertyKey, __LEGIT_ANY__>) => {
         const itemId: string | number = item[getItemId];
         return itemId;
       }
-    : getItemId,
+    ),
   );
   return useMemo(
     () =>

@@ -41,7 +41,8 @@ export function useRenderMemoizer(): RenderMemoizer {
     (itemKey, value, equalityFn = shallowEqual) => {
       const prev = cache.keyedItems.get(itemKey);
 
-      const valueToUse: typeof value = equalityFn(prev, value) ? prev : value;
+      const valueToUse: typeof value =
+        cache.keyedItems.has(itemKey) && equalityFn(prev, value) ? prev : value;
 
       cache.keyedItemsTouched.add(itemKey);
 
@@ -58,18 +59,25 @@ export function useRenderMemoizer(): RenderMemoizer {
     (itemKey, value, deps, equalityFn = shallowEqual) => {
       const prev = cache.keyedItemsWithDeps.get(itemKey);
 
-      const valueIsUnchanged =
-        prev && (prev.value === value || equalityFn(prev.deps, deps));
-
-      const valueToUse: typeof value = valueIsUnchanged ? prev.value : value;
-
       cache.keyedItemsWithDepsTouched.add(itemKey);
 
-      if (prev?.value !== valueToUse) {
-        cache.keyedItemsWithDeps.set(itemKey, { value: valueToUse, deps });
+      if (prev) {
+        if (prev.value === value) {
+          // keep the deps of the latest render, so the next comparison is
+          // against them and not against the deps of an older render
+          prev.deps = deps;
+          return value;
+        }
+
+        if (equalityFn(prev.deps, deps)) {
+          const prevValue: typeof value = prev.value;
+          return prevValue;
+        }
       }
 
-      return valueToUse;
+      cache.keyedItemsWithDeps.set(itemKey, { value, deps });
+
+      return value;
     },
     [cache],
   );
@@ -80,18 +88,19 @@ export function useRenderMemoizer(): RenderMemoizer {
     (itemKey, getLazyValue, deps, equalityFn = shallowEqual) => {
       const prev = cache.keyedItemsWithDeps.get(itemKey);
 
-      const valueIsUnchanged = prev && equalityFn(prev.deps, deps);
-
-      const valueToUse: ReturnType<typeof getLazyValue> =
-        valueIsUnchanged ? prev.value : getLazyValue();
-
       cache.keyedItemsWithDepsTouched.add(itemKey);
 
-      if (prev?.value !== valueToUse) {
-        cache.keyedItemsWithDeps.set(itemKey, { value: valueToUse, deps });
+      if (prev && equalityFn(prev.deps, deps)) {
+        const prevValue: ReturnType<typeof getLazyValue> = prev.value;
+        return prevValue;
       }
 
-      return valueToUse;
+      const value = getLazyValue();
+
+      // store the new deps even when the value is unchanged
+      cache.keyedItemsWithDeps.set(itemKey, { value, deps });
+
+      return value;
     },
     [cache],
   );

@@ -47,3 +47,11 @@ test('only recomputes the map when the array changes', () => {
   rerender({ arr: [...items] });
   expect(result.current).not.toBe(firstMap);
 });
+
+test('maps the items by a numeric key', () => {
+  const tuples = [{ 0: 'a' }, { 0: 'b' }];
+
+  const { result } = renderHook(() => useArrayToMap(tuples, 0));
+
+  expect([...result.current.keys()]).toEqual(['a', 'b']);
+});

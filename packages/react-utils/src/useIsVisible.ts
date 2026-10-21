@@ -61,8 +61,14 @@ export function useIsVisible(
       ([entry]) => {
         if (!entry) return;
 
-        latestOnVisibilityChange.insideEffect?.(entry.isIntersecting);
-        setIsVisible(entry.isIntersecting);
+        // `isIntersecting` ignores the threshold, it is true for any intersection
+        const entryIsVisible =
+          threshold > 0 ?
+            entry.intersectionRatio >= threshold
+          : entry.isIntersecting;
+
+        latestOnVisibilityChange.insideEffect?.(entryIsVisible);
+        setIsVisible(entryIsVisible);
       },
       {
         root:

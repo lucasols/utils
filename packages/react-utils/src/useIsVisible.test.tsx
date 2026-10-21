@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { useIsVisible } from './useIsVisible';
 
-type FakeEntry = { isIntersecting: boolean };
+type FakeEntry = { isIntersecting: boolean; intersectionRatio: number };
 
 let observers: {
   callback: (entries: FakeEntry[]) => void;
@@ -27,9 +27,14 @@ class FakeIntersectionObserver {
   }
 }
 
-function setIntersecting(isIntersecting: boolean) {
+function setIntersecting(
+  isIntersecting: boolean,
+  intersectionRatio = isIntersecting ? 1 : 0,
+) {
   act(() => {
-    for (const observer of observers) observer.callback([{ isIntersecting }]);
+    for (const observer of observers) {
+      observer.callback([{ isIntersecting, intersectionRatio }]);
+    }
   });
 }
 
@@ -93,4 +98,23 @@ test('observes the element once the ref is attached after the first render', () 
 
   setIntersecting(true);
   expect(isVisible).toBe(true);
+});
+
+test('is only visible when the intersection ratio reaches the threshold', () => {
+  const onVisibilityChange = vi.fn();
+  const ref = { current: document.createElement('div') };
+
+  const { result } = renderHook(() =>
+    useIsVisible(ref, { threshold: 0.5, onVisibilityChange }),
+  );
+
+  setIntersecting(true, 0.1);
+  expect(result.current).toBe(false);
+  expect(onVisibilityChange).toHaveBeenLastCalledWith(false);
+
+  setIntersecting(true, 0.6);
+  expect(result.current).toBe(true);
+
+  setIntersecting(true, 0.4);
+  expect(result.current).toBe(false);
 });

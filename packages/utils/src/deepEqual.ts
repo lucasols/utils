@@ -78,7 +78,7 @@ export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
           tmp = find(bar, tmp, maxDepth - 1);
           if (!tmp) return false;
         }
-        if (!deepEqual(len[1], bar.get(tmp), maxDepth - 1)) {
+        if (!bar.has(tmp) || !deepEqual(len[1], bar.get(tmp), maxDepth - 1)) {
           return false;
         }
       }

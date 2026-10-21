@@ -71,3 +71,54 @@ test('drops the cache of keys that were not used in the last render', () => {
 
   expect(result.current).not.toBe(first);
 });
+
+test('getValue does not call a custom equality fn without a cached value', () => {
+  const first = { id: 1, label: 'a' };
+
+  const { result, rerender } = renderHook(
+    ({ value }) =>
+      useRenderMemoizer().getValue(
+        'key',
+        value,
+        (a: { id: number }, b: { id: number }) => a.id === b.id,
+      ),
+    { initialProps: { value: first } },
+  );
+
+  expect(result.current).toBe(first);
+
+  rerender({ value: { id: 1, label: 'b' } });
+  expect(result.current).toBe(first);
+});
+
+test('getValueWithDeps compares with the deps of the latest render', () => {
+  const first = { label: 'first' };
+  const second = { label: 'second' };
+
+  const { result, rerender } = renderHook(
+    ({ value, dep }) =>
+      useRenderMemoizer().getValueWithDeps('key', value, [dep]),
+    { initialProps: { value: first, dep: 'a' } },
+  );
+
+  rerender({ value: first, dep: 'b' });
+  rerender({ value: second, dep: 'a' });
+
+  expect(result.current).toBe(second);
+});
+
+test('getLazyValueWithDeps compares with the deps of the latest render', () => {
+  const first = { label: 'first' };
+  const second = { label: 'second' };
+
+  const { result, rerender } = renderHook(
+    ({ value, dep }) =>
+      useRenderMemoizer().getLazyValueWithDeps('key', () => value, [dep]),
+    { initialProps: { value: first, dep: 'a' } },
+  );
+
+  rerender({ value: first, dep: 'b' });
+  rerender({ value: second, dep: 'a' });
+
+  expect(result.current).toBe(second);
+});

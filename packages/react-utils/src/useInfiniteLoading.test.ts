@@ -144,3 +144,74 @@ test('removes the scroll listener on unmount', () => {
 
   expect(loadMore).not.toHaveBeenCalled();
 });
+
+test('does not call a pending throttled scroll after unmount', () => {
+  const container = createContainer({ scrollHeight: 1000, clientHeight: 100 });
+  const loadMore = vi.fn();
+
+  const { unmount } = renderHook(() =>
+    useInfiniteLoading({
+      containerRef: container,
+      loadMore,
+      hasMore: true,
+      isLoaded: true,
+    }),
+  );
+
+  scrollTo(container, 500);
+  scrollTo(container, 899);
+  unmount();
+  vi.advanceTimersByTime(600);
+
+  expect(loadMore).not.toHaveBeenCalled();
+});
+
+test('loads more when enabled with content that does not fill the container', () => {
+  const container = createContainer({ scrollHeight: 100, clientHeight: 100 });
+  const loadMore = vi.fn();
+
+  const { rerender } = renderHook(
+    ({ disable }) =>
+      useInfiniteLoading({
+        containerRef: container,
+        loadMore,
+        hasMore: true,
+        isLoaded: true,
+        disable,
+      }),
+    { initialProps: { disable: true } },
+  );
+
+  expect(loadMore).not.toHaveBeenCalled();
+
+  rerender({ disable: false });
+
+  expect(loadMore).toHaveBeenCalledTimes(1);
+});
+
+test('checks the content size again when the container is replaced', () => {
+  const firstContainer = createContainer({
+    scrollHeight: 100,
+    clientHeight: 100,
+  });
+  const loadMore = vi.fn();
+
+  const { rerender } = renderHook(
+    ({ container }) =>
+      useInfiniteLoading({
+        containerRef: container,
+        loadMore,
+        hasMore: true,
+        isLoaded: true,
+      }),
+    { initialProps: { container: firstContainer } },
+  );
+
+  expect(loadMore).toHaveBeenCalledTimes(1);
+
+  rerender({
+    container: createContainer({ scrollHeight: 100, clientHeight: 100 }),
+  });
+
+  expect(loadMore).toHaveBeenCalledTimes(2);
+});
