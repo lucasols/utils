@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { useOnChangeLayoutEffect } from './useOnChange';
-import { useScheduleToNextRender } from './useScheduleToNextRender';
 
 export type MountAnimStates = 'from' | 'enter' | 'leave' | 'unmounted';
 
@@ -24,8 +23,6 @@ export function useAnimateMountUnmount(
   );
   const timeoutRef = useRef<number>(-1);
 
-  const runInNextRender = useScheduleToNextRender();
-
   useOnChangeLayoutEffect(
     show,
     () => {
@@ -39,14 +36,8 @@ export function useAnimateMountUnmount(
       }
 
       if (show) {
-        if (animState === 'leave') {
-          setAnimState('unmounted');
-
-          runInNextRender(performMountAnimation);
-
-          return;
-        }
-
+        // when shown again during `leave` the element is still mounted, so it
+        // goes straight to `from` instead of being remounted
         performMountAnimation();
       } else {
         setAnimState('leave');

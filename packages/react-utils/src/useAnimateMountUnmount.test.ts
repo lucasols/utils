@@ -179,6 +179,40 @@ describe('useAnimateMountUnmount - Rapid Toggling', () => {
     }, { timeout: 200 });
   });
 
+  test('should keep the element mounted when shown again during leave', async () => {
+    const animationDuration = 50;
+    const renderedStates: MountAnimStates[] = [];
+
+    const { result, rerender } = renderHook(
+      ({ show }) => {
+        const hookResult = useAnimateMountUnmount(show, animationDuration);
+        renderedStates.push(hookResult[0]);
+        return hookResult;
+      },
+      { initialProps: { show: true } },
+    );
+
+    await waitFor(() => {
+      expect(result.current[0]).toBe('enter');
+    });
+
+    rerender({ show: false });
+    expect(result.current[0]).toBe('leave');
+
+    renderedStates.length = 0;
+    rerender({ show: true });
+
+    await waitFor(() => {
+      expect(result.current[0]).toBe('enter');
+    });
+
+    // the pending leave timeout must not unmount the element later
+    await sleep(animationDuration + 20);
+
+    expect(renderedStates).not.toContain('unmounted');
+    expect(result.current).toEqual(['enter', true]);
+  });
+
   test('should handle multiple rapid toggles', async () => {
     const { result, rerender } = renderHook(
       ({ show }) => useAnimateMountUnmount(show, 50),
