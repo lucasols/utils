@@ -7,12 +7,6 @@
 
 const has = Object.prototype.hasOwnProperty;
 
-function find(iter: any[], tar: any, maxDepth: number): any {
-  for (const key of iter.keys()) {
-    if (deepEqual(key, tar, maxDepth)) return key;
-  }
-}
-
 /**
  * Deep equality comparison between two values
  *
@@ -57,13 +51,19 @@ export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
       if (foo.size !== bar.size) {
         return false;
       }
+      let unmatched: any[] | undefined;
       for (len of foo) {
-        tmp = len;
-        if (tmp && typeof tmp === 'object') {
-          tmp = find(bar, tmp, maxDepth - 1);
-          if (!tmp) return false;
-        }
-        if (!bar.has(tmp)) return false;
+        if (bar.has(len)) continue;
+        if (!len || typeof len !== 'object') return false;
+        // match structurally equal items one-to-one, so a single item of `bar`
+        // can't stand in for several items of `foo`
+        const item = len;
+        unmatched ??= [...bar].filter((barItem) => !foo.has(barItem));
+        tmp = unmatched.findIndex((barItem) =>
+          deepEqual(item, barItem, maxDepth - 1),
+        );
+        if (tmp === -1) return false;
+        unmatched.splice(tmp, 1);
       }
       return true;
     }
@@ -72,15 +72,25 @@ export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
       if (foo.size !== bar.size) {
         return false;
       }
+      let unmatchedKeys: any[] | undefined;
       for (len of foo) {
         tmp = len[0];
-        if (tmp && typeof tmp === 'object') {
-          tmp = find(bar, tmp, maxDepth - 1);
-          if (!tmp) return false;
+        if (bar.has(tmp)) {
+          if (!deepEqual(len[1], bar.get(tmp), maxDepth - 1)) return false;
+          continue;
         }
-        if (!bar.has(tmp) || !deepEqual(len[1], bar.get(tmp), maxDepth - 1)) {
-          return false;
-        }
+        if (!tmp || typeof tmp !== 'object') return false;
+        // match structurally equal entries one-to-one, so a single entry of
+        // `bar` can't stand in for several entries of `foo`
+        const [key, value] = len;
+        unmatchedKeys ??= [...bar.keys()].filter((barKey) => !foo.has(barKey));
+        tmp = unmatchedKeys.findIndex(
+          (barKey) =>
+            deepEqual(key, barKey, maxDepth - 1) &&
+            deepEqual(value, bar.get(barKey), maxDepth - 1),
+        );
+        if (tmp === -1) return false;
+        unmatchedKeys.splice(tmp, 1);
       }
       return true;
     }

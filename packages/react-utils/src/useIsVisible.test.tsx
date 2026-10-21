@@ -118,3 +118,15 @@ test('is only visible when the intersection ratio reaches the threshold', () => 
   setIntersecting(true, 0.4);
   expect(result.current).toBe(false);
 });
+
+test('tolerates a ratio slightly below a full threshold', () => {
+  const ref = { current: document.createElement('div') };
+
+  const { result } = renderHook(() => useIsVisible(ref, { threshold: 1 }));
+
+  setIntersecting(true, 0.9999);
+  expect(result.current).toBe(true);
+
+  setIntersecting(true, 0.9);
+  expect(result.current).toBe(false);
+});

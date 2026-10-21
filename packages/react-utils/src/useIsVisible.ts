@@ -4,6 +4,8 @@ import { noopWithArgs } from './internalUtils/noopWithArgs';
 import { useStableRefValue } from './useDeepMemo';
 import { useLatestValue } from './useLatestValue';
 
+const THRESHOLD_TOLERANCE = 0.001;
+
 /**
  * Tracks whether the element in `ref` intersects the viewport (or the closest
  * `margin.rootSelector` ancestor) using an `IntersectionObserver`.
@@ -61,10 +63,13 @@ export function useIsVisible(
       ([entry]) => {
         if (!entry) return;
 
-        // `isIntersecting` ignores the threshold, it is true for any intersection
+        // `isIntersecting` ignores the threshold, it is true for any intersection.
+        // Browsers can report a ratio slightly below the crossed threshold (e.g.
+        // 0.9999 for a fully visible element with fractional geometry)
         const entryIsVisible =
           threshold > 0 ?
-            entry.intersectionRatio >= threshold
+            entry.isIntersecting &&
+            entry.intersectionRatio >= threshold - THRESHOLD_TOLERANCE
           : entry.isIntersecting;
 
         latestOnVisibilityChange.insideEffect?.(entryIsVisible);

@@ -6,13 +6,16 @@ type FakeEntry = { contentRect: { width: number; height: number } };
 
 let observerCallbacks: ((entries: FakeEntry[]) => void)[] = [];
 const disconnect = vi.fn();
+const observe = vi.fn();
 
 class FakeResizeObserver {
   constructor(callback: (entries: FakeEntry[]) => void) {
     observerCallbacks.push(callback);
   }
 
-  observe() {}
+  observe(element: Element, options?: { box?: string }) {
+    observe(element, options);
+  }
 
   disconnect() {
     disconnect();
@@ -35,6 +38,7 @@ function createElement(width: number, height: number) {
 beforeEach(() => {
   observerCallbacks = [];
   disconnect.mockClear();
+  observe.mockClear();
   vi.stubGlobal('ResizeObserver', FakeResizeObserver);
 });
 
@@ -109,4 +113,22 @@ test('does not observe when disabled and disconnects on unmount', () => {
 
   unmount();
   expect(disconnect).toHaveBeenCalledTimes(1);
+});
+
+test('observes the border box when measuring the client size', () => {
+  const ref = { current: createElement(100, 50) };
+
+  renderHook(() => useMeasureSize(ref, 0));
+
+  expect(observe).toHaveBeenLastCalledWith(ref.current, { box: 'border-box' });
+});
+
+test('observes the content box when using the content rect', () => {
+  const ref = { current: createElement(100, 50) };
+
+  renderHook(() => useMeasureSize(ref, 0, { useContentRect: true }));
+
+  expect(observe).toHaveBeenLastCalledWith(ref.current, {
+    box: 'content-box',
+  });
 });

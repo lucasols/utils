@@ -70,6 +70,7 @@ Each package follows a flat module structure:
 # Special Notes
 
 - Some utilities like `tsResult` are deprecated in favor of external libraries (`t-result`)
+- There is no need to change `package.json` exports field, the publish script will update it automatically.
 
 # Testing Best Practices
 

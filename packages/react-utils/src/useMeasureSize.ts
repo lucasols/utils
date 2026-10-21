@@ -88,7 +88,11 @@ export function useMeasureSize(
       });
     });
 
-    observer.observe(elementToUse);
+    // `clientWidth`/`clientHeight` include the padding, which the default
+    // content box observation misses
+    observer.observe(elementToUse, {
+      box: useContentRect ? 'content-box' : 'border-box',
+    });
 
     return () => {
       observer.disconnect();

@@ -79,6 +79,8 @@ Each package follows a flat module structure:
 - `vi.useFakeTimers()` is allowed, prefer it over real timers with `await sleep()` when testing time-based behavior
 
 - prefer `toMatchInlineSnapshot` over `toEqual`
+  - when using `toMatchInlineSnapshot` use `compactSnapshot` from `src/testUtils.ts` to get a more readable snapshot, it will produce a yaml string
+  - compactSnapshot will convert booleans to emojis true(✅) and false(❌)
 - prefer `toThrowErrorMatchingInlineSnapshot` over `toThrowError`
 - use `test` instead of `it`
 
@@ -96,3 +98,52 @@ Each package follows a flat module structure:
 - **JSDoc Best Practices**:
   - Do not add more than one example in JSDocs
   - Do not add examples for simple or very intuitive functions
+
+# Using Result types
+
+For functional error handling, use the `t-result` library, which ensures type safety and proper error handling.
+
+```ts
+import { Result } from 't-result';
+
+function doSomething(isCorrect: boolean): Result<string, Error> {
+  if (isCorrect) {
+    return Result.ok('success');
+  }
+
+  return Result.err(new Error('error'));
+}
+
+const result = doSomething(true);
+
+if (result.ok) {
+  console.log(result.value);
+} else {
+  console.log(result.error);
+}
+
+// this is also valid:
+if (result.error) {
+  console.log(result.error);
+} else {
+  console.log(result.value);
+}
+
+// unwrap methods:
+result.unwrap(); // throws if error
+result.unwrapOr('default'); // returns default if error
+result.unwrapOrNull(); // returns null if error
+```
+
+In tests use `assert` from `vitest` to narrow the type of the result.
+
+```ts
+import { assert } from 'vitest';
+
+test('test', () => {
+  const result = doSomething(true);
+
+  assert(!result.ok);
+  console.log(result.error);
+});
+```

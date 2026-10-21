@@ -1,5 +1,7 @@
 import { deepEqual } from '@ls-stack/utils/deepEqual';
-import { useRef } from 'react';
+import { useInsertionEffect, useRef } from 'react';
+
+type Memo<T> = { deps: unknown[]; value: T; prev: T | undefined };
 
 function areDepsEqual(prevDeps: unknown[], deps: unknown[]): boolean {
   if (prevDeps.length !== deps.length) return false;
@@ -15,18 +17,24 @@ export function useMemoWithPrev<T>(
   factory: (prev: T | undefined) => T,
   deps: unknown[],
 ): T {
-  const prev = useRef<T | undefined>(undefined);
-  const memo = useRef<{ deps: unknown[]; value: T } | null>(null);
+  // like `useMemo`, only committed renders update the cache, so a render that
+  // React throws away (e.g. a suspended transition) doesn't leak its result
+  const committedMemo = useRef<Memo<T> | null>(null);
 
-  if (!memo.current || !areDepsEqual(memo.current.deps, deps)) {
-    const next = factory(prev.current);
+  let memo = committedMemo.current;
 
-    if (!deepEqual(next, prev.current)) {
-      prev.current = next;
-    }
+  if (!memo || !areDepsEqual(memo.deps, deps)) {
+    const prev = memo?.prev;
+    const next = factory(prev);
 
-    memo.current = { deps, value: next };
+    memo = { deps, value: next, prev: deepEqual(next, prev) ? prev : next };
   }
 
-  return memo.current.value;
+  const renderMemo = memo;
+
+  useInsertionEffect(() => {
+    committedMemo.current = renderMemo;
+  });
+
+  return memo.value;
 }
