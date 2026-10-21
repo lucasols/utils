@@ -59,18 +59,22 @@ export function useIsVisible(
 
     wasNotVisibleInInitialRender.current = false;
 
+    // browsers can report a ratio slightly below the crossed threshold (e.g.
+    // 0.9999 for a fully visible element with fractional geometry), the same
+    // value is used to observe so every visibility change is notified
+    const effectiveThreshold =
+      threshold > 0 ? Math.max(0, threshold - THRESHOLD_TOLERANCE) : threshold;
+
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // delayed notifications can batch several entries, oldest first
+        const entry = entries.at(-1);
+
         if (!entry) return;
 
-        // `isIntersecting` ignores the threshold, it is true for any intersection.
-        // Browsers can report a ratio slightly below the crossed threshold (e.g.
-        // 0.9999 for a fully visible element with fractional geometry)
+        // `isIntersecting` ignores the threshold, it is true for any intersection
         const entryIsVisible =
-          threshold > 0 ?
-            entry.isIntersecting &&
-            entry.intersectionRatio >= threshold - THRESHOLD_TOLERANCE
-          : entry.isIntersecting;
+          entry.isIntersecting && entry.intersectionRatio >= effectiveThreshold;
 
         latestOnVisibilityChange.insideEffect?.(entryIsVisible);
         setIsVisible(entryIsVisible);
@@ -80,7 +84,7 @@ export function useIsVisible(
           stableRootMargin?.rootSelector ?
             observeElement.closest(stableRootMargin.rootSelector)
           : undefined,
-        threshold,
+        threshold: effectiveThreshold,
         rootMargin:
           typeof stableRootMargin?.margin === 'number' ?
             `${stableRootMargin.margin}px`

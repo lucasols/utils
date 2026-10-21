@@ -115,20 +115,33 @@ test('does not observe when disabled and disconnects on unmount', () => {
   expect(disconnect).toHaveBeenCalledTimes(1);
 });
 
-test('observes the border box when measuring the client size', () => {
+test('observes the default content box, which also changes with a scrollbar', () => {
   const ref = { current: createElement(100, 50) };
 
   renderHook(() => useMeasureSize(ref, 0));
 
-  expect(observe).toHaveBeenLastCalledWith(ref.current, { box: 'border-box' });
+  expect(observe).toHaveBeenLastCalledWith(ref.current, undefined);
 });
 
-test('observes the content box when using the content rect', () => {
-  const ref = { current: createElement(100, 50) };
+test('setRef keeps the initial value of the axis that is not measured', () => {
+  const element = createElement(30, 40);
 
-  renderHook(() => useMeasureSize(ref, 0, { useContentRect: true }));
+  const { result } = renderHook(() =>
+    useMeasureSize(null, 0, {
+      measureOnly: 'width',
+      getInitialHeight: () => 7,
+    }),
+  );
 
-  expect(observe).toHaveBeenLastCalledWith(ref.current, {
-    box: 'content-box',
+  act(() => {
+    result.current.setRef(element);
   });
+
+  expect(result.current.width).toBe(30);
+  expect(result.current.height).toBe(7);
+
+  triggerResize();
+
+  expect(result.current.width).toBe(30);
+  expect(result.current.height).toBe(7);
 });

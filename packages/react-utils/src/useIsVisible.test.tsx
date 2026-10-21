@@ -8,13 +8,17 @@ type FakeEntry = { isIntersecting: boolean; intersectionRatio: number };
 let observers: {
   callback: (entries: FakeEntry[]) => void;
   observed: Element[];
+  threshold: number | undefined;
 }[] = [];
 
 class FakeIntersectionObserver {
   private observer: (typeof observers)[number];
 
-  constructor(callback: (entries: FakeEntry[]) => void) {
-    this.observer = { callback, observed: [] };
+  constructor(
+    callback: (entries: FakeEntry[]) => void,
+    options?: { threshold?: number },
+  ) {
+    this.observer = { callback, observed: [], threshold: options?.threshold };
     observers.push(this.observer);
   }
 
@@ -129,4 +133,37 @@ test('tolerates a ratio slightly below a full threshold', () => {
 
   setIntersecting(true, 0.9);
   expect(result.current).toBe(false);
+});
+
+test('observes with the same threshold used to classify the visibility', () => {
+  const ref = { current: document.createElement('div') };
+
+  renderHook(() => useIsVisible(ref, { threshold: 1 }));
+  expect(observers[0]?.threshold).toBe(0.999);
+
+  observers = [];
+  renderHook(() => useIsVisible(ref));
+  expect(observers[0]?.threshold).toBe(0);
+});
+
+test('uses the latest entry when notifications are batched', () => {
+  const ref = { current: document.createElement('div') };
+
+  const { result } = renderHook(() => useIsVisible(ref));
+
+  act(() => {
+    observers[0]?.callback([
+      { isIntersecting: true, intersectionRatio: 1 },
+      { isIntersecting: false, intersectionRatio: 0 },
+    ]);
+  });
+  expect(result.current).toBe(false);
+
+  act(() => {
+    observers[0]?.callback([
+      { isIntersecting: false, intersectionRatio: 0 },
+      { isIntersecting: true, intersectionRatio: 1 },
+    ]);
+  });
+  expect(result.current).toBe(true);
 });

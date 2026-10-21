@@ -38,16 +38,19 @@ export function useMeasureSize(
 
   const [overrideRef, _setOverrideRef] = useState<HTMLElement | null>(null);
 
-  const setOverrideRef = useCallback((ref: HTMLElement | null) => {
-    if (ref) {
-      setMeasurement({
-        width: ref.clientWidth,
-        height: ref.clientHeight,
-        isMeasuring: false,
-      });
-    }
-    _setOverrideRef(ref);
-  }, []);
+  const setOverrideRef = useCallback(
+    (ref: HTMLElement | null) => {
+      if (ref) {
+        setMeasurement((current) => ({
+          width: measureOnly === 'height' ? current.width : ref.clientWidth,
+          height: measureOnly === 'width' ? current.height : ref.clientHeight,
+          isMeasuring: false,
+        }));
+      }
+      _setOverrideRef(ref);
+    },
+    [measureOnly],
+  );
 
   useEffect(() => {
     if (disable) return;
@@ -88,11 +91,9 @@ export function useMeasureSize(
       });
     });
 
-    // `clientWidth`/`clientHeight` include the padding, which the default
-    // content box observation misses
-    observer.observe(elementToUse, {
-      box: useContentRect ? 'content-box' : 'border-box',
-    });
+    // the default content box observation also catches a scrollbar appearing,
+    // which changes `clientWidth`/`clientHeight` but not the border box
+    observer.observe(elementToUse);
 
     return () => {
       observer.disconnect();
