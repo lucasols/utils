@@ -143,35 +143,4 @@ export class EnhancedMap<K, V> extends Map<K, V> {
 
     return map;
   }
-
-  static {
-    // Runtime-only compat for the removed `getOrInsert(key, fallback)`, kept out
-    // of the types because it conflicts with the native `Map#getOrInsert(key,
-    // value)`. Without it, old callers would hit the native method (where
-    // available) and store the fallback function itself as the value
-    Object.defineProperty(this.prototype, 'getOrInsert', {
-      value: legacyGetOrInsert,
-      writable: true,
-      configurable: true,
-    });
-  }
-}
-
-function isLegacyFallback(value: unknown): value is () => unknown {
-  return typeof value === 'function';
-}
-
-function legacyGetOrInsert(
-  this: Map<unknown, unknown>,
-  key: unknown,
-  valueOrFallback: unknown,
-): unknown {
-  if (!this.has(key)) {
-    this.set(
-      key,
-      isLegacyFallback(valueOrFallback) ? valueOrFallback() : valueOrFallback,
-    );
-  }
-
-  return this.get(key);
 }

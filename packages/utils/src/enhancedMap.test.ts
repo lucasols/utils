@@ -1,4 +1,4 @@
-import { assert, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { EnhancedMap } from './enhancedMap';
 
 describe('EnhancedMap', () => {
@@ -96,47 +96,6 @@ describe('EnhancedMap', () => {
       ['three', 3],
     ]);
     expect(map.toKeys()).toEqual(['one', 'two', 'three']);
-  });
-
-  describe('legacy getOrInsert (runtime only)', () => {
-    function callGetOrInsert(
-      map: EnhancedMap<string, unknown>,
-      key: string,
-      valueOrFallback: unknown,
-    ): unknown {
-      const getOrInsert: unknown = Reflect.get(map, 'getOrInsert');
-      assert(typeof getOrInsert === 'function');
-      return Reflect.apply(getOrInsert, map, [key, valueOrFallback]);
-    }
-
-    test('calls a fallback function only when the key is missing', () => {
-      const map = new EnhancedMap<string, unknown>([['a', 1]]);
-      let calls = 0;
-
-      expect(
-        callGetOrInsert(map, 'b', () => {
-          calls++;
-          return 2;
-        }),
-      ).toBe(2);
-      expect(callGetOrInsert(map, 'a', () => 3)).toBe(1);
-      expect(calls).toBe(1);
-      expect(map.get('b')).toBe(2);
-    });
-
-    test('inserts a plain value like the native method', () => {
-      const map = new EnhancedMap<string, unknown>();
-
-      expect(callGetOrInsert(map, 'a', 1)).toBe(1);
-      expect(callGetOrInsert(map, 'a', 2)).toBe(1);
-    });
-
-    test('is not enumerable on instances', () => {
-      const map = new EnhancedMap<string, number>();
-
-      expect(Object.keys(map)).toEqual([]);
-      expect(Object.hasOwn(map, 'getOrInsert')).toBe(false);
-    });
   });
 
   describe('static methods', () => {
