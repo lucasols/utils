@@ -96,8 +96,8 @@
   },
   "dependencies": {
     "@evtmitter/react": "^0.1.2",
-    "@ls-stack/browser-utils": "workspace:*",
-    "@ls-stack/utils": "workspace:*",
+    "@ls-stack/browser-utils": "workspace:^",
+    "@ls-stack/utils": "workspace:^",
     "evtmitter": "catalog:",
     "t-result": "catalog:"
   }

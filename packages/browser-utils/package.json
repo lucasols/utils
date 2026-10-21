@@ -38,7 +38,7 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@ls-stack/utils": "workspace:*"
+    "@ls-stack/utils": "workspace:^"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
