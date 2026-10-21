@@ -18,7 +18,7 @@ catalog:
   eslint-plugin-jsdoc: ^52.0.4
   eslint-plugin-unicorn: ^56.0.1
   eslint-plugin-vitest: ^0.5.4
-  evtmitter: ^1.0.2
+  evtmitter: ^1.1.1
   mitata: ^1.0.32
   prettier: 3.4.2
   prettier-plugin-organize-imports: ^4.1.0
@@ -33,6 +33,10 @@ catalog:
   typescript-eslint: ^8.70.1
   vite: ^6.0.11
   vitest: ^3.0.4
+
+minimumReleaseAgeExclude:
+  - '@evtmitter/react@0.1.2'
+  - evtmitter@1.1.1
 
 onlyBuiltDependencies:
   - esbuild
