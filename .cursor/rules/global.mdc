@@ -81,9 +81,6 @@ Each package follows a flat module structure:
 - **Framework**: Vitest for unit testing
 - Do not run tests with `pnpm vitest` use `pnpm test` instead
 
-- **Timing in Tests**:
-  - Do not use `vi.useFakeTimers()`
-  - Instead, use `await sleep()` with small intervals when simulating time-based behaviors
 - prefer `toMatchInlineSnapshot` over `toEqual`
 - prefer `toThrowErrorMatchingInlineSnapshot` over `toThrowError`
 - use `test` instead of `it`

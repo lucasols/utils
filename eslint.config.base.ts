@@ -84,11 +84,6 @@ export function createBaseConfig({
             message: 'No test.todo',
           },
           {
-            message:
-              'Do not use vi.useFakeTimers use real timers with await sleep() instead',
-            selector: 'CallExpression[callee.property.name="useFakeTimers"]',
-          },
-          {
             message: 'Do not use `it()` use `test()` instead',
             selector: 'CallExpression[callee.name="it"]',
           },

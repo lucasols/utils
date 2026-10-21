@@ -1,10 +1,5 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { isWindowFocused, onWindowFocus } from './window';
-
-// Mock the throttle function
-vi.mock('@ls-stack/utils/throttle', () => ({
-  throttle: vi.fn((fn) => fn), // Return the original function for testing
-}));
 
 // Mock window and document objects
 const mockAddEventListener = vi.fn();
@@ -30,6 +25,11 @@ Object.defineProperty(global, 'document', {
 describe('onWindowFocus', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   test('should add event listeners for focus and visibilitychange', () => {
@@ -157,6 +157,51 @@ describe('onWindowFocus', () => {
 
     // Should call removeEventListener again (though it won't have any effect)
     expect(mockRemoveEventListener).toHaveBeenCalledTimes(4);
+  });
+
+  test('should throttle calls from focus and visibilitychange events', () => {
+    const handler = vi.fn();
+
+    onWindowFocus(handler);
+
+    const focusHandler = mockAddEventListener.mock.calls.find(
+      (call) => call[0] === 'focus',
+    )?.[1];
+    const visibilityHandler = mockAddEventListener.mock.calls.find(
+      (call) => call[0] === 'visibilitychange',
+    )?.[1];
+
+    (focusHandler as (() => void) | undefined)?.();
+    (visibilityHandler as (() => void) | undefined)?.();
+
+    expect(handler).toHaveBeenCalledTimes(1);
+
+    vi.advanceTimersByTime(1000);
+
+    expect(handler).toHaveBeenCalledTimes(2);
+  });
+
+  test('should not call a pending throttled handler after cleanup', () => {
+    const handler = vi.fn();
+
+    const cleanup = onWindowFocus(handler);
+
+    const focusHandler = mockAddEventListener.mock.calls.find(
+      (call) => call[0] === 'focus',
+    )?.[1];
+    const visibilityHandler = mockAddEventListener.mock.calls.find(
+      (call) => call[0] === 'visibilitychange',
+    )?.[1];
+
+    (focusHandler as (() => void) | undefined)?.();
+    (visibilityHandler as (() => void) | undefined)?.();
+
+    expect(handler).toHaveBeenCalledTimes(1);
+
+    cleanup();
+    vi.advanceTimersByTime(1000);
+
+    expect(handler).toHaveBeenCalledTimes(1);
   });
 });
 

@@ -22,7 +22,8 @@ import { throttle } from '@ls-stack/utils/throttle';
  *   ```;
  *
  * @param handler - The function to call when the window gains focus
- * @returns A cleanup function to remove the event listeners
+ * @returns A cleanup function that removes the event listeners and cancels any
+ *   pending throttled call
  */
 export function onWindowFocus(handler: () => void): () => void {
   const throttledHandler = throttle(handler, 1000);
@@ -33,6 +34,7 @@ export function onWindowFocus(handler: () => void): () => void {
   return () => {
     window.removeEventListener('focus', throttledHandler);
     window.removeEventListener('visibilitychange', throttledHandler);
+    throttledHandler.cancel();
   };
 }
 
