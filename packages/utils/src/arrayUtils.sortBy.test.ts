@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { sortBy } from './arrayUtils';
+import { typingTest } from './typingTestUtils';
 
 describe('single level sort', () => {
   test('default props (asc)', () => {
@@ -166,4 +167,24 @@ describe('multilevel sort', () => {
       [1, '2021-07-08'],
     ]);
   });
+});
+
+test('accepts readonly arrays and returns a mutable copy', () => {
+  const items: readonly { id: number; price: number }[] = [
+    { id: 1, price: 10 },
+    { id: 2, price: 2 },
+  ];
+
+  const result = sortBy(items, (item) => item.price);
+
+  typingTest.expectTypesAreEqual<
+    typeof result,
+    { id: number; price: number }[]
+  >();
+
+  expect(result).toStrictEqual([
+    { id: 2, price: 2 },
+    { id: 1, price: 10 },
+  ]);
+  expect(result).not.toBe(items);
 });

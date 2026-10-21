@@ -80,10 +80,10 @@ export type SortByProps =
  * @param props
  */
 export function sortBy<T>(
-  arr: T[],
+  arr: readonly T[],
   sortByValue: SortByValueFn<T>,
   props: SortByProps = 'asc',
-) {
+): T[] {
   const order =
     Array.isArray(props) || typeof props === 'string' ?
       props
@@ -141,12 +141,14 @@ export function getAscIndexOrder(index: number | undefined): number {
   return index === -1 ? Infinity : (index ?? Infinity);
 }
 
-export function arrayWithPrev<T>(array: T[]): [current: T, prev: T | null][] {
+export function arrayWithPrev<T>(
+  array: readonly T[],
+): [current: T, prev: T | null][] {
   return array.map((item, i) => [item, array[i - 1] ?? null]);
 }
 
 export function arrayWithPrevAndIndex<T>(
-  array: T[],
+  array: readonly T[],
 ): { item: T; prev: T | null; index: number }[] {
   return array.map((item, i) => ({
     item,
@@ -183,7 +185,7 @@ export function looseIsInArray(
 }
 
 export function findAfterIndex<T>(
-  array: T[],
+  array: readonly T[],
   index: number,
   predicate: (item: T) => boolean,
 ): T | undefined {
@@ -197,7 +199,7 @@ export function findAfterIndex<T>(
 }
 
 export function findBeforeIndex<T>(
-  array: T[],
+  array: readonly T[],
   index: number,
   predicate: (item: T) => boolean,
 ): T | undefined {
@@ -221,7 +223,7 @@ export function rejectArrayUndefinedValues<T extends unknown[]>(array: T): T {
 }
 
 export function hasDuplicates<T>(
-  array: T[],
+  array: readonly T[],
   getKey: (item: T) => unknown = (item) => item,
 ): boolean {
   const seen = new Set();
@@ -302,7 +304,7 @@ export function truncateArray<T>(
  *   item matches
  */
 export function findAndMap<T, R>(
-  array: T[],
+  array: readonly T[],
   predicate: (value: T) => R | false,
 ): R | undefined {
   for (const item of array) {
@@ -344,7 +346,7 @@ type ArrayOps<T> = {
  *
  * @param array
  */
-export function arrayOps<T>(array: T[]): ArrayOps<T> {
+export function arrayOps<T>(array: readonly T[]): ArrayOps<T> {
   return {
     filterAndMap: (mapFilter) => filterAndMap(array, mapFilter),
     sortBy: (sortByValue, props) => sortBy(array, sortByValue, props),
@@ -363,7 +365,10 @@ export function arrayOps<T>(array: T[]): ArrayOps<T> {
  * @param separator - The value to insert between elements
  * @returns A new array with separator values inserted between elements
  */
-export function intersperse<T, I>(array: T[], separator: I): (T | I)[] {
+export function intersperse<T, I>(
+  array: readonly T[],
+  separator: I,
+): (T | I)[] {
   const result: (T | I)[] = [];
   for (let i = 0; i < array.length; i++) {
     result.push(array[i]!);

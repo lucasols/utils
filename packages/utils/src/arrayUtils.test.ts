@@ -1,9 +1,12 @@
 import { describe, expect, test } from 'vitest';
 import {
   arrayOps,
+  arrayWithPrev,
+  arrayWithPrevAndIndex,
   findAfterIndex,
   findAndMap,
   findBeforeIndex,
+  hasDuplicates,
   intersperse,
   looseIsInArray,
   rejectArrayUndefinedValues,
@@ -454,4 +457,32 @@ test('looseIsInArray', () => {
   expect(looseIsInArray(2, [1, '2', 3])).toBe(false);
   expect(looseIsInArray('2', [1, '2', 3])).toBe(true);
   expect(looseIsInArray(2, [1, '2', 3])).toBe(false);
+});
+
+test('non-mutating helpers accept readonly arrays', () => {
+  const items: readonly number[] = [1, 2, 3];
+
+  typingTest.expectTypesAreEqual<
+    ReturnType<typeof arrayWithPrev<number>>,
+    [current: number, prev: number | null][]
+  >();
+
+  expect(arrayWithPrev(items)).toStrictEqual([
+    [1, null],
+    [2, 1],
+    [3, 2],
+  ]);
+  expect(arrayWithPrevAndIndex(items)[1]).toStrictEqual({
+    item: 2,
+    prev: 1,
+    index: 1,
+  });
+  expect(findAfterIndex(items, 0, (item) => item > 1)).toBe(2);
+  expect(findBeforeIndex(items, 2, (item) => item < 3)).toBe(2);
+  expect(hasDuplicates(items)).toBe(false);
+  expect(findAndMap(items, (item) => (item === 2 ? 'two' : false))).toBe('two');
+  expect(intersperse(items, 0)).toStrictEqual([1, 0, 2, 0, 3]);
+  expect(arrayOps(items).sortBy((item) => -item, 'asc')).toStrictEqual([
+    3, 2, 1,
+  ]);
 });
