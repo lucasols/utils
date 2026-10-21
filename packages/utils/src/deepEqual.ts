@@ -7,12 +7,6 @@
 
 const has = Object.prototype.hasOwnProperty;
 
-function find(iter: any[], tar: any, maxDepth: number): any {
-  for (const key of iter.keys()) {
-    if (deepEqual(key, tar, maxDepth)) return key;
-  }
-}
-
 /**
  * Deep equality comparison between two values
  *
@@ -57,13 +51,19 @@ export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
       if (foo.size !== bar.size) {
         return false;
       }
+      let unmatched: any[] | undefined;
       for (len of foo) {
-        tmp = len;
-        if (tmp && typeof tmp === 'object') {
-          tmp = find(bar, tmp, maxDepth - 1);
-          if (!tmp) return false;
-        }
-        if (!bar.has(tmp)) return false;
+        if (bar.has(len)) continue;
+        if (!len || typeof len !== 'object') return false;
+        // match structurally equal items one-to-one, so a single item of `bar`
+        // can't stand in for several items of `foo`
+        const item = len;
+        unmatched ??= [...bar].filter((barItem) => !foo.has(barItem));
+        tmp = unmatched.findIndex((barItem) =>
+          deepEqual(item, barItem, maxDepth - 1),
+        );
+        if (tmp === -1) return false;
+        unmatched.splice(tmp, 1);
       }
       return true;
     }
@@ -72,15 +72,38 @@ export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
       if (foo.size !== bar.size) {
         return false;
       }
+      // entries with the same key and an equal value are matched first, the
+      // rest is matched structurally one-to-one, so a single entry of `bar`
+      // can't stand in for several entries of `foo`, and an object key shared
+      // by both maps with different values can still match another key
+      let pending: [any, any][] | undefined;
+      let matchedKeys: Set<any> | undefined;
       for (len of foo) {
         tmp = len[0];
-        if (tmp && typeof tmp === 'object') {
-          tmp = find(bar, tmp, maxDepth - 1);
-          if (!tmp) return false;
+        if (bar.has(tmp) && deepEqual(len[1], bar.get(tmp), maxDepth - 1)) {
+          if (tmp && typeof tmp === 'object') {
+            matchedKeys ??= new Set();
+            matchedKeys.add(tmp);
+          }
+          continue;
         }
-        if (!deepEqual(len[1], bar.get(tmp), maxDepth - 1)) {
-          return false;
-        }
+        if (!tmp || typeof tmp !== 'object') return false;
+        pending ??= [];
+        pending.push(len);
+      }
+      if (!pending) return true;
+      const unmatched = [...bar].filter(
+        ([barKey]) =>
+          barKey && typeof barKey === 'object' && !matchedKeys?.has(barKey),
+      );
+      for (const [key, value] of pending) {
+        tmp = unmatched.findIndex(
+          ([barKey, barValue]) =>
+            deepEqual(key, barKey, maxDepth - 1) &&
+            deepEqual(value, barValue, maxDepth - 1),
+        );
+        if (tmp === -1) return false;
+        unmatched.splice(tmp, 1);
       }
       return true;
     }

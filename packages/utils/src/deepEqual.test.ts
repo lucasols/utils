@@ -8,6 +8,9 @@ const obj1 = {
 
 const arr1 = [1];
 
+const mapKey1 = {};
+const mapKey2 = {};
+
 const cases: [
   name: string,
   tests: { name: string; a: any; b: any; result: boolean }[],
@@ -210,6 +213,90 @@ const cases: [
         ]),
         result: true,
       },
+      {
+        name: 'Different keys with undefined values',
+        a: new Map([['first', undefined]]),
+        b: new Map([['second', undefined]]),
+        result: false,
+      },
+      {
+        name: 'Same keys with undefined values',
+        a: new Map([['first', undefined]]),
+        b: new Map([['first', undefined]]),
+        result: true,
+      },
+      {
+        name: 'Equal object keys are matched one-to-one',
+        a: new Map([
+          [{}, 1],
+          [{}, 1],
+        ]),
+        b: new Map<object, number>([
+          [{}, 1],
+          [{ different: true }, 2],
+        ]),
+        result: false,
+      },
+      {
+        name: 'Equal object keys with different values',
+        a: new Map([
+          [mapKey1, 1],
+          [mapKey2, 2],
+        ]),
+        b: new Map([
+          [mapKey1, 1],
+          [mapKey2, 2],
+        ]),
+        result: true,
+      },
+      {
+        name: 'Equal object keys with different values in another map',
+        a: new Map([
+          [{}, 1],
+          [{}, 2],
+        ]),
+        b: new Map([
+          [{}, 2],
+          [{}, 1],
+        ]),
+        result: true,
+      },
+      {
+        name: 'Shared object key with a different value matches another key',
+        a: new Map([
+          [mapKey1, 1],
+          [{}, 2],
+        ]),
+        b: new Map([
+          [mapKey1, 2],
+          [{}, 1],
+        ]),
+        result: true,
+      },
+      {
+        name: 'Shared object key with a different value and no other match',
+        a: new Map([
+          [mapKey1, 1],
+          [{}, 2],
+        ]),
+        b: new Map([
+          [mapKey1, 3],
+          [{}, 1],
+        ]),
+        result: false,
+      },
+      {
+        name: 'Shared primitive key with a different value',
+        a: new Map<string | object, number>([
+          ['a', 1],
+          [{}, 2],
+        ]),
+        b: new Map<string | object, number>([
+          ['a', 2],
+          [{}, 1],
+        ]),
+        result: false,
+      },
     ],
   ],
   [
@@ -225,6 +312,18 @@ const cases: [
         name: 'Simple one level - 2',
         a: new Set([1, obj1]),
         b: new Set([1, obj1]),
+        result: true,
+      },
+      {
+        name: 'Equal object items are matched one-to-one',
+        a: new Set([{}, {}]),
+        b: new Set<object>([{}, { different: true }]),
+        result: false,
+      },
+      {
+        name: 'Equal object items in another set',
+        a: new Set([{ a: 1 }, { a: 1 }]),
+        b: new Set([{ a: 1 }, { a: 1 }]),
         result: true,
       },
     ],

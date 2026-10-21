@@ -1,10 +1,11 @@
 # Overview
 
-This is a monorepo containing three TypeScript utility packages:
+This is a monorepo containing four TypeScript utility packages:
 
 - **`@ls-stack/utils`** - Universal utilities that work in both browser and Node.js environments
 - **`@ls-stack/node-utils`** - Node.js-specific utilities (shell commands, file system operations)
 - **`@ls-stack/browser-utils`** - Browser-specific utilities (File API, DOM-related operations)
+- **`@ls-stack/react-utils`** - React hooks and components
 
 All packages are designed with a modular architecture where each utility is exported as a separate module to enable tree-shaking and selective imports.
 
@@ -31,6 +32,7 @@ To run commands in specific packages:
 - `pnpm --filter @ls-stack/utils <command>` - Run command in utils package
 - `pnpm --filter @ls-stack/node-utils <command>` - Run command in node-utils package
 - `pnpm --filter @ls-stack/browser-utils <command>` - Run command in browser-utils package
+- `pnpm --filter @ls-stack/react-utils <command>` - Run command in react-utils package
 
 ## Testing Single Files
 
@@ -48,7 +50,8 @@ To run commands in specific packages:
 packages/
 ├── utils/           # Universal utilities (browser + Node.js)
 ├── node-utils/      # Node.js-specific utilities
-└── browser-utils/   # Browser-specific utilities
+├── browser-utils/   # Browser-specific utilities
+└── react-utils/     # React hooks and components
 ```
 
 ## Module Structure
@@ -70,11 +73,13 @@ Each package follows a flat module structure:
 # Special Notes
 
 - Some utilities like `tsResult` are deprecated in favor of external libraries (`t-result`)
+- There is no need to change `package.json` exports field, the publish script will update it automatically.
 
 # Testing Best Practices
 
 - **Framework**: Vitest for unit testing
 - Do not run tests with `pnpm vitest` use `pnpm test` instead
+- `vi.useFakeTimers()` is allowed, prefer it over real timers with `await sleep()` when testing time-based behavior
 
 - prefer `toMatchInlineSnapshot` over `toEqual`
   - when using `toMatchInlineSnapshot` use `compactSnapshot` from `src/testUtils.ts` to get a more readable snapshot, it will produce a yaml string

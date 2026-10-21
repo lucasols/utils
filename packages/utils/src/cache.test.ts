@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { cachedGetter, createCache, fastCache, WithExpiration } from './cache';
 import { sleep } from './sleep';
@@ -374,9 +373,10 @@ describe('createCache', () => {
         await sleep(10);
         return 'first';
       });
-      const promise1 = cache.getOrInsertAsync('key1', mockFn1);
+      const result1 = await cache.getOrInsertAsync('key1', mockFn1);
 
-      // Wait for expiration plus debounce buffer
+      // the item age is counted from the promise resolution, wait for the
+      // expiration plus a buffer
       await sleep(30);
 
       // Second call - should create new promise
@@ -384,9 +384,7 @@ describe('createCache', () => {
         await sleep(10);
         return 'second';
       });
-      const promise2 = cache.getOrInsertAsync('key1', mockFn2);
-
-      const [result1, result2] = await Promise.all([promise1, promise2]);
+      const result2 = await cache.getOrInsertAsync('key1', mockFn2);
 
       expect(result1).toBe('first');
       expect(result2).toBe('second');
@@ -1091,7 +1089,7 @@ describe('fastCache', () => {
     const cache = fastCache<{ data: number[]; metadata: { id: string } }>();
     const complexObject = {
       data: [1, 2, 3, 4, 5],
-      metadata: { id: 'test-123' }
+      metadata: { id: 'test-123' },
     };
 
     const mockFn = vi.fn(() => complexObject);

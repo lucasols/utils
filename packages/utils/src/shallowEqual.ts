@@ -48,7 +48,7 @@ export function shallowEqual(foo: any, bar: any): boolean {
           tmp = find(bar, tmp);
           if (!tmp) return false;
         }
-        if (len[1] !== bar.get(tmp)) {
+        if (!bar.has(tmp) || len[1] !== bar.get(tmp)) {
           return false;
         }
       }
