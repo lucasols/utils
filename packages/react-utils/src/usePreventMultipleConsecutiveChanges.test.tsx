@@ -154,3 +154,29 @@ test('starts the clear timeout when the change commits', () => {
   });
   expect(result.current).toBe(false);
 });
+
+test('does not stay loading when the change crosses the min time between renders', () => {
+  const { result, rerender } = renderHook(
+    ({ changeKey }) => usePreventMultipleConsecutiveChanges(changeKey, 1000),
+    { initialProps: { changeKey: 'a' } },
+  );
+
+  // the render with the new key sees a fast change and sets the loading, the
+  // re-render it causes (and its commit) already sees a slow one
+  const startTime = Date.now();
+  vi.spyOn(Date, 'now')
+    .mockReturnValueOnce(startTime + 999)
+    .mockReturnValue(startTime + 1000);
+
+  rerender({ changeKey: 'b' });
+
+  expect(result.current).toBe(false);
+
+  act(() => {
+    vi.advanceTimersByTime(10_000);
+  });
+
+  expect(result.current).toBe(false);
+
+  vi.restoreAllMocks();
+});

@@ -122,3 +122,17 @@ test('getLazyValueWithDeps compares with the deps of the latest render', () => {
 
   expect(result.current).toBe(second);
 });
+
+test('getValue caches an initial undefined value', () => {
+  const nullishEqual = (a: unknown, b: unknown) => (a ?? null) === (b ?? null);
+  const initialProps: { value: null | undefined } = { value: undefined };
+
+  const { result, rerender } = renderHook(
+    ({ value }) => useRenderMemoizer().getValue('key', value, nullishEqual),
+    { initialProps },
+  );
+
+  rerender({ value: null });
+
+  expect(result.current).toBeUndefined();
+});

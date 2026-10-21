@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from 'react';
 import type { ElementTarget } from './internalUtils/useCommittedElement';
 import {
-  resolveElementTarget,
+  isCommittedElementOutdated,
   useCommittedElement,
 } from './internalUtils/useCommittedElement';
 import { useStableRefValue } from './useDeepMemo';
@@ -52,11 +52,12 @@ export function useIsVisible(
   useLayoutEffect(() => {
     if (disabled) return;
 
-    if (!observeElement) {
-      // the ref was attached in this commit and the committed element update
-      // is already scheduled, reporting `false` now would be a spurious change
-      if (resolveElementTarget(target)) return;
+    // the ref was attached to another element in this commit and the committed
+    // element update is already scheduled, observing the outdated element (or
+    // reporting `false` while it is `null`) would be a spurious change
+    if (isCommittedElementOutdated(target, observeElement)) return;
 
+    if (!observeElement) {
       latestOnVisibilityChange.insideEffect?.(false);
       setIsVisible(false);
       return;

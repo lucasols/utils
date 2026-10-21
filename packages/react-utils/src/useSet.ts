@@ -22,8 +22,12 @@ export function useSet<T>(
 ): UseSet<T> {
   const [values, _setValues] = useState(initialValue ?? []);
 
-  // the next value is computed outside the state updater, which React can call
-  // during render, more than once or for a state that never commits
+  // the value notified to `onUpdate` is computed outside the state updater,
+  // which React can call during render, more than once or for a state that
+  // never commits. The state itself still goes through React's update queue,
+  // so an urgent update isn't based on a pending transition update. The queue
+  // applies every update in call order, as this ref does, so the last notified
+  // value is the state React ends up with
   const latestValues = useRef(values);
 
   const latestOnUpdate = useLatestValue(onUpdate);
@@ -33,10 +37,11 @@ export function useSet<T>(
       const prev = latestValues.current;
       const value = isFunction(newValues) ? newValues(prev) : newValues;
 
+      _setValues(newValues);
+
       if (value === prev) return;
 
       latestValues.current = value;
-      _setValues(value);
 
       if (latestOnUpdate.insideEffect) {
         latestOnUpdate.insideEffect(value);

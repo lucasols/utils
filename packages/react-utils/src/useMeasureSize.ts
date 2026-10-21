@@ -2,7 +2,10 @@ import { debounce, isDebouncedFn } from '@ls-stack/utils/debounce';
 import { keepPrevIfUnchanged } from '@ls-stack/utils/keepPrevIfUnchanged';
 import { useCallback, useEffect, useState } from 'react';
 import type { ElementTarget } from './internalUtils/useCommittedElement';
-import { useCommittedElement } from './internalUtils/useCommittedElement';
+import {
+  isCommittedElementOutdated,
+  useCommittedElement,
+} from './internalUtils/useCommittedElement';
 
 /**
  * Measures an element's size with a `ResizeObserver`. Pass an element ref, the
@@ -62,6 +65,11 @@ export function useMeasureSize(
   useEffect(() => {
     if (disable) return;
 
+    // the update to the element attached in this commit is already scheduled
+    if (!overrideRef && isCommittedElementOutdated(target, targetElement)) {
+      return;
+    }
+
     const elementToUse = overrideRef || targetElement;
 
     if (!elementToUse) return;
@@ -114,6 +122,7 @@ export function useMeasureSize(
     disable,
     measureOnly,
     overrideRef,
+    target,
     targetElement,
     useContentRect,
   ]);

@@ -1,5 +1,12 @@
 import { act, render, renderHook } from '@testing-library/react';
-import { StrictMode, useState } from 'react';
+import {
+  startTransition,
+  StrictMode,
+  Suspense,
+  use,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import { afterEach, expect, test, vi } from 'vitest';
 import { useSet } from './useSet';
 
@@ -126,4 +133,51 @@ test('does not call onUpdate when nothing changed', () => {
   });
 
   expect(onUpdate).not.toHaveBeenCalled();
+});
+
+test('an update in a transition that never commits is not the base of urgent updates', async () => {
+  const neverResolves = new Promise<never>(() => {});
+  const commits: string[] = [];
+  const controls: {
+    set: (items: string[]) => void;
+    add: (item: string) => void;
+  } = { set: () => {}, add: () => {} };
+
+  function Items({ items }: { items: string[] }) {
+    if (items.length === 0) use(neverResolves);
+
+    useLayoutEffect(() => {
+      commits.push(items.join(','));
+    });
+
+    return null;
+  }
+
+  function App() {
+    const { array, set, add } = useSet<string>(['a']);
+    controls.set = set;
+    controls.add = add;
+
+    return (
+      <Suspense fallback="loading">
+        <Items items={array} />
+      </Suspense>
+    );
+  }
+
+  render(<App />);
+
+  // the transition suspends, so React keeps the committed selection
+  await act(async () => {
+    startTransition(() => {
+      controls.set([]);
+    });
+  });
+
+  await act(async () => {
+    controls.add('b');
+  });
+
+  expect(commits[0]).toBe('a');
+  expect(commits[1]).toBe('a,b');
 });

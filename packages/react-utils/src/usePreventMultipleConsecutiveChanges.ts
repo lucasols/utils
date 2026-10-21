@@ -67,6 +67,12 @@ export function usePreventMultipleConsecutiveChanges(
       cleanFakeLoadingTimeout.clearAndCall(() => {
         setFakeLoading(false);
       }, minTimeBetweenChangesMs - delta);
+    } else {
+      // the render that set the loading can see a smaller delta than this
+      // commit's render (it re-renders right after), any previous timeout is
+      // already due for a change this far from the previous one
+      cleanFakeLoadingTimeout.clear();
+      setFakeLoading(false);
     }
 
     committedChange.current = { key: changeKey, openTime: renderTime };

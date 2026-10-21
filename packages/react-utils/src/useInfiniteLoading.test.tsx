@@ -259,3 +259,39 @@ test('follows a ref container replaced in a later commit', () => {
   scrollTo(second, 900);
   expect(loadMore).toHaveBeenCalledTimes(1);
 });
+
+test('does not measure the previous container when switching refs as loading ends', () => {
+  const previous = createContainer({ scrollHeight: 100, clientHeight: 100 });
+  const next = createContainer({ scrollHeight: 1000, clientHeight: 100 });
+  const previousRef = { current: previous };
+  const nextRef = { current: next };
+  const loadMore = vi.fn();
+
+  const { rerender } = renderHook(
+    ({ containerRef, isLoaded }) =>
+      useInfiniteLoading({ containerRef, loadMore, hasMore: true, isLoaded }),
+    { initialProps: { containerRef: previousRef, isLoaded: false } },
+  );
+
+  rerender({ containerRef: nextRef, isLoaded: true });
+
+  expect(loadMore).not.toHaveBeenCalled();
+});
+
+test('measures only the attached container when a ref moves as loading ends', () => {
+  const previous = createContainer({ scrollHeight: 100, clientHeight: 100 });
+  const next = createContainer({ scrollHeight: 100, clientHeight: 100 });
+  const containerRef: { current: HTMLElement | null } = { current: previous };
+  const loadMore = vi.fn();
+
+  const { rerender } = renderHook(
+    ({ isLoaded }) =>
+      useInfiniteLoading({ containerRef, loadMore, hasMore: true, isLoaded }),
+    { initialProps: { isLoaded: false } },
+  );
+
+  containerRef.current = next;
+  rerender({ isLoaded: true });
+
+  expect(loadMore).toHaveBeenCalledTimes(1);
+});

@@ -40,13 +40,15 @@ export function useRenderMemoizer(): RenderMemoizer {
   const getValue = useCallback<RenderMemoizer['getValue']>(
     (itemKey, value, equalityFn = shallowEqual) => {
       const prev = cache.keyedItems.get(itemKey);
+      const hasPrev = cache.keyedItems.has(itemKey);
 
       const valueToUse: typeof value =
-        cache.keyedItems.has(itemKey) && equalityFn(prev, value) ? prev : value;
+        hasPrev && equalityFn(prev, value) ? prev : value;
 
       cache.keyedItemsTouched.add(itemKey);
 
-      if (prev !== valueToUse) {
+      // an `undefined` value must also be cached when the key is missing
+      if (!hasPrev || prev !== valueToUse) {
         cache.keyedItems.set(itemKey, valueToUse);
       }
 

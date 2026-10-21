@@ -2,7 +2,10 @@ import { shallowEqual } from '@ls-stack/utils/shallowEqual';
 import { throttle } from '@ls-stack/utils/throttle';
 import { useEffect } from 'react';
 import type { ElementTarget } from './internalUtils/useCommittedElement';
-import { useCommittedElement } from './internalUtils/useCommittedElement';
+import {
+  isCommittedElementOutdated,
+  useCommittedElement,
+} from './internalUtils/useCommittedElement';
 import { useLatestValue } from './useLatestValue';
 import { useOnChange } from './useOnChange';
 
@@ -36,6 +39,10 @@ export function useInfiniteLoading({
     [isLoaded, hasMore, containerElement, disable],
     () => {
       if (disable) return;
+
+      // measure the container attached in this commit, the update to it is
+      // already scheduled and calls this again
+      if (isCommittedElementOutdated(containerRef, containerElement)) return;
 
       const element = containerElement;
 
@@ -89,6 +96,8 @@ export function useInfiniteLoading({
   useEffect(() => {
     if (disable || !isLoaded) return;
 
+    if (isCommittedElementOutdated(containerRef, containerElement)) return;
+
     const container = containerElement;
 
     if (!container) return;
@@ -101,5 +110,5 @@ export function useInfiniteLoading({
       container.removeEventListener('scroll', onScrollThrottle);
       onScrollThrottle.cancel();
     };
-  }, [containerElement, isLoaded, disable, onScroll]);
+  }, [containerElement, containerRef, isLoaded, disable, onScroll]);
 }
