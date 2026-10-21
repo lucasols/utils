@@ -5,6 +5,7 @@ import {
   useCommittedElement,
 } from './internalUtils/useCommittedElement';
 
+// relative, so a small positive threshold stays positive
 const THRESHOLD_TOLERANCE = 0.001;
 
 /**
@@ -63,8 +64,7 @@ export function useIsVisible(
     // browsers can report a ratio slightly below the crossed threshold (e.g.
     // 0.9999 for a fully visible element with fractional geometry), the same
     // value is used to observe so every visibility change is notified
-    const effectiveThreshold =
-      threshold > 0 ? Math.max(0, threshold - THRESHOLD_TOLERANCE) : threshold;
+    const effectiveThreshold = threshold * (1 - THRESHOLD_TOLERANCE);
 
     const observer = new IntersectionObserver(
       (entries) => {

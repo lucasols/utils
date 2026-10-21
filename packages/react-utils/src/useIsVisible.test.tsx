@@ -183,6 +183,20 @@ test('observes with the same threshold used to classify the visibility', () => {
   expect(observers[0]?.threshold).toBe(0);
 });
 
+test('keeps a small positive threshold positive', () => {
+  const ref = { current: document.createElement('div') };
+
+  const { result } = renderHook(() => useIsVisible(ref, { threshold: 0.0005 }));
+
+  expect(observers[0]?.threshold).toBeGreaterThan(0);
+
+  setIntersecting(true, 0);
+  expect(result.current).toBe(false);
+
+  setIntersecting(true, 0.0005);
+  expect(result.current).toBe(true);
+});
+
 test('uses the latest entry when notifications are batched', () => {
   const ref = { current: document.createElement('div') };
 
@@ -320,5 +334,30 @@ test('follows an element passed directly when a child replaces it', () => {
   });
   expect(observers.map((observer) => observer.observed)).toEqual([
     [getByTestId('b')],
+  ]);
+});
+
+test('does not loop when the ref element is recreated on every render', () => {
+  let renderId = 0;
+
+  function Component({ recreate }: { recreate: boolean }) {
+    const ref = useRef<HTMLDivElement>(null);
+    useIsVisible(ref);
+    renderId += 1;
+    return (
+      <div
+        key={recreate ? renderId : 'stable'}
+        ref={ref}
+        data-testid="recreated-target"
+      />
+    );
+  }
+
+  const { rerender, getByTestId } = render(<Component recreate />);
+
+  rerender(<Component recreate={false} />);
+
+  expect(observers.map((observer) => observer.observed)).toEqual([
+    [getByTestId('recreated-target')],
   ]);
 });
