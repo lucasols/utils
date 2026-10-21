@@ -1,14 +1,19 @@
 import { debounce, isDebouncedFn } from '@ls-stack/utils/debounce';
 import { keepPrevIfUnchanged } from '@ls-stack/utils/keepPrevIfUnchanged';
-import type { RefObject } from 'react';
 import { useCallback, useEffect, useState } from 'react';
+import type { ElementTarget } from './internalUtils/useCommittedElement';
+import { useCommittedElement } from './internalUtils/useCommittedElement';
 
 /**
- * Measures an element's size with a `ResizeObserver`. Pass an element ref or
- * attach the returned `setRef` to the element.
+ * Measures an element's size with a `ResizeObserver`. Pass an element ref, the
+ * element itself, or attach the returned `setRef` to the element.
+ *
+ * A ref is read again after every commit of the component that uses the hook,
+ * use `setRef` or pass the element when it can be attached, replaced or removed
+ * by a child component without this one re-rendering.
  */
 export function useMeasureSize(
-  elementRef: RefObject<HTMLElement | null> | null,
+  target: ElementTarget,
   debounceMs = 100,
   {
     getInitialHeight,
@@ -38,6 +43,8 @@ export function useMeasureSize(
 
   const [overrideRef, _setOverrideRef] = useState<HTMLElement | null>(null);
 
+  const targetElement = useCommittedElement(target);
+
   const setOverrideRef = useCallback(
     (ref: HTMLElement | null) => {
       if (ref) {
@@ -55,7 +62,7 @@ export function useMeasureSize(
   useEffect(() => {
     if (disable) return;
 
-    const elementToUse = overrideRef || elementRef?.current;
+    const elementToUse = overrideRef || targetElement;
 
     if (!elementToUse) return;
 
@@ -105,15 +112,15 @@ export function useMeasureSize(
   }, [
     debounceMs,
     disable,
-    elementRef,
     measureOnly,
     overrideRef,
+    targetElement,
     useContentRect,
   ]);
 
   return {
     ...measurement,
     setRef: setOverrideRef,
-    refElement: overrideRef || elementRef?.current || null,
+    refElement: overrideRef || targetElement,
   };
 }

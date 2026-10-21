@@ -1,5 +1,5 @@
 import { isFunction } from '@ls-stack/utils/typeGuards';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useLatestValue } from './useLatestValue';
 
 type UseSet<T> = {
@@ -12,26 +12,35 @@ type UseSet<T> = {
   array: T[];
 };
 
-/** Array state with set-like operations, items are compared by reference. */
+/**
+ * Array state with set-like operations, items are compared by reference.
+ * `onUpdate` is called once for each change, in the same call that made it.
+ */
 export function useSet<T>(
   initialValue?: T[] | (() => T[]),
   { onUpdate }: { onUpdate?: (newValues: T[]) => void } = {},
 ): UseSet<T> {
   const [values, _setValues] = useState(initialValue ?? []);
 
+  // the next value is computed outside the state updater, which React can call
+  // during render, more than once or for a state that never commits
+  const latestValues = useRef(values);
+
   const latestOnUpdate = useLatestValue(onUpdate);
 
   const setValues = useCallback(
     (newValues: T[] | ((prev: T[]) => T[])) => {
-      _setValues((v) => {
-        const value = isFunction(newValues) ? newValues(v) : newValues;
+      const prev = latestValues.current;
+      const value = isFunction(newValues) ? newValues(prev) : newValues;
 
-        if (latestOnUpdate.insideEffect) {
-          latestOnUpdate.insideEffect(value);
-        }
+      if (value === prev) return;
 
-        return value;
-      });
+      latestValues.current = value;
+      _setValues(value);
+
+      if (latestOnUpdate.insideEffect) {
+        latestOnUpdate.insideEffect(value);
+      }
     },
     [latestOnUpdate],
   );

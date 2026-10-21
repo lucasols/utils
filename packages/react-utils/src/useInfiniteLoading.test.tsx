@@ -1,4 +1,5 @@
-import { renderHook } from '@testing-library/react';
+import { act, render, renderHook } from '@testing-library/react';
+import { useRef, useState } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { useInfiniteLoading } from './useInfiniteLoading';
 
@@ -214,4 +215,47 @@ test('checks the content size again when the container is replaced', () => {
   });
 
   expect(loadMore).toHaveBeenCalledTimes(2);
+});
+
+test('follows a ref container replaced in a later commit', () => {
+  const loadMore = vi.fn();
+  const controls: { setKey: (key: string) => void } = { setKey: () => {} };
+
+  function Component() {
+    const [key, setKey] = useState('a');
+    controls.setKey = setKey;
+    const containerRef = useRef<HTMLDivElement>(null);
+    useInfiniteLoading({
+      containerRef,
+      loadMore,
+      hasMore: true,
+      isLoaded: true,
+    });
+    return (
+      <div
+        key={key}
+        ref={containerRef}
+        data-testid={key}
+      />
+    );
+  }
+
+  const { getByTestId } = render(<Component />);
+  const first = getByTestId('a');
+
+  act(() => {
+    controls.setKey('b');
+  });
+  const second = getByTestId('b');
+
+  for (const element of [first, second]) {
+    Object.defineProperty(element, 'scrollHeight', { value: 1000 });
+    Object.defineProperty(element, 'clientHeight', { value: 100 });
+  }
+
+  scrollTo(first, 900);
+  expect(loadMore).not.toHaveBeenCalled();
+
+  scrollTo(second, 900);
+  expect(loadMore).toHaveBeenCalledTimes(1);
 });

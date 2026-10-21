@@ -1,13 +1,19 @@
 import { shallowEqual } from '@ls-stack/utils/shallowEqual';
 import { throttle } from '@ls-stack/utils/throttle';
-import type { RefObject } from 'react';
 import { useEffect } from 'react';
+import type { ElementTarget } from './internalUtils/useCommittedElement';
+import { useCommittedElement } from './internalUtils/useCommittedElement';
 import { useLatestValue } from './useLatestValue';
 import { useOnChange } from './useOnChange';
 
 /**
  * Calls `loadMore` when the container is scrolled near its end, or when the
  * loaded content doesn't fill the container yet.
+ *
+ * `containerRef` can be a ref or the element itself. A ref is read again after
+ * every commit of the component that uses the hook, pass the element (e.g. from
+ * a `useState` callback ref) when it can be attached, replaced or removed by a
+ * child component without this one re-rendering.
  */
 export function useInfiniteLoading({
   containerRef,
@@ -20,24 +26,18 @@ export function useInfiniteLoading({
   loadMore: () => void;
   hasMore: boolean;
   isLoaded: boolean;
-  containerRef: RefObject<HTMLElement | null> | HTMLElement | null;
+  containerRef: ElementTarget;
   triggerMargin?: number;
   disable?: boolean;
 }) {
-  function getContainerElement() {
-    if (containerRef instanceof HTMLElement) return containerRef;
-
-    return containerRef?.current;
-  }
-
-  const containerElement = getContainerElement();
+  const containerElement = useCommittedElement(containerRef);
 
   useOnChange(
     [isLoaded, hasMore, containerElement, disable],
     () => {
       if (disable) return;
 
-      const element = getContainerElement();
+      const element = containerElement;
 
       if (!element || !isLoaded) return;
 
@@ -66,7 +66,7 @@ export function useInfiniteLoading({
   const onScroll = useLatestValue(() => {
     if (disable) return;
 
-    const element = getContainerElement();
+    const element = containerElement;
 
     if (!element || !isLoaded) return;
 
@@ -89,12 +89,7 @@ export function useInfiniteLoading({
   useEffect(() => {
     if (disable || !isLoaded) return;
 
-    // the container may mount or be replaced after the render that read the
-    // ref (e.g. after loading), so read it again after commit
-    const container =
-      containerElement?.isConnected ? containerElement
-      : containerRef instanceof HTMLElement ? containerRef
-      : containerRef?.current;
+    const container = containerElement;
 
     if (!container) return;
 
@@ -106,5 +101,5 @@ export function useInfiniteLoading({
       container.removeEventListener('scroll', onScrollThrottle);
       onScrollThrottle.cancel();
     };
-  }, [containerRef, containerElement, isLoaded, disable, onScroll]);
+  }, [containerElement, isLoaded, disable, onScroll]);
 }

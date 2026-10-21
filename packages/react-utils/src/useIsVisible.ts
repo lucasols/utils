@@ -1,17 +1,25 @@
-import type { RefObject } from 'react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { noopWithArgs } from './internalUtils/noopWithArgs';
+import { useLayoutEffect, useState } from 'react';
+import type { ElementTarget } from './internalUtils/useCommittedElement';
+import {
+  resolveElementTarget,
+  useCommittedElement,
+} from './internalUtils/useCommittedElement';
 import { useStableRefValue } from './useDeepMemo';
 import { useLatestValue } from './useLatestValue';
 
 const THRESHOLD_TOLERANCE = 0.001;
 
 /**
- * Tracks whether the element in `ref` intersects the viewport (or the closest
+ * Tracks whether the target element intersects the viewport (or the closest
  * `margin.rootSelector` ancestor) using an `IntersectionObserver`.
+ *
+ * The target can be a ref or the element itself. A ref is read again after
+ * every commit of the component that uses the hook, pass the element (e.g. from
+ * a `useState` callback ref) when it can be attached, replaced or removed by a
+ * child component without this one re-rendering.
  */
 export function useIsVisible(
-  ref: RefObject<HTMLElement | null>,
+  target: ElementTarget,
   {
     threshold = 0,
     initialVisibility = false,
@@ -39,25 +47,20 @@ export function useIsVisible(
 
   const latestOnVisibilityChange = useLatestValue(onVisibilityChange);
 
-  const [forceUpdate, setForceUpdate] = useState(0);
-
-  const wasNotVisibleInInitialRender = useRef(false);
-
-  const observeElement = ref.current;
+  const observeElement = useCommittedElement(target);
 
   useLayoutEffect(() => {
     if (disabled) return;
 
-    noopWithArgs(forceUpdate);
-
     if (!observeElement) {
+      // the ref was attached in this commit and the committed element update
+      // is already scheduled, reporting `false` now would be a spurious change
+      if (resolveElementTarget(target)) return;
+
       latestOnVisibilityChange.insideEffect?.(false);
       setIsVisible(false);
-      wasNotVisibleInInitialRender.current = true;
       return;
     }
-
-    wasNotVisibleInInitialRender.current = false;
 
     // browsers can report a ratio slightly below the crossed threshold (e.g.
     // 0.9999 for a fully visible element with fractional geometry), the same
@@ -103,18 +106,12 @@ export function useIsVisible(
     };
   }, [
     disabled,
-    forceUpdate,
     latestOnVisibilityChange,
     observeElement,
     stableRootMargin,
+    target,
     threshold,
   ]);
-
-  useEffect(() => {
-    if (wasNotVisibleInInitialRender.current) {
-      setForceUpdate((prev) => prev + 1);
-    }
-  }, []);
 
   return isVisible;
 }

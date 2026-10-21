@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useInsertionEffect, useRef } from 'react';
 
 /**
  * Returns `value` only when `shouldUpdate(prevValue, value)` is true, otherwise
@@ -8,16 +8,21 @@ export function useConditionalValueUpdate<T>(
   value: T,
   shouldUpdate: (prevValue: T, value: T) => boolean,
   initialValue = value,
-) {
-  const lastValidValue = useRef(initialValue);
+): T {
+  // only committed renders update the accepted value, so a render that React
+  // throws away (e.g. a suspended transition) doesn't replace it
+  const committedValue = useRef(initialValue);
 
-  if (
-    value !== lastValidValue.current &&
-    shouldUpdate(lastValidValue.current, value)
-  ) {
-    lastValidValue.current = value;
-    return value;
-  }
+  const lastValidValue = committedValue.current;
 
-  return lastValidValue.current;
+  const nextValue =
+    value !== lastValidValue && shouldUpdate(lastValidValue, value) ?
+      value
+    : lastValidValue;
+
+  useInsertionEffect(() => {
+    committedValue.current = nextValue;
+  });
+
+  return nextValue;
 }

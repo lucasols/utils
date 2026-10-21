@@ -1,5 +1,5 @@
 import { act, render, renderHook } from '@testing-library/react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { useIsVisible } from './useIsVisible';
 
@@ -166,4 +166,122 @@ test('uses the latest entry when notifications are batched', () => {
     ]);
   });
   expect(result.current).toBe(true);
+});
+
+test('does not report a false visibility before observing an element rendered by the same component', () => {
+  const onVisibilityChange = vi.fn();
+  const renders: boolean[] = [];
+
+  function Component() {
+    const ref = useRef<HTMLDivElement>(null);
+    renders.push(
+      useIsVisible(ref, { initialVisibility: true, onVisibilityChange }),
+    );
+    return <div ref={ref} />;
+  }
+
+  render(<Component />);
+
+  expect(renders.every(Boolean)).toBe(true);
+  expect(onVisibilityChange).not.toHaveBeenCalled();
+  expect(observers).toHaveLength(1);
+});
+
+test('reports false on mount when there is no element to observe', () => {
+  const onVisibilityChange = vi.fn();
+  const ref = { current: null };
+
+  const { result } = renderHook(() =>
+    useIsVisible(ref, { initialVisibility: true, onVisibilityChange }),
+  );
+
+  expect(result.current).toBe(false);
+  expect(onVisibilityChange).toHaveBeenCalledWith(false);
+});
+
+test('follows a ref attached, replaced and removed in later commits', () => {
+  const controls: { setTarget: (target: 'none' | 'a' | 'b') => void } = {
+    setTarget: () => {},
+  };
+  let isVisible: boolean | undefined;
+
+  function Component() {
+    const [target, setTarget] = useState<'none' | 'a' | 'b'>('none');
+    controls.setTarget = setTarget;
+    const ref = useRef<HTMLDivElement>(null);
+    isVisible = useIsVisible(ref);
+    return target === 'none' ? null : (
+        <div
+          key={target}
+          ref={ref}
+          data-testid={target}
+        />
+      );
+  }
+
+  const { getByTestId } = render(<Component />);
+  expect(observers).toHaveLength(0);
+
+  act(() => {
+    controls.setTarget('a');
+  });
+  expect(observers.map((observer) => observer.observed)).toEqual([
+    [getByTestId('a')],
+  ]);
+
+  setIntersecting(true);
+  expect(isVisible).toBe(true);
+
+  act(() => {
+    controls.setTarget('b');
+  });
+  expect(observers.map((observer) => observer.observed)).toEqual([
+    [getByTestId('b')],
+  ]);
+
+  act(() => {
+    controls.setTarget('none');
+  });
+  expect(observers).toHaveLength(0);
+  expect(isVisible).toBe(false);
+});
+
+test('follows an element passed directly when a child replaces it', () => {
+  const controls: { setChildKey: (key: string) => void } = {
+    setChildKey: () => {},
+  };
+
+  function Child({
+    onElement,
+  }: {
+    onElement: (el: HTMLDivElement | null) => void;
+  }) {
+    const [key, setKey] = useState('a');
+    controls.setChildKey = setKey;
+    return (
+      <div
+        key={key}
+        ref={onElement}
+        data-testid={key}
+      />
+    );
+  }
+
+  function Parent() {
+    const [element, setElement] = useState<HTMLDivElement | null>(null);
+    useIsVisible(element);
+    return <Child onElement={setElement} />;
+  }
+
+  const { getByTestId } = render(<Parent />);
+  expect(observers.map((observer) => observer.observed)).toEqual([
+    [getByTestId('a')],
+  ]);
+
+  act(() => {
+    controls.setChildKey('b');
+  });
+  expect(observers.map((observer) => observer.observed)).toEqual([
+    [getByTestId('b')],
+  ]);
 });

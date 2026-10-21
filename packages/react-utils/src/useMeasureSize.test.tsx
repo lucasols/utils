@@ -1,4 +1,5 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, render, renderHook } from '@testing-library/react';
+import { useRef, useState } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { useMeasureSize } from './useMeasureSize';
 
@@ -144,4 +145,57 @@ test('setRef keeps the initial value of the axis that is not measured', () => {
 
   expect(result.current.width).toBe(30);
   expect(result.current.height).toBe(7);
+});
+
+test('follows a ref attached, replaced and removed in later commits', () => {
+  const controls: { setTarget: (target: 'none' | 'a' | 'b') => void } = {
+    setTarget: () => {},
+  };
+
+  function Component() {
+    const [target, setTarget] = useState<'none' | 'a' | 'b'>('none');
+    controls.setTarget = setTarget;
+    const ref = useRef<HTMLDivElement>(null);
+    useMeasureSize(ref, 0);
+    return target === 'none' ? null : (
+        <div
+          key={target}
+          ref={ref}
+          data-testid={target}
+        />
+      );
+  }
+
+  const { getByTestId } = render(<Component />);
+  expect(observe).not.toHaveBeenCalled();
+
+  act(() => {
+    controls.setTarget('a');
+  });
+  expect(observe).toHaveBeenLastCalledWith(getByTestId('a'), undefined);
+
+  act(() => {
+    controls.setTarget('b');
+  });
+  expect(disconnect).toHaveBeenCalledTimes(1);
+  expect(observe).toHaveBeenLastCalledWith(getByTestId('b'), undefined);
+
+  act(() => {
+    controls.setTarget('none');
+  });
+  expect(disconnect).toHaveBeenCalledTimes(2);
+  expect(observe).toHaveBeenCalledTimes(2);
+});
+
+test('measures an element passed directly', () => {
+  const element = createElement(100, 50);
+
+  const { result } = renderHook(() => useMeasureSize(element, 0));
+
+  expect(result.current.refElement).toBe(element);
+
+  triggerResize();
+
+  expect(result.current.width).toBe(100);
+  expect(result.current.height).toBe(50);
 });
