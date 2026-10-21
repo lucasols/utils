@@ -10,7 +10,7 @@
 function isWindowFocused(): boolean;
 ```
 
-Defined in: [window.ts:61](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/window.ts#L61)
+Defined in: [window.ts:63](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/window.ts#L63)
 
 Checks if the current browser window/tab is focused and visible. This
 combines both the document visibility state and focus state for a
@@ -46,7 +46,7 @@ A window is considered focused when:
 function onWindowFocus(handler): () => void;
 ```
 
-Defined in: [window.ts:27](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/window.ts#L27)
+Defined in: [window.ts:28](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/window.ts#L28)
 
 Registers a throttled event handler for window focus events. The handler is
 triggered when the window gains focus or becomes visible, but is throttled to
@@ -66,7 +66,8 @@ The function to call when the window gains focus
 
 #### Returns
 
-A cleanup function to remove the event listeners
+A cleanup function that removes the event listeners and cancels any
+  pending throttled call
 
 ```ts
 (): void;
