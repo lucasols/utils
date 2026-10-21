@@ -13,7 +13,7 @@ function deepEqual(
    maxDepth): boolean;
 ```
 
-Defined in: [packages/utils/src/deepEqual.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L38)
+Defined in: [packages/utils/src/deepEqual.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L32)
 
 Deep equality comparison between two values
 
@@ -65,7 +65,7 @@ True if values are deeply equal, false otherwise
 function deepEqualWithMaxDepth(maxDepth): (foo, bar) => boolean;
 ```
 
-Defined in: [packages/utils/src/deepEqual.ts:117](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L117)
+Defined in: [packages/utils/src/deepEqual.ts:140](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepEqual.ts#L140)
 
 #### Parameters
 
