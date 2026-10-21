@@ -261,6 +261,42 @@ const cases: [
         ]),
         result: true,
       },
+      {
+        name: 'Shared object key with a different value matches another key',
+        a: new Map([
+          [mapKey1, 1],
+          [{}, 2],
+        ]),
+        b: new Map([
+          [mapKey1, 2],
+          [{}, 1],
+        ]),
+        result: true,
+      },
+      {
+        name: 'Shared object key with a different value and no other match',
+        a: new Map([
+          [mapKey1, 1],
+          [{}, 2],
+        ]),
+        b: new Map([
+          [mapKey1, 3],
+          [{}, 1],
+        ]),
+        result: false,
+      },
+      {
+        name: 'Shared primitive key with a different value',
+        a: new Map<string | object, number>([
+          ['a', 1],
+          [{}, 2],
+        ]),
+        b: new Map<string | object, number>([
+          ['a', 2],
+          [{}, 1],
+        ]),
+        result: false,
+      },
     ],
   ],
   [

@@ -1,5 +1,5 @@
 import { act, render, renderHook } from '@testing-library/react';
-import { startTransition, Suspense, use, useState } from 'react';
+import { Activity, startTransition, Suspense, use, useState } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { usePreventMultipleConsecutiveChanges } from './usePreventMultipleConsecutiveChanges';
 
@@ -179,4 +179,68 @@ test('does not stay loading when the change crosses the min time between renders
   expect(result.current).toBe(false);
 
   vi.restoreAllMocks();
+});
+
+test('ends the loading after a hidden activity is shown again', () => {
+  let isLoading: boolean | undefined;
+
+  function Content({ changeKey }: { changeKey: string }) {
+    isLoading = usePreventMultipleConsecutiveChanges(changeKey, 1000);
+    return null;
+  }
+
+  function App({
+    changeKey,
+    mode,
+  }: {
+    changeKey: string;
+    mode: 'visible' | 'hidden';
+  }) {
+    return (
+      <Activity mode={mode}>
+        <Content changeKey={changeKey} />
+      </Activity>
+    );
+  }
+
+  const { rerender } = render(
+    <App
+      changeKey="a"
+      mode="visible"
+    />,
+  );
+
+  act(() => {
+    vi.advanceTimersByTime(200);
+  });
+  rerender(
+    <App
+      changeKey="b"
+      mode="visible"
+    />,
+  );
+  expect(isLoading).toBe(true);
+
+  // hiding destroys the effects, including the timeout that ends the loading
+  rerender(
+    <App
+      changeKey="b"
+      mode="hidden"
+    />,
+  );
+  act(() => {
+    vi.advanceTimersByTime(2000);
+  });
+
+  rerender(
+    <App
+      changeKey="b"
+      mode="visible"
+    />,
+  );
+  act(() => {
+    vi.advanceTimersByTime(0);
+  });
+
+  expect(isLoading).toBe(false);
 });

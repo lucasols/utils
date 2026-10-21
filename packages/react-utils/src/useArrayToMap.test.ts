@@ -33,19 +33,37 @@ test('returns an empty map for nullish arrays', () => {
   expect(result.current.size).toBe(0);
 });
 
-test('only recomputes the map when the array changes', () => {
+const getId = (item: Item) => item.id;
+
+test('only recomputes the map when the array or the getter changes', () => {
   const { result, rerender } = renderHook(
-    ({ arr }) => useArrayToMap(arr, (item) => item.id),
-    { initialProps: { arr: items } },
+    ({ arr, getItemId }) => useArrayToMap(arr, getItemId),
+    { initialProps: { arr: items, getItemId: getId } },
   );
 
   const firstMap = result.current;
 
-  rerender({ arr: items });
+  rerender({ arr: items, getItemId: getId });
   expect(result.current).toBe(firstMap);
 
-  rerender({ arr: [...items] });
+  rerender({ arr: [...items], getItemId: getId });
   expect(result.current).not.toBe(firstMap);
+});
+
+test('uses the new getter when it changes', () => {
+  const initialProps: { getItemId: (item: Item) => number | string } = {
+    getItemId: getId,
+  };
+
+  const { result, rerender } = renderHook(
+    ({ getItemId }) => useArrayToMap(items, getItemId),
+    { initialProps },
+  );
+
+  expect([...result.current.keys()]).toEqual([1, 2]);
+
+  rerender({ getItemId: (item) => item.name });
+  expect([...result.current.keys()]).toEqual(['a', 'b']);
 });
 
 test('maps the items by a numeric key', () => {

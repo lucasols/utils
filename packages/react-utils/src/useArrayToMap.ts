@@ -1,10 +1,9 @@
 import type { __LEGIT_ANY__ } from '@ls-stack/utils/saferTyping';
 import { useMemo } from 'react';
-import { useLatestValue } from './useLatestValue';
 
 /**
- * Memoized `Map` of the array items by a key or a getter. The map is only
- * recomputed when the array changes.
+ * Memoized `Map` of the array items by a key or a getter. The map is recomputed
+ * when the array or the key/getter changes, so pass a memoized getter.
  */
 export function useArrayToMap<
   T extends Record<string, unknown>,
@@ -20,24 +19,19 @@ export function useArrayToMap(
     | ((item: __LEGIT_ANY__, index: number) => string | number)
     | PropertyKey,
 ): Map<__LEGIT_ANY__, unknown> {
-  const latestGetItemId = useLatestValue(
-    typeof getItemId === 'function' ? getItemId : (
-      (item: Record<PropertyKey, __LEGIT_ANY__>) => {
-        const itemId: string | number = item[getItemId];
-        return itemId;
-      }
-    ),
-  );
-  return useMemo(
-    () =>
-      !arr ?
-        new Map<string | number, unknown>()
-      : new Map(
-          arr.map((item, i): [string | number, unknown] => [
-            latestGetItemId.insideEffect(item, i),
-            item,
-          ]),
-        ),
-    [arr, latestGetItemId],
-  );
+  return useMemo(() => {
+    if (!arr) return new Map<string | number, unknown>();
+
+    const getId =
+      typeof getItemId === 'function' ? getItemId : (
+        (item: Record<PropertyKey, __LEGIT_ANY__>) => {
+          const itemId: string | number = item[getItemId];
+          return itemId;
+        }
+      );
+
+    return new Map(
+      arr.map((item, i): [string | number, unknown] => [getId(item, i), item]),
+    );
+  }, [arr, getItemId]);
 }

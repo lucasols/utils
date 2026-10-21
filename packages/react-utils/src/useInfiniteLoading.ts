@@ -6,7 +6,6 @@ import {
   isCommittedElementOutdated,
   useCommittedElement,
 } from './internalUtils/useCommittedElement';
-import { useLatestValue } from './useLatestValue';
 import { useOnChange } from './useOnChange';
 
 /**
@@ -17,6 +16,9 @@ import { useOnChange } from './useOnChange';
  * every commit of the component that uses the hook, pass the element (e.g. from
  * a `useState` callback ref) when it can be attached, replaced or removed by a
  * child component without this one re-rendering.
+ *
+ * `loadMore` must be memoized, the scroll listener is attached again when it
+ * changes.
  */
 export function useInfiniteLoading({
   containerRef,
@@ -70,31 +72,8 @@ export function useInfiniteLoading({
     { callOnMount: true, equalityFn: shallowEqual },
   );
 
-  const onScroll = useLatestValue(() => {
-    if (disable) return;
-
-    const element = containerElement;
-
-    if (!element || !isLoaded) return;
-
-    if (!hasMore) return;
-
-    const contentHeight = element.scrollHeight;
-    const viewHeight = element.clientHeight;
-
-    const scrollToStart = Math.abs(element.scrollTop);
-
-    const scrollAvailableToEnd = contentHeight - viewHeight;
-
-    const scrollToEnd = scrollAvailableToEnd - scrollToStart;
-
-    if (scrollToEnd < 2 + triggerMargin) {
-      loadMore();
-    }
-  });
-
   useEffect(() => {
-    if (disable || !isLoaded) return;
+    if (disable || !isLoaded || !hasMore) return;
 
     if (isCommittedElementOutdated(containerRef, containerElement)) return;
 
@@ -102,7 +81,20 @@ export function useInfiniteLoading({
 
     if (!container) return;
 
-    const onScrollThrottle = throttle(() => onScroll.insideEffect(), 500);
+    const onScrollThrottle = throttle(() => {
+      const contentHeight = container.scrollHeight;
+      const viewHeight = container.clientHeight;
+
+      const scrollToStart = Math.abs(container.scrollTop);
+
+      const scrollAvailableToEnd = contentHeight - viewHeight;
+
+      const scrollToEnd = scrollAvailableToEnd - scrollToStart;
+
+      if (scrollToEnd < 2 + triggerMargin) {
+        loadMore();
+      }
+    }, 500);
 
     container.addEventListener('scroll', onScrollThrottle);
 
@@ -110,5 +102,13 @@ export function useInfiniteLoading({
       container.removeEventListener('scroll', onScrollThrottle);
       onScrollThrottle.cancel();
     };
-  }, [containerElement, containerRef, isLoaded, disable, onScroll]);
+  }, [
+    containerElement,
+    containerRef,
+    disable,
+    hasMore,
+    isLoaded,
+    loadMore,
+    triggerMargin,
+  ]);
 }

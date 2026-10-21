@@ -1,10 +1,11 @@
 # Overview
 
-This is a monorepo containing three TypeScript utility packages:
+This is a monorepo containing four TypeScript utility packages:
 
 - **`@ls-stack/utils`** - Universal utilities that work in both browser and Node.js environments
 - **`@ls-stack/node-utils`** - Node.js-specific utilities (shell commands, file system operations)
 - **`@ls-stack/browser-utils`** - Browser-specific utilities (File API, DOM-related operations)
+- **`@ls-stack/react-utils`** - React hooks and components
 
 All packages are designed with a modular architecture where each utility is exported as a separate module to enable tree-shaking and selective imports.
 
@@ -31,6 +32,7 @@ To run commands in specific packages:
 - `pnpm --filter @ls-stack/utils <command>` - Run command in utils package
 - `pnpm --filter @ls-stack/node-utils <command>` - Run command in node-utils package
 - `pnpm --filter @ls-stack/browser-utils <command>` - Run command in browser-utils package
+- `pnpm --filter @ls-stack/react-utils <command>` - Run command in react-utils package
 
 ## Testing Single Files
 
@@ -48,7 +50,8 @@ To run commands in specific packages:
 packages/
 ├── utils/           # Universal utilities (browser + Node.js)
 ├── node-utils/      # Node.js-specific utilities
-└── browser-utils/   # Browser-specific utilities
+├── browser-utils/   # Browser-specific utilities
+└── react-utils/     # React hooks and components
 ```
 
 ## Module Structure

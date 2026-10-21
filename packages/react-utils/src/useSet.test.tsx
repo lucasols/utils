@@ -4,6 +4,7 @@ import {
   StrictMode,
   Suspense,
   use,
+  useCallback,
   useLayoutEffect,
   useState,
 } from 'react';
@@ -121,6 +122,76 @@ test('calls onUpdate once per change in strict mode', () => {
   });
 
   expect(onUpdate.mock.calls).toEqual([[[1]], [[]]]);
+});
+
+test('uses the new onUpdate when it changes', () => {
+  const first = vi.fn();
+  const second = vi.fn();
+
+  const { result, rerender } = renderHook(
+    ({ onUpdate }) => useSet<number>([], { onUpdate }),
+    { initialProps: { onUpdate: first } },
+  );
+
+  rerender({ onUpdate: second });
+
+  act(() => {
+    result.current.add(1);
+  });
+
+  expect(first).not.toHaveBeenCalled();
+  expect(second).toHaveBeenCalledWith([1]);
+});
+
+test('the committed callbacks call the committed onUpdate when a transition suspends', async () => {
+  const neverResolves = new Promise<never>(() => {});
+  const updates: string[] = [];
+  const controls: {
+    setAppId: (appId: string) => void;
+    add: (item: string) => void;
+  } = { setAppId: () => {}, add: () => {} };
+
+  function Content({ appId }: { appId: string }) {
+    if (appId === 'b') use(neverResolves);
+    return null;
+  }
+
+  function App() {
+    const [appId, setAppId] = useState('a');
+    const onUpdate = useCallback(
+      (values: string[]) => {
+        updates.push(`${appId}:${values.join(',')}`);
+      },
+      [appId],
+    );
+    const { add } = useSet<string>([], { onUpdate });
+
+    useLayoutEffect(() => {
+      controls.setAppId = setAppId;
+      controls.add = add;
+    }, [add]);
+
+    return (
+      <Suspense fallback="loading">
+        <Content appId={appId} />
+      </Suspense>
+    );
+  }
+
+  render(<App />);
+
+  // the transition suspends, so React keeps the committed `a` UI
+  await act(async () => {
+    startTransition(() => {
+      controls.setAppId('b');
+    });
+  });
+
+  act(() => {
+    controls.add('x');
+  });
+
+  expect(updates).toEqual(['a:x']);
 });
 
 test('does not call onUpdate when nothing changed', () => {

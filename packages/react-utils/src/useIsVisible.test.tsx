@@ -51,6 +51,43 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+test('calls the new onVisibilityChange when it changes', () => {
+  const first = vi.fn();
+  const second = vi.fn();
+  const ref = { current: document.createElement('div') };
+
+  const { rerender } = renderHook(
+    ({ onVisibilityChange }) => useIsVisible(ref, { onVisibilityChange }),
+    { initialProps: { onVisibilityChange: first } },
+  );
+
+  rerender({ onVisibilityChange: second });
+  setIntersecting(true);
+
+  expect(first).not.toHaveBeenCalled();
+  expect(second).toHaveBeenCalledWith(true);
+  expect(observers).toHaveLength(1);
+});
+
+test('keeps the observer while a memoized margin is unchanged', () => {
+  const ref = { current: document.createElement('div') };
+  const memoizedMargin = { rootSelector: 'body', margin: 10 };
+
+  const { rerender } = renderHook(
+    ({ margin }) => useIsVisible(ref, { margin }),
+    { initialProps: { margin: memoizedMargin } },
+  );
+
+  const firstObserver = observers[0];
+
+  rerender({ margin: memoizedMargin });
+  expect(observers[0]).toBe(firstObserver);
+
+  rerender({ margin: { rootSelector: 'body', margin: 20 } });
+  expect(observers).toHaveLength(1);
+  expect(observers[0]).not.toBe(firstObserver);
+});
+
 test('tracks the element visibility', () => {
   const onVisibilityChange = vi.fn();
   const ref = { current: document.createElement('div') };

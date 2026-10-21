@@ -1,6 +1,5 @@
 import { isFunction } from '@ls-stack/utils/typeGuards';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { useLatestValue } from './useLatestValue';
 
 type UseSet<T> = {
   add: (item: T) => void;
@@ -14,7 +13,8 @@ type UseSet<T> = {
 
 /**
  * Array state with set-like operations, items are compared by reference.
- * `onUpdate` is called once for each change, in the same call that made it.
+ * `onUpdate` is called once for each change, in the same call that made it. It
+ * must be memoized, the returned callbacks change when it changes.
  */
 export function useSet<T>(
   initialValue?: T[] | (() => T[]),
@@ -30,8 +30,6 @@ export function useSet<T>(
   // value is the state React ends up with
   const latestValues = useRef(values);
 
-  const latestOnUpdate = useLatestValue(onUpdate);
-
   const setValues = useCallback(
     (newValues: T[] | ((prev: T[]) => T[])) => {
       const prev = latestValues.current;
@@ -43,11 +41,9 @@ export function useSet<T>(
 
       latestValues.current = value;
 
-      if (latestOnUpdate.insideEffect) {
-        latestOnUpdate.insideEffect(value);
-      }
+      onUpdate?.(value);
     },
-    [latestOnUpdate],
+    [onUpdate],
   );
 
   const add = useCallback(

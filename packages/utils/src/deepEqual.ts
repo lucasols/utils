@@ -72,25 +72,38 @@ export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
       if (foo.size !== bar.size) {
         return false;
       }
-      let unmatchedKeys: any[] | undefined;
+      // entries with the same key and an equal value are matched first, the
+      // rest is matched structurally one-to-one, so a single entry of `bar`
+      // can't stand in for several entries of `foo`, and an object key shared
+      // by both maps with different values can still match another key
+      let pending: [any, any][] | undefined;
+      let matchedKeys: Set<any> | undefined;
       for (len of foo) {
         tmp = len[0];
-        if (bar.has(tmp)) {
-          if (!deepEqual(len[1], bar.get(tmp), maxDepth - 1)) return false;
+        if (bar.has(tmp) && deepEqual(len[1], bar.get(tmp), maxDepth - 1)) {
+          if (tmp && typeof tmp === 'object') {
+            matchedKeys ??= new Set();
+            matchedKeys.add(tmp);
+          }
           continue;
         }
         if (!tmp || typeof tmp !== 'object') return false;
-        // match structurally equal entries one-to-one, so a single entry of
-        // `bar` can't stand in for several entries of `foo`
-        const [key, value] = len;
-        unmatchedKeys ??= [...bar.keys()].filter((barKey) => !foo.has(barKey));
-        tmp = unmatchedKeys.findIndex(
-          (barKey) =>
+        pending ??= [];
+        pending.push(len);
+      }
+      if (!pending) return true;
+      const unmatched = [...bar].filter(
+        ([barKey]) =>
+          barKey && typeof barKey === 'object' && !matchedKeys?.has(barKey),
+      );
+      for (const [key, value] of pending) {
+        tmp = unmatched.findIndex(
+          ([barKey, barValue]) =>
             deepEqual(key, barKey, maxDepth - 1) &&
-            deepEqual(value, bar.get(barKey), maxDepth - 1),
+            deepEqual(value, barValue, maxDepth - 1),
         );
         if (tmp === -1) return false;
-        unmatchedKeys.splice(tmp, 1);
+        unmatched.splice(tmp, 1);
       }
       return true;
     }

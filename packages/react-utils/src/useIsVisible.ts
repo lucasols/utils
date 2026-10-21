@@ -4,8 +4,6 @@ import {
   isCommittedElementOutdated,
   useCommittedElement,
 } from './internalUtils/useCommittedElement';
-import { useStableRefValue } from './useDeepMemo';
-import { useLatestValue } from './useLatestValue';
 
 const THRESHOLD_TOLERANCE = 0.001;
 
@@ -17,6 +15,9 @@ const THRESHOLD_TOLERANCE = 0.001;
  * every commit of the component that uses the hook, pass the element (e.g. from
  * a `useState` callback ref) when it can be attached, replaced or removed by a
  * child component without this one re-rendering.
+ *
+ * `margin` and `onVisibilityChange` must be memoized, the observer is recreated
+ * when they change.
  */
 export function useIsVisible(
   target: ElementTarget,
@@ -43,10 +44,6 @@ export function useIsVisible(
 ): boolean {
   const [isVisible, setIsVisible] = useState(initialVisibility);
 
-  const stableRootMargin = useStableRefValue(rootMargin);
-
-  const latestOnVisibilityChange = useLatestValue(onVisibilityChange);
-
   const observeElement = useCommittedElement(target);
 
   useLayoutEffect(() => {
@@ -58,7 +55,7 @@ export function useIsVisible(
     if (isCommittedElementOutdated(target, observeElement)) return;
 
     if (!observeElement) {
-      latestOnVisibilityChange.insideEffect?.(false);
+      onVisibilityChange?.(false);
       setIsVisible(false);
       return;
     }
@@ -80,22 +77,20 @@ export function useIsVisible(
         const entryIsVisible =
           entry.isIntersecting && entry.intersectionRatio >= effectiveThreshold;
 
-        latestOnVisibilityChange.insideEffect?.(entryIsVisible);
+        onVisibilityChange?.(entryIsVisible);
         setIsVisible(entryIsVisible);
       },
       {
         root:
-          stableRootMargin?.rootSelector ?
-            observeElement.closest(stableRootMargin.rootSelector)
+          rootMargin?.rootSelector ?
+            observeElement.closest(rootMargin.rootSelector)
           : undefined,
         threshold: effectiveThreshold,
         rootMargin:
-          typeof stableRootMargin?.margin === 'number' ?
-            `${stableRootMargin.margin}px`
-          : typeof stableRootMargin?.margin === 'string' ?
-            stableRootMargin.margin
-          : `${stableRootMargin?.margin.block ?? 0}px ${
-              stableRootMargin?.margin.inline ?? 0
+          typeof rootMargin?.margin === 'number' ? `${rootMargin.margin}px`
+          : typeof rootMargin?.margin === 'string' ? rootMargin.margin
+          : `${rootMargin?.margin.block ?? 0}px ${
+              rootMargin?.margin.inline ?? 0
             }px`,
       },
     );
@@ -107,9 +102,9 @@ export function useIsVisible(
     };
   }, [
     disabled,
-    latestOnVisibilityChange,
     observeElement,
-    stableRootMargin,
+    onVisibilityChange,
+    rootMargin,
     target,
     threshold,
   ]);

@@ -31,6 +31,29 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
+test('calls the new loadMore when it changes', () => {
+  const container = createContainer({ scrollHeight: 1000, clientHeight: 100 });
+  const first = vi.fn();
+  const second = vi.fn();
+
+  const { rerender } = renderHook(
+    ({ loadMore }) =>
+      useInfiniteLoading({
+        containerRef: container,
+        loadMore,
+        hasMore: true,
+        isLoaded: true,
+      }),
+    { initialProps: { loadMore: first } },
+  );
+
+  rerender({ loadMore: second });
+  scrollTo(container, 899);
+
+  expect(first).not.toHaveBeenCalled();
+  expect(second).toHaveBeenCalledTimes(1);
+});
+
 test('loads more when scrolling near the end', () => {
   const container = createContainer({ scrollHeight: 1000, clientHeight: 100 });
   const loadMore = vi.fn();

@@ -1,11 +1,15 @@
-import { useLayoutEffect, useRef, useState } from 'react';
-import { useTimeout } from './useTimeout';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 type ChangeKey = string | number | null | false | undefined;
 
 type Change = { key: string | number; openTime: number };
 
-function getConsecutiveChangeDelta(
+/**
+ * When `changeKey` changed less than `minTimeBetweenChangesMs` after the
+ * previous change, returns when the loading should end. The deadline only
+ * depends on the previous change, so every render agrees on it.
+ */
+function getLoadingDeadline(
   prevChange: Change | null,
   changeKey: ChangeKey,
   changeTime: number,
@@ -13,9 +17,9 @@ function getConsecutiveChangeDelta(
 ): number | null {
   if (!changeKey || !prevChange || prevChange.key === changeKey) return null;
 
-  const delta = changeTime - prevChange.openTime;
+  const deadline = prevChange.openTime + minTimeBetweenChangesMs;
 
-  return delta < minTimeBetweenChangesMs ? delta : null;
+  return changeTime < deadline ? deadline : null;
 }
 
 /**
@@ -27,56 +31,60 @@ export function usePreventMultipleConsecutiveChanges(
   changeKey: ChangeKey,
   minTimeBetweenChangesMs: number,
 ): boolean {
-  const [fakeLoading, setFakeLoading] = useState(false);
+  const [loadingUntil, setLoadingUntil] = useState<number | null>(null);
 
   // only committed keys are recorded, so a render that React throws away (e.g.
   // a suspended transition) doesn't count as a change
   const committedChange = useRef<Change | null>(null);
 
-  const cleanFakeLoadingTimeout = useTimeout(0);
-
   const renderTime = Date.now();
 
   // set during render so the render with the new key already returns `true`,
   // React drops this update if the render is thrown away
-  if (
-    !fakeLoading &&
-    getConsecutiveChangeDelta(
-      committedChange.current,
-      changeKey,
-      renderTime,
-      minTimeBetweenChangesMs,
-    ) !== null
-  ) {
-    setFakeLoading(true);
-  }
-
-  useLayoutEffect(() => {
-    if (!changeKey || committedChange.current?.key === changeKey) return;
-
-    const delta = getConsecutiveChangeDelta(
+  if (loadingUntil === null) {
+    const deadline = getLoadingDeadline(
       committedChange.current,
       changeKey,
       renderTime,
       minTimeBetweenChangesMs,
     );
 
-    if (delta !== null) {
-      setFakeLoading(true);
+    if (deadline !== null) setLoadingUntil(deadline);
+  }
 
-      cleanFakeLoadingTimeout.clearAndCall(() => {
-        setFakeLoading(false);
-      }, minTimeBetweenChangesMs - delta);
-    } else {
-      // the render that set the loading can see a smaller delta than this
-      // commit's render (it re-renders right after), any previous timeout is
-      // already due for a change this far from the previous one
-      cleanFakeLoadingTimeout.clear();
-      setFakeLoading(false);
-    }
+  useLayoutEffect(() => {
+    if (!changeKey || committedChange.current?.key === changeKey) return;
+
+    // a change this far from the previous one also ends any loading, it is
+    // already past the previous deadline
+    setLoadingUntil(
+      getLoadingDeadline(
+        committedChange.current,
+        changeKey,
+        renderTime,
+        minTimeBetweenChangesMs,
+      ),
+    );
 
     committedChange.current = { key: changeKey, openTime: renderTime };
-  }, [changeKey, cleanFakeLoadingTimeout, minTimeBetweenChangesMs, renderTime]);
+  }, [changeKey, minTimeBetweenChangesMs, renderTime]);
 
-  return fakeLoading;
+  // scheduled from the deadline in state, so it is scheduled again when the
+  // effects are recreated (e.g. a hidden `<Activity>` shown again)
+  useEffect(() => {
+    if (loadingUntil === null) return;
+
+    const timeout = setTimeout(
+      () => {
+        setLoadingUntil(null);
+      },
+      Math.max(0, loadingUntil - Date.now()),
+    );
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [loadingUntil]);
+
+  return loadingUntil !== null;
 }
