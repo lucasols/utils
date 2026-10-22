@@ -22,7 +22,34 @@ type RetryOptions = {
     error: Error,
     lastAttempt: { duration: number; retry: number },
   ) => void;
+  /**
+   * Cancels the pending retries: no retry starts after the signal is aborted
+   * and a pending delay between retries ends early. The function then rejects
+   * with the error of the last attempt.
+   */
+  signal?: AbortSignal;
 };
+
+function waitForRetryDelay(
+  ms: number,
+  signal: AbortSignal | undefined,
+): Promise<unknown> {
+  if (!signal) return sleep(ms);
+
+  return new Promise<void>((resolve) => {
+    const timeout = setTimeout(() => {
+      signal.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+
+    function onAbort() {
+      clearTimeout(timeout);
+      resolve();
+    }
+
+    signal.addEventListener('abort', onAbort, { once: true });
+  });
+}
 
 /**
  * Retries a function on error with configurable retry logic.
@@ -55,8 +82,13 @@ export async function retryOnError<T>(
   retry = 0,
   originalMaxRetries = maxRetries,
 ): Promise<T> {
-  const { delayBetweenRetriesMs, retryCondition, disableRetries, onRetry } =
-    options;
+  const {
+    delayBetweenRetriesMs,
+    retryCondition,
+    disableRetries,
+    onRetry,
+    signal,
+  } = options;
 
   if (options.debugId) {
     if (retry > 0) {
@@ -71,7 +103,7 @@ export async function retryOnError<T>(
   try {
     return await fn({ retry });
   } catch (error) {
-    if (maxRetries > 0 && !disableRetries) {
+    if (maxRetries > 0 && !disableRetries && !signal?.aborted) {
       const errorDuration = Date.now() - startTime;
 
       const normalizedError = unknownToError(error);
@@ -96,11 +128,16 @@ export async function retryOnError<T>(
       }
 
       if (delayBetweenRetriesMs) {
-        await sleep(
+        await waitForRetryDelay(
           typeof delayBetweenRetriesMs === 'function' ?
             delayBetweenRetriesMs(retry)
           : delayBetweenRetriesMs,
+          signal,
         );
+
+        if (signal?.aborted) {
+          throw normalizedError;
+        }
       }
 
       return retryOnError(
@@ -127,6 +164,8 @@ export async function retryOnError<T>(
  * @param options.debugId
  * @param options.disableRetries
  * @param options.onRetry
+ * @param options.signal - Cancels the pending retries, the last error result is
+ *   returned
  * @param __retry - Internal use only
  * @param __originalMaxRetries - Internal use only
  * @returns Promise resolving to the function result or rejecting with the final
@@ -150,11 +189,12 @@ export async function retryResultOnError<T, E extends ResultValidErrors>(
       error: E,
       lastAttempt: { duration: number; retry: number },
     ) => void;
+    signal?: AbortSignal;
   } = {},
   __retry = 0,
   __originalMaxRetries = maxRetries,
 ): Promise<Result<T, E>> {
-  const { delayBetweenRetriesMs, retryCondition, onRetry } = options;
+  const { delayBetweenRetriesMs, retryCondition, onRetry, signal } = options;
 
   if (options.debugId) {
     if (__retry > 0) {
@@ -172,7 +212,7 @@ export async function retryResultOnError<T, E extends ResultValidErrors>(
     return result;
   }
 
-  if (maxRetries > 0 && !options.disableRetries) {
+  if (maxRetries > 0 && !options.disableRetries && !signal?.aborted) {
     const errorDuration = Date.now() - startTime;
 
     const shouldRetry =
@@ -195,11 +235,16 @@ export async function retryResultOnError<T, E extends ResultValidErrors>(
     }
 
     if (delayBetweenRetriesMs) {
-      await sleep(
+      await waitForRetryDelay(
         typeof delayBetweenRetriesMs === 'function' ?
           delayBetweenRetriesMs(__retry)
         : delayBetweenRetriesMs,
+        signal,
       );
+
+      if (signal?.aborted) {
+        return result;
+      }
     }
 
     return retryResultOnError(

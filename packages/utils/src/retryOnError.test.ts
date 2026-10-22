@@ -1,5 +1,5 @@
 import { err, ok, type Result } from 't-result';
-import { describe, expect, test, vi } from 'vitest';
+import { assert, describe, expect, test, vi } from 'vitest';
 import { retryOnError, retryResultOnError } from './retryOnError';
 import { sleep } from './sleep';
 
@@ -281,6 +281,101 @@ test('onRetry callback is called with error and context', async () => {
 });
 
 // Tests for retryResultOnError
+
+describe('signal', () => {
+  test('aborting during the delay stops the retries', async () => {
+    vi.useFakeTimers();
+
+    try {
+      const controller = new AbortController();
+      const fn = vi.fn(() => Promise.reject(new Error('network error')));
+
+      const promise = retryOnError(fn, 3, {
+        delayBetweenRetriesMs: 1000,
+        signal: controller.signal,
+      });
+      const rejection = expect(promise).rejects.toThrow('network error');
+
+      await vi.advanceTimersByTimeAsync(300);
+      controller.abort();
+      await vi.advanceTimersByTimeAsync(0);
+
+      await rejection;
+      expect(fn).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  test('aborting during an attempt prevents the next retry', async () => {
+    const controller = new AbortController();
+    const fn = vi.fn(async () => {
+      controller.abort();
+      throw new Error('network error');
+    });
+
+    await expect(
+      retryOnError(fn, 3, { signal: controller.signal }),
+    ).rejects.toThrow('network error');
+
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  test('retries normally while the signal is not aborted', async () => {
+    vi.useFakeTimers();
+
+    try {
+      const controller = new AbortController();
+      let attempts = 0;
+      const fn = vi.fn(async () => {
+        attempts++;
+        if (attempts < 3) throw new Error('network error');
+        return 'loaded';
+      });
+
+      const promise = retryOnError(fn, 3, {
+        delayBetweenRetriesMs: 1000,
+        signal: controller.signal,
+      });
+
+      await vi.advanceTimersByTimeAsync(2000);
+
+      expect(await promise).toBe('loaded');
+      expect(fn).toHaveBeenCalledTimes(3);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  test('retryResultOnError returns the last error result when aborted', async () => {
+    vi.useFakeTimers();
+
+    try {
+      const controller = new AbortController();
+      const fn = vi.fn(
+        async (): Promise<Result<string, Error>> =>
+          err(new Error('network error')),
+      );
+
+      const promise = retryResultOnError(fn, 3, {
+        delayBetweenRetriesMs: 1000,
+        signal: controller.signal,
+      });
+
+      await vi.advanceTimersByTimeAsync(300);
+      controller.abort();
+      await vi.advanceTimersByTimeAsync(0);
+
+      const result = await promise;
+
+      assert(!result.ok);
+      expect(result.error.message).toBe('network error');
+      expect(fn).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
 
 describe('retryResultOnError', () => {
   test('propagates rejection when function throws', async () => {
