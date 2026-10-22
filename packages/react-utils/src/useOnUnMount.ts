@@ -1,12 +1,15 @@
-import { useEffect, useRef } from 'react';
-import { useLatestValue } from './useLatestValue';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 
 export function useOnUnMount(
   callback: () => void,
   useDelayedCleanupOnDev = false,
 ) {
-  const latestCallback = useLatestValue(callback);
+  const callbackRef = useRef(callback);
   const cleanupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useLayoutEffect(() => {
+    callbackRef.current = callback;
+  });
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && useDelayedCleanupOnDev) {
@@ -18,11 +21,11 @@ export function useOnUnMount(
     return () => {
       if (process.env.NODE_ENV === 'development' && useDelayedCleanupOnDev) {
         cleanupTimeoutRef.current = setTimeout(() => {
-          latestCallback.insideEffect();
+          callbackRef.current();
         }, 50);
       } else {
-        latestCallback.insideEffect();
+        callbackRef.current();
       }
     };
-  }, [latestCallback, useDelayedCleanupOnDev]);
+  }, [useDelayedCleanupOnDev]);
 }

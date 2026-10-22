@@ -3,7 +3,6 @@ import {
   keyboardShortcuts,
 } from '@ls-stack/browser-utils/keyboardShortcuts';
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { useLatestValue } from './useLatestValue';
 
 export function useShortCut(
   shortcut: string,
@@ -38,14 +37,10 @@ export function useShortCuts(
   shortcuts: Record<string, (event: KeyboardEvent) => void>,
   { allowDuringTyping }: { allowDuringTyping?: boolean } = {},
 ) {
-  const latestShortCuts = useLatestValue(shortcuts);
-
   useEffect(() => {
     const shortcutsCbs: Record<string, (event: KeyboardEvent) => void> = {};
 
-    for (const [shortcut, callback] of Object.entries(
-      latestShortCuts.insideEffect,
-    )) {
+    for (const [shortcut, callback] of Object.entries(shortcuts)) {
       shortcutsCbs[shortcut] =
         allowDuringTyping ?
           (e: KeyboardEvent) => {

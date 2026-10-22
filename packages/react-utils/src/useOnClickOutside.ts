@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useLatestValue } from './useLatestValue';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 
 type Ref = HTMLElement | React.RefObject<HTMLElement | null> | null | string;
 
@@ -39,7 +38,11 @@ export function useOnClickOutside(
   ref: Ref | Ref[],
   handler: (event: MouseEvent | TouchEvent) => void,
 ) {
-  const latestHandler = useLatestValue(handler);
+  const handlerRef = useRef(handler);
+
+  useLayoutEffect(() => {
+    handlerRef.current = handler;
+  });
 
   useEffect(() => {
     function listener(event: MouseEvent | TouchEvent) {
@@ -53,7 +56,7 @@ export function useOnClickOutside(
         return;
       }
 
-      latestHandler.insideEffect(event);
+      handlerRef.current(event);
     }
 
     document.addEventListener('mousedown', listener);
@@ -63,5 +66,5 @@ export function useOnClickOutside(
       document.removeEventListener('mousedown', listener);
       document.removeEventListener('touchstart', listener);
     };
-  }, [ref, latestHandler]);
+  }, [ref]);
 }

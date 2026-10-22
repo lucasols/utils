@@ -1,7 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { unknownToError } from 't-result';
 import { shallowEqual } from '@ls-stack/utils/shallowEqual';
-import { useLatestValue } from './useLatestValue';
 import { useOnChange } from './useOnChange';
 
 type AsyncState<T> = {
@@ -72,70 +78,74 @@ export function useAsyncResource<T>(
   const hasInitialLoadRef = useRef(false);
   const currentLoadIdRef = useRef(0);
 
-  const stableFetchData = useLatestValue(
-    async (isRefetch = false, allowConcurrent = false) => {
-      if (abortedRef.current) {
+  async function fetchData(isRefetch = false, allowConcurrent = false) {
+    if (abortedRef.current) {
+      return;
+    }
+
+    // Handle concurrent loads
+    if (loadingRef.current && !allowConcurrent) {
+      // Manual load can override refetch, but not another manual load
+      if (!isRefetch && isRefetchingRef.current) {
+        // Allow manual load to override ongoing refetch
+        isRefetchingRef.current = false;
+      } else {
+        // Prevent concurrent loads of same type
         return;
       }
+    }
 
-      // Handle concurrent loads
-      if (loadingRef.current && !allowConcurrent) {
-        // Manual load can override refetch, but not another manual load
-        if (!isRefetch && isRefetchingRef.current) {
-          // Allow manual load to override ongoing refetch
-          isRefetchingRef.current = false;
-        } else {
-          // Prevent concurrent loads of same type
-          return;
-        }
+    // Assign unique ID to this load
+    const loadId = ++currentLoadIdRef.current;
+    loadingRef.current = true;
+    isRefetchingRef.current = isRefetch;
+
+    setState((prevState) => ({
+      status: isRefetch ? 'refetching' : 'loading',
+      error: null,
+      data: isRefetch ? prevState.data : null,
+    }));
+
+    try {
+      const data = await asyncFn();
+
+      // Only update state if this is still the current load and not aborted
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
+      if (!abortedRef.current && loadId === currentLoadIdRef.current) {
+        setState({ status: 'success', error: null, data });
+        hasInitialLoadRef.current = true;
       }
-
-      // Assign unique ID to this load
-      const loadId = ++currentLoadIdRef.current;
-      loadingRef.current = true;
-      isRefetchingRef.current = isRefetch;
-
-      setState((prevState) => ({
-        status: isRefetch ? 'refetching' : 'loading',
-        error: null,
-        data: isRefetch ? prevState.data : null,
-      }));
-
-      try {
-        const data = await asyncFn();
-
-        // Only update state if this is still the current load and not aborted
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
-        if (!abortedRef.current && loadId === currentLoadIdRef.current) {
-          setState({ status: 'success', error: null, data });
-          hasInitialLoadRef.current = true;
-        }
-      } catch (error) {
-        // Only update state if this is still the current load and not aborted
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
-        if (!abortedRef.current && loadId === currentLoadIdRef.current) {
-          setState({
-            status: 'error',
-            error: unknownToError(error),
-            data: null,
-          });
-          hasInitialLoadRef.current = true;
-        }
-      } finally {
-        // Only reset loading state if this is still the current load
-        if (loadId === currentLoadIdRef.current) {
-          loadingRef.current = false;
-          isRefetchingRef.current = false;
-        }
+    } catch (error) {
+      // Only update state if this is still the current load and not aborted
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
+      if (!abortedRef.current && loadId === currentLoadIdRef.current) {
+        setState({
+          status: 'error',
+          error: unknownToError(error),
+          data: null,
+        });
+        hasInitialLoadRef.current = true;
       }
-    },
-  );
+    } finally {
+      // Only reset loading state if this is still the current load
+      if (loadId === currentLoadIdRef.current) {
+        loadingRef.current = false;
+        isRefetchingRef.current = false;
+      }
+    }
+  }
+
+  const fetchDataRef = useRef(fetchData);
+
+  useLayoutEffect(() => {
+    fetchDataRef.current = fetchData;
+  });
 
   useEffect(() => {
     if (lazy) return;
 
-    void stableFetchData.insideEffect();
-  }, [lazy, stableFetchData]);
+    void fetchDataRef.current();
+  }, [lazy]);
 
   // Auto-refetch when asyncFn changes if asyncFnUsesExternalDeps is true
   useEffect(() => {
@@ -149,17 +159,17 @@ export function useAsyncResource<T>(
 
     if (hasCompletedLoad) {
       // Normal refetch case - we have previous data
-      void stableFetchData.insideEffect(true);
+      void fetchDataRef.current(true);
     } else if (isCurrentlyLoading) {
       // Function changed during loading - start new load (old load will be ignored via ID check)
-      void stableFetchData.insideEffect(false, true);
+      void fetchDataRef.current(false, true);
     } else {
       // If idle and no previous load, start fresh load
-      void stableFetchData.insideEffect(false);
+      void fetchDataRef.current(false);
     }
 
     prevAsyncFnRef.current = asyncFn;
-  }, [asyncFnUsesExternalDeps, asyncFn, stableFetchData, state.status]);
+  }, [asyncFnUsesExternalDeps, asyncFn, state.status]);
 
   // Auto-refetch when externalDeps change
   useOnChange(
@@ -173,7 +183,7 @@ export function useAsyncResource<T>(
         (state.status === 'success' || state.status === 'error');
 
       if (hasCompletedLoad) {
-        void stableFetchData.insideEffect(true);
+        void fetchDataRef.current(true);
       }
     },
     { equalityFn: shallowEqual },
@@ -187,8 +197,8 @@ export function useAsyncResource<T>(
 
   const load = useCallback(() => {
     // Manual load always does a full reload (not refetch)
-    void stableFetchData.insideEffect(false);
-  }, [stableFetchData]);
+    void fetchDataRef.current(false);
+  }, []);
 
   const isLoading =
     lazy ?
