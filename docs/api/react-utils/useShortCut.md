@@ -10,7 +10,7 @@
 function preventShortcutDefault(callback): (e) => void;
 ```
 
-Defined in: [react-utils/src/useShortCut.ts:61](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useShortCut.ts#L61)
+Defined in: [react-utils/src/useShortCut.ts:56](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useShortCut.ts#L56)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ function useShortCut(
    __namedParameters): void;
 ```
 
-Defined in: [react-utils/src/useShortCut.ts:8](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useShortCut.ts#L8)
+Defined in: [react-utils/src/useShortCut.ts:7](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useShortCut.ts#L7)
 
 #### Parameters
 
@@ -75,7 +75,7 @@ Defined in: [react-utils/src/useShortCut.ts:8](https://github.com/lucasols/utils
 function useShortCuts(shortcuts, __namedParameters): void;
 ```
 
-Defined in: [react-utils/src/useShortCut.ts:37](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useShortCut.ts#L37)
+Defined in: [react-utils/src/useShortCut.ts:36](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useShortCut.ts#L36)
 
 #### Parameters
 

@@ -10,7 +10,7 @@
 type AsyncResult<T> = AsyncState<T> & object;
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:13](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L13)
+Defined in: [react-utils/src/useAsyncResource.ts:19](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L19)
 
 #### Type Declaration
 
@@ -44,7 +44,7 @@ load: () => void;
 type AsyncState<T> = object;
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:7](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L7)
+Defined in: [react-utils/src/useAsyncResource.ts:13](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L13)
 
 #### Type Parameters
 
@@ -60,7 +60,7 @@ Defined in: [react-utils/src/useAsyncResource.ts:7](https://github.com/lucasols/
 data: T;
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:10](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L10)
+Defined in: [react-utils/src/useAsyncResource.ts:16](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L16)
 
 ##### error
 
@@ -68,7 +68,7 @@ Defined in: [react-utils/src/useAsyncResource.ts:10](https://github.com/lucasols
 error: null | Error;
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:9](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L9)
+Defined in: [react-utils/src/useAsyncResource.ts:15](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L15)
 
 ##### status
 
@@ -76,7 +76,7 @@ Defined in: [react-utils/src/useAsyncResource.ts:9](https://github.com/lucasols/
 status: "idle" | "loading" | "refetching" | "success" | "error";
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:8](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L8)
+Defined in: [react-utils/src/useAsyncResource.ts:14](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L14)
 
 ***
 
@@ -86,7 +86,7 @@ Defined in: [react-utils/src/useAsyncResource.ts:8](https://github.com/lucasols/
 type Options = object;
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:15](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L15)
+Defined in: [react-utils/src/useAsyncResource.ts:21](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L21)
 
 #### Properties
 
@@ -96,7 +96,7 @@ Defined in: [react-utils/src/useAsyncResource.ts:15](https://github.com/lucasols
 optional asyncFnUsesExternalDeps: boolean;
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:17](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L17)
+Defined in: [react-utils/src/useAsyncResource.ts:23](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L23)
 
 ##### externalDeps?
 
@@ -104,7 +104,7 @@ Defined in: [react-utils/src/useAsyncResource.ts:17](https://github.com/lucasols
 optional externalDeps: unknown[];
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:18](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L18)
+Defined in: [react-utils/src/useAsyncResource.ts:24](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L24)
 
 ##### lazy?
 
@@ -112,4 +112,4 @@ Defined in: [react-utils/src/useAsyncResource.ts:18](https://github.com/lucasols
 optional lazy: boolean;
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:16](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L16)
+Defined in: [react-utils/src/useAsyncResource.ts:22](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L22)

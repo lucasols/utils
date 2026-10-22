@@ -14,7 +14,7 @@
 function useAsyncResource<T>(asyncFn, options): AsyncResult<T | null>;
 ```
 
-Defined in: [react-utils/src/useAsyncResource.ts:58](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L58)
+Defined in: [react-utils/src/useAsyncResource.ts:64](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAsyncResource.ts#L64)
 
 React hook to manage the lifecycle of an async resource (fetching, loading,
 error, success).

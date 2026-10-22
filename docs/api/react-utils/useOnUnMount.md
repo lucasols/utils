@@ -10,7 +10,7 @@
 function useOnUnMount(callback, useDelayedCleanupOnDev): void;
 ```
 
-Defined in: [react-utils/src/useOnUnMount.ts:4](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnUnMount.ts#L4)
+Defined in: [react-utils/src/useOnUnMount.ts:3](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnUnMount.ts#L3)
 
 #### Parameters
 
