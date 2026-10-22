@@ -106,3 +106,15 @@ of last attempt
 ###### Returns
 
 `boolean`
+
+##### signal?
+
+```ts
+optional signal: AbortSignal;
+```
+
+Defined in: [packages/utils/src/retryOnError.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L30)
+
+Cancels the pending retries: no retry starts after the signal is aborted
+and a pending delay between retries ends early. The function then rejects
+with the error of the last attempt.
