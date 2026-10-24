@@ -10,7 +10,7 @@
 function useInfiniteLoading(__namedParameters): void;
 ```
 
-Defined in: [react-utils/src/useInfiniteLoading.ts:20](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useInfiniteLoading.ts#L20)
+Defined in: [react-utils/src/useInfiniteLoading.ts:21](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useInfiniteLoading.ts#L21)
 
 Calls `loadMore` when the container is scrolled near its end, or when the
 loaded content doesn't fill the container yet.

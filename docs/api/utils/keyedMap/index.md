@@ -10,10 +10,10 @@
 
 ### CompositeKeyMap\<K, V\>
 
-Defined in: [packages/utils/src/keyedMap.ts:183](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L183)
+Defined in: [packages/utils/src/keyedMap.ts:189](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L189)
 
-A Map that compares keys by value instead of reference.
-Uses `getCompositeKey` to generate a stable string key for any value.
+A Map that compares keys by value instead of reference. Uses
+`getCompositeKey` to generate a stable string key for any value.
 
 #### Example
 
@@ -45,7 +45,7 @@ const map = new CompositeKeyMap<{ x: number; y: number }, string>();
 new CompositeKeyMap<K, V>(entries?): CompositeKeyMap<K, V>;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:184](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L184)
+Defined in: [packages/utils/src/keyedMap.ts:190](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L190)
 
 ###### Parameters
 
@@ -91,7 +91,7 @@ The number of entries in the map
 iterator: IterableIterator<[K, V]>;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:169](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L169)
+Defined in: [packages/utils/src/keyedMap.ts:175](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L175)
 
 ###### Returns
 
@@ -107,7 +107,7 @@ Defined in: [packages/utils/src/keyedMap.ts:169](https://github.com/lucasols/uti
 clear(): void;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:87](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L87)
+Defined in: [packages/utils/src/keyedMap.ts:90](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L90)
 
 Removes all entries from the map.
 
@@ -127,7 +127,7 @@ KeyedMap.clear
 delete(key): boolean;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L70)
+Defined in: [packages/utils/src/keyedMap.ts:73](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L73)
 
 Removes the entry for the given key. Returns true if the entry was removed.
 
@@ -153,7 +153,7 @@ KeyedMap.delete
 deleteMultiple(keys): number;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L76)
+Defined in: [packages/utils/src/keyedMap.ts:79](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L79)
 
 Removes multiple entries. Returns the number of entries removed.
 
@@ -179,7 +179,7 @@ KeyedMap.deleteMultiple
 entries(): IterableIterator<[K, V]>;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:163](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L163)
+Defined in: [packages/utils/src/keyedMap.ts:169](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L169)
 
 ###### Returns
 
@@ -202,7 +202,7 @@ find(predicate):
   | undefined;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L102)
+Defined in: [packages/utils/src/keyedMap.ts:105](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L105)
 
 Finds the first entry matching the predicate.
 
@@ -232,7 +232,7 @@ KeyedMap.find
 forEach(callback, thisArg?): void;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:92](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L92)
+Defined in: [packages/utils/src/keyedMap.ts:95](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L95)
 
 Executes a callback for each entry in the map.
 
@@ -262,7 +262,7 @@ KeyedMap.forEach
 get(key): V | undefined;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L58)
+Defined in: [packages/utils/src/keyedMap.ts:61](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L61)
 
 Gets the value for the given key, or undefined if not found.
 
@@ -288,9 +288,10 @@ KeyedMap.get
 getOrInsert(key, fallback): V;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:123](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L123)
+Defined in: [packages/utils/src/keyedMap.ts:129](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L129)
 
-Gets the value for the given key, or inserts and returns the fallback value.
+Gets the value for the given key, or inserts and returns the fallback
+value.
 
 ###### Parameters
 
@@ -318,7 +319,7 @@ KeyedMap.getOrInsert
 getOrThrow(key): V;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:114](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L114)
+Defined in: [packages/utils/src/keyedMap.ts:117](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L117)
 
 Gets the value for the given key, or throws if not found.
 
@@ -344,7 +345,7 @@ KeyedMap.getOrThrow
 has(key): boolean;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L64)
+Defined in: [packages/utils/src/keyedMap.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L67)
 
 Checks if the map contains the given key.
 
@@ -370,7 +371,7 @@ KeyedMap.has
 keys(): IterableIterator<K>;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:151](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L151)
+Defined in: [packages/utils/src/keyedMap.ts:157](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L157)
 
 ###### Returns
 
@@ -388,9 +389,10 @@ KeyedMap.keys
 set(key, value): this;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L43)
+Defined in: [packages/utils/src/keyedMap.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L46)
 
-Sets a value for the given key. If the key exists, replaces both key and value.
+Sets a value for the given key. If the key exists, replaces both key and
+value.
 
 ###### Parameters
 
@@ -418,7 +420,7 @@ KeyedMap.set
 setMultiple(entries): this;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L50)
+Defined in: [packages/utils/src/keyedMap.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L53)
 
 Sets multiple entries at once.
 
@@ -444,7 +446,7 @@ KeyedMap.setMultiple
 toFilteredValues(predicate): V[];
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:131](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L131)
+Defined in: [packages/utils/src/keyedMap.ts:137](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L137)
 
 Returns values that match the predicate.
 
@@ -470,7 +472,7 @@ KeyedMap.toFilteredValues
 toKeys(): K[];
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:147](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L147)
+Defined in: [packages/utils/src/keyedMap.ts:153](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L153)
 
 Returns all keys as an array.
 
@@ -490,7 +492,7 @@ KeyedMap.toKeys
 toValues(): V[];
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:142](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L142)
+Defined in: [packages/utils/src/keyedMap.ts:148](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L148)
 
 Returns all values as an array.
 
@@ -510,7 +512,7 @@ KeyedMap.toValues
 values(): IterableIterator<V>;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:157](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L157)
+Defined in: [packages/utils/src/keyedMap.ts:163](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L163)
 
 ###### Returns
 
@@ -528,8 +530,8 @@ KeyedMap.values
 
 Defined in: [packages/utils/src/keyedMap.ts:18](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L18)
 
-A Map implementation that uses a custom key function to determine key equality.
-Keys with the same computed internal key are considered equal.
+A Map implementation that uses a custom key function to determine key
+equality. Keys with the same computed internal key are considered equal.
 
 #### Example
 
@@ -619,7 +621,7 @@ The number of entries in the map
 iterator: IterableIterator<[K, V]>;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:169](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L169)
+Defined in: [packages/utils/src/keyedMap.ts:175](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L175)
 
 ###### Returns
 
@@ -631,7 +633,7 @@ Defined in: [packages/utils/src/keyedMap.ts:169](https://github.com/lucasols/uti
 clear(): void;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:87](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L87)
+Defined in: [packages/utils/src/keyedMap.ts:90](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L90)
 
 Removes all entries from the map.
 
@@ -645,7 +647,7 @@ Removes all entries from the map.
 delete(key): boolean;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L70)
+Defined in: [packages/utils/src/keyedMap.ts:73](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L73)
 
 Removes the entry for the given key. Returns true if the entry was removed.
 
@@ -665,7 +667,7 @@ Removes the entry for the given key. Returns true if the entry was removed.
 deleteMultiple(keys): number;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L76)
+Defined in: [packages/utils/src/keyedMap.ts:79](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L79)
 
 Removes multiple entries. Returns the number of entries removed.
 
@@ -685,7 +687,7 @@ Removes multiple entries. Returns the number of entries removed.
 entries(): IterableIterator<[K, V]>;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:163](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L163)
+Defined in: [packages/utils/src/keyedMap.ts:169](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L169)
 
 ###### Returns
 
@@ -702,7 +704,7 @@ find(predicate):
   | undefined;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L102)
+Defined in: [packages/utils/src/keyedMap.ts:105](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L105)
 
 Finds the first entry matching the predicate.
 
@@ -726,7 +728,7 @@ Finds the first entry matching the predicate.
 forEach(callback, thisArg?): void;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:92](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L92)
+Defined in: [packages/utils/src/keyedMap.ts:95](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L95)
 
 Executes a callback for each entry in the map.
 
@@ -750,7 +752,7 @@ Executes a callback for each entry in the map.
 get(key): V | undefined;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L58)
+Defined in: [packages/utils/src/keyedMap.ts:61](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L61)
 
 Gets the value for the given key, or undefined if not found.
 
@@ -770,9 +772,10 @@ Gets the value for the given key, or undefined if not found.
 getOrInsert(key, fallback): V;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:123](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L123)
+Defined in: [packages/utils/src/keyedMap.ts:129](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L129)
 
-Gets the value for the given key, or inserts and returns the fallback value.
+Gets the value for the given key, or inserts and returns the fallback
+value.
 
 ###### Parameters
 
@@ -794,7 +797,7 @@ Gets the value for the given key, or inserts and returns the fallback value.
 getOrThrow(key): V;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:114](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L114)
+Defined in: [packages/utils/src/keyedMap.ts:117](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L117)
 
 Gets the value for the given key, or throws if not found.
 
@@ -814,7 +817,7 @@ Gets the value for the given key, or throws if not found.
 has(key): boolean;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L64)
+Defined in: [packages/utils/src/keyedMap.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L67)
 
 Checks if the map contains the given key.
 
@@ -834,7 +837,7 @@ Checks if the map contains the given key.
 keys(): IterableIterator<K>;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:151](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L151)
+Defined in: [packages/utils/src/keyedMap.ts:157](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L157)
 
 ###### Returns
 
@@ -846,9 +849,10 @@ Defined in: [packages/utils/src/keyedMap.ts:151](https://github.com/lucasols/uti
 set(key, value): this;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L43)
+Defined in: [packages/utils/src/keyedMap.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L46)
 
-Sets a value for the given key. If the key exists, replaces both key and value.
+Sets a value for the given key. If the key exists, replaces both key and
+value.
 
 ###### Parameters
 
@@ -870,7 +874,7 @@ Sets a value for the given key. If the key exists, replaces both key and value.
 setMultiple(entries): this;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L50)
+Defined in: [packages/utils/src/keyedMap.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L53)
 
 Sets multiple entries at once.
 
@@ -890,7 +894,7 @@ Sets multiple entries at once.
 toFilteredValues(predicate): V[];
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:131](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L131)
+Defined in: [packages/utils/src/keyedMap.ts:137](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L137)
 
 Returns values that match the predicate.
 
@@ -910,7 +914,7 @@ Returns values that match the predicate.
 toKeys(): K[];
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:147](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L147)
+Defined in: [packages/utils/src/keyedMap.ts:153](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L153)
 
 Returns all keys as an array.
 
@@ -924,7 +928,7 @@ Returns all keys as an array.
 toValues(): V[];
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:142](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L142)
+Defined in: [packages/utils/src/keyedMap.ts:148](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L148)
 
 Returns all values as an array.
 
@@ -938,7 +942,7 @@ Returns all values as an array.
 values(): IterableIterator<V>;
 ```
 
-Defined in: [packages/utils/src/keyedMap.ts:157](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L157)
+Defined in: [packages/utils/src/keyedMap.ts:163](https://github.com/lucasols/utils/blob/main/packages/utils/src/keyedMap.ts#L163)
 
 ###### Returns
 

@@ -14,7 +14,7 @@
 const isFunction: (value) => value is (args: any[]) => any = isFunctionFromTypeGuards;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:251](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L251)
+Defined in: [packages/utils/src/assertions.ts:253](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L253)
 
 Type guard to check if a value is a function.
 
@@ -62,7 +62,7 @@ Use import from `@ls-stack/typeGuards` instead
 const isObject: (value) => value is Record<string, unknown> = isObjectFromTypeGuards;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:253](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L253)
+Defined in: [packages/utils/src/assertions.ts:255](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L255)
 
 Type guard to check if a value is a plain object (not null, not an array).
 
@@ -110,7 +110,7 @@ Use import from `@ls-stack/typeGuards` instead
 const isPlainObject: (value) => value is Record<string, unknown> = isPlainObjectFromTypeGuards;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:255](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L255)
+Defined in: [packages/utils/src/assertions.ts:257](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L257)
 
 Type guard to check if a value is a plain object (created by Object literal
 or Object constructor).
@@ -162,7 +162,7 @@ Use import from `@ls-stack/typeGuards` instead
 const isPromise: (value) => value is Promise<unknown> = isPromiseFromTypeGuards;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:257](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L257)
+Defined in: [packages/utils/src/assertions.ts:259](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L259)
 
 Type guard to check if a value is a Promise or thenable object.
 
@@ -211,7 +211,7 @@ Use import from `@ls-stack/typeGuards` instead
 function assertIsNotNullish<T>(value, error): asserts value is StrictNonNullable<T, never>;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:119](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L119)
+Defined in: [packages/utils/src/assertions.ts:121](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L121)
 
 Asserts that a value is not null or undefined using TypeScript's assertion
 signature.
@@ -271,7 +271,7 @@ When the value is null or undefined
 function assertIsNotUndefined<T>(value, error): asserts value is StrictNonUndefined<T, never>;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L152)
+Defined in: [packages/utils/src/assertions.ts:154](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L154)
 
 Asserts that a value is not undefined using TypeScript's assertion signature.
 
@@ -330,7 +330,7 @@ When the value is undefined
 function exhaustiveCheck<Except>(narrowedType): Error;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:243](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L243)
+Defined in: [packages/utils/src/assertions.ts:245](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L245)
 
 Ensures exhaustive type checking in switch statements or conditional logic.
 
@@ -399,7 +399,7 @@ An Error object (this function should never actually execute)
 function invariant(condition, error): asserts condition;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:191](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L191)
+Defined in: [packages/utils/src/assertions.ts:193](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L193)
 
 Asserts that a condition is always true, throwing an error if it's falsy.
 
@@ -457,7 +457,7 @@ When the condition is falsy
 function notNullish<T>(value, error): StrictNonNullable<T>;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:83](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L83)
+Defined in: [packages/utils/src/assertions.ts:85](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L85)
 
 Ensures a value is not null or undefined and returns it with the correct
 type.
@@ -519,7 +519,7 @@ When the value is null or undefined
 function notUndefined<T>(value, error): StrictNonUndefined<T>;
 ```
 
-Defined in: [packages/utils/src/assertions.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L41)
+Defined in: [packages/utils/src/assertions.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/assertions.ts#L42)
 
 Ensures a value is not undefined and returns it with the correct type.
 

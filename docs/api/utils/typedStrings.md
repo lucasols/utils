@@ -10,7 +10,7 @@
 type NonEmptyString = string & object;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:180](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L180)
+Defined in: [packages/utils/src/typedStrings.ts:183](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L183)
 
 A branded type representing a string that is guaranteed to be non-empty
 (length > 0). This type provides compile-time safety by preventing empty
@@ -69,7 +69,7 @@ The substring that must be contained within the string
 type StringEndingWith<T> = string extends T ? never : `${string}${T}`;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L44)
+Defined in: [packages/utils/src/typedStrings.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L46)
 
 A type representing a string that ends with a specific substring. Uses
 template literal types to ensure the string ends with the specified suffix.
@@ -97,7 +97,7 @@ The substring that the string must end with
 type StringStartingWith<T> = string extends T ? never : `${T}${string}`;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L29)
+Defined in: [packages/utils/src/typedStrings.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L30)
 
 A type representing a string that starts with a specific substring. Uses
 template literal types to ensure the string begins with the specified
@@ -126,7 +126,7 @@ The substring that the string must start with
 function asNonEmptyStringOrNull(str): NonEmptyString | null;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:219](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L219)
+Defined in: [packages/utils/src/typedStrings.ts:220](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L220)
 
 Converts a string to `NonEmptyString` or returns `null` if the string is
 empty. Use this when empty strings should be handled gracefully rather than
@@ -154,7 +154,7 @@ The string as `NonEmptyString` or `null` if empty
 function asNonEmptyStringOrThrow(str): NonEmptyString;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:204](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L204)
+Defined in: [packages/utils/src/typedStrings.ts:205](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L205)
 
 Converts a string to `NonEmptyString` or throws an error if the string is
 empty. Use this when you need to ensure a string is non-empty and want to
@@ -186,7 +186,7 @@ Error if the string is empty
 function assertStringIsNonEmpty(str): asserts str is NonEmptyString;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:233](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L233)
+Defined in: [packages/utils/src/typedStrings.ts:234](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L234)
 
 Assertion function that ensures a string is non-empty. Throws an error if the
 string is empty, otherwise narrows the type to `NonEmptyString`.
@@ -215,7 +215,7 @@ Error if the string is empty
 function isNonEmptyString(str): str is NonEmptyString;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:191](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L191)
+Defined in: [packages/utils/src/typedStrings.ts:192](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L192)
 
 Type guard function that checks if a string is non-empty. Narrows the type to
 `NonEmptyString` when the check passes.
@@ -242,7 +242,7 @@ The string to check
 function splitTypedString<T>(str, separator): [string, string, ...string[]];
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:109](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L109)
+Defined in: [packages/utils/src/typedStrings.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L112)
 
 Splits a typed string by a separator that is guaranteed to exist in the
 string. Returns an array with at least two elements: the parts before and
@@ -294,7 +294,7 @@ function splitTypedStringAt<T>(
    splitAtNSeparatorPos): [string, string];
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:137](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L137)
+Defined in: [packages/utils/src/typedStrings.ts:140](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L140)
 
 Splits a typed string at a specific occurrence of the separator. Unlike
 `splitTypedString`, this returns exactly two parts: everything before the nth
@@ -349,7 +349,7 @@ A tuple with exactly two string elements
 function stringContains<T>(str, substring): str is StringContaining<T>;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L55)
+Defined in: [packages/utils/src/typedStrings.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L58)
 
 Type guard function that checks if a string contains a specific substring.
 Narrows the type to `StringContaining<T>` when the check passes.
@@ -388,7 +388,7 @@ The substring to search for
 function stringEndsWith<T>(str, substring): str is StringEndingWith<T>;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:85](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L85)
+Defined in: [packages/utils/src/typedStrings.ts:88](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L88)
 
 Type guard function that checks if a string ends with a specific substring.
 Narrows the type to `StringEndingWith<T>` when the check passes.
@@ -427,7 +427,7 @@ The substring to check for at the end
 function stringStartsWith<T>(str, substring): str is StringStartingWith<T>;
 ```
 
-Defined in: [packages/utils/src/typedStrings.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L70)
+Defined in: [packages/utils/src/typedStrings.ts:73](https://github.com/lucasols/utils/blob/main/packages/utils/src/typedStrings.ts#L73)
 
 Type guard function that checks if a string starts with a specific substring.
 Narrows the type to `StringStartingWith<T>` when the check passes.

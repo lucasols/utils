@@ -10,7 +10,7 @@
 function castToNumber(value): number | null;
 ```
 
-Defined in: [packages/utils/src/castValues.ts:14](https://github.com/lucasols/utils/blob/main/packages/utils/src/castValues.ts#L14)
+Defined in: [packages/utils/src/castValues.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/castValues.ts#L12)
 
 #### Parameters
 

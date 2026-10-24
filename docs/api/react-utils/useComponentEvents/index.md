@@ -14,10 +14,11 @@
 function useComponentEvents<E>(emitter, callback): void;
 ```
 
-Defined in: [react-utils/src/useComponentEvents.ts:55](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useComponentEvents.ts#L55)
+Defined in: [react-utils/src/useComponentEvents.ts:57](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useComponentEvents.ts#L57)
 
-Subscribes to events from an emitter and calls appropriate callbacks when events are emitted.
-Automatically handles cleanup when the component unmounts.
+Subscribes to events from an emitter and calls appropriate callbacks when
+events are emitted. Automatically handles cleanup when the component
+unmounts.
 
 #### Type Parameters
 
@@ -29,7 +30,8 @@ Automatically handles cleanup when the component unmounts.
 
 ##### emitter
 
-The event emitter to listen to, typically from useSendComponentEvents
+The event emitter to listen to, typically from
+  useSendComponentEvents
 
 `Emitter`\<`E`\> | `undefined`
 
@@ -53,8 +55,8 @@ function useSendComponentEvents<E>(): object;
 
 Defined in: [react-utils/src/useComponentEvents.ts:33](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useComponentEvents.ts#L33)
 
-Creates an event system for component communication. Returns an emitter for binding
-and a type safe send function for emitting events.
+Creates an event system for component communication. Returns an emitter for
+binding and a type safe send function for emitting events.
 
 #### Type Parameters
 
@@ -81,16 +83,16 @@ send: SendEvent<E>;
 #### Example
 
 ```tsx
-type Events = { userAction: { id: string }; error: string };
-const { bind, send } = useSendComponentEvents<Events>();
+  type Events = { userAction: { id: string }; error: string };
+  const { bind, send } = useSendComponentEvents<Events>();
 
-// In child component
-useComponentEvents(bind, {
-  userAction: (payload) => console.log(payload.id),
-  error: (message) => console.error(message)
-});
+  // In child component
+  useComponentEvents(bind, {
+    userAction: (payload) => console.log(payload.id),
+    error: (message) => console.error(message),
+  });
 
-// Emit events
-send('userAction', { id: '123' });
-send('error', 'Something went wrong');
-```
+  // Emit events
+  send('userAction', { id: '123' });
+  send('error', 'Something went wrong');
+  ```;

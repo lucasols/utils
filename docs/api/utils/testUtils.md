@@ -108,7 +108,7 @@ Defined in: [packages/utils/src/testUtils.ts:20](https://github.com/lucasols/uti
 function compactSnapshot(value, options): string;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:446](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L446)
+Defined in: [packages/utils/src/testUtils.ts:455](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L455)
 
 Produces a more compact and readable snapshot of a value using yaml. By
 default booleans are shown as `✅` and `❌`, use `showBooleansAs` to
@@ -146,15 +146,15 @@ Filtering patterns in `rejectKeys` and `filterKeys`:
 - Expanding the patterns with parentheses:
 
   - `'prop.test.(prop1|prop2|prop3.prop4)'` - Will produce `prop.test.prop1`,
-      `prop.test.prop2`, and `prop.test.prop3.prop4`
+    `prop.test.prop2`, and `prop.test.prop3.prop4`
 - Array filtering by value:
 
   - `'users[%name="John"]'` - Filters the `users` with the `name` property equal
-      to `John`
+    to `John`
   - `'users[%name="John" | "Jane"]'` - Filters the `users` with the `name`
-      property equal to `John` or `Jane`
+    property equal to `John` or `Jane`
   - `'users[%name="John" | "Jane" && %age=20]'` - AND and OR are supported by
-      using `&&` and `||`, nesting logical operators is not supported yet
+    using `&&` and `||`, nesting logical operators is not supported yet
   - `'users[%config.name="John" | "Jane"]'` - Dot notation is supported
 
 Check more supported patterns in [filterObjectOrArrayKeys](filterObjectOrArrayKeys.md#filterobjectorarraykeys) docs.
@@ -392,7 +392,7 @@ get snapshotFromLast(): string;
 function getResultFn<T>(fnGetter, wrapper?): T;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:335](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L335)
+Defined in: [packages/utils/src/testUtils.ts:344](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L344)
 
 #### Type Parameters
 
@@ -442,7 +442,7 @@ Defined in: [packages/utils/src/testUtils.ts:27](https://github.com/lucasols/uti
 function waitController(): object;
 ```
 
-Defined in: [packages/utils/src/testUtils.ts:350](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L350)
+Defined in: [packages/utils/src/testUtils.ts:359](https://github.com/lucasols/utils/blob/main/packages/utils/src/testUtils.ts#L359)
 
 #### Returns
 

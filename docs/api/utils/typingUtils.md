@@ -50,7 +50,7 @@ Defined in: [packages/utils/src/typingUtils.ts:46](https://github.com/lucasols/u
 type DeepPrettify<T> = { [K in keyof T]: T[K] extends Record<string, unknown> ? DeepPrettify<T[K]> : T[K] } & object;
 ```
 
-Defined in: [packages/utils/src/typingUtils.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L34)
+Defined in: [packages/utils/src/typingUtils.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L33)
 
 #### Type Parameters
 
@@ -159,7 +159,7 @@ Use `PartialRecord` from `@ls-stack/utils/typeUtils` instead
 type Prettify<T> = { [P in keyof T]: T[P] } & object;
 ```
 
-Defined in: [packages/utils/src/typingUtils.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L29)
+Defined in: [packages/utils/src/typingUtils.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingUtils.ts#L28)
 
 #### Type Parameters
 

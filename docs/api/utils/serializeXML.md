@@ -10,7 +10,7 @@
 type SerializeOptions = object;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L36)
+Defined in: [packages/utils/src/serializeXML.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L30)
 
 #### Properties
 
@@ -20,7 +20,7 @@ Defined in: [packages/utils/src/serializeXML.ts:36](https://github.com/lucasols/
 optional escapeText: boolean;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L38)
+Defined in: [packages/utils/src/serializeXML.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L32)
 
 ##### indent?
 
@@ -28,7 +28,7 @@ Defined in: [packages/utils/src/serializeXML.ts:38](https://github.com/lucasols/
 optional indent: number | string;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L37)
+Defined in: [packages/utils/src/serializeXML.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L31)
 
 ##### invalidNodes?
 
@@ -36,7 +36,7 @@ Defined in: [packages/utils/src/serializeXML.ts:37](https://github.com/lucasols/
 optional invalidNodes: "throw" | "reject";
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:40](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L40)
+Defined in: [packages/utils/src/serializeXML.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L34)
 
 ##### validateTagName?
 
@@ -44,7 +44,7 @@ Defined in: [packages/utils/src/serializeXML.ts:40](https://github.com/lucasols/
 optional validateTagName: boolean;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L39)
+Defined in: [packages/utils/src/serializeXML.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L33)
 
 ***
 
@@ -79,7 +79,7 @@ Defined in: [packages/utils/src/serializeXML.ts:19](https://github.com/lucasols/
 function serializeXML(node, options?): string;
 ```
 
-Defined in: [packages/utils/src/serializeXML.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L43)
+Defined in: [packages/utils/src/serializeXML.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/serializeXML.ts#L37)
 
 #### Parameters
 

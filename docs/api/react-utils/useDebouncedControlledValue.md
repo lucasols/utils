@@ -98,8 +98,15 @@ defaultValue: T = initialValue;
 ##### flush()
 
 ```ts
-flush: () => void = stableFlush;
+flush: () => void;
 ```
+
+Applies the pending change before an action that may replace the controlled
+value in the same event (e.g. sending a message clears it), so the replaced
+value is applied to the internal value instead of ignored as the echo of
+the flushed change. The parent must apply the flushed value synchronously,
+a different controlled value in the next render replaces the internal
+value
 
 ###### Returns
 
@@ -108,7 +115,7 @@ flush: () => void = stableFlush;
 ##### ~~flushDebounce()~~
 
 ```ts
-flushDebounce: () => void = stableFlush;
+flushDebounce: () => void = flush;
 ```
 
 ###### Returns
@@ -150,8 +157,16 @@ onChange: (value) => void;
 ##### reset()
 
 ```ts
-reset: () => void = stableReset;
+reset: () => void;
 ```
+
+Cancels the pending change and re-applies the controlled value to the
+internal value. Call it when the parent resets the controlled value, a
+reset to the value it already holds (e.g. clearing an input whose pending
+change was not emitted yet) doesn't re-render, so it would be ignored and
+the pending change applied afterwards. A different controlled value in the
+next render replaces the internal value. Stable, it always reads the latest
+controlled value
 
 ###### Returns
 

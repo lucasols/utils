@@ -6,7 +6,7 @@
 
 ### DebouncedFunc()\<T\>
 
-Defined in: [packages/utils/src/debounce.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L10)
+Defined in: [packages/utils/src/debounce.ts:13](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L13)
 
 #### Type Parameters
 
@@ -18,7 +18,7 @@ Defined in: [packages/utils/src/debounce.ts:10](https://github.com/lucasols/util
 DebouncedFunc(...args): ReturnType<T> | undefined;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L20)
+Defined in: [packages/utils/src/debounce.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L23)
 
 Call the original function, but applying the debounce rules.
 
@@ -46,7 +46,7 @@ if the debounced function was not invoked yet.
 cancel: () => void;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L23)
+Defined in: [packages/utils/src/debounce.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L26)
 
 Throw away any pending invocation of the debounced function.
 
@@ -60,7 +60,7 @@ Throw away any pending invocation of the debounced function.
 flush: () => ReturnType<T> | undefined;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L32)
+Defined in: [packages/utils/src/debounce.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L35)
 
 If there is a pending invocation of the debounced function, invoke it
 immediately and return its return value.
@@ -78,7 +78,7 @@ debounced function was never invoked.
 pending: () => boolean;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L35)
+Defined in: [packages/utils/src/debounce.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L38)
 
 Return true if the debounced function still has a scheduled run.
 
@@ -92,7 +92,7 @@ Return true if the debounced function still has a scheduled run.
 updateCb: (callback) => void;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:38](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L38)
+Defined in: [packages/utils/src/debounce.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L41)
 
 Update the debounced function with a new callback.
 
@@ -112,7 +112,7 @@ Update the debounced function with a new callback.
 updateParams: (wait, options?) => void;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L41)
+Defined in: [packages/utils/src/debounce.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L44)
 
 Update the debounce wait and options while keeping scheduled runs.
 
@@ -158,9 +158,10 @@ Invoke on the leading edge of the timeout. Defaults to `false`.
 optional maxWait: number;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L5)
+Defined in: [packages/utils/src/debounce.ts:8](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L8)
 
-Maximum time the function can be delayed before it's forced to invoke (in ms).
+Maximum time the function can be delayed before it's forced to invoke (in
+ms).
 
 ##### trailing?
 
@@ -168,7 +169,7 @@ Maximum time the function can be delayed before it's forced to invoke (in ms).
 optional trailing: boolean;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L7)
+Defined in: [packages/utils/src/debounce.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L10)
 
 Invoke on the trailing edge of the timeout. Defaults to `true`.
 
@@ -183,7 +184,7 @@ function debounce<T>(
 options?): DebouncedFunc<T>;
 ```
 
-Defined in: [packages/utils/src/debounce.ts:45](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L45)
+Defined in: [packages/utils/src/debounce.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L48)
 
 #### Type Parameters
 
@@ -217,7 +218,7 @@ Defined in: [packages/utils/src/debounce.ts:45](https://github.com/lucasols/util
 function isDebouncedFn<T>(fn): fn is T & { cancel: () => void; flush: () => ReturnType<T> | undefined; pending: () => boolean; updateCb: (callback: T) => void; updateParams: (wait: number, options?: DebounceOptions) => void };
 ```
 
-Defined in: [packages/utils/src/debounce.ts:215](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L215)
+Defined in: [packages/utils/src/debounce.ts:218](https://github.com/lucasols/utils/blob/main/packages/utils/src/debounce.ts#L218)
 
 #### Type Parameters
 

@@ -20,11 +20,12 @@ Defined in: [react-utils/src/useAnimateMountUnmount.ts:4](https://github.com/luc
 function useAnimateMountUnmount(show, animationMaxDurationMs): [MountAnimStates, boolean];
 ```
 
-Defined in: [react-utils/src/useAnimateMountUnmount.ts:17](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAnimateMountUnmount.ts#L17)
+Defined in: [react-utils/src/useAnimateMountUnmount.ts:20](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useAnimateMountUnmount.ts#L20)
 
 React hook to manage mount/unmount animation states for a component.
 
-Returns the current animation state and a boolean indicating whether the element should be rendered.
+Returns the current animation state and a boolean indicating whether the
+element should be rendered.
 
 #### Parameters
 
@@ -38,12 +39,14 @@ Whether the component should be shown (mounted)
 
 `number`
 
-Maximum duration (ms) for the leave animation before unmounting
+Maximum duration (ms) for the leave animation
+  before unmounting
 
 #### Returns
 
 \[[`MountAnimStates`](#mountanimstates), `boolean`\]
 
 [animState, renderElement]
+
   - animState: 'from' | 'enter' | 'leave' | 'unmounted'
   - renderElement: boolean (true if the element should be rendered)

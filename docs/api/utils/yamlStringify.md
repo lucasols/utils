@@ -36,7 +36,7 @@ Defined in: [packages/utils/src/yamlStringify.ts:19](https://github.com/lucasols
 optional includeErrorCause: boolean;
 ```
 
-Defined in: [packages/utils/src/yamlStringify.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/yamlStringify.ts#L25)
+Defined in: [packages/utils/src/yamlStringify.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/yamlStringify.ts#L28)
 
 When serializing `Error`, include `cause` recursively. Default true.
 
@@ -46,9 +46,10 @@ When serializing `Error`, include `cause` recursively. Default true.
 optional includeErrorStack: boolean;
 ```
 
-Defined in: [packages/utils/src/yamlStringify.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/yamlStringify.ts#L23)
+Defined in: [packages/utils/src/yamlStringify.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/yamlStringify.ts#L26)
 
-When serializing `Error`, include `stack`. Default true (direct `yamlStringify`); `compactSnapshot` passes false by default.
+When serializing `Error`, include `stack`. Default true (direct
+`yamlStringify`); `compactSnapshot` passes false by default.
 
 ##### maxDepth?
 
@@ -78,10 +79,11 @@ Defined in: [packages/utils/src/yamlStringify.ts:7](https://github.com/lucasols/
 optional pickErrorOwnProps: string[] | (key, value) => boolean;
 ```
 
-Defined in: [packages/utils/src/yamlStringify.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/yamlStringify.ts#L30)
+Defined in: [packages/utils/src/yamlStringify.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/yamlStringify.ts#L34)
 
 Limit which extra enumerable own keys appear on `Error` (not `message` /
-`name` / `stack` / `cause`). Omit to include all extras. Array = allowlist.
+`name` / `stack` / `cause`). Omit to include all extras. Array =
+allowlist.
 
 ##### showUndefined?
 
@@ -99,7 +101,7 @@ Defined in: [packages/utils/src/yamlStringify.ts:9](https://github.com/lucasols/
 function yamlStringify(obj, __namedParameters): string;
 ```
 
-Defined in: [packages/utils/src/yamlStringify.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/yamlStringify.ts#L112)
+Defined in: [packages/utils/src/yamlStringify.ts:101](https://github.com/lucasols/utils/blob/main/packages/utils/src/yamlStringify.ts#L101)
 
 #### Parameters
 

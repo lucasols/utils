@@ -6,7 +6,7 @@
 
 ### DebouncedFunc()\<T\>
 
-Defined in: utils/dist/debounce.d.mts:10
+Defined in: utils/dist/debounce.d.mts:13
 
 #### Type Parameters
 
@@ -18,7 +18,7 @@ Defined in: utils/dist/debounce.d.mts:10
 DebouncedFunc(...args): ReturnType<T> | undefined;
 ```
 
-Defined in: utils/dist/debounce.d.mts:20
+Defined in: utils/dist/debounce.d.mts:23
 
 Call the original function, but applying the debounce rules.
 
@@ -46,7 +46,7 @@ if the debounced function was not invoked yet.
 cancel: () => void;
 ```
 
-Defined in: utils/dist/debounce.d.mts:22
+Defined in: utils/dist/debounce.d.mts:25
 
 Throw away any pending invocation of the debounced function.
 
@@ -60,7 +60,7 @@ Throw away any pending invocation of the debounced function.
 flush: () => ReturnType<T> | undefined;
 ```
 
-Defined in: utils/dist/debounce.d.mts:30
+Defined in: utils/dist/debounce.d.mts:33
 
 If there is a pending invocation of the debounced function, invoke it
 immediately and return its return value.
@@ -78,7 +78,7 @@ debounced function was never invoked.
 pending: () => boolean;
 ```
 
-Defined in: utils/dist/debounce.d.mts:32
+Defined in: utils/dist/debounce.d.mts:35
 
 Return true if the debounced function still has a scheduled run.
 
@@ -92,7 +92,7 @@ Return true if the debounced function still has a scheduled run.
 updateCb: (callback) => void;
 ```
 
-Defined in: utils/dist/debounce.d.mts:34
+Defined in: utils/dist/debounce.d.mts:37
 
 Update the debounced function with a new callback.
 
@@ -112,7 +112,7 @@ Update the debounced function with a new callback.
 updateParams: (wait, options?) => void;
 ```
 
-Defined in: utils/dist/debounce.d.mts:36
+Defined in: utils/dist/debounce.d.mts:39
 
 Update the debounce wait and options while keeping scheduled runs.
 
@@ -158,9 +158,10 @@ Invoke on the leading edge of the timeout. Defaults to `false`.
 optional maxWait: number;
 ```
 
-Defined in: utils/dist/debounce.d.mts:6
+Defined in: utils/dist/debounce.d.mts:9
 
-Maximum time the function can be delayed before it's forced to invoke (in ms).
+Maximum time the function can be delayed before it's forced to invoke (in
+ms).
 
 ##### trailing?
 
@@ -168,6 +169,6 @@ Maximum time the function can be delayed before it's forced to invoke (in ms).
 optional trailing: boolean;
 ```
 
-Defined in: utils/dist/debounce.d.mts:8
+Defined in: utils/dist/debounce.d.mts:11
 
 Invoke on the trailing edge of the timeout. Defaults to `true`.

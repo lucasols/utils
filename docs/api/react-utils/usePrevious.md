@@ -69,7 +69,7 @@ function usePreviousChanged<T, I>(
    equalityFn): T | I;
 ```
 
-Defined in: [react-utils/src/usePrevious.ts:13](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/usePrevious.ts#L13)
+Defined in: [react-utils/src/usePrevious.ts:14](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/usePrevious.ts#L14)
 
 #### Type Parameters
 

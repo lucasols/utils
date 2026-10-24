@@ -14,7 +14,7 @@
 type DeepPrettify<T> = { [K in keyof T]: T[K] extends Record<string, unknown> ? DeepPrettify<T[K]> : T[K] } & object;
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L29)
+Defined in: [packages/utils/src/typeUtils.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L28)
 
 #### Type Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/utils/src/typeUtils.ts:29](https://github.com/lucasols/uti
 type DeepReplaceValue<T, ReplaceType, NewType, SkipPaths, SkipTypes> = DeepReplaceValueImpl<T, ReplaceType, NewType, SkipPaths, SkipTypes>;
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:147](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L147)
+Defined in: [packages/utils/src/typeUtils.ts:156](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L156)
 
 Replaces all values that extends `ReplaceType` with `NewType` in a deeply
 nested object or array.
@@ -110,7 +110,7 @@ Defined in: [packages/utils/src/typeUtils.ts:18](https://github.com/lucasols/uti
 type MakeUndefinedKeysOptional<T> = Prettify<Partial<Pick<T, PickUndefinedKeys<T>>> & Pick<T, PickRequiredKeys<T>>>;
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:177](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L177)
+Defined in: [packages/utils/src/typeUtils.ts:186](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L186)
 
 #### Type Parameters
 
@@ -167,7 +167,7 @@ Use `ObjKeysWithValuesOfType` from `@ls-stack/utils/typeUtils`
 type PartialPossiblyUndefinedValues<T> = Prettify<Partial<Pick<T, KeysWithUndefinedValues<T>>> & Omit<T, KeysWithUndefinedValues<T>>>;
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:163](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L163)
+Defined in: [packages/utils/src/typeUtils.ts:172](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L172)
 
 Marks all possible undefined values as partial at the root level of the
 object.
@@ -206,7 +206,7 @@ Defined in: [packages/utils/src/typeUtils.ts:1](https://github.com/lucasols/util
 type Prettify<T> = { [P in keyof T]: T[P] } & object;
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L25)
+Defined in: [packages/utils/src/typeUtils.ts:24](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L24)
 
 #### Type Parameters
 
@@ -222,7 +222,7 @@ Defined in: [packages/utils/src/typeUtils.ts:25](https://github.com/lucasols/uti
 type StringWithAutoComplete<T> = T | string & object;
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:181](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L181)
+Defined in: [packages/utils/src/typeUtils.ts:190](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L190)
 
 #### Type Parameters
 

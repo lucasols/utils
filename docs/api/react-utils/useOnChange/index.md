@@ -17,11 +17,12 @@ function useOnChange<T>(
    options): void;
 ```
 
-Defined in: [react-utils/src/useOnChange.ts:74](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L74)
+Defined in: [react-utils/src/useOnChange.ts:107](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L107)
 
 A replacement for useEffect that doesn't need a dependency array.
-Automatically triggers the callback when the value changes based on deep equality comparison.
-By default, the callback is not called on mount (use `callOnMount` option to change this).
+Automatically triggers the callback when the value changes based on deep
+equality comparison. By default, the callback is not called on mount (use
+`callOnMount` option to change this).
 
 #### Type Parameters
 
@@ -41,7 +42,8 @@ The value to watch for changes
 
 (`values`) => `void` \| [`CleanupFn`](-internal-.md#cleanupfn)
 
-Function called when value changes, receives prev and current values
+Function called when value changes, receives prev and
+  current values
 
 ##### options
 
@@ -56,12 +58,12 @@ Configuration options
 #### Example
 
 ```tsx
-const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0);
 
-useOnChange(count, ({ prev, current }) => {
+  useOnChange(count, ({ prev, current }) => {
   console.log(`Count changed from ${prev} to ${current}`);
-});
-```
+  });
+  ```
 
 ***
 
@@ -74,10 +76,11 @@ function useOnChangeLayoutEffect<T>(
    options): void;
 ```
 
-Defined in: [react-utils/src/useOnChange.ts:98](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L98)
+Defined in: [react-utils/src/useOnChange.ts:134](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L134)
 
-Layout effect version of useOnChange that runs synchronously before DOM updates.
-Similar to useOnChange but uses useLayoutEffect instead of useEffect for timing-sensitive updates.
+Layout effect version of useOnChange that runs synchronously before DOM
+updates. Similar to useOnChange but uses useLayoutEffect instead of useEffect
+for timing-sensitive updates.
 
 #### Type Parameters
 
@@ -97,7 +100,8 @@ The value to watch for changes
 
 (`values`) => `void` \| [`CleanupFn`](-internal-.md#cleanupfn)
 
-Function called when value changes, receives prev and current values
+Function called when value changes, receives prev and
+  current values
 
 ##### options
 
@@ -121,10 +125,10 @@ function useOnChangeTo<T, U>(
    options): void;
 ```
 
-Defined in: [react-utils/src/useOnChange.ts:135](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L135)
+Defined in: [react-utils/src/useOnChange.ts:173](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L173)
 
-Triggers callback only when value changes to a specific target value.
-Useful for watching for specific state transitions or reaching particular values.
+Triggers callback only when value changes to a specific target value. Useful
+for watching for specific state transitions or reaching particular values.
 
 #### Type Parameters
 
@@ -154,7 +158,8 @@ The specific target value to watch for
 
 (`values`) => `void` \| [`CleanupFn`](-internal-.md#cleanupfn)
 
-Function called when value changes to target, receives prev and target values
+Function called when value changes to target, receives prev
+  and target values
 
 ##### options
 
@@ -169,12 +174,12 @@ Configuration options
 #### Example
 
 ```tsx
-const [status, setStatus] = useState('idle');
+  const [status, setStatus] = useState('idle');
 
-useOnChangeTo(status, 'loading', ({ prev, target }) => {
+  useOnChangeTo(status, 'loading', ({ prev, target }) => {
   console.log(`Status changed from ${prev} to loading`);
-});
-```
+  });
+  ```
 
 ***
 
@@ -188,10 +193,11 @@ function useOnChangeToLayoutEffect<T, U>(
    options): void;
 ```
 
-Defined in: [react-utils/src/useOnChange.ts:161](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L161)
+Defined in: [react-utils/src/useOnChange.ts:202](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnChange.ts#L202)
 
-Layout effect version of useOnChangeTo that runs synchronously before DOM updates.
-Combines specific target value watching with useLayoutEffect timing for synchronous execution.
+Layout effect version of useOnChangeTo that runs synchronously before DOM
+updates. Combines specific target value watching with useLayoutEffect timing
+for synchronous execution.
 
 #### Type Parameters
 
@@ -221,7 +227,8 @@ The specific target value to watch for
 
 (`values`) => `void` \| [`CleanupFn`](-internal-.md#cleanupfn)
 
-Function called when value changes to target, receives prev and target values
+Function called when value changes to target, receives prev
+  and target values
 
 ##### options
 

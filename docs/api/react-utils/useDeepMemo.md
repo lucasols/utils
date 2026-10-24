@@ -44,7 +44,7 @@ structurally.
 function useStableRefValue<T>(value): T;
 ```
 
-Defined in: [react-utils/src/useDeepMemo.ts:23](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDeepMemo.ts#L23)
+Defined in: [react-utils/src/useDeepMemo.ts:25](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDeepMemo.ts#L25)
 
 Returns the first received value that is deep equal to `value`, keeping the
 reference stable while the value doesn't change structurally.

@@ -6,7 +6,7 @@
 
 ### ParallelAsyncResultCalls\<M, R\>
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L39)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L30)
 
 #### Type Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:39](https://github.com/luc
 new ParallelAsyncResultCalls<M, R>(): ParallelAsyncResultCalls<M, R>;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:49](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L49)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L37)
 
 ###### Returns
 
@@ -40,7 +40,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:49](https://github.com/luc
 alreadyRun: boolean = false;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:47](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L47)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L35)
 
 #### Methods
 
@@ -50,7 +50,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:47](https://github.com/luc
 add(call): ParallelAsyncResultCalls<M, R>;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:51](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L51)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L39)
 
 ###### Parameters
 
@@ -68,7 +68,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:51](https://github.com/luc
 addTuple<T>(...calls): object;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L67)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L56)
 
 Adds calls return tuples with inferred results
 
@@ -135,7 +135,7 @@ runAll(__namedParameters): Promise<Result<Succeeded<R, M>[], {
 }>>;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:155](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L155)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:140](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L140)
 
 ###### Parameters
 
@@ -163,7 +163,7 @@ runAllSettled(__namedParameters): Promise<{
 }>;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L100)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:90](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L90)
 
 ###### Parameters
 
@@ -188,7 +188,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:100](https://github.com/lu
 type Failed<M> = object;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L30)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L27)
 
 #### Type Parameters
 
@@ -204,7 +204,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:30](https://github.com/luc
 error: Error;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L32)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L27)
 
 ##### metadata
 
@@ -212,7 +212,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:32](https://github.com/luc
 metadata: M;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L31)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L27)
 
 ***
 
@@ -222,7 +222,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:31](https://github.com/luc
 type RunProps = object;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:26](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L26)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L25)
 
 #### Properties
 
@@ -232,7 +232,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:26](https://github.com/luc
 optional delayStart: (index) => number;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L27)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L25)
 
 ###### Parameters
 
@@ -252,7 +252,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:27](https://github.com/luc
 type Succeeded<R, M> = object;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L34)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L28)
 
 #### Type Parameters
 
@@ -272,7 +272,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:34](https://github.com/luc
 metadata: M;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L36)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L28)
 
 ##### value
 
@@ -280,7 +280,7 @@ Defined in: [packages/utils/src/parallelAsyncCalls.ts:36](https://github.com/luc
 value: R;
 ```
 
-Defined in: [packages/utils/src/parallelAsyncCalls.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L35)
+Defined in: [packages/utils/src/parallelAsyncCalls.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/parallelAsyncCalls.ts#L28)
 
 ***
 

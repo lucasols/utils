@@ -10,7 +10,7 @@
 type AnyResultMethods = Record<ResultMethodsKeys, never>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:10](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L10)
+Defined in: [packages/utils/src/tsResult.ts:6](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L6)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/utils/src/tsResult.ts:10](https://github.com/lucasols/util
 type Err<E> = object & AnyResultMethods;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L20)
+Defined in: [packages/utils/src/tsResult.ts:16](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L16)
 
 #### Type Declaration
 
@@ -100,7 +100,7 @@ value: T;
 type ResultMethods<T, E> = object;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L27)
+Defined in: [packages/utils/src/tsResult.ts:23](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L23)
 
 #### Type Parameters
 
@@ -120,7 +120,7 @@ Defined in: [packages/utils/src/tsResult.ts:27](https://github.com/lucasols/util
 ifErr: (fn) => Result<T, E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L48)
+Defined in: [packages/utils/src/tsResult.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L44)
 
 ###### Parameters
 
@@ -142,7 +142,7 @@ Use `t-result` library instead.
 ifOk: (fn) => Result<T, E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L46)
+Defined in: [packages/utils/src/tsResult.ts:42](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L42)
 
 ###### Parameters
 
@@ -164,7 +164,7 @@ Use `t-result` library instead.
 mapErr: <NewError>(mapFn) => Result<T, NewError>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L37)
+Defined in: [packages/utils/src/tsResult.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L33)
 
 ###### Type Parameters
 
@@ -192,7 +192,7 @@ Use `t-result` library instead.
 mapOk: <NewValue>(mapFn) => Result<NewValue, E>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:35](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L35)
+Defined in: [packages/utils/src/tsResult.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L31)
 
 ###### Type Parameters
 
@@ -220,7 +220,7 @@ Use `t-result` library instead.
 mapOkAndErr: <NewValue, NewError>(mapFns) => Result<NewValue, NewError>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:41](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L41)
+Defined in: [packages/utils/src/tsResult.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L37)
 
 ###### Type Parameters
 
@@ -258,7 +258,7 @@ Use `t-result` library instead.
 unwrap: () => T;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L33)
+Defined in: [packages/utils/src/tsResult.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L29)
 
 ###### Returns
 
@@ -274,7 +274,7 @@ Use `t-result` library instead.
 unwrapOr: <R>(defaultValue) => T | R;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:31](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L31)
+Defined in: [packages/utils/src/tsResult.ts:27](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L27)
 
 ###### Type Parameters
 
@@ -302,7 +302,7 @@ Use `t-result` library instead.
 unwrapOrNull: () => T | null;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:29](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L29)
+Defined in: [packages/utils/src/tsResult.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L25)
 
 ###### Returns
 
@@ -320,4 +320,4 @@ Use `t-result` library instead.
 type ResultMethodsKeys = keyof ResultMethods<any, any>;
 ```
 
-Defined in: [packages/utils/src/tsResult.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L58)
+Defined in: [packages/utils/src/tsResult.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/tsResult.ts#L54)
