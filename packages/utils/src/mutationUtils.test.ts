@@ -91,14 +91,8 @@ describe('updateObject', () => {
   describe('immer integration', () => {
     test('should work with immer-draft objects', () => {
       interface State {
-        user: {
-          name: string;
-          age: number;
-        };
-        settings: {
-          theme: string;
-          notifications: boolean;
-        };
+        user: { name: string; age: number };
+        settings: { theme: string; notifications: boolean };
       }
 
       const initialState: State = {
@@ -142,11 +136,7 @@ describe('updateObject', () => {
 });
 
 describe('getArrayMethodsFromProduce', () => {
-  type Item = {
-    id: string;
-    name: string;
-    value: number;
-  };
+  type Item = { id: string; name: string; value: number };
 
   describe('add method', () => {
     test('should add item to empty array', () => {
@@ -623,10 +613,7 @@ describe('getArrayMethodsFromProduce', () => {
     });
 
     test('should work with custom id getter', () => {
-      type CustomItem = {
-        userId: string;
-        data: string;
-      };
+      type CustomItem = { userId: string; data: string };
 
       let state: CustomItem[] = [
         { userId: 'user-1', data: 'Data 1' },
@@ -661,10 +648,7 @@ describe('getArrayMethodsFromProduce', () => {
     test('should handle nested object updates', () => {
       type ComplexItem = {
         id: string;
-        metadata: {
-          title: string;
-          tags: string[];
-        };
+        metadata: { title: string; tags: string[] };
         value: number;
       };
 

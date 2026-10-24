@@ -81,17 +81,18 @@ export function useIsVisible(
         setIsVisible(entryIsVisible);
       },
       {
-        root:
-          rootMargin?.rootSelector ?
-            observeElement.closest(rootMargin.rootSelector)
+        root: rootMargin?.rootSelector
+          ? observeElement.closest(rootMargin.rootSelector)
           : undefined,
         threshold: effectiveThreshold,
         rootMargin:
-          typeof rootMargin?.margin === 'number' ? `${rootMargin.margin}px`
-          : typeof rootMargin?.margin === 'string' ? rootMargin.margin
-          : `${rootMargin?.margin.block ?? 0}px ${
-              rootMargin?.margin.inline ?? 0
-            }px`,
+          typeof rootMargin?.margin === 'number'
+            ? `${rootMargin.margin}px`
+            : typeof rootMargin?.margin === 'string'
+              ? rootMargin.margin
+              : `${rootMargin?.margin.block ?? 0}px ${
+                  rootMargin?.margin.inline ?? 0
+                }px`,
       },
     );
 

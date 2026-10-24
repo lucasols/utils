@@ -1,4 +1,4 @@
-/* eslint-disable no-console -- we need console here to print errors */
+/* oxlint-disable no-console -- we need console here to print errors */
 
 type CmdResult = {
   label: string | null;
@@ -55,9 +55,8 @@ export function runCmd(
   }
 
   return new Promise((resolve) => {
-    const [cmd = '', ...args] =
-      Array.isArray(command) ?
-        command.flatMap((item) =>
+    const [cmd = '', ...args] = Array.isArray(command)
+      ? command.flatMap((item) =>
           item.startsWith('$') ? item.replace('$', '').split(' ') : item,
         )
       : command.split(' ');
@@ -175,11 +174,7 @@ export async function concurrentCmd(
 export async function runCmdUnwrap(
   label: string | null,
   command: string | string[],
-  {
-    silent,
-  }: {
-    silent?: boolean | 'timeOnly';
-  } = {},
+  { silent }: { silent?: boolean | 'timeOnly' } = {},
 ) {
   return (await runCmd(label, command, { silent, throwOnError: true })).stdout;
 }

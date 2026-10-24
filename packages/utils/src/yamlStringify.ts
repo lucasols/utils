@@ -19,17 +19,19 @@ export type YamlStringifyOptions = {
   collapseObjects?: boolean;
   /* add spaces in root object */
   addRootObjSpaces?: 'before' | 'after' | 'beforeAndAfter' | false;
-  /** When serializing `Error`, include `stack`. Default true (direct `yamlStringify`); `compactSnapshot` passes false by default. */
+  /**
+   * When serializing `Error`, include `stack`. Default true (direct
+   * `yamlStringify`); `compactSnapshot` passes false by default.
+   */
   includeErrorStack?: boolean;
   /** When serializing `Error`, include `cause` recursively. Default true. */
   includeErrorCause?: boolean;
   /**
    * Limit which extra enumerable own keys appear on `Error` (not `message` /
-   * `name` / `stack` / `cause`). Omit to include all extras. Array = allowlist.
+   * `name` / `stack` / `cause`). Omit to include all extras. Array =
+   * allowlist.
    */
-  pickErrorOwnProps?:
-    | string[]
-    | ((key: string, value: unknown) => boolean);
+  pickErrorOwnProps?: string[] | ((key: string, value: unknown) => boolean);
 };
 
 type ErrorYamlSnapshotOptions = {
@@ -38,12 +40,7 @@ type ErrorYamlSnapshotOptions = {
   pickOwnProps: (key: string, value: unknown) => boolean;
 };
 
-const ERROR_SNAPSHOT_RESERVED = new Set([
-  'message',
-  'name',
-  'stack',
-  'cause',
-]);
+const ERROR_SNAPSHOT_RESERVED = new Set(['message', 'name', 'stack', 'cause']);
 
 function resolvePickErrorOwnProps(
   pick?: YamlStringifyOptions['pickErrorOwnProps'],
@@ -64,10 +61,7 @@ function errorToSnapshotPayload(
   yamlDepth: number,
   maxDepth: number,
 ): Record<string, unknown> {
-  const out: Record<string, unknown> = {
-    message: err.message,
-    name: err.name,
-  };
+  const out: Record<string, unknown> = { message: err.message, name: err.name };
 
   if (opts.includeStack) {
     out.stack = err.stack;
@@ -94,12 +88,7 @@ function errorToSnapshotPayload(
       out.cause = '{max depth reached}';
     } else if (cause instanceof Error) {
       out.cause = {
-        'Error#': errorToSnapshotPayload(
-          cause,
-          opts,
-          yamlDepth + 1,
-          maxDepth,
-        ),
+        'Error#': errorToSnapshotPayload(cause, opts, yamlDepth + 1, maxDepth),
       };
     } else {
       out.cause = cause;
@@ -169,15 +158,16 @@ function stringifyValue(
           );
         }
         return (
-          typeof val === 'number' ||
-          typeof val === 'boolean' ||
-          val === null ||
-          val === undefined
+          typeof val === 'number'
+          || typeof val === 'boolean'
+          || val === null
+          || val === undefined
         );
       });
 
-      const shouldCollapse =
-        isArrayItem ? entries.length > 1 : entries.length > 0;
+      const shouldCollapse = isArrayItem
+        ? entries.length > 1
+        : entries.length > 0;
       if (isSimpleObject && shouldCollapse) {
         let line = '{ ';
 
@@ -217,11 +207,7 @@ function stringifyValue(
         continue;
       }
 
-      if (
-        !relaxMaxDepth &&
-        depth > maxDepth &&
-        !(objVal instanceof Error)
-      ) {
+      if (!relaxMaxDepth && depth > maxDepth && !(objVal instanceof Error)) {
         objVal = `{max depth reached}`;
       }
 
@@ -253,34 +239,33 @@ function stringifyValue(
 
       // Check if the current value will be collapsed (including empty objects)
       const willBeCollapsed =
-        isObject(objVal) &&
-        (Object.keys(objVal).length === 0 ||
-          (collapseObjects &&
-            depth + 1 > 0 &&
-            (() => {
+        isObject(objVal)
+        && (Object.keys(objVal).length === 0
+          || (collapseObjects
+            && depth + 1 > 0
+            && (() => {
               const filteredEntries = Object.entries(objVal).filter(
                 ([, val]) => val !== undefined || showUndefined,
               );
-              const shouldCollapseThis =
-                isArrayItem ?
-                  filteredEntries.length > 1
+              const shouldCollapseThis = isArrayItem
+                ? filteredEntries.length > 1
                 : filteredEntries.length > 0;
               return (
-                shouldCollapseThis &&
-                filteredEntries.every(([, val]) => {
+                shouldCollapseThis
+                && filteredEntries.every(([, val]) => {
                   if (typeof val === 'string') {
                     // Don't collapse objects if strings contain quotes or escape sequences
                     return (
-                      !val.includes("'") &&
-                      !val.includes('"') &&
-                      !val.includes('\\')
+                      !val.includes("'")
+                      && !val.includes('"')
+                      && !val.includes('\\')
                     );
                   }
                   return (
-                    typeof val === 'number' ||
-                    typeof val === 'boolean' ||
-                    val === null ||
-                    val === undefined
+                    typeof val === 'number'
+                    || typeof val === 'boolean'
+                    || val === null
+                    || val === undefined
                   );
                 })
               );
@@ -288,48 +273,47 @@ function stringifyValue(
 
       // Check if the previous value was a collapsed object
       const prevWasCollapsed =
-        prevValue &&
-        isObject(prevValue) &&
-        (Object.keys(prevValue).length === 0 ||
-          (collapseObjects &&
-            depth + 1 > 0 &&
-            (() => {
+        prevValue
+        && isObject(prevValue)
+        && (Object.keys(prevValue).length === 0
+          || (collapseObjects
+            && depth + 1 > 0
+            && (() => {
               const filteredEntries = Object.entries(prevValue).filter(
                 ([, val]) => val !== undefined || showUndefined,
               );
-              const shouldCollapseThis =
-                isArrayItem ?
-                  filteredEntries.length > 1
+              const shouldCollapseThis = isArrayItem
+                ? filteredEntries.length > 1
                 : filteredEntries.length > 0;
               return (
-                shouldCollapseThis &&
-                filteredEntries.every(([, val]) => {
+                shouldCollapseThis
+                && filteredEntries.every(([, val]) => {
                   if (typeof val === 'string') {
                     // Don't collapse objects if strings contain quotes or escape sequences
                     return (
-                      !val.includes("'") &&
-                      !val.includes('"') &&
-                      !val.includes('\\')
+                      !val.includes("'")
+                      && !val.includes('"')
+                      && !val.includes('\\')
                     );
                   }
                   return (
-                    typeof val === 'number' ||
-                    typeof val === 'boolean' ||
-                    val === null ||
-                    val === undefined
+                    typeof val === 'number'
+                    || typeof val === 'boolean'
+                    || val === null
+                    || val === undefined
                   );
                 })
               );
             })()));
 
       if (
-        !afterSpaceWasAdded &&
-        indent === '' &&
-        isObject(objVal) &&
-        !willBeCollapsed &&
-        prevValue &&
-        !prevWasCollapsed &&
-        (addObjSpaces === 'before' || addObjSpaces === 'beforeAndAfter')
+        !afterSpaceWasAdded
+        && indent === ''
+        && isObject(objVal)
+        && !willBeCollapsed
+        && prevValue
+        && !prevWasCollapsed
+        && (addObjSpaces === 'before' || addObjSpaces === 'beforeAndAfter')
       ) {
         result += '\n';
       }
@@ -362,9 +346,9 @@ function stringifyValue(
       if (indent === '') {
         // Check if the value is a collapsed object (single line starting with '{' and containing content)
         const isCollapsedObject =
-          valueString.startsWith('{') &&
-          !valueString.includes('\n') &&
-          valueString.length > 2;
+          valueString.startsWith('{')
+          && !valueString.includes('\n')
+          && valueString.length > 2;
 
         if (isObject(objVal) && !isCollapsedObject) {
           if (addObjSpaces === 'after' || addObjSpaces === 'beforeAndAfter') {
@@ -386,14 +370,14 @@ function stringifyValue(
     let arrayWasAdded = false;
 
     if (
-      value.length === 0 ||
-      value.every(
+      value.length === 0
+      || value.every(
         (item) =>
-          typeof item === 'string' ||
-          typeof item === 'number' ||
-          typeof item === 'boolean' ||
-          item === null ||
-          item === undefined,
+          typeof item === 'string'
+          || typeof item === 'number'
+          || typeof item === 'boolean'
+          || item === null
+          || item === undefined,
       )
     ) {
       let line = '';
@@ -405,9 +389,9 @@ function stringifyValue(
           let valueToUse = item;
 
           if (
-            !relaxMaxDepth &&
-            depth > maxDepth &&
-            !(valueToUse instanceof Error)
+            !relaxMaxDepth
+            && depth > maxDepth
+            && !(valueToUse instanceof Error)
           ) {
             valueToUse = `{max depth reached}`;
           }
@@ -442,11 +426,7 @@ function stringifyValue(
 
     if (!arrayWasAdded) {
       for (let item of value) {
-        if (
-          !relaxMaxDepth &&
-          depth > maxDepth &&
-          !(item instanceof Error)
-        ) {
+        if (!relaxMaxDepth && depth > maxDepth && !(item instanceof Error)) {
           item = `{max depth reached}`;
         }
 
@@ -526,26 +506,19 @@ function stringifyValue(
   }
 
   if (
-    typeof value === 'number' ||
-    typeof value === 'boolean' ||
-    value === null ||
-    value === undefined
+    typeof value === 'number'
+    || typeof value === 'boolean'
+    || value === null
+    || value === undefined
   ) {
     return String(value).trimEnd();
   }
 
-  const normalizedValue = normalizeValue(
-    value,
-    errorSnapshot,
-    maxDepth,
-    depth,
-  );
+  const normalizedValue = normalizeValue(value, errorSnapshot, maxDepth, depth);
 
   if (normalizedValue !== null) {
     return stringifyValue(
-      {
-        [`${normalizedValue[0]}#`]: normalizedValue[1],
-      },
+      { [`${normalizedValue[0]}#`]: normalizedValue[1] },
       indent,
       maxLineLength,
       showUndefined,
@@ -586,10 +559,7 @@ function normalizeValue(
 
       mapValue = mapObjValue;
     } else {
-      mapValue = mapEntries.map(([key, val]) => ({
-        key,
-        value: val,
-      }));
+      mapValue = mapEntries.map(([key, val]) => ({ key, value: val }));
     }
 
     return ['Map', mapValue];
@@ -630,12 +600,12 @@ function normalizeValue(
 
   if (typeof value === 'object') {
     if ('toJSON' in value && typeof value.toJSON === 'function') {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      // oxlint-disable-next-line @typescript-eslint/no-unsafe-call
       return [value.constructor.name, value.toJSON()];
     }
 
     if ('toString' in value && typeof value.toString === 'function') {
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string
+      // oxlint-disable-next-line @typescript-eslint/no-base-to-string
       const stringValue = value.toString();
 
       if (stringValue.toString() !== '[object Object]') {
@@ -656,11 +626,11 @@ function normalizeValue(
       }
 
       if (
-        typeof item === 'string' ||
-        typeof item === 'number' ||
-        typeof item === 'boolean' ||
-        item === null ||
-        item === undefined
+        typeof item === 'string'
+        || typeof item === 'number'
+        || typeof item === 'boolean'
+        || item === null
+        || item === undefined
       ) {
         displayValue[key] = item;
         addedKeys++;
@@ -675,9 +645,9 @@ function normalizeValue(
 
     return [
       `Function`,
-      functionString.includes('\n') ?
-        truncateString(functionString.split('\n').join(''), 40)
-      : functionString,
+      functionString.includes('\n')
+        ? truncateString(functionString.split('\n').join(''), 40)
+        : functionString,
     ];
   }
 

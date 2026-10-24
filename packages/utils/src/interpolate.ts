@@ -13,8 +13,8 @@ export function cyclicLerp(
   [outStart, outEnd]: Interval,
 ) {
   return (
-    mod((input - inStart) / (inEnd - inStart), 1) * (outEnd - outStart) +
-    outStart
+    mod((input - inStart) / (inEnd - inStart), 1) * (outEnd - outStart)
+    + outStart
   );
 }
 
@@ -55,14 +55,15 @@ export function interpolate({
 
   const outputIsAscending = outStart < outEnd;
 
-  return (
-    clamp === 'start' ?
-      outputIsAscending ? clampMin(interpolatedValue, outStart)
+  return clamp === 'start'
+    ? outputIsAscending
+      ? clampMin(interpolatedValue, outStart)
       : clampMax(interpolatedValue, outStart)
-    : clamp === 'end' ?
-      outputIsAscending ? clampMax(interpolatedValue, outEnd)
-      : clampMin(interpolatedValue, outEnd)
-    : clamp ? clampRange(interpolatedValue, outStart, outEnd)
-    : interpolatedValue
-  );
+    : clamp === 'end'
+      ? outputIsAscending
+        ? clampMax(interpolatedValue, outEnd)
+        : clampMin(interpolatedValue, outEnd)
+      : clamp
+        ? clampRange(interpolatedValue, outStart, outEnd)
+        : interpolatedValue;
 }

@@ -24,14 +24,8 @@ export type XMLNode =
       children?: (XMLNode | null | undefined | false)[] | string;
       escapeText?: boolean;
     }
-  | {
-      type: 'comment';
-      content: string;
-      escapeText?: boolean;
-    }
-  | {
-      type: 'emptyLine';
-    };
+  | { type: 'comment'; content: string; escapeText?: boolean }
+  | { type: 'emptyLine' };
 
 export type SerializeOptions = {
   indent?: number | string;
@@ -113,9 +107,9 @@ function serializeWithLevel(
   const attributesStr = filterAndMap(
     Object.entries(attributes),
     ([key, value]) =>
-      value !== null && value !== undefined ?
-        `${key}="${escapeXml(String(value))}"`
-      : false,
+      value !== null && value !== undefined
+        ? `${key}="${escapeXml(String(value))}"`
+        : false,
   ).join(' ');
 
   const attributesPart = attributesStr ? ` ${attributesStr}` : '';

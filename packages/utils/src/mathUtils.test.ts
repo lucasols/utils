@@ -1,5 +1,11 @@
 import { expect, test } from 'vitest';
-import { fixFloatingPointNumber, roundToStep, floorToStep, ceilToStep, round } from './mathUtils';
+import {
+  fixFloatingPointNumber,
+  roundToStep,
+  floorToStep,
+  ceilToStep,
+  round,
+} from './mathUtils';
 
 test('fixFloatingPointNumber', () => {
   expect(fixFloatingPointNumber(0.123456789)).toBe(0.123456789);
@@ -122,7 +128,7 @@ test('ceilToStep', () => {
 
   // Decimal steps
   expect(ceilToStep(1.21, 0.1)).toBe(1.3);
-  expect(ceilToStep(1.20, 0.1)).toBe(1.2);
+  expect(ceilToStep(1.2, 0.1)).toBe(1.2);
 
   // Zero value
   expect(ceilToStep(0, 5)).toBe(0);

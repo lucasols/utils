@@ -68,9 +68,7 @@ describe('multilevel sort', () => {
         (item) => {
           return item;
         },
-        {
-          order: ['desc', 'asc'],
-        },
+        { order: ['desc', 'asc'] },
       ),
     ).toStrictEqual([
       [0, '2021-07-01'],
@@ -117,9 +115,7 @@ describe('multilevel sort', () => {
           (item) => {
             return item;
           },
-          {
-            order: ['desc', 'asc'],
-          },
+          { order: ['desc', 'asc'] },
         ),
       ).toStrictEqual([
         [0, '2021-07-01'],
@@ -157,9 +153,7 @@ describe('multilevel sort', () => {
           [1, '2021-07-08'],
         ],
         (item) => item[0],
-        {
-          order: 'desc',
-        },
+        { order: 'desc' },
       ),
     ).toStrictEqual([
       [4, '2021-07-01'],

@@ -1,4 +1,4 @@
-/* eslint-disable no-fallthrough */
+/* oxlint-disable no-fallthrough */
 // copied from `@emotion/hash`
 
 /**
@@ -23,10 +23,10 @@ export function murmur2(str: string) {
     len = str.length;
   for (; len >= 4; ++i, len -= 4) {
     k =
-      (str.charCodeAt(i) & 0xff) |
-      ((str.charCodeAt(++i) & 0xff) << 8) |
-      ((str.charCodeAt(++i) & 0xff) << 16) |
-      ((str.charCodeAt(++i) & 0xff) << 24);
+      (str.charCodeAt(i) & 0xff)
+      | ((str.charCodeAt(++i) & 0xff) << 8)
+      | ((str.charCodeAt(++i) & 0xff) << 16)
+      | ((str.charCodeAt(++i) & 0xff) << 24);
 
     k =
       /* Math.imul(k, m): */
@@ -35,9 +35,9 @@ export function murmur2(str: string) {
 
     h =
       /* Math.imul(k, m): */
-      ((k & 0xffff) * 0x5bd1e995 + (((k >>> 16) * 0xe995) << 16)) ^
+      ((k & 0xffff) * 0x5bd1e995 + (((k >>> 16) * 0xe995) << 16))
       /* Math.imul(h, m): */
-      ((h & 0xffff) * 0x5bd1e995 + (((h >>> 16) * 0xe995) << 16));
+      ^ ((h & 0xffff) * 0x5bd1e995 + (((h >>> 16) * 0xe995) << 16));
   }
 
   // Handle the last few bytes of the input array
@@ -107,11 +107,11 @@ export function murmur3(str: string, output: 'base36' | 'uint32' = 'base36') {
   while (i < bytes) {
     const top = str.charCodeAt(i + 3);
     let k1 =
-      (str.charCodeAt(i) & 0xffff) ^
-      ((str.charCodeAt(i + 1) & 0xffff) << 8) ^
-      ((str.charCodeAt(i + 2) & 0xffff) << 16) ^
-      ((top & 0xff) << 24) ^
-      ((top & 0xff00) >> 8);
+      (str.charCodeAt(i) & 0xffff)
+      ^ ((str.charCodeAt(i + 1) & 0xffff) << 8)
+      ^ ((str.charCodeAt(i + 2) & 0xffff) << 16)
+      ^ ((top & 0xff) << 24)
+      ^ ((top & 0xff00) >> 8);
     i += 4;
 
     k1 = Math.imul(k1, 0xcc9e2d51);

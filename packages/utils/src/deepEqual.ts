@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* oxlint-disable @typescript-eslint/no-unsafe-call */
 
 /**
  * Forked from https://github.com/lukeed/dequal to consider invalid dates as
@@ -99,8 +99,8 @@ export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
       for (const [key, value] of pending) {
         tmp = unmatched.findIndex(
           ([barKey, barValue]) =>
-            deepEqual(key, barKey, maxDepth - 1) &&
-            deepEqual(value, barValue, maxDepth - 1),
+            deepEqual(key, barKey, maxDepth - 1)
+            && deepEqual(value, barValue, maxDepth - 1),
         );
         if (tmp === -1) return false;
         unmatched.splice(tmp, 1);
@@ -123,9 +123,9 @@ export function deepEqual(foo: any, bar: any, maxDepth = 20): boolean {
       if (Object.keys(bar).length === len) return true;
       for (ctor in bar) {
         if (
-          has.call(bar, ctor) &&
-          !has.call(foo, ctor) &&
-          bar[ctor] !== undefined
+          has.call(bar, ctor)
+          && !has.call(foo, ctor)
+          && bar[ctor] !== undefined
         ) {
           return false;
         }

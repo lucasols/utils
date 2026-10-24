@@ -47,9 +47,7 @@ export type SortByValueFn<T> = (
 ) => (number | string)[] | number | string;
 
 export type SortByProps =
-  | {
-      order?: SortOrder | SortOrder[];
-    }
+  | { order?: SortOrder | SortOrder[] }
   | SortOrder
   | SortOrder[];
 
@@ -85,9 +83,9 @@ export function sortBy<T>(
   props: SortByProps = 'asc',
 ): T[] {
   const order =
-    Array.isArray(props) || typeof props === 'string' ?
-      props
-    : (props.order ?? 'asc');
+    Array.isArray(props) || typeof props === 'string'
+      ? props
+      : (props.order ?? 'asc');
 
   return [...arr].sort((a, b) => {
     const _aPriority = sortByValue(a);

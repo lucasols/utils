@@ -1,6 +1,6 @@
+import { sleep } from '@ls-stack/utils/sleep';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
-import { sleep } from '@ls-stack/utils/sleep';
 import { useAsyncResource } from './useAsyncResource';
 
 describe('useAsyncResource', () => {
@@ -275,10 +275,9 @@ describe('useAsyncResource', () => {
       return 'data2';
     });
 
-    const { result, rerender } = renderHook(
-      ({ fn }) => useAsyncResource(fn),
-      { initialProps: { fn: mockAsyncFn1 } },
-    );
+    const { result, rerender } = renderHook(({ fn }) => useAsyncResource(fn), {
+      initialProps: { fn: mockAsyncFn1 },
+    });
 
     // Wait for first load
     await waitFor(() => {
@@ -315,7 +314,9 @@ describe('useAsyncResource', () => {
   test('should maintain stable load function reference', () => {
     const mockAsyncFn = vi.fn(async () => 'data');
 
-    const { result, rerender } = renderHook(() => useAsyncResource(mockAsyncFn));
+    const { result, rerender } = renderHook(() =>
+      useAsyncResource(mockAsyncFn),
+    );
 
     const firstLoadRef = result.current.load;
 
@@ -484,7 +485,9 @@ describe('useAsyncResource', () => {
       await waitFor(() => {
         expect(result.current.status).toBe('error');
       });
-      expect(result.current.error).toMatchInlineSnapshot(`[Error: Initial error]`);
+      expect(result.current.error).toMatchInlineSnapshot(
+        `[Error: Initial error]`,
+      );
 
       // Change the function - should trigger refetch automatically
       await act(async () => {
@@ -517,7 +520,8 @@ describe('useAsyncResource', () => {
       });
 
       const { result, rerender } = renderHook(
-        ({ fn }) => useAsyncResource(fn, { lazy: true, asyncFnUsesExternalDeps: true }),
+        ({ fn }) =>
+          useAsyncResource(fn, { lazy: true, asyncFnUsesExternalDeps: true }),
         { initialProps: { fn: mockAsyncFn1 } },
       );
 
@@ -597,8 +601,8 @@ describe('useAsyncResource', () => {
         return 'data';
       });
 
-      const { result } = renderHook(() => 
-        useAsyncResource(mockAsyncFn, { asyncFnUsesExternalDeps: true })
+      const { result } = renderHook(() =>
+        useAsyncResource(mockAsyncFn, { asyncFnUsesExternalDeps: true }),
       );
 
       // Should do initial load, not refetch
@@ -682,7 +686,9 @@ describe('useAsyncResource', () => {
         expect(result.current.status).toBe('error');
       });
 
-      expect(result.current.error).toMatchInlineSnapshot(`[Error: Refetch failed]`);
+      expect(result.current.error).toMatchInlineSnapshot(
+        `[Error: Refetch failed]`,
+      );
       expect(result.current.data).toBe(null); // Cleared on error
       expect(result.current.isLoading).toBe(false);
     });
@@ -690,22 +696,24 @@ describe('useAsyncResource', () => {
     test('should restart with new function when function changes during initial loading', async () => {
       let resolveFirst: (value: string) => void;
       let resolveSecond: (value: string) => void;
-      
-      const mockAsyncFn1 = vi.fn(() => 
-        new Promise<string>((resolve) => {
-          resolveFirst = resolve;
-        })
+
+      const mockAsyncFn1 = vi.fn(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveFirst = resolve;
+          }),
       );
-      
-      const mockAsyncFn2 = vi.fn(() => 
-        new Promise<string>((resolve) => {
-          resolveSecond = resolve;
-        })
+
+      const mockAsyncFn2 = vi.fn(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveSecond = resolve;
+          }),
       );
 
       const { result, rerender } = renderHook(
         ({ fn }) => useAsyncResource(fn, { asyncFnUsesExternalDeps: true }),
-        { initialProps: { fn: mockAsyncFn1 } }
+        { initialProps: { fn: mockAsyncFn1 } },
       );
 
       // Should start loading with first function
@@ -739,7 +747,7 @@ describe('useAsyncResource', () => {
       await waitFor(() => {
         expect(result.current.status).toBe('success');
       });
-      
+
       expect(result.current.data).toBe('fresh-data');
       expect(result.current.error).toBe(null);
     });
@@ -748,12 +756,14 @@ describe('useAsyncResource', () => {
       let currentResolve: (value: string) => void;
       let callCount = 0;
 
-      const createAsyncFn = (_id: number) => vi.fn(() =>
-        new Promise<string>((resolve) => {
-          currentResolve = resolve;
-          callCount++;
-        })
-      );
+      const createAsyncFn = (_id: number) =>
+        vi.fn(
+          () =>
+            new Promise<string>((resolve) => {
+              currentResolve = resolve;
+              callCount++;
+            }),
+        );
 
       const fn1 = createAsyncFn(1);
       const fn2 = createAsyncFn(2);
@@ -761,7 +771,7 @@ describe('useAsyncResource', () => {
 
       const { result, rerender } = renderHook(
         ({ fn }) => useAsyncResource(fn, { asyncFnUsesExternalDeps: true }),
-        { initialProps: { fn: fn1 } }
+        { initialProps: { fn: fn1 } },
       );
 
       expect(result.current.status).toBe('loading');
@@ -801,7 +811,7 @@ describe('useAsyncResource', () => {
       const { result, rerender } = renderHook(
         ({ userId }) =>
           useAsyncResource(mockAsyncFn, { externalDeps: [userId] }),
-        { initialProps: { userId: 1 } }
+        { initialProps: { userId: 1 } },
       );
 
       // Wait for initial load
@@ -839,7 +849,7 @@ describe('useAsyncResource', () => {
       const { result, rerender } = renderHook(
         ({ userId }) =>
           useAsyncResource(mockAsyncFn, { externalDeps: [userId] }),
-        { initialProps: { userId: 1 } }
+        { initialProps: { userId: 1 } },
       );
 
       // Wait for initial load
@@ -867,7 +877,7 @@ describe('useAsyncResource', () => {
       });
 
       const { result } = renderHook(() =>
-        useAsyncResource(mockAsyncFn, { externalDeps: [1, 'test'] })
+        useAsyncResource(mockAsyncFn, { externalDeps: [1, 'test'] }),
       );
 
       // Should do initial load, not refetch
@@ -890,7 +900,7 @@ describe('useAsyncResource', () => {
       const { result, rerender } = renderHook(
         ({ userId, filter }) =>
           useAsyncResource(mockAsyncFn, { externalDeps: [userId, filter] }),
-        { initialProps: { userId: 1, filter: 'active' } }
+        { initialProps: { userId: 1, filter: 'active' } },
       );
 
       // Wait for initial load
@@ -945,7 +955,7 @@ describe('useAsyncResource', () => {
       const { result, rerender } = renderHook(
         ({ userId }) =>
           useAsyncResource(mockAsyncFn, { lazy: true, externalDeps: [userId] }),
-        { initialProps: { userId: 1 } }
+        { initialProps: { userId: 1 } },
       );
 
       // Should be idle
@@ -983,7 +993,7 @@ describe('useAsyncResource', () => {
       const { result, rerender } = renderHook(
         ({ userId }) =>
           useAsyncResource(mockAsyncFn, { lazy: true, externalDeps: [userId] }),
-        { initialProps: { userId: 1 } }
+        { initialProps: { userId: 1 } },
       );
 
       // Should be idle
@@ -1015,7 +1025,7 @@ describe('useAsyncResource', () => {
       const { result, rerender } = renderHook(
         ({ userId }) =>
           useAsyncResource(mockAsyncFn, { externalDeps: [userId] }),
-        { initialProps: { userId: 1 } }
+        { initialProps: { userId: 1 } },
       );
 
       // Wait for error
@@ -1047,9 +1057,7 @@ describe('useAsyncResource', () => {
         return 'data';
       });
 
-      const { result } = renderHook(() =>
-        useAsyncResource(mockAsyncFn)
-      );
+      const { result } = renderHook(() => useAsyncResource(mockAsyncFn));
 
       // Should load normally without externalDeps
       await waitFor(() => {
@@ -1067,7 +1075,7 @@ describe('useAsyncResource', () => {
       });
 
       const { result, rerender } = renderHook(() =>
-        useAsyncResource(mockAsyncFn, { externalDeps: [] })
+        useAsyncResource(mockAsyncFn, { externalDeps: [] }),
       );
 
       // Should load normally
@@ -1101,9 +1109,9 @@ describe('useAsyncResource', () => {
         ({ fn, userId }) =>
           useAsyncResource(fn, {
             asyncFnUsesExternalDeps: true,
-            externalDeps: [userId]
+            externalDeps: [userId],
           }),
-        { initialProps: { fn: mockAsyncFn1, userId: 1 } }
+        { initialProps: { fn: mockAsyncFn1, userId: 1 } },
       );
 
       // Wait for initial load

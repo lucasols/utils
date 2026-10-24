@@ -1,6 +1,6 @@
 import { render, renderHook } from '@testing-library/react';
-import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
 import React, { useRef } from 'react';
+import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
 import { useOnClickOutside } from './useOnClickOutside';
 
 describe('useOnClickOutside', () => {
@@ -13,11 +13,15 @@ describe('useOnClickOutside', () => {
       <div>
         <div data-testid="outside">Outside content</div>
         <div data-testid="inside">Inside content</div>
-      </div>
+      </div>,
     );
 
-    outsideElement = container.querySelector('[data-testid="outside"]') as HTMLDivElement;
-    insideElement = container.querySelector('[data-testid="inside"]') as HTMLDivElement;
+    outsideElement = container.querySelector(
+      '[data-testid="outside"]',
+    ) as HTMLDivElement;
+    insideElement = container.querySelector(
+      '[data-testid="inside"]',
+    ) as HTMLDivElement;
   });
 
   afterEach(() => {
@@ -97,10 +101,16 @@ describe('useOnClickOutside', () => {
 
   test('should work with array of refs', () => {
     const handler = vi.fn();
-    const { container } = render(<div data-testid="second">Second element</div>);
-    const secondInsideElement = container.querySelector('[data-testid="second"]') as HTMLDivElement;
+    const { container } = render(
+      <div data-testid="second">Second element</div>,
+    );
+    const secondInsideElement = container.querySelector(
+      '[data-testid="second"]',
+    ) as HTMLDivElement;
 
-    renderHook(() => useOnClickOutside([insideElement, secondInsideElement], handler));
+    renderHook(() =>
+      useOnClickOutside([insideElement, secondInsideElement], handler),
+    );
 
     // Click outside both elements
     const event = new MouseEvent('mousedown', { bubbles: true });
@@ -129,13 +139,20 @@ describe('useOnClickOutside', () => {
   test('should work with mixed ref types in array', () => {
     const handler = vi.fn();
     let refObject: React.RefObject<HTMLDivElement | null>;
-    const { container } = render(<div data-testid="second">Mixed ref element</div>);
-    const secondElement = container.querySelector('[data-testid="second"]') as HTMLDivElement;
+    const { container } = render(
+      <div data-testid="second">Mixed ref element</div>,
+    );
+    const secondElement = container.querySelector(
+      '[data-testid="second"]',
+    ) as HTMLDivElement;
 
     renderHook(() => {
       refObject = useRef<HTMLDivElement | null>(null);
       refObject.current = insideElement;
-      useOnClickOutside([refObject, '[data-testid="second"]', secondElement], handler);
+      useOnClickOutside(
+        [refObject, '[data-testid="second"]', secondElement],
+        handler,
+      );
     });
 
     // Click outside all elements
@@ -189,12 +206,20 @@ describe('useOnClickOutside', () => {
     const handler = vi.fn();
     const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
 
-    const { unmount } = renderHook(() => useOnClickOutside(insideElement, handler));
+    const { unmount } = renderHook(() =>
+      useOnClickOutside(insideElement, handler),
+    );
 
     unmount();
 
-    expect(removeEventListenerSpy).toHaveBeenCalledWith('mousedown', expect.any(Function));
-    expect(removeEventListenerSpy).toHaveBeenCalledWith('touchstart', expect.any(Function));
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      'mousedown',
+      expect.any(Function),
+    );
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      'touchstart',
+      expect.any(Function),
+    );
 
     removeEventListenerSpy.mockRestore();
   });
@@ -233,7 +258,9 @@ describe('useOnClickOutside', () => {
   test('should handle invalid selector string gracefully', () => {
     const handler = vi.fn();
 
-    renderHook(() => useOnClickOutside('[data-nonexistent="element"]', handler));
+    renderHook(() =>
+      useOnClickOutside('[data-nonexistent="element"]', handler),
+    );
 
     // Should NOT trigger since nonexistent element is treated as "inside"
     const event = new MouseEvent('mousedown', { bubbles: true });
@@ -249,7 +276,7 @@ describe('useOnClickOutside', () => {
 
     const { rerender } = renderHook(
       ({ handler }) => useOnClickOutside(insideElement, handler),
-      { initialProps: { handler: handler1 } }
+      { initialProps: { handler: handler1 } },
     );
 
     // Trigger event with first handler
@@ -274,12 +301,16 @@ describe('useOnClickOutside', () => {
 
   test('should work when ref changes', () => {
     const handler = vi.fn();
-    const { container } = render(<div data-testid="second-ref">Second ref element</div>);
-    const secondElement = container.querySelector('[data-testid="second-ref"]') as HTMLDivElement;
+    const { container } = render(
+      <div data-testid="second-ref">Second ref element</div>,
+    );
+    const secondElement = container.querySelector(
+      '[data-testid="second-ref"]',
+    ) as HTMLDivElement;
 
     const { rerender } = renderHook(
       ({ ref }) => useOnClickOutside(ref, handler),
-      { initialProps: { ref: insideElement } }
+      { initialProps: { ref: insideElement } },
     );
 
     // Click inside first element - should not trigger

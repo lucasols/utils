@@ -47,15 +47,7 @@ test('nested objects', () => {
   expect(
     getSnapshot({
       a: 1,
-      b: {
-        c: 2,
-        d: {
-          e: 3,
-          string: 'Hello',
-          bool: true,
-          null: null,
-        },
-      },
+      b: { c: 2, d: { e: 3, string: 'Hello', bool: true, null: null } },
     }),
   ).toMatchInlineSnapshot(`
     "
@@ -196,13 +188,7 @@ test('array inside object with object inside', () => {
           true,
           null,
           undefined,
-          {
-            a: 1,
-            b: 2,
-            c: 'Hello',
-            d: [],
-            e: [1, 2],
-          },
+          { a: 1, b: 2, c: 'Hello', d: [], e: [1, 2] },
         ],
       ],
     }),
@@ -242,17 +228,7 @@ test('complex object', () => {
             1,
             2,
             3,
-            [
-              'Hello',
-              true,
-              null,
-              undefined,
-              {
-                a: 1,
-                b: 2,
-                c: 'Hello',
-              },
-            ],
+            ['Hello', true, null, undefined, { a: 1, b: 2, c: 'Hello' }],
           ],
         },
       },
@@ -289,11 +265,7 @@ test('complex object', () => {
 });
 
 test('simple multiline string', () => {
-  expect(
-    getSnapshot({
-      multiline: 'Hello\nworld',
-    }),
-  ).toMatchInlineSnapshot(`
+  expect(getSnapshot({ multiline: 'Hello\nworld' })).toMatchInlineSnapshot(`
     "
     multiline: |-
       Hello
@@ -308,14 +280,10 @@ test('multiline string', () => {
       multiline: 'Hello\nworld',
       a: {
         multiline: 'Hello\nworld',
-        b: {
-          multiline: 'Hello\nworld',
-        },
+        b: { multiline: 'Hello\nworld' },
         array: [
           'Hello\nworld',
-          {
-            multiline: 'Hello\nworld',
-          },
+          { multiline: 'Hello\nworld' },
           'Hello\nworld\n',
         ],
       },
@@ -349,13 +317,8 @@ test('multiline string', () => {
 });
 
 test('multiple objects at root level', () => {
-  expect(
-    getSnapshot({
-      a: { a: 1 },
-      b: { b: 2 },
-      c: { c: 3 },
-    }),
-  ).toMatchInlineSnapshot(`
+  expect(getSnapshot({ a: { a: 1 }, b: { b: 2 }, c: { c: 3 } }))
+    .toMatchInlineSnapshot(`
     "
     a:
       a: 1
@@ -370,16 +333,8 @@ test('multiple objects at root level', () => {
 });
 
 test('showUndefined', () => {
-  expect(
-    getSnapshot(
-      {
-        a: 1,
-        b: undefined,
-        c: null,
-      },
-      { showUndefined: true },
-    ),
-  ).toMatchInlineSnapshot(`
+  expect(getSnapshot({ a: 1, b: undefined, c: null }, { showUndefined: true }))
+    .toMatchInlineSnapshot(`
     "
     a: 1
     b: undefined
@@ -398,10 +353,7 @@ test('empty objs', () => {
     getSnapshot({
       payload: {
         object_type: 'PavcJkwZSvh8bgfSibKxW',
-        data: {
-          id_PavcJkwZSvh8bgfSibKxW: null,
-          test: false,
-        },
+        data: { id_PavcJkwZSvh8bgfSibKxW: null, test: false },
       },
       diffs: {},
       count: 0,
@@ -424,25 +376,12 @@ test('empty objs', () => {
 test('bug: array of objects', () => {
   expect(
     getSnapshot({
-      block_style: {
-        type: 'hex',
-        color: '#ffffff',
-        bg_blur: false,
-      },
+      block_style: { type: 'hex', color: '#ffffff', bg_blur: false },
       columns: [
-        {
-          key: 'name',
-        },
-        {
-          key: 'text',
-        },
-        {
-          key: 'largeText',
-        },
-        {
-          key: 'number',
-          key2: 'number2',
-        },
+        { key: 'name' },
+        { key: 'text' },
+        { key: 'largeText' },
+        { key: 'number', key2: 'number2' },
         [1],
       ],
       update_form: null,
@@ -469,16 +408,8 @@ test('bug: array of objects', () => {
 test('bug: array with single object', () => {
   expect(
     getSnapshot({
-      block_style: {
-        type: 'hex',
-        color: '#ffffff',
-        bg_blur: false,
-      },
-      columns: [
-        {
-          key: 'name',
-        },
-      ],
+      block_style: { type: 'hex', color: '#ffffff', bg_blur: false },
+      columns: [{ key: 'name' }],
       update_form: null,
     }),
   ).toMatchInlineSnapshot(`
@@ -585,7 +516,8 @@ describe('Classes', () => {
 
       (err as Error & { code: string }).code = 'E_TEST';
 
-      expect(getSnapshot(err, { includeErrorStack: false })).toMatchInlineSnapshot(`
+      expect(getSnapshot(err, { includeErrorStack: false }))
+        .toMatchInlineSnapshot(`
         "
         Error#:
           message: 'x'
@@ -604,7 +536,8 @@ describe('Classes', () => {
 
       outer.cause = inner;
 
-      expect(getSnapshot(outer, { includeErrorStack: false })).toMatchInlineSnapshot(`
+      expect(getSnapshot(outer, { includeErrorStack: false }))
+        .toMatchInlineSnapshot(`
         "
         Error#:
           message: 'outer'
@@ -623,7 +556,8 @@ describe('Classes', () => {
 
       err.cause = { reason: 'bad input' };
 
-      expect(getSnapshot(err, { includeErrorStack: false })).toMatchInlineSnapshot(`
+      expect(getSnapshot(err, { includeErrorStack: false }))
+        .toMatchInlineSnapshot(`
         "
         Error#:
           message: 'wrap'
@@ -644,9 +578,8 @@ describe('Classes', () => {
 
       e1.cause = e2;
 
-      expect(
-        getSnapshot(e1, { maxDepth: 1, includeErrorStack: false }),
-      ).toMatchInlineSnapshot(`
+      expect(getSnapshot(e1, { maxDepth: 1, includeErrorStack: false }))
+        .toMatchInlineSnapshot(`
         "
         Error#:
           message: 'one'
@@ -771,9 +704,7 @@ describe('Classes', () => {
       a = 1;
 
       toJSON() {
-        return {
-          a: 1,
-        };
+        return { a: 1 };
       }
     })();
 
@@ -867,13 +798,9 @@ describe('Classes', () => {
 
 describe('Functions', () => {
   test('Function', () => {
-    expect(
-      getSnapshot({
-        fn: () => {},
-      }),
-    ).toMatchInlineSnapshot(`
+    expect(getSnapshot({ fn: () => {} })).toMatchInlineSnapshot(`
       "
-      fn{Function}: '() => {        }'
+      fn{Function}: '() => {    }'
       "
     `);
   });
@@ -1155,9 +1082,7 @@ describe('collapseObjects', () => {
   test('handles undefined values with showUndefined option', () => {
     expect(
       getSnapshot(
-        {
-          withUndefined: { a: 1, b: undefined, c: 'test' },
-        },
+        { withUndefined: { a: 1, b: undefined, c: 'test' } },
         { collapseObjects: true, showUndefined: true },
       ),
     ).toMatchInlineSnapshot(`
@@ -1170,9 +1095,7 @@ describe('collapseObjects', () => {
   test('handles null values correctly', () => {
     expect(
       getSnapshot(
-        {
-          withNull: { a: 1, b: null, c: 'test' },
-        },
+        { withNull: { a: 1, b: null, c: 'test' } },
         { collapseObjects: true },
       ),
     ).toMatchInlineSnapshot(`
@@ -1216,11 +1139,8 @@ describe('collapseObjects', () => {
   });
 
   test('does not collapse when disabled (default)', () => {
-    expect(
-      getSnapshot({
-        simple: { a: 1, b: 2, c: 3 },
-      }),
-    ).toMatchInlineSnapshot(`
+    expect(getSnapshot({ simple: { a: 1, b: 2, c: 3 } }))
+      .toMatchInlineSnapshot(`
       "
       simple:
         a: 1

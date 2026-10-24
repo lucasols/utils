@@ -546,23 +546,15 @@ test('matchPathWith - no match', () => {
 });
 
 test('matchPathWith - null/undefined path', () => {
-  expect(
-    matchPathWith(null).patterns({
-      '/users/:id': () => 'user',
-    }),
-  ).toBe(null);
+  expect(matchPathWith(null).patterns({ '/users/:id': () => 'user' })).toBe(
+    null,
+  );
 
   expect(
-    matchPathWith(undefined).patterns({
-      '/users/:id': () => 'user',
-    }),
+    matchPathWith(undefined).patterns({ '/users/:id': () => 'user' }),
   ).toBe(null);
 
-  expect(
-    matchPathWith('').patterns({
-      '/users/:id': () => 'user',
-    }),
-  ).toBe(null);
+  expect(matchPathWith('').patterns({ '/users/:id': () => 'user' })).toBe(null);
 });
 
 test('matchPathWith - complex pattern matching', () => {

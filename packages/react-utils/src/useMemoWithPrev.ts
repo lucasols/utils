@@ -1,3 +1,4 @@
+/* oxlint-disable react/refs -- like `useMemo`, the cache is read during render and written only by committed renders, in an insertion effect, so a render React throws away doesn't leak its result */
 import { deepEqual } from '@ls-stack/utils/deepEqual';
 import { useInsertionEffect, useRef } from 'react';
 

@@ -46,15 +46,13 @@ npm install @ls-stack/browser-utils
 Import utilities from their specific packages:
 
 ```typescript
+// Browser utilities
+import { yamlStringify } from '@ls-stack/browser-utils/yamlStringify';
+// Node.js utilities
+import { runCmd } from '@ls-stack/node-utils/runShellCmd';
 // Universal utilities
 import { createAsyncQueue } from '@ls-stack/utils/asyncQueue';
 import { deepEqual } from '@ls-stack/utils/deepEqual';
-
-// Node.js utilities
-import { runCmd } from '@ls-stack/node-utils/runShellCmd';
-
-// Browser utilities
-import { yamlStringify } from '@ls-stack/browser-utils/yamlStringify';
 ```
 
 ## Documentation

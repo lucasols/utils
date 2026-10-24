@@ -38,36 +38,36 @@ const ID_PROP_REGEXP = /^(id_|key_|id-|key-)|(_id|_key|-id|-key)$/i;
  * - Pattern expansion with parentheses:
  *
  *   - `'prop.test.(prop1|prop2|prop3)'` - Expands to `prop.test.prop1`,
- *       `prop.test.prop2`, and `prop.test.prop3`
+ *     `prop.test.prop2`, and `prop.test.prop3`
  *   - `'components[*].(table_id|columns|filters[*].value)'` - Expands to
- *       `components[*].table_id`, `components[*].columns`, and
- *       `components[*].filters[*].value`
+ *     `components[*].table_id`, `components[*].columns`, and
+ *     `components[*].filters[*].value`
  *   - `'(users|admins)[*].name'` - Expands to `users[*].name` and `admins[*].name`
  * - Array filtering by value:
  *
  *   - `'users[%name="John"]'` - Filters the `users` with the `name` property equal
- *       to `John`
+ *     to `John`
  *   - `'users[%name="John" | "Jane"]'` - Value-level OR using `|` for multiple
- *       values of same property
+ *     values of same property
  *   - `'users[%name="Alice" || %age=35]'` - Property-level OR using `||` for
- *       different properties
+ *     different properties
  *   - `'users[%age=30 && %role="admin"]'` - Property-level AND using `&&` for
- *       different properties
+ *     different properties
  *   - Note: Mixing `&&` and `||` in the same filter is not supported - use separate
- *       filter patterns instead
+ *     filter patterns instead
  *   - `'users[%config.name="John" | "Jane"]'` - Dot notation is supported
  *   - `'users[%name*="oh"]'` - Contains operator (*=) - filters users where name
- *       contains "oh"
+ *     contains "oh"
  *   - `'users[%name^="Jo"]'` - Starts with operator (^=) - filters users where name
- *       starts with "Jo"
+ *     starts with "Jo"
  *   - `'users[%name$="hn"]'` - Ends with operator ($=) - filters users where name
- *       ends with "hn"
+ *     ends with "hn"
  *   - `'users[%name!="John"]'` - Not equal operator (!=) - filters users where name
- *       is not "John"
+ *     is not "John"
  *   - `'users[%name!*="admin"]'` - Not contains operator (!*=) - filters users
- *       where name doesn't contain "admin"
+ *     where name doesn't contain "admin"
  *   - `'users[i%name="john"]'` - Case-insensitive matching (i% prefix) - matches
- *       "John", "JOHN", "john", etc.
+ *     "John", "JOHN", "john", etc.
  *
  * @param objOrArray - The object or array to filter.
  * @param options - The options for the filter.
@@ -159,9 +159,7 @@ export function filterObjectOrArrayKeys(
   }
 
   const toArray = (v?: string[] | string): string[] =>
-    v === undefined ? []
-    : Array.isArray(v) ? v
-    : [v];
+    v === undefined ? [] : Array.isArray(v) ? v : [v];
 
   const filterPatternsRaw = toArray(filterKeys);
   const rejectPatternsRaw = toArray(rejectKeys);
@@ -215,8 +213,8 @@ export function filterObjectOrArrayKeys(
         // For arrays, we need to merge the items
         combinedResult.push(...fieldSelectedResult);
       } else if (
-        !Array.isArray(combinedResult) &&
-        !Array.isArray(fieldSelectedResult)
+        !Array.isArray(combinedResult)
+        && !Array.isArray(fieldSelectedResult)
       ) {
         // For objects, merge properties
         Object.assign(combinedResult, fieldSelectedResult);
@@ -285,9 +283,9 @@ export function filterObjectOrArrayKeys(
               evaluateCondition(value, cond),
             );
             const matches =
-              pt.logic === 'AND' ?
-                results.every((r) => r)
-              : results.some((r) => r);
+              pt.logic === 'AND'
+                ? results.every((r) => r)
+                : results.some((r) => r);
             if (matches) return rec(pi + 1, pti + 1);
           }
           return false;
@@ -338,11 +336,11 @@ export function filterObjectOrArrayKeys(
           if (Array.isArray(value)) {
             const allItemsArePrimitives = value.every(
               (item) =>
-                typeof item === 'string' ||
-                typeof item === 'number' ||
-                typeof item === 'boolean' ||
-                item === null ||
-                item === undefined,
+                typeof item === 'string'
+                || typeof item === 'number'
+                || typeof item === 'boolean'
+                || item === null
+                || item === undefined,
             );
             if (allItemsArePrimitives) {
               return 1.9 + value.length * -0.001;
@@ -424,8 +422,9 @@ export function filterObjectOrArrayKeys(
         const childPath = path.concat({ type: 'INDEX', index });
         const child = value[index];
         if (hasRejects && matchesAnyReject(childPath, child)) continue;
-        const directInclude =
-          hasFilters ? matchesAnyFilter(childPath, child) : true;
+        const directInclude = hasFilters
+          ? matchesAnyFilter(childPath, child)
+          : true;
         const childAllowed = includeAllChildren || directInclude;
         if (isPlainObject(child) || Array.isArray(child)) {
           const builtChild = build(
@@ -446,9 +445,8 @@ export function filterObjectOrArrayKeys(
         }
       }
       stack.delete(value);
-      const filteredOut =
-        rejectEmptyObjectsInArray ?
-          out.filter(
+      const filteredOut = rejectEmptyObjectsInArray
+        ? out.filter(
             (item) => !(isPlainObject(item) && Object.keys(item).length === 0),
           )
         : out;
@@ -484,16 +482,16 @@ export function filterObjectOrArrayKeys(
             continue;
           }
           if (
-            Array.isArray(builtChild) &&
-            builtChild.length === 0 &&
-            !childAllowed
+            Array.isArray(builtChild)
+            && builtChild.length === 0
+            && !childAllowed
           ) {
             continue;
           }
           if (
-            isPlainObject(builtChild) &&
-            Object.keys(builtChild).length === 0 &&
-            !childAllowed
+            isPlainObject(builtChild)
+            && Object.keys(builtChild).length === 0
+            && !childAllowed
           ) {
             continue;
           }
@@ -596,11 +594,7 @@ function parseFilterConditions(filterContent: string): PatternToken | null {
     return null;
   }
 
-  return {
-    type: 'INDEX_FILTER',
-    conditions,
-    logic,
-  };
+  return { type: 'INDEX_FILTER', conditions, logic };
 }
 
 function parseSingleCondition(
@@ -608,8 +602,9 @@ function parseSingleCondition(
   caseInsensitive: boolean = false,
 ): FilterCondition | null {
   // Remove % if present at the start
-  const cleanCondition =
-    condition.startsWith('%') ? condition.slice(1) : condition;
+  const cleanCondition = condition.startsWith('%')
+    ? condition.slice(1)
+    : condition;
 
   // Find the operator
   let operator: FilterCondition['operator'] | null = null;
@@ -657,27 +652,22 @@ function parseSingleCondition(
       const trimmed = part.trim();
       // Remove quotes if present
       const value =
-        trimmed.startsWith('"') && trimmed.endsWith('"') ?
-          trimmed.slice(1, -1)
-        : trimmed;
+        trimmed.startsWith('"') && trimmed.endsWith('"')
+          ? trimmed.slice(1, -1)
+          : trimmed;
       values.push(value);
     }
   } else {
     // Single value
     const trimmed = valueStr.trim();
     const value =
-      trimmed.startsWith('"') && trimmed.endsWith('"') ?
-        trimmed.slice(1, -1)
-      : trimmed;
+      trimmed.startsWith('"') && trimmed.endsWith('"')
+        ? trimmed.slice(1, -1)
+        : trimmed;
     values.push(value);
   }
 
-  return {
-    property,
-    operator,
-    values,
-    caseInsensitive,
-  };
+  return { property, operator, values, caseInsensitive };
 }
 
 function separateFilterPatterns(patterns: string[]): {

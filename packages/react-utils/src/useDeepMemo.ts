@@ -9,10 +9,12 @@ import { useRef } from 'react';
 export function useDeepMemo<T>(callback: () => T, deeps: unknown[]): T {
   const memo = useRef<{ deps: unknown[]; value: T } | null>(null);
 
+  // oxlint-disable-next-line react/refs -- a cache by deep equality: a render React throws away can only store a value that deep equals the deps it is returned for
   if (!memo.current || !deepEqual(deeps, memo.current.deps)) {
     memo.current = { deps: deeps, value: callback() };
   }
 
+  // oxlint-disable-next-line react/refs -- returns the value cached for deps deep equal to the current ones
   return memo.current.value;
 }
 

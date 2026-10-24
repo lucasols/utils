@@ -36,9 +36,7 @@ describe('useOnChange', () => {
 
   test('should call callback on mount when callOnMount is true', () => {
     const callback = vi.fn();
-    renderHook(() =>
-      useOnChange('value', callback, { callOnMount: true }),
-    );
+    renderHook(() => useOnChange('value', callback, { callOnMount: true }));
 
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith({
@@ -65,8 +63,7 @@ describe('useOnChange', () => {
     const customEqual = vi.fn(() => true); // Always consider values equal
 
     const { rerender } = renderHook(
-      ({ value }) =>
-        useOnChange(value, callback, { equalityFn: customEqual }),
+      ({ value }) => useOnChange(value, callback, { equalityFn: customEqual }),
       { initialProps: { value: 'initial' } },
     );
 
@@ -195,10 +192,7 @@ describe('useOnChange', () => {
 
     rerender({ value: false });
 
-    expect(callback).toHaveBeenCalledWith({
-      prev: true,
-      current: false,
-    });
+    expect(callback).toHaveBeenCalledWith({ prev: true, current: false });
   });
 
   test('should work with array changes', () => {
@@ -296,9 +290,7 @@ describe('useOnChangeLayoutEffect', () => {
 
     const { rerender } = renderHook(
       ({ value }) =>
-        useOnChangeLayoutEffect(value, callback, {
-          equalityFn: customEqual,
-        }),
+        useOnChangeLayoutEffect(value, callback, { equalityFn: customEqual }),
       { initialProps: { value: 'initial' } },
     );
 
@@ -355,7 +347,7 @@ describe('useOnChangeTo', () => {
   test('should call callback only when value changes to target', () => {
     const callback = vi.fn();
     const target = 'target';
-    
+
     const { rerender } = renderHook(
       ({ value }) => useOnChangeTo(value, target, callback),
       { initialProps: { value: 'initial' } },
@@ -368,10 +360,7 @@ describe('useOnChangeTo', () => {
     // Change to target value
     rerender({ value: 'target' });
     expect(callback).toHaveBeenCalledTimes(1);
-    expect(callback).toHaveBeenCalledWith({
-      prev: 'other',
-      target: 'target',
-    });
+    expect(callback).toHaveBeenCalledWith({ prev: 'other', target: 'target' });
   });
 
   test('should not call callback if value is already target on mount', () => {
@@ -408,7 +397,7 @@ describe('useOnChangeTo', () => {
   test('should work with object targets', () => {
     const callback = vi.fn();
     const target = { status: 'success' };
-    
+
     const { rerender } = renderHook(
       ({ value }) => useOnChangeTo(value, target, callback),
       { initialProps: { value: { status: 'pending' } } },
@@ -426,15 +415,14 @@ describe('useOnChangeTo', () => {
 
   test('should use custom equality function for target comparison', () => {
     const callback = vi.fn();
-    const customEqual = vi.fn()
+    const customEqual = vi
+      .fn()
       .mockReturnValueOnce(false) // value != prev
-      .mockReturnValueOnce(true);  // value == target
+      .mockReturnValueOnce(true); // value == target
 
     const { rerender } = renderHook(
       ({ value }) =>
-        useOnChangeTo(value, 'TARGET', callback, {
-          equalityFn: customEqual,
-        }),
+        useOnChangeTo(value, 'TARGET', callback, { equalityFn: customEqual }),
       { initialProps: { value: 'initial' } },
     );
 
@@ -531,7 +519,7 @@ describe('useOnChangeToLayoutEffect', () => {
   test('should call callback only when value changes to target using layout effect', () => {
     const callback = vi.fn();
     const target = 'target';
-    
+
     const { rerender } = renderHook(
       ({ value }) => useOnChangeToLayoutEffect(value, target, callback),
       { initialProps: { value: 'initial' } },
@@ -542,17 +530,12 @@ describe('useOnChangeToLayoutEffect', () => {
 
     rerender({ value: 'target' });
     expect(callback).toHaveBeenCalledTimes(1);
-    expect(callback).toHaveBeenCalledWith({
-      prev: 'other',
-      target: 'target',
-    });
+    expect(callback).toHaveBeenCalledWith({ prev: 'other', target: 'target' });
   });
 
   test('should not call callback if value is already target on mount', () => {
     const callback = vi.fn();
-    renderHook(() =>
-      useOnChangeToLayoutEffect('target', 'target', callback),
-    );
+    renderHook(() => useOnChangeToLayoutEffect('target', 'target', callback));
 
     expect(callback).not.toHaveBeenCalled();
   });
@@ -589,9 +572,10 @@ describe('useOnChangeToLayoutEffect', () => {
 
   test('should use custom equality function', () => {
     const callback = vi.fn();
-    const customEqual = vi.fn()
+    const customEqual = vi
+      .fn()
       .mockReturnValueOnce(false) // value != prev
-      .mockReturnValueOnce(true);  // value == target
+      .mockReturnValueOnce(true); // value == target
 
     const { rerender } = renderHook(
       ({ value }) =>
@@ -618,10 +602,7 @@ describe('Edge cases and advanced scenarios', () => {
     );
 
     rerender({ value: undefined });
-    expect(callback).toHaveBeenCalledWith({
-      prev: null,
-      current: undefined,
-    });
+    expect(callback).toHaveBeenCalledWith({ prev: null, current: undefined });
 
     rerender({ value: 'string' });
     expect(callback).toHaveBeenCalledWith({
@@ -690,10 +671,7 @@ describe('Edge cases and advanced scenarios', () => {
 
     rerender({ value: fn2 });
 
-    expect(callback).toHaveBeenCalledWith({
-      prev: fn1,
-      current: fn2,
-    });
+    expect(callback).toHaveBeenCalledWith({ prev: fn1, current: fn2 });
   });
 
   test('should handle async cleanup functions', async () => {

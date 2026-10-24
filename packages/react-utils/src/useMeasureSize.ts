@@ -74,9 +74,8 @@ export function useMeasureSize(
 
     if (!elementToUse) return;
 
-    const debouncedSetMeasurements =
-      debounceMs ?
-        debounce(setMeasurement, debounceMs, { leading: true })
+    const debouncedSetMeasurements = debounceMs
+      ? debounce(setMeasurement, debounceMs, { leading: true })
       : setMeasurement;
 
     const observer = new ResizeObserver((entries) => {
@@ -91,15 +90,17 @@ export function useMeasureSize(
           prev: current,
           newValue: {
             width:
-              measureOnly === 'height' ? current.width
-              : useContentRect === true || useContentRect === 'width' ?
-                contentRect.width
-              : elementToUse.clientWidth,
+              measureOnly === 'height'
+                ? current.width
+                : useContentRect === true || useContentRect === 'width'
+                  ? contentRect.width
+                  : elementToUse.clientWidth,
             height:
-              measureOnly === 'width' ? current.height
-              : useContentRect === true || useContentRect === 'height' ?
-                contentRect.height
-              : elementToUse.clientHeight,
+              measureOnly === 'width'
+                ? current.height
+                : useContentRect === true || useContentRect === 'height'
+                  ? contentRect.height
+                  : elementToUse.clientHeight,
             isMeasuring: false,
           },
         });

@@ -1,6 +1,7 @@
 export type TestTypeIsEqual<X, Y> =
-  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true
-  : false;
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 export type TestTypeNotEqual<X, Y> =
   true extends TestTypeIsEqual<X, Y> ? false : true;
 
@@ -47,7 +48,7 @@ function expectType<T extends true>() {
  *   'notEqual' if they differ
  */
 function expectTypesAre<X, Y>(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // oxlint-disable-next-line @typescript-eslint/no-unused-vars
   result: TestTypeIsEqual<X, Y> extends true ? 'equal' : 'notEqual',
 ) {}
 
@@ -66,14 +67,15 @@ function expectTypesAre<X, Y>(
  *   match
  */
 function expectTypesAreEqual<X, Y>(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ...result: TestTypeIsEqual<X, Y> extends true ? []
-  : [
-      error: 'type assertion failed, types should be equal but',
-      typeOnLeft: X,
-      _: 'is not equal to',
-      typeOnRight: Y,
-    ]
+  // oxlint-disable-next-line @typescript-eslint/no-unused-vars
+  ...result: TestTypeIsEqual<X, Y> extends true
+    ? []
+    : [
+        error: 'type assertion failed, types should be equal but',
+        typeOnLeft: X,
+        _: 'is not equal to',
+        typeOnRight: Y,
+      ]
 ) {}
 
 /**
@@ -89,9 +91,10 @@ function expectTypesAreEqual<X, Y>(
  * @param result Optional error parameter that appears only when types match
  */
 function expectTypesAreNotEqual<X, Y>(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ...result: TestTypeIsEqual<X, Y> extends false ? []
-  : ['error: type assertion failed, types should be NOT equal']
+  // oxlint-disable-next-line @typescript-eslint/no-unused-vars
+  ...result: TestTypeIsEqual<X, Y> extends false
+    ? []
+    : ['error: type assertion failed, types should be NOT equal']
 ) {}
 
 export const typingTest = {

@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "singleAttributePerLine": true,
+  "experimentalOperatorPosition": "start",
+  "objectWrap": "collapse",
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "jsdoc": true,
+  "sortImports": {
+    "groups": [
+      ["side_effect", "builtin", "external", "internal", "unknown"],
+      ["parent", "sibling", "index"]
+    ],
+    "newlinesBetween": false,
+    "partitionByNewline": false
+  },
+  "overrides": [
+    {
+      "files": ["**/*.tsx", "**/*.md", "**/*.json"],
+      "excludeFiles": ["**/*.test.tsx"],
+      "options": {
+        "objectWrap": "preserve"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "pnpm-lock.yaml",
+    "docs",
+    "packages/*/docs",
+    "lib",
+    "CLAUDE.md",
+    "AGENTS.md"
+  ]
+}

@@ -1,6 +1,6 @@
+import { sleep } from '@ls-stack/utils/sleep';
 import { renderHook } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
-import { sleep } from '@ls-stack/utils/sleep';
 import { useTimeout } from './useTimeout';
 
 describe('useTimeout', () => {
@@ -147,10 +147,9 @@ describe('useTimeout', () => {
   test('should update timeout duration when ms changes', async () => {
     const callback = vi.fn();
 
-    const { result, rerender } = renderHook(
-      ({ ms }) => useTimeout(ms),
-      { initialProps: { ms: 100 } },
-    );
+    const { result, rerender } = renderHook(({ ms }) => useTimeout(ms), {
+      initialProps: { ms: 100 },
+    });
 
     rerender({ ms: 50 });
 

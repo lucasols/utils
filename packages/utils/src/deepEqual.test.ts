@@ -1,10 +1,8 @@
-/* eslint-disable vitest/expect-expect */
+/* oxlint-disable vitest/expect-expect */
 import { describe, expect, test } from 'vitest';
 import { deepEqual } from './deepEqual';
 
-const obj1 = {
-  foo: 'bar',
-};
+const obj1 = { foo: 'bar' };
 
 const arr1 = [1];
 
@@ -18,54 +16,19 @@ const cases: [
   [
     'Single values',
     [
-      {
-        name: 'null is null',
-        a: null,
-        b: null,
-        result: true,
-      },
-      {
-        name: 'null is not {}',
-        a: null,
-        b: {},
-        result: false,
-      },
-      {
-        name: '1 is 1',
-        a: 1,
-        b: 1,
-        result: true,
-      },
-      {
-        name: '[] is []',
-        a: [],
-        b: [],
-        result: true,
-      },
-      {
-        name: '[] is not {}',
-        a: [],
-        b: {},
-        result: false,
-      },
-      {
-        name: 'NaN is NaN',
-        a: NaN,
-        b: NaN,
-        result: true,
-      },
+      { name: 'null is null', a: null, b: null, result: true },
+      { name: 'null is not {}', a: null, b: {}, result: false },
+      { name: '1 is 1', a: 1, b: 1, result: true },
+      { name: '[] is []', a: [], b: [], result: true },
+      { name: '[] is not {}', a: [], b: {}, result: false },
+      { name: 'NaN is NaN', a: NaN, b: NaN, result: true },
     ],
   ],
 
   [
     'Simple objects',
     [
-      {
-        name: 'Same object',
-        a: obj1,
-        b: obj1,
-        result: true,
-      },
+      { name: 'Same object', a: obj1, b: obj1, result: true },
       {
         name: 'Single key',
         a: { foo: 'bar' },
@@ -101,42 +64,17 @@ const cases: [
   [
     'Arrays objects',
     [
-      {
-        name: 'Same array',
-        a: arr1,
-        b: arr1,
-        result: true,
-      },
-      {
-        name: 'Single elem',
-        a: ['bar'],
-        b: ['bar'],
-        result: true,
-      },
-      {
-        name: 'Single elem not equal',
-        a: ['bar'],
-        b: ['bar2'],
-        result: false,
-      },
+      { name: 'Same array', a: arr1, b: arr1, result: true },
+      { name: 'Single elem', a: ['bar'], b: ['bar'], result: true },
+      { name: 'Single elem not equal', a: ['bar'], b: ['bar2'], result: false },
       {
         name: 'Multiple elems',
         a: [1, 'bar', false],
         b: [1, 'bar', false],
         result: true,
       },
-      {
-        name: 'A has more elems',
-        a: [1, 2],
-        b: [1],
-        result: false,
-      },
-      {
-        name: 'B has more keys',
-        a: [1],
-        b: [1, 2],
-        result: false,
-      },
+      { name: 'A has more elems', a: [1, 2], b: [1], result: false },
+      { name: 'B has more keys', a: [1], b: [1, 2], result: false },
     ],
   ],
 
@@ -145,26 +83,14 @@ const cases: [
     [
       {
         name: 'Simple one level - 1',
-        a: {
-          a: 1,
-          b: {},
-        },
-        b: {
-          a: 1,
-          b: {},
-        },
+        a: { a: 1, b: {} },
+        b: { a: 1, b: {} },
         result: true,
       },
       {
         name: 'Simple one level - 2',
-        a: {
-          a: 1,
-          b: obj1,
-        },
-        b: {
-          a: 1,
-          b: obj1,
-        },
+        a: { a: 1, b: obj1 },
+        b: { a: 1, b: obj1 },
         result: true,
       },
     ],
@@ -172,12 +98,7 @@ const cases: [
   [
     'Deep Arrays',
     [
-      {
-        name: 'Simple one level - 1',
-        a: [1, []],
-        b: [1, []],
-        result: true,
-      },
+      { name: 'Simple one level - 1', a: [1, []], b: [1, []], result: true },
       {
         name: 'Simple one level - 2',
         a: [1, obj1],
@@ -457,29 +378,9 @@ describe('deep equal', () => {
   });
 
   test('max depth', () => {
-    const hello = {
-      a: {
-        b: {
-          c: {
-            d: {
-              e: 1,
-            },
-          },
-        },
-      },
-    };
+    const hello = { a: { b: { c: { d: { e: 1 } } } } };
 
-    const world = {
-      a: {
-        b: {
-          c: {
-            d: {
-              e: 1,
-            },
-          },
-        },
-      },
-    };
+    const world = { a: { b: { c: { d: { e: 1 } } } } };
 
     same(hello, world);
 

@@ -21,9 +21,19 @@ All packages are designed with a modular architecture where each utility is expo
 ## Individual Package Commands
 
 - `pnpm test` - Run tests for the package
-- `pnpm lint` - Run TypeScript compiler and ESLint checks
-- `pnpm tsc` - Run TypeScript compiler only
-- `pnpm eslint` - Run ESLint only
+- `pnpm lint` - Run oxlint (with type checking) and fast-lint
+- `pnpm oxlint` - Run oxlint only, it also reports the TypeScript type errors
+- `pnpm fast-lint` - Run fast-lint only (the `@ls-stack` rules)
+
+## Monorepo Formatting
+
+- `pnpm format` - Format the repo with oxfmt
+- `pnpm format:check` - Check the formatting without changing files
+
+## Lint Configs
+
+- `oxlint.config.base.ts` and `fast-lint.config.base.ts` at the root hold the shared rules, each package's `oxlint.config.ts` and `fast-lint.config.ts` extend them
+- oxlint rules are suppressed with `oxlint-disable` comments and fast-lint rules with `fast-lint-disable` comments, `eslint-disable` comments are ignored
 
 ## Package-Specific Commands
 

@@ -21,9 +21,8 @@ export function useShortCut(
     });
 
     const removeKeybindings = keyboardShortcuts(window, {
-      [shortcut]:
-        allowDuringTyping ?
-          (e: KeyboardEvent) => {
+      [shortcut]: allowDuringTyping
+        ? (e: KeyboardEvent) => {
             callbackRef.current(e);
           }
         : decoratedCb,
@@ -41,9 +40,8 @@ export function useShortCuts(
     const shortcutsCbs: Record<string, (event: KeyboardEvent) => void> = {};
 
     for (const [shortcut, callback] of Object.entries(shortcuts)) {
-      shortcutsCbs[shortcut] =
-        allowDuringTyping ?
-          (e: KeyboardEvent) => {
+      shortcutsCbs[shortcut] = allowDuringTyping
+        ? (e: KeyboardEvent) => {
             callback(e);
           }
         : ignoreInputTypingEvents(callback);

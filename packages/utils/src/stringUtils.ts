@@ -37,11 +37,9 @@ export function formatNum(
   maxDecimalsOrOptions: number | Intl.NumberFormatOptions = 2,
 ) {
   const options =
-    typeof maxDecimalsOrOptions === 'number' ?
-      {
-        maximumFractionDigits: maxDecimalsOrOptions,
-      }
-    : maxDecimalsOrOptions;
+    typeof maxDecimalsOrOptions === 'number'
+      ? { maximumFractionDigits: maxDecimalsOrOptions }
+      : maxDecimalsOrOptions;
 
   return num.toLocaleString('en-US', options);
 }
@@ -167,6 +165,6 @@ export function truncateString(str: string, length: number, ellipsis = '…') {
 }
 
 export function removeANSIColors(str: string) {
-  // eslint-disable-next-line no-control-regex -- valid usage of control character
+  // oxlint-disable-next-line no-control-regex -- valid usage of control character
   return str.replace(/\u001b\[\d+m/g, '');
 }

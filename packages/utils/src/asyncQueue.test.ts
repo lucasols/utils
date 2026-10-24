@@ -54,69 +54,63 @@ test.concurrent('addResultify should respect limited concurrency', async () => {
   expect(result3.value).toBe(fixture);
 });
 
-test.concurrent(
-  'add should process tasks sequentially with concurrency 1',
-  async () => {
-    const input = [[10, 300] as const, [20, 200] as const, [30, 100] as const];
+test.concurrent('add should process tasks sequentially with concurrency 1', async () => {
+  const input = [[10, 300] as const, [20, 200] as const, [30, 100] as const];
 
-    const start = Date.now();
-    const queue = createAsyncQueueWithMeta<number, number, Error>({
-      concurrency: 1,
-    });
+  const start = Date.now();
+  const queue = createAsyncQueueWithMeta<number, number, Error>({
+    concurrency: 1,
+  });
 
-    expect(
-      await Promise.all(
-        input.map(async ([value, ms]) =>
-          Result.asyncUnwrap(
-            queue.add(
-              async () => {
-                await sleep(ms);
-                return Result.ok(value);
-              },
-              { meta: value },
-            ),
+  expect(
+    await Promise.all(
+      input.map(async ([value, ms]) =>
+        Result.asyncUnwrap(
+          queue.add(
+            async () => {
+              await sleep(ms);
+              return Result.ok(value);
+            },
+            { meta: value },
           ),
         ),
       ),
-    ).toEqual([10, 20, 30]);
+    ),
+  ).toEqual([10, 20, 30]);
 
-    const duration = Date.now() - start;
-    expect(duration).toBeGreaterThanOrEqual(590);
-    expect(duration).toBeLessThanOrEqual(650);
-  },
-);
+  const duration = Date.now() - start;
+  expect(duration).toBeGreaterThanOrEqual(590);
+  expect(duration).toBeLessThanOrEqual(650);
+});
 
-test.concurrent(
-  'addResultify should process tasks sequentially with concurrency 1',
-  async () => {
-    const input = [[10, 300] as const, [20, 200] as const, [30, 100] as const];
+test.concurrent('addResultify should process tasks sequentially with concurrency 1', async () => {
+  const input = [[10, 300] as const, [20, 200] as const, [30, 100] as const];
 
-    const start = Date.now();
-    const queue = createAsyncQueueWithMeta<number, number, Error>({
-      concurrency: 1,
-    });
+  const start = Date.now();
+  const queue = createAsyncQueueWithMeta<number, number, Error>({
+    concurrency: 1,
+  });
 
-    expect(
-      await Promise.all(
-        input.map(async ([value, ms]) =>
-          Result.asyncUnwrap(
-            queue.resultifyAdd(
-              async () => {
-                await sleep(ms);
-                return value;
-              },
-              { meta: value },
-            ),
+  expect(
+    await Promise.all(
+      input.map(async ([value, ms]) =>
+        Result.asyncUnwrap(
+          queue.resultifyAdd(
+            async () => {
+              await sleep(ms);
+              return value;
+            },
+            { meta: value },
           ),
         ),
       ),
-    ).toEqual([10, 20, 30]);
+    ),
+  ).toEqual([10, 20, 30]);
 
-    const duration = Date.now() - start;
-    expect(duration).toBeGreaterThanOrEqual(590);
-    expect(duration).toBeLessThanOrEqual(650);
-  },
-);
+  const duration = Date.now() - start;
+  expect(duration).toBeGreaterThanOrEqual(590);
+  expect(duration).toBeLessThanOrEqual(650);
+});
 
 test.concurrent('addResultify should not exceed max concurrency', async () => {
   const concurrency = 5;
@@ -218,10 +212,7 @@ test.concurrent('adding tasks after clear should work', async () => {
 
 test.concurrent('queue timeout', async () => {
   const result: string[] = [];
-  const queue = createAsyncQueue({
-    timeout: 300,
-    concurrency: Infinity,
-  });
+  const queue = createAsyncQueue({ timeout: 300, concurrency: Infinity });
 
   const errors: Error[] = [];
 
@@ -290,28 +281,25 @@ test.concurrent('addResultify should handle task throwing error', async () => {
   expect(queue.failed).toEqual(1);
 });
 
-test.concurrent(
-  'addResultify should handle task promise rejection',
-  async () => {
-    const queue = createAsyncQueue({ concurrency: 1 });
+test.concurrent('addResultify should handle task promise rejection', async () => {
+  const queue = createAsyncQueue({ concurrency: 1 });
 
-    await expect(
-      Result.asyncUnwrap(
-        queue.resultifyAdd(async () => {
-          throw new Error('broken');
-        }),
-      ),
-    ).rejects.toThrowError('broken');
+  await expect(
+    Result.asyncUnwrap(
+      queue.resultifyAdd(async () => {
+        throw new Error('broken');
+      }),
+    ),
+  ).rejects.toThrowError('broken');
 
-    queue.resultifyAdd(() => 'task #1');
+  queue.resultifyAdd(() => 'task #1');
 
-    expect(queue.pending).toBe(1);
+  expect(queue.pending).toBe(1);
 
-    await queue.onIdle();
+  await queue.onIdle();
 
-    expect(queue.pending).toBe(0);
-  },
-);
+  expect(queue.pending).toBe(0);
+});
 
 test.concurrent('add should handle Result.err returned from task', async () => {
   const queue = createAsyncQueue({ concurrency: 1 });
@@ -450,10 +438,7 @@ test('should emit complete event when a task completes', async () => {
 test.concurrent('queue signal', async () => {
   const controller = new AbortController();
 
-  const queue = createAsyncQueue({
-    signal: controller.signal,
-    concurrency: 1,
-  });
+  const queue = createAsyncQueue({ signal: controller.signal, concurrency: 1 });
 
   queue.add(async () => {
     await sleep(100);
@@ -652,176 +637,161 @@ test.concurrent('task results are garbage collected', async () => {
   expect(gcCalled).toBe('garbage collected');
 });
 
-test.concurrent(
-  'aborting and then returning a result should not throw an error',
-  async () => {
-    const queue = createAsyncQueue();
-    const controller = new AbortController();
+test.concurrent('aborting and then returning a result should not throw an error', async () => {
+  const queue = createAsyncQueue();
+  const controller = new AbortController();
 
-    queue.add(
-      async () => {
-        await sleep(10);
+  queue.add(
+    async () => {
+      await sleep(10);
 
-        controller.abort();
-        return Result.ok('ok');
-      },
-      { signal: controller.signal },
-    );
+      controller.abort();
+      return Result.ok('ok');
+    },
+    { signal: controller.signal },
+  );
 
-    await queue.onIdle();
+  await queue.onIdle();
 
-    expect(queue.completed).toBe(1);
-    expect(queue.failed).toBe(0);
-  },
-);
+  expect(queue.completed).toBe(1);
+  expect(queue.failed).toBe(0);
+});
 
-test.concurrent(
-  'stopOnError should stop processing on first error',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      stopOnError: true,
-      concurrency: 1,
+test.concurrent('stopOnError should stop processing on first error', async () => {
+  const queue = createAsyncQueue<string>({ stopOnError: true, concurrency: 1 });
+
+  const processedItems: string[] = [];
+  const errors: Error[] = [];
+
+  // Real-world pattern: add tasks and let queue process them
+  queue
+    .add(() => sleepOk(50, 'task1'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
     });
 
-    const processedItems: string[] = [];
-    const errors: Error[] = [];
-
-    // Real-world pattern: add tasks and let queue process them
-    queue
-      .add(() => sleepOk(50, 'task1'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    queue
-      .add(() => sleepErr(50, new Error('task2 failed')))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    queue
-      .add(() => sleepOk(50, 'task3'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    // Natural way to wait for queue to finish processing
-    await queue.onIdle();
-
-    // Check what was processed
-    expect(processedItems).toEqual(['task1']);
-    expect(errors).toHaveLength(1);
-    expect(errors[0]?.message).toBe('task2 failed');
-
-    // Verify queue state
-    expect(queue.completed).toBe(1);
-    expect(queue.failed).toBe(1);
-    expect(queue.isStopped).toBe(true);
-    assert(queue.stoppedReason);
-    expect(queue.stoppedReason.message).toBe('task2 failed');
-    expect(queue.size).toBe(1); // task3 still in queue
-  },
-);
-
-test.concurrent(
-  'stopOnError with rejectPendingOnError should reject all pending tasks',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      stopOnError: true,
-      rejectPendingOnError: true,
-      concurrency: 1,
+  queue
+    .add(() => sleepErr(50, new Error('task2 failed')))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
     });
 
-    const processedItems: string[] = [];
-    const errors: Error[] = [];
-
-    // Real-world pattern: process a batch that might fail
-    queue
-      .add(() => sleepOk(50, 'task1'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    queue
-      .add(() => sleepErr(50, new Error('task2 failed')))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    queue
-      .add(() => sleepOk(50, 'task3'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    queue
-      .add(() => sleepOk(50, 'task4'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    await queue.onIdle();
-
-    // Only task1 should have been processed successfully
-    expect(processedItems).toEqual(['task1']);
-
-    // Should have 3 errors: task2 original error + task3 and task4 rejected
-    expect(errors).toHaveLength(3);
-    expect(errors[0]?.message).toBe('task2 failed');
-    expect(errors[1]).toBeInstanceOf(Error);
-    expect(errors[2]).toBeInstanceOf(Error);
-
-    expect(queue.completed).toBe(1);
-    expect(queue.failed).toBe(1);
-    expect(queue.size).toBe(0); // All tasks cleared
-  },
-);
-
-test.concurrent(
-  'lazy start should not process tasks until start() is called',
-  async () => {
-    const queue = createAsyncQueue<string>({ autoStart: false });
-
-    let executedTasks = 0;
-
-    const task1Promise = queue.resultifyAdd(async () => {
-      executedTasks++;
-      return 'task1';
+  queue
+    .add(() => sleepOk(50, 'task3'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
     });
 
-    const task2Promise = queue.resultifyAdd(async () => {
-      executedTasks++;
-      return 'task2';
+  // Natural way to wait for queue to finish processing
+  await queue.onIdle();
+
+  // Check what was processed
+  expect(processedItems).toEqual(['task1']);
+  expect(errors).toHaveLength(1);
+  expect(errors[0]?.message).toBe('task2 failed');
+
+  // Verify queue state
+  expect(queue.completed).toBe(1);
+  expect(queue.failed).toBe(1);
+  expect(queue.isStopped).toBe(true);
+  assert(queue.stoppedReason);
+  expect(queue.stoppedReason.message).toBe('task2 failed');
+  expect(queue.size).toBe(1); // task3 still in queue
+});
+
+test.concurrent('stopOnError with rejectPendingOnError should reject all pending tasks', async () => {
+  const queue = createAsyncQueue<string>({
+    stopOnError: true,
+    rejectPendingOnError: true,
+    concurrency: 1,
+  });
+
+  const processedItems: string[] = [];
+  const errors: Error[] = [];
+
+  // Real-world pattern: process a batch that might fail
+  queue
+    .add(() => sleepOk(50, 'task1'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
     });
 
-    // Verify tasks haven't started
-    expect(executedTasks).toBe(0);
-    expect(queue.size).toBe(2);
-    expect(queue.pending).toBe(0);
-    expect(queue.isStarted).toBe(false);
+  queue
+    .add(() => sleepErr(50, new Error('task2 failed')))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
+    });
 
-    queue.start();
-    await queue.onIdle();
+  queue
+    .add(() => sleepOk(50, 'task3'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
+    });
 
-    const result1 = await task1Promise;
-    assert(result1.ok);
-    expect(result1.value).toBe('task1');
+  queue
+    .add(() => sleepOk(50, 'task4'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
+    });
 
-    const result2 = await task2Promise;
-    assert(result2.ok);
-    expect(result2.value).toBe('task2');
+  await queue.onIdle();
 
-    expect(executedTasks).toBe(2);
-    expect(queue.isStarted).toBe(true);
-  },
-);
+  // Only task1 should have been processed successfully
+  expect(processedItems).toEqual(['task1']);
+
+  // Should have 3 errors: task2 original error + task3 and task4 rejected
+  expect(errors).toHaveLength(3);
+  expect(errors[0]?.message).toBe('task2 failed');
+  expect(errors[1]).toBeInstanceOf(Error);
+  expect(errors[2]).toBeInstanceOf(Error);
+
+  expect(queue.completed).toBe(1);
+  expect(queue.failed).toBe(1);
+  expect(queue.size).toBe(0); // All tasks cleared
+});
+
+test.concurrent('lazy start should not process tasks until start() is called', async () => {
+  const queue = createAsyncQueue<string>({ autoStart: false });
+
+  let executedTasks = 0;
+
+  const task1Promise = queue.resultifyAdd(async () => {
+    executedTasks++;
+    return 'task1';
+  });
+
+  const task2Promise = queue.resultifyAdd(async () => {
+    executedTasks++;
+    return 'task2';
+  });
+
+  // Verify tasks haven't started
+  expect(executedTasks).toBe(0);
+  expect(queue.size).toBe(2);
+  expect(queue.pending).toBe(0);
+  expect(queue.isStarted).toBe(false);
+
+  queue.start();
+  await queue.onIdle();
+
+  const result1 = await task1Promise;
+  assert(result1.ok);
+  expect(result1.value).toBe('task1');
+
+  const result2 = await task2Promise;
+  assert(result2.ok);
+  expect(result2.value).toBe('task2');
+
+  expect(executedTasks).toBe(2);
+  expect(queue.isStarted).toBe(true);
+});
 
 test('pause and resume should control queue processing', async () => {
   const queue = createAsyncQueue({ concurrency: 1 });
@@ -857,186 +827,172 @@ test('pause and resume should control queue processing', async () => {
   expect(results).toEqual(['task1', 'task2', 'task3']);
 });
 
-test.concurrent(
-  'reset should allow processing after being stopped',
-  async () => {
-    const queue = createAsyncQueue<string>({ stopOnError: true });
+test.concurrent('reset should allow processing after being stopped', async () => {
+  const queue = createAsyncQueue<string>({ stopOnError: true });
 
-    const errorPromise = queue.add(() =>
-      sleepErr(50, new Error('first error')),
-    );
+  const errorPromise = queue.add(() => sleepErr(50, new Error('first error')));
 
-    await queue.onIdle();
+  await queue.onIdle();
 
-    const errorResult = await errorPromise;
-    assert(errorResult.error);
-    expect(errorResult.error.message).toBe('first error');
-    expect(queue.isStopped).toBe(true);
+  const errorResult = await errorPromise;
+  assert(errorResult.error);
+  expect(errorResult.error.message).toBe('first error');
+  expect(queue.isStopped).toBe(true);
 
-    const stoppedResult = await queue.add(() => sleepOk(50, 'should fail'));
-    assert(stoppedResult.error);
-    expect(stoppedResult.error.message).toBe('first error');
+  const stoppedResult = await queue.add(() => sleepOk(50, 'should fail'));
+  assert(stoppedResult.error);
+  expect(stoppedResult.error.message).toBe('first error');
 
-    queue.reset();
-    expect(queue.isStopped).toBe(false);
-    expect(queue.stoppedReason).toBeUndefined();
+  queue.reset();
+  expect(queue.isStopped).toBe(false);
+  expect(queue.stoppedReason).toBeUndefined();
 
-    const resetPromise = queue.add(() => sleepOk(50, 'after reset'));
-    await queue.onIdle();
+  const resetPromise = queue.add(() => sleepOk(50, 'after reset'));
+  await queue.onIdle();
 
-    const resetResult = await resetPromise;
-    assert(resetResult.ok);
-    expect(resetResult.value).toBe('after reset');
-  },
-);
+  const resetResult = await resetPromise;
+  assert(resetResult.ok);
+  expect(resetResult.value).toBe('after reset');
+});
 
-test.concurrent(
-  'stopOnError without rejectPendingOnError should leave pending tasks in queue',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      stopOnError: true,
-      rejectPendingOnError: false,
-      concurrency: 1,
+test.concurrent('stopOnError without rejectPendingOnError should leave pending tasks in queue', async () => {
+  const queue = createAsyncQueue<string>({
+    stopOnError: true,
+    rejectPendingOnError: false,
+    concurrency: 1,
+  });
+
+  const processedItems: string[] = [];
+  const errors: Error[] = [];
+
+  // Add tasks that will be processed until error occurs
+  queue
+    .add(() => sleepOk(50, 'task1'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
     });
 
-    const processedItems: string[] = [];
-    const errors: Error[] = [];
-
-    // Add tasks that will be processed until error occurs
-    queue
-      .add(() => sleepOk(50, 'task1'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    queue
-      .add(() => sleepErr(50, new Error('task2 failed')))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    queue
-      .add(() => sleepOk(50, 'task3'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    queue
-      .add(() => sleepOk(50, 'task4'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    await queue.onIdle();
-
-    // Only first task should succeed, error on second, remaining tasks stay in queue
-    expect(processedItems).toEqual(['task1']);
-    expect(errors).toHaveLength(1);
-    expect(errors[0]?.message).toBe('task2 failed');
-
-    expect(queue.completed).toBe(1);
-    expect(queue.failed).toBe(1);
-    expect(queue.size).toBe(2); // task3 and task4 still in queue
-    expect(queue.isStopped).toBe(true);
-  },
-);
-
-test.concurrent(
-  'adding tasks to stopped queue should return error immediately',
-  async () => {
-    const queue = createAsyncQueue<string>({ stopOnError: true });
-
-    // Simulate a processing batch that encounters an error
-    const processedItems: string[] = [];
-    const errors: Error[] = [];
-
-    queue
-      .add(() => sleepErr(50, new Error('processing failed')))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
-
-    await queue.onIdle();
-
-    // Verify queue stopped due to error
-    expect(queue.isStopped).toBe(true);
-    expect(errors).toHaveLength(1);
-    expect(errors[0]?.message).toBe('processing failed');
-
-    // Real-world pattern: try to add more work after queue stopped
-    const failedAttempt = await queue.add(() =>
-      sleepOk(50, 'should not execute'),
-    );
-
-    // Should get immediate error with the original stopping reason
-    assert(failedAttempt.error);
-    expect(failedAttempt.error.message).toBe('processing failed');
-    expect(processedItems).toEqual([]); // Nothing was processed
-  },
-);
-
-test.concurrent(
-  'lazy start with manual start should work with error handling',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      autoStart: false,
-      stopOnError: true,
-      rejectPendingOnError: true,
+  queue
+    .add(() => sleepErr(50, new Error('task2 failed')))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
     });
 
-    const processedItems: string[] = [];
-    const errors: Error[] = [];
+  queue
+    .add(() => sleepOk(50, 'task3'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
+    });
 
-    // Real-world pattern: prepare work batch but don't start yet
-    queue
-      .add(() => sleepOk(50, 'task1'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
+  queue
+    .add(() => sleepOk(50, 'task4'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
+    });
 
-    queue
-      .add(() => sleepErr(50, new Error('task2 failed')))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
+  await queue.onIdle();
 
-    queue
-      .add(() => sleepOk(50, 'task3'))
-      .then((r) => {
-        if (r.ok) processedItems.push(r.value);
-        if (r.error) errors.push(r.error);
-      });
+  // Only first task should succeed, error on second, remaining tasks stay in queue
+  expect(processedItems).toEqual(['task1']);
+  expect(errors).toHaveLength(1);
+  expect(errors[0]?.message).toBe('task2 failed');
 
-    // Verify nothing has started processing
-    expect(queue.size).toBe(3);
-    expect(queue.pending).toBe(0);
-    expect(queue.isStarted).toBe(false);
-    expect(processedItems).toEqual([]);
-    expect(errors).toEqual([]);
+  expect(queue.completed).toBe(1);
+  expect(queue.failed).toBe(1);
+  expect(queue.size).toBe(2); // task3 and task4 still in queue
+  expect(queue.isStopped).toBe(true);
+});
 
-    // Start processing when ready
-    queue.start();
-    await queue.onIdle();
+test.concurrent('adding tasks to stopped queue should return error immediately', async () => {
+  const queue = createAsyncQueue<string>({ stopOnError: true });
 
-    // Check results after processing
-    expect(processedItems).toEqual(['task1']);
-    expect(errors).toHaveLength(2); // task2 error + task3 rejected
-    expect(errors[0]?.message).toBe('task2 failed');
-    expect(errors[1]).toBeInstanceOf(Error);
+  // Simulate a processing batch that encounters an error
+  const processedItems: string[] = [];
+  const errors: Error[] = [];
 
-    expect(queue.completed).toBe(1);
-    expect(queue.failed).toBe(1);
-    expect(queue.size).toBe(0);
-    expect(queue.isStopped).toBe(true);
-  },
-);
+  queue
+    .add(() => sleepErr(50, new Error('processing failed')))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
+    });
+
+  await queue.onIdle();
+
+  // Verify queue stopped due to error
+  expect(queue.isStopped).toBe(true);
+  expect(errors).toHaveLength(1);
+  expect(errors[0]?.message).toBe('processing failed');
+
+  // Real-world pattern: try to add more work after queue stopped
+  const failedAttempt = await queue.add(() =>
+    sleepOk(50, 'should not execute'),
+  );
+
+  // Should get immediate error with the original stopping reason
+  assert(failedAttempt.error);
+  expect(failedAttempt.error.message).toBe('processing failed');
+  expect(processedItems).toEqual([]); // Nothing was processed
+});
+
+test.concurrent('lazy start with manual start should work with error handling', async () => {
+  const queue = createAsyncQueue<string>({
+    autoStart: false,
+    stopOnError: true,
+    rejectPendingOnError: true,
+  });
+
+  const processedItems: string[] = [];
+  const errors: Error[] = [];
+
+  // Real-world pattern: prepare work batch but don't start yet
+  queue
+    .add(() => sleepOk(50, 'task1'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
+    });
+
+  queue
+    .add(() => sleepErr(50, new Error('task2 failed')))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
+    });
+
+  queue
+    .add(() => sleepOk(50, 'task3'))
+    .then((r) => {
+      if (r.ok) processedItems.push(r.value);
+      if (r.error) errors.push(r.error);
+    });
+
+  // Verify nothing has started processing
+  expect(queue.size).toBe(3);
+  expect(queue.pending).toBe(0);
+  expect(queue.isStarted).toBe(false);
+  expect(processedItems).toEqual([]);
+  expect(errors).toEqual([]);
+
+  // Start processing when ready
+  queue.start();
+  await queue.onIdle();
+
+  // Check results after processing
+  expect(processedItems).toEqual(['task1']);
+  expect(errors).toHaveLength(2); // task2 error + task3 rejected
+  expect(errors[0]?.message).toBe('task2 failed');
+  expect(errors[1]).toBeInstanceOf(Error);
+
+  expect(queue.completed).toBe(1);
+  expect(queue.failed).toBe(1);
+  expect(queue.size).toBe(0);
+  expect(queue.isStopped).toBe(true);
+});
 
 test.concurrent('real-world batch processing with error recovery', async () => {
   const queue = createAsyncQueue<string>({ stopOnError: true, concurrency: 1 });
@@ -1113,34 +1069,25 @@ test.concurrent('emits start before complete with meta', async () => {
   assert(r.ok);
 
   expect(calls).toEqual([
-    {
-      meta: 42,
-      type: 'start',
-    },
-    {
-      meta: 42,
-      type: 'complete',
-    },
+    { meta: 42, type: 'start' },
+    { meta: 42, type: 'complete' },
   ]);
 });
 
-test.concurrent(
-  'onError is called and onComplete is not on failure',
-  async () => {
-    const queue = createAsyncQueue<string>();
-    const onComplete = vi.fn();
-    const onError = vi.fn();
+test.concurrent('onError is called and onComplete is not on failure', async () => {
+  const queue = createAsyncQueue<string>();
+  const onComplete = vi.fn();
+  const onError = vi.fn();
 
-    const r = await queue.add(() => Result.err(new Error('broken')), {
-      onComplete,
-      onError,
-    });
+  const r = await queue.add(() => Result.err(new Error('broken')), {
+    onComplete,
+    onError,
+  });
 
-    assert(r.error);
-    expect(onError).toHaveBeenCalledTimes(1);
-    expect(onComplete).not.toHaveBeenCalled();
-  },
-);
+  assert(r.error);
+  expect(onError).toHaveBeenCalledTimes(1);
+  expect(onComplete).not.toHaveBeenCalled();
+});
 
 test.concurrent('per-task timeout aborts task with AbortError', async () => {
   const queue = createAsyncQueue<string>({ concurrency: 1 });
@@ -1161,26 +1108,23 @@ test.concurrent('per-task timeout aborts task with AbortError', async () => {
   expect(queue.failed).toBe(1);
 });
 
-test.concurrent(
-  'queue-level timeout takes precedence over per-task timeout',
-  async () => {
-    const queue = createAsyncQueue<string>({ concurrency: 1, timeout: 40 });
+test.concurrent('queue-level timeout takes precedence over per-task timeout', async () => {
+  const queue = createAsyncQueue<string>({ concurrency: 1, timeout: 40 });
 
-    const r = await queue.add(
-      async () => {
-        await sleep(100);
-        return Result.ok('ok');
-      },
-      { timeout: 200 },
-    );
+  const r = await queue.add(
+    async () => {
+      await sleep(100);
+      return Result.ok('ok');
+    },
+    { timeout: 200 },
+  );
 
-    assert(r.error);
-    expect(r.error).toBeInstanceOf(DOMException);
-    expect((r.error as DOMException).message).toBe(
-      'The operation was aborted due to timeout',
-    );
-  },
-);
+  assert(r.error);
+  expect(r.error).toBeInstanceOf(DOMException);
+  expect((r.error as DOMException).message).toBe(
+    'The operation was aborted due to timeout',
+  );
+});
 
 test('add returning non-Result yields error and increments failed', async () => {
   const queue = createAsyncQueue();
@@ -1207,63 +1151,51 @@ test('meta is propagated to events and tracking arrays', async () => {
   expect(queue.completions).toEqual([{ meta: 1, value: 'ok' }]);
   expect(queue.failures).toHaveLength(1);
   expect(queue.failures[0]?.meta).toBe(2);
-  expect((queue.failures[0]?.error as Error).message).toBe('x');
+  expect(queue.failures[0]?.error).toMatchObject({ message: 'x' });
 });
 
-test.concurrent(
-  'start and resume are no-ops after queue is stopped',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      stopOnError: true,
-      concurrency: 1,
-    });
+test.concurrent('start and resume are no-ops after queue is stopped', async () => {
+  const queue = createAsyncQueue<string>({ stopOnError: true, concurrency: 1 });
 
-    queue.add(async () => {
-      await sleep(10);
-      return Result.ok('task1');
-    });
-    queue.add(async () => Result.err(new Error('failed')));
-    queue.add(async () => {
-      await sleep(10);
-      return Result.ok('task3');
-    });
+  queue.add(async () => {
+    await sleep(10);
+    return Result.ok('task1');
+  });
+  queue.add(async () => Result.err(new Error('failed')));
+  queue.add(async () => {
+    await sleep(10);
+    return Result.ok('task3');
+  });
 
-    await queue.onIdle();
+  await queue.onIdle();
 
-    expect(queue.isStopped).toBe(true);
-    const sizeBefore = queue.size;
+  expect(queue.isStopped).toBe(true);
+  const sizeBefore = queue.size;
 
-    queue.resume();
-    queue.start();
-    await sleep(30);
+  queue.resume();
+  queue.start();
+  await sleep(30);
 
-    expect(queue.size).toBe(sizeBefore);
-    expect(queue.pending).toBe(0);
-  },
-);
+  expect(queue.size).toBe(sizeBefore);
+  expect(queue.pending).toBe(0);
+});
 
-test.concurrent(
-  'multiple onIdle waiters resolve when queue stops early',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      stopOnError: true,
-      concurrency: 1,
-    });
+test.concurrent('multiple onIdle waiters resolve when queue stops early', async () => {
+  const queue = createAsyncQueue<string>({ stopOnError: true, concurrency: 1 });
 
-    queue.add(() => Result.ok('a'));
-    queue.add(() => Result.err(new Error('bad')));
-    queue.add(() => Result.ok('b'));
+  queue.add(() => Result.ok('a'));
+  queue.add(() => Result.err(new Error('bad')));
+  queue.add(() => Result.ok('b'));
 
-    const p1 = queue.onIdle();
-    const p2 = queue.onIdle();
+  const p1 = queue.onIdle();
+  const p2 = queue.onIdle();
 
-    await Promise.all([p1, p2]);
+  await Promise.all([p1, p2]);
 
-    expect(queue.isStopped).toBe(true);
-    expect(queue.pending).toBe(0);
-    expect(queue.size).toBe(1);
-  },
-);
+  expect(queue.isStopped).toBe(true);
+  expect(queue.pending).toBe(0);
+  expect(queue.size).toBe(1);
+});
 
 test('onIdle resolves after clear() when no pending tasks', async () => {
   const queue = createAsyncQueue<string>({ autoStart: false });
@@ -1299,67 +1231,61 @@ test('add errors immediately when queue signal already aborted with specific mes
 });
 
 // Rate limiting tests
-test.concurrent(
-  'rate limiting should limit tasks per time interval',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      rateLimit: { maxTasks: 2, interval: 200 },
+test.concurrent('rate limiting should limit tasks per time interval', async () => {
+  const queue = createAsyncQueue<string>({
+    rateLimit: { maxTasks: 2, interval: 200 },
+  });
+
+  const startTime = Date.now();
+  const results: string[] = [];
+
+  // Add 4 tasks - first 2 should run immediately, next 2 should wait
+  for (let i = 0; i < 4; i++) {
+    queue.resultifyAdd(async () => {
+      const result = `task-${i}`;
+      results.push(result);
+      return result;
     });
+  }
 
-    const startTime = Date.now();
-    const results: string[] = [];
+  await queue.onIdle();
 
-    // Add 4 tasks - first 2 should run immediately, next 2 should wait
-    for (let i = 0; i < 4; i++) {
-      queue.resultifyAdd(async () => {
-        const result = `task-${i}`;
-        results.push(result);
-        return result;
-      });
-    }
+  const duration = Date.now() - startTime;
 
-    await queue.onIdle();
+  expect(results).toHaveLength(4);
+  expect(results).toEqual(['task-0', 'task-1', 'task-2', 'task-3']);
+  // Should take at least 200ms (one interval) to complete all tasks
+  expect(duration).toBeGreaterThanOrEqual(190);
+});
 
-    const duration = Date.now() - startTime;
+test.concurrent('rate limiting should work with concurrency control', async () => {
+  const queue = createAsyncQueue<string>({
+    concurrency: 1, // Only 1 task at a time
+    rateLimit: { maxTasks: 2, interval: 200 }, // 2 tasks per 200ms
+  });
 
-    expect(results).toHaveLength(4);
-    expect(results).toEqual(['task-0', 'task-1', 'task-2', 'task-3']);
-    // Should take at least 200ms (one interval) to complete all tasks
-    expect(duration).toBeGreaterThanOrEqual(190);
-  },
-);
+  const startTime = Date.now();
+  const results: string[] = [];
 
-test.concurrent(
-  'rate limiting should work with concurrency control',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      concurrency: 1, // Only 1 task at a time
-      rateLimit: { maxTasks: 2, interval: 200 }, // 2 tasks per 200ms
+  // Add 3 tasks - should be limited by both concurrency and rate limit
+  for (let i = 0; i < 3; i++) {
+    queue.resultifyAdd(async () => {
+      await sleep(50); // Each task takes 50ms
+      const result = `task-${i}`;
+      results.push(result);
+      return result;
     });
+  }
 
-    const startTime = Date.now();
-    const results: string[] = [];
+  await queue.onIdle();
 
-    // Add 3 tasks - should be limited by both concurrency and rate limit
-    for (let i = 0; i < 3; i++) {
-      queue.resultifyAdd(async () => {
-        await sleep(50); // Each task takes 50ms
-        const result = `task-${i}`;
-        results.push(result);
-        return result;
-      });
-    }
+  const duration = Date.now() - startTime;
 
-    await queue.onIdle();
-
-    const duration = Date.now() - startTime;
-
-    expect(results).toHaveLength(3);
-    expect(results).toEqual(['task-0', 'task-1', 'task-2']);
-    // Should take at least 200ms (rate limit interval) since third task must wait
-    expect(duration).toBeGreaterThanOrEqual(240); // 200ms wait + some processing time
-  },
-);
+  expect(results).toHaveLength(3);
+  expect(results).toEqual(['task-0', 'task-1', 'task-2']);
+  // Should take at least 200ms (rate limit interval) since third task must wait
+  expect(duration).toBeGreaterThanOrEqual(240); // 200ms wait + some processing time
+});
 
 test.concurrent('onIdle should wait for rate-limited tasks', async () => {
   const queue = createAsyncQueue<string>({
@@ -1451,129 +1377,114 @@ test.concurrent('clear should cancel rate limit timeouts', async () => {
   expect(queue.pending).toBe(0);
 });
 
-test.concurrent(
-  'rate limiting should handle edge case with zero interval gracefully',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      rateLimit: { maxTasks: 2, interval: 0 },
+test.concurrent('rate limiting should handle edge case with zero interval gracefully', async () => {
+  const queue = createAsyncQueue<string>({
+    rateLimit: { maxTasks: 2, interval: 0 },
+  });
+
+  const results: string[] = [];
+
+  // Add tasks - should all run immediately with 0 interval
+  for (let i = 0; i < 3; i++) {
+    queue.resultifyAdd(async () => {
+      const result = `task-${i}`;
+      results.push(result);
+      return result;
     });
+  }
 
-    const results: string[] = [];
+  await queue.onIdle();
 
-    // Add tasks - should all run immediately with 0 interval
-    for (let i = 0; i < 3; i++) {
-      queue.resultifyAdd(async () => {
-        const result = `task-${i}`;
-        results.push(result);
-        return result;
-      });
-    }
+  expect(results).toHaveLength(3);
+});
 
-    await queue.onIdle();
+test.concurrent('rate limiting without configuration should not affect queue behavior', async () => {
+  const queue = createAsyncQueue<string>(); // No rate limit configured
 
-    expect(results).toHaveLength(3);
-  },
-);
+  const startTime = Date.now();
+  const results: string[] = [];
 
-test.concurrent(
-  'rate limiting without configuration should not affect queue behavior',
-  async () => {
-    const queue = createAsyncQueue<string>(); // No rate limit configured
-
-    const startTime = Date.now();
-    const results: string[] = [];
-
-    // Add multiple tasks - should all run without delay
-    for (let i = 0; i < 5; i++) {
-      queue.resultifyAdd(async () => {
-        const result = `task-${i}`;
-        results.push(result);
-        return result;
-      });
-    }
-
-    await queue.onIdle();
-
-    const duration = Date.now() - startTime;
-
-    expect(results).toHaveLength(5);
-    // Should complete quickly without rate limiting delays
-    expect(duration).toBeLessThan(100);
-  },
-);
-
-test.concurrent(
-  'rate limiting should support DurationObj for interval',
-  async () => {
-    const queue = createAsyncQueue<string>({
-      rateLimit: {
-        maxTasks: 2,
-        interval: { seconds: 0, ms: 200 }, // Using DurationObj instead of number
-      },
+  // Add multiple tasks - should all run without delay
+  for (let i = 0; i < 5; i++) {
+    queue.resultifyAdd(async () => {
+      const result = `task-${i}`;
+      results.push(result);
+      return result;
     });
+  }
 
-    const startTime = Date.now();
-    const results: string[] = [];
+  await queue.onIdle();
 
-    // Add 4 tasks - first 2 should run immediately, next 2 should wait
-    for (let i = 0; i < 4; i++) {
-      queue.resultifyAdd(async () => {
-        const result = `task-${i}`;
-        results.push(result);
-        return result;
-      });
-    }
+  const duration = Date.now() - startTime;
 
-    await queue.onIdle();
+  expect(results).toHaveLength(5);
+  // Should complete quickly without rate limiting delays
+  expect(duration).toBeLessThan(100);
+});
 
-    const duration = Date.now() - startTime;
+test.concurrent('rate limiting should support DurationObj for interval', async () => {
+  const queue = createAsyncQueue<string>({
+    rateLimit: {
+      maxTasks: 2,
+      interval: { seconds: 0, ms: 200 }, // Using DurationObj instead of number
+    },
+  });
 
-    expect(results).toHaveLength(4);
-    expect(results).toEqual(['task-0', 'task-1', 'task-2', 'task-3']);
-    // Should take at least 200ms (one interval) to complete all tasks
-    expect(duration).toBeGreaterThanOrEqual(190);
-  },
-);
+  const startTime = Date.now();
+  const results: string[] = [];
 
-test.concurrent(
-  'per-task timeout 0 aborts immediately with AbortError',
-  async () => {
-    const queue = createAsyncQueue<string>({ concurrency: 1 });
+  // Add 4 tasks - first 2 should run immediately, next 2 should wait
+  for (let i = 0; i < 4; i++) {
+    queue.resultifyAdd(async () => {
+      const result = `task-${i}`;
+      results.push(result);
+      return result;
+    });
+  }
 
-    const r = await queue.add(
-      async () => {
-        await sleep(50);
-        return Result.ok('ok');
-      },
-      { timeout: 0 },
-    );
+  await queue.onIdle();
 
-    assert(r.error);
-    expect(r.error).toBeInstanceOf(DOMException);
-    expect((r.error as DOMException).message).toBe(
-      'The operation was aborted due to timeout',
-    );
-    expect(queue.failed).toBe(1);
-  },
-);
+  const duration = Date.now() - startTime;
 
-test.concurrent(
-  'queue-level timeout 0 aborts immediately with AbortError',
-  async () => {
-    const queue = createAsyncQueue<string>({ concurrency: 1, timeout: 0 });
+  expect(results).toHaveLength(4);
+  expect(results).toEqual(['task-0', 'task-1', 'task-2', 'task-3']);
+  // Should take at least 200ms (one interval) to complete all tasks
+  expect(duration).toBeGreaterThanOrEqual(190);
+});
 
-    const r = await queue.add(async () => {
+test.concurrent('per-task timeout 0 aborts immediately with AbortError', async () => {
+  const queue = createAsyncQueue<string>({ concurrency: 1 });
+
+  const r = await queue.add(
+    async () => {
       await sleep(50);
       return Result.ok('ok');
-    });
+    },
+    { timeout: 0 },
+  );
 
-    assert(r.error);
-    expect(r.error).toBeInstanceOf(DOMException);
-    expect((r.error as DOMException).message).toBe(
-      'The operation was aborted due to timeout',
-    );
-  },
-);
+  assert(r.error);
+  expect(r.error).toBeInstanceOf(DOMException);
+  expect((r.error as DOMException).message).toBe(
+    'The operation was aborted due to timeout',
+  );
+  expect(queue.failed).toBe(1);
+});
+
+test.concurrent('queue-level timeout 0 aborts immediately with AbortError', async () => {
+  const queue = createAsyncQueue<string>({ concurrency: 1, timeout: 0 });
+
+  const r = await queue.add(async () => {
+    await sleep(50);
+    return Result.ok('ok');
+  });
+
+  assert(r.error);
+  expect(r.error).toBeInstanceOf(DOMException);
+  expect((r.error as DOMException).message).toBe(
+    'The operation was aborted due to timeout',
+  );
+});
 
 test.concurrent('abort uses provided reason when available', async () => {
   const queue = createAsyncQueue<string>({ concurrency: 1 });
@@ -1599,37 +1510,34 @@ test.concurrent('abort uses provided reason when available', async () => {
 
 // onEmpty() removed: tests dropped
 
-test.concurrent(
-  'onSizeLessThan waits until size is below threshold',
-  async () => {
-    const queue = createAsyncQueue({ concurrency: 1 });
+test.concurrent('onSizeLessThan waits until size is below threshold', async () => {
+  const queue = createAsyncQueue({ concurrency: 1 });
 
-    queue.resultifyAdd(async () => sleep(100));
-    queue.resultifyAdd(async () => sleep(100));
-    queue.resultifyAdd(async () => sleep(100));
-    queue.resultifyAdd(async () => sleep(100));
-    queue.resultifyAdd(async () => sleep(100));
+  queue.resultifyAdd(async () => sleep(100));
+  queue.resultifyAdd(async () => sleep(100));
+  queue.resultifyAdd(async () => sleep(100));
+  queue.resultifyAdd(async () => sleep(100));
+  queue.resultifyAdd(async () => sleep(100));
 
-    await queue.onSizeLessThan(4);
-    expect(queue.size).toBe(3);
-    expect(queue.pending).toBe(1);
+  await queue.onSizeLessThan(4);
+  expect(queue.size).toBe(3);
+  expect(queue.pending).toBe(1);
 
-    await queue.onSizeLessThan(2);
-    expect(queue.size).toBe(1);
-    expect(queue.pending).toBe(1);
+  await queue.onSizeLessThan(2);
+  expect(queue.size).toBe(1);
+  expect(queue.pending).toBe(1);
 
-    await queue.onSizeLessThan(10); // Already below
-    expect(queue.size).toBe(1);
-    expect(queue.pending).toBe(1);
+  await queue.onSizeLessThan(10); // Already below
+  expect(queue.size).toBe(1);
+  expect(queue.pending).toBe(1);
 
-    await queue.onSizeLessThan(1);
-    expect(queue.size).toBe(0);
-    expect(queue.pending).toBe(1);
+  await queue.onSizeLessThan(1);
+  expect(queue.size).toBe(0);
+  expect(queue.pending).toBe(1);
 
-    await queue.onIdle();
-    expect(queue.pending).toBe(0);
-  },
-);
+  await queue.onIdle();
+  expect(queue.pending).toBe(0);
+});
 
 test.concurrent('per-task AbortSignal is passed to job context', async () => {
   const queue = createAsyncQueue<string>();

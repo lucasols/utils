@@ -12,42 +12,19 @@ test('literal values', () => {
 
 test('getCacheId ignore undefined obj values', () => {
   expect(
-    getCompositeKey({
-      a: 1,
-      b: undefined,
-      c: 3,
-      und: undefined,
-    }),
+    getCompositeKey({ a: 1, b: undefined, c: 3, und: undefined }),
   ).toMatchInlineSnapshot(`"{a:1,c:3}"`);
 });
 
 test('nested objects are sorted', () => {
-  expect(
-    getCompositeKey({
-      b: {
-        d: 4,
-        c: 3,
-      },
-      a: 1,
-    }),
-  ).toMatchInlineSnapshot(`"{a:1,b:{c:3,d:4}}"`);
+  expect(getCompositeKey({ b: { d: 4, c: 3 }, a: 1 })).toMatchInlineSnapshot(
+    `"{a:1,b:{c:3,d:4}}"`,
+  );
 });
 
 test('nested objects in array are sorted', () => {
   expect(
-    getCompositeKey({
-      a: [
-        {
-          d: 4,
-          c: 3,
-        },
-        {
-          z: 1,
-          a: 1,
-        },
-        1,
-      ],
-    }),
+    getCompositeKey({ a: [{ d: 4, c: 3 }, { z: 1, a: 1 }, 1] }),
   ).toMatchInlineSnapshot(`"{a:[{c:3,d:4},{a:1,z:1},1]}"`);
 });
 
@@ -62,11 +39,7 @@ test('avoid conflicting keys', () => {
     const aKey = getCompositeKey(a);
     const bKey = getCompositeKey(b);
 
-    return {
-      aKey,
-      bKey,
-      areNotTheSame: aKey !== bKey,
-    };
+    return { aKey, bKey, areNotTheSame: aKey !== bKey };
   }
 
   expect(getKeysAreNotTheSame({ a: 1, b: 2 }, { a: '1,b:2' }))
@@ -126,10 +99,7 @@ test('max default depth sorting = 3', () => {
         type: 'string',
         operator: 'Exatamente igual',
         value: 'Option 1',
-        not_sort: {
-          z: 1,
-          a: 1,
-        },
+        not_sort: { z: 1, a: 1 },
       },
     ],
     size: 50,
@@ -161,38 +131,21 @@ test('primitive values are not serialized', () => {
 });
 
 test('objects with one key should not be sorted', () => {
-  expect(
-    getCompositeKey({
-      a: {
-        b: 1,
-      },
-    }),
-  ).toMatchInlineSnapshot(`"{a:{b:1}}"`);
+  expect(getCompositeKey({ a: { b: 1 } })).toMatchInlineSnapshot(`"{a:{b:1}}"`);
 });
 
 test('empty objects', () => {
-  expect(
-    getCompositeKey({
-      a: {
-        a: undefined,
-      },
-    }),
-  ).toMatchInlineSnapshot(`"{a:{}}"`);
+  expect(getCompositeKey({ a: { a: undefined } })).toMatchInlineSnapshot(
+    `"{a:{}}"`,
+  );
 
-  expect(
-    getCompositeKey({
-      a: {
-        b: {},
-      },
-    }),
-  ).toMatchInlineSnapshot(`"{a:{b:{}}}"`);
+  expect(getCompositeKey({ a: { b: {} } })).toMatchInlineSnapshot(
+    `"{a:{b:{}}}"`,
+  );
 
-  expect(
-    getCompositeKey({
-      a: {},
-      b: 1,
-    }),
-  ).toMatchInlineSnapshot(`"{a:{},b:1}"`);
+  expect(getCompositeKey({ a: {}, b: 1 })).toMatchInlineSnapshot(
+    `"{a:{},b:1}"`,
+  );
 });
 
 test('undefined values should not change the equivalent not undefined objs', () => {
@@ -203,19 +156,13 @@ test('undefined values should not change the equivalent not undefined objs', () 
 });
 
 test('undefined values in objects should not change the equivalent not undefined objs', () => {
-  expect(
-    getCompositeKey({
-      a: undefined,
-      b: undefined,
-    }),
-  ).toMatchInlineSnapshot(`"{}"`);
+  expect(getCompositeKey({ a: undefined, b: undefined })).toMatchInlineSnapshot(
+    `"{}"`,
+  );
 
-  expect(
-    getCompositeKey({
-      a: undefined,
-      b: 1,
-    }),
-  ).toMatchInlineSnapshot(`"{b:1}"`);
+  expect(getCompositeKey({ a: undefined, b: 1 })).toMatchInlineSnapshot(
+    `"{b:1}"`,
+  );
 });
 
 test('getCacheId handles arrays', () => {
@@ -232,11 +179,9 @@ test('a subset of a value can be checked via includes', () => {
   const subSetObj = { z: 0, a: 1, b: 2 };
 
   expect(
-    getCompositeKey({
-      a: 1,
-      b: 2,
-      c: subSetObj,
-    }).includes(getCompositeKey(subSetObj)),
+    getCompositeKey({ a: 1, b: 2, c: subSetObj }).includes(
+      getCompositeKey(subSetObj),
+    ),
   ).toBeTruthy();
 });
 
@@ -271,11 +216,7 @@ describe('circular references', () => {
   test('handles shared non-circular references', () => {
     const sharedObj = { x: 1, y: 2 };
     expect(
-      getCompositeKey({
-        a: sharedObj,
-        b: sharedObj,
-        c: { nested: sharedObj },
-      }),
+      getCompositeKey({ a: sharedObj, b: sharedObj, c: { nested: sharedObj } }),
     ).toMatchInlineSnapshot(`"{a:{x:1,y:2},b:{x:1,y:2},c:{nested:{x:1,y:2}}}"`);
   });
 
@@ -293,10 +234,7 @@ describe('circular references', () => {
 
   test('throws on circular reference with shared refs', () => {
     const circular: any = { name: 'test' };
-    const objWithCircular: any = {
-      first: circular,
-      second: { ref: circular },
-    };
+    const objWithCircular: any = { first: circular, second: { ref: circular } };
     circular.self = objWithCircular;
     expect(() =>
       getCompositeKey(objWithCircular),
@@ -360,10 +298,7 @@ test('custom stringifier handles nested special values', () => {
 
   expect(
     getCompositeKey(
-      {
-        b: bytes,
-        a: 1,
-      },
+      { b: bytes, a: 1 },
       {
         stringify: (value) => {
           if (value instanceof Uint8Array) {
@@ -391,13 +326,7 @@ test('custom stringifier can be used with max sorting depth parameter', () => {
 
 test('custom stringifier falls back when returning undefined', () => {
   expect(
-    getCompositeKey(
-      {
-        b: 2,
-        a: 1,
-      },
-      { stringify: () => undefined },
-    ),
+    getCompositeKey({ b: 2, a: 1 }, { stringify: () => undefined }),
   ).toMatchInlineSnapshot(`"{a:1,b:2}"`);
 });
 

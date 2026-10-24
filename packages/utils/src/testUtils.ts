@@ -33,14 +33,26 @@ export function setDefaultLoggerStoreOptions(
 export function createLoggerStore({
   filterKeys: defaultFilterKeys = globalLoggerStoreDefaults.filterKeys,
   rejectKeys: defaultRejectKeys = globalLoggerStoreDefaults.rejectKeys,
-  splitLongLines: defaultSplitLongLines = globalLoggerStoreDefaults.splitLongLines ?? true,
-  maxLineLengthBeforeSplit: defaultMaxLineLengthBeforeSplit = globalLoggerStoreDefaults.maxLineLengthBeforeSplit ?? 80,
-  fromLastSnapshot: defaultFromLastSnapshot = globalLoggerStoreDefaults.fromLastSnapshot ?? false,
-  arrays: defaultArrays = globalLoggerStoreDefaults.arrays ?? { firstNItems: 1 },
-  changesOnly: defaultChangesOnly = globalLoggerStoreDefaults.changesOnly ?? false,
-  useEmojiForBooleans: defaultUseEmojiForBooleans = globalLoggerStoreDefaults.useEmojiForBooleans ?? true,
+  splitLongLines:
+    defaultSplitLongLines = globalLoggerStoreDefaults.splitLongLines ?? true,
+  maxLineLengthBeforeSplit:
+    defaultMaxLineLengthBeforeSplit = globalLoggerStoreDefaults.maxLineLengthBeforeSplit
+      ?? 80,
+  fromLastSnapshot:
+    defaultFromLastSnapshot = globalLoggerStoreDefaults.fromLastSnapshot
+      ?? false,
+  arrays: defaultArrays = globalLoggerStoreDefaults.arrays ?? {
+    firstNItems: 1,
+  },
+  changesOnly: defaultChangesOnly = globalLoggerStoreDefaults.changesOnly
+    ?? false,
+  useEmojiForBooleans:
+    defaultUseEmojiForBooleans = globalLoggerStoreDefaults.useEmojiForBooleans
+      ?? true,
   dedupeKey: defaultDedupeKey = globalLoggerStoreDefaults.dedupeKey,
-  ignoreMarkersInChanges: defaultIgnoreMarkersInChanges = globalLoggerStoreDefaults.ignoreMarkersInChanges ?? false,
+  ignoreMarkersInChanges:
+    defaultIgnoreMarkersInChanges = globalLoggerStoreDefaults.ignoreMarkersInChanges
+      ?? false,
 }: LoggerStoreOptions = {}) {
   let logs: Record<string, unknown>[] = [];
   let logsTime: number[] = [];
@@ -58,10 +70,7 @@ export function createLoggerStore({
   ) {
     if (!isObject(render)) {
       for (const [i, r] of render.entries()) {
-        logs.push({
-          i: i + 1,
-          ...r,
-        });
+        logs.push({ i: i + 1, ...r });
         logsTime.push(Date.now() - startTime);
       }
     } else {
@@ -404,15 +413,15 @@ export function waitController(): {
  * - Expanding the patterns with parentheses:
  *
  *   - `'prop.test.(prop1|prop2|prop3.prop4)'` - Will produce `prop.test.prop1`,
- *       `prop.test.prop2`, and `prop.test.prop3.prop4`
+ *     `prop.test.prop2`, and `prop.test.prop3.prop4`
  * - Array filtering by value:
  *
  *   - `'users[%name="John"]'` - Filters the `users` with the `name` property equal
- *       to `John`
+ *     to `John`
  *   - `'users[%name="John" | "Jane"]'` - Filters the `users` with the `name`
- *       property equal to `John` or `Jane`
+ *     property equal to `John` or `Jane`
  *   - `'users[%name="John" | "Jane" && %age=20]'` - AND and OR are supported by
- *       using `&&` and `||`, nesting logical operators is not supported yet
+ *     using `&&` and `||`, nesting logical operators is not supported yet
  *   - `'users[%config.name="John" | "Jane"]'` - Dot notation is supported
  *
  * Check more supported patterns in {@link filterObjectOrArrayKeys} docs.
@@ -507,9 +516,8 @@ export function compactSnapshot(
   }
 
   // Apply boolean emoji replacement
-  processedValue =
-    showBooleansAs ?
-      replaceBooleansWithEmoji(processedValue, showBooleansAs)
+  processedValue = showBooleansAs
+    ? replaceBooleansWithEmoji(processedValue, showBooleansAs)
     : processedValue;
 
   return `\n${yamlStringify(processedValue, {
@@ -545,14 +553,14 @@ function replaceBooleansWithEmoji(
   const defaultFalseText = '❌';
 
   const config =
-    typeof showBooleansAs === 'boolean' ?
-      { trueText: defaultTrueText, falseText: defaultFalseText }
-    : {
-        trueText: showBooleansAs.trueText ?? defaultTrueText,
-        falseText: showBooleansAs.falseText ?? defaultFalseText,
-        props: showBooleansAs.props ?? {},
-        ignoreProps: showBooleansAs.ignoreProps ?? [],
-      };
+    typeof showBooleansAs === 'boolean'
+      ? { trueText: defaultTrueText, falseText: defaultFalseText }
+      : {
+          trueText: showBooleansAs.trueText ?? defaultTrueText,
+          falseText: showBooleansAs.falseText ?? defaultFalseText,
+          props: showBooleansAs.props ?? {},
+          ignoreProps: showBooleansAs.ignoreProps ?? [],
+        };
 
   function processValue(val: unknown, propName?: string): unknown {
     if (typeof val === 'boolean') {
@@ -565,8 +573,8 @@ function replaceBooleansWithEmoji(
         if (propConfig === true) {
           return val ? config.trueText : config.falseText;
         }
-        return val ?
-            (propConfig.trueText ?? config.trueText)
+        return val
+          ? (propConfig.trueText ?? config.trueText)
           : (propConfig.falseText ?? config.falseText);
       }
 

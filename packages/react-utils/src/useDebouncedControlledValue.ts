@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/valid-types */
 import type { __LEGIT_ANY__ } from '@ls-stack/utils/saferTyping';
 import { shallowEqual } from '@ls-stack/utils/shallowEqual';
 import { useCallback, useRef, useState } from 'react';
@@ -92,8 +91,8 @@ export function useDebouncedControlledValue<T>({
   const flushedValue = useRef<{ value: T } | null>(null);
   /**
    * A flushed change replaced in the same event (e.g. by its previous value
-   * when a message is sent and cleared) may not change the controlled value,
-   * so the flush also triggers the controlled value check
+   * when a message is sent and cleared) may not change the controlled value, so
+   * the flush also triggers the controlled value check
    */
   const [flushCount, setFlushCount] = useState(0);
 
@@ -133,7 +132,7 @@ export function useDebouncedControlledValue<T>({
     const flushed = flushedValue.current;
     flushedValue.current = null;
 
-    if (flushed !== null && flushed.value === controlledValue) {
+    if (flushed?.value === controlledValue) {
       ignoreNextControlledValueChange.current = false;
       resetIgnoreNextControlledValueTimeout.clear();
       return;
@@ -168,12 +167,12 @@ export function useDebouncedControlledValue<T>({
   }
 
   /**
-   * Applies the pending change before an action that may replace the
-   * controlled value in the same event (e.g. sending a message clears it), so
-   * the replaced value is applied to the internal value instead of ignored as
-   * the echo of the flushed change. The parent must apply the flushed value
-   * synchronously, a different controlled value in the next render replaces
-   * the internal value
+   * Applies the pending change before an action that may replace the controlled
+   * value in the same event (e.g. sending a message clears it), so the replaced
+   * value is applied to the internal value instead of ignored as the echo of
+   * the flushed change. The parent must apply the flushed value synchronously,
+   * a different controlled value in the next render replaces the internal
+   * value
    */
   const flush = useLatestCb(() => {
     if (!debouncedHandleChange.pending()) return;

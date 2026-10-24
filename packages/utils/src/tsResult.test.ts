@@ -143,9 +143,7 @@ test('resultify should handle async functions', async () => {
 
   expect(errorResult.ok).toBe(false);
   invariant(!errorResult.ok);
-  expect(errorResult.error).toMatchObject({
-    message: 'Async error',
-  });
+  expect(errorResult.error).toMatchObject({ message: 'Async error' });
   expect(errorResult.error.stack).toEqual(errorToThrow.stack);
 });
 
@@ -170,9 +168,7 @@ test('resultify should handle external promises', async () => {
 
   expect(result2.ok).toBe(false);
   invariant(!result2.ok);
-  expect(result2.error).toMatchObject({
-    message: 'Error',
-  });
+  expect(result2.error).toMatchObject({ message: 'Error' });
 });
 
 test('resultify should handle async functions with custom error normalizer', async () => {
@@ -368,9 +364,9 @@ describe('getOkErr', () => {
 
     async function fetchData(ok: boolean): Promise<typeof typedResult._type> {
       return Promise.resolve(
-        ok ?
-          typedResult.ok({ a: 'test' })
-        : typedResult.err(new Error('Error')),
+        ok
+          ? typedResult.ok({ a: 'test' })
+          : typedResult.err(new Error('Error')),
       );
     }
 
@@ -620,9 +616,7 @@ test('Allow readonly error types', () => {
     return Result.err(error);
   }
 
-  type ReadonlyRecord = {
-    readonly [key: string]: unknown;
-  };
+  type ReadonlyRecord = { readonly [key: string]: unknown };
 
   function _bar(error: ReadonlyRecord): Result<number, ReadonlyRecord> {
     return Result.err(error);

@@ -18,10 +18,9 @@ export type ObjKeysWithValuesOfType<
 }[keyof Obj];
 
 /** @deprecated Use `IsAny` from `@ls-stack/utils/typeUtils` instead */
-export type IsAny<T> =
-  unknown extends T ?
-    [keyof T] extends [never] ?
-      false
+export type IsAny<T> = unknown extends T
+  ? [keyof T] extends [never]
+    ? false
     : true
   : false;
 
@@ -32,8 +31,9 @@ export type Prettify<T extends Record<string, unknown>> = {
 
 /** @deprecated Use `DeepPrettify` from `@ls-stack/utils/typeUtils` instead */
 export type DeepPrettify<T> = {
-  [K in keyof T]: T[K] extends Record<string, unknown> ? DeepPrettify<T[K]>
-  : T[K];
+  [K in keyof T]: T[K] extends Record<string, unknown>
+    ? DeepPrettify<T[K]>
+    : T[K];
 } & {};
 
 export type AddPrefixToObjKeys<

@@ -44,9 +44,9 @@ export class ConcurrentCallsAggregateError extends AggregateError {
     const messages = errors.map(
       (error) =>
         `- ${truncateString(
-          error instanceof Error ?
-            error.message
-          : (safeJsonStringify(error) ?? '???'),
+          error instanceof Error
+            ? error.message
+            : (safeJsonStringify(error) ?? '???'),
           100,
         )}`,
     );
@@ -74,13 +74,11 @@ export class ConcurrentCallsWithMetadataAggregateError<
   ) {
     const messages = errors.map(({ error, metadata }) => {
       let metadataPrefix =
-        (
-          typeof metadata === 'string' ||
-          typeof metadata === 'number' ||
-          typeof metadata === 'boolean'
-        ) ?
-          `${metadata}: `
-        : '';
+        typeof metadata === 'string'
+        || typeof metadata === 'number'
+        || typeof metadata === 'boolean'
+          ? `${metadata}: `
+          : '';
 
       try {
         const isArray = Array.isArray(metadata);
@@ -97,9 +95,9 @@ export class ConcurrentCallsWithMetadataAggregateError<
       }
 
       return `- ${metadataPrefix}${truncateString(
-        error instanceof Error ?
-          error.message
-        : (safeJsonStringify(error) ?? '???'),
+        error instanceof Error
+          ? error.message
+          : (safeJsonStringify(error) ?? '???'),
         100,
       )}`;
     });
@@ -117,15 +115,10 @@ export class ConcurrentCallsWithMetadataAggregateError<
 
 type ValidMetadata = string | number | boolean | Record<string, unknown>;
 
-type RunProps = {
-  delayStart?: (index: number) => number;
-};
+type RunProps = { delayStart?: (index: number) => number };
 
 // Succeeded and Failed types will be used by ConcurrentCallsWithMetadata directly for its return structure
-type SucceededCall<R, M> = {
-  value: R;
-  metadata: M;
-};
+type SucceededCall<R, M> = { value: R; metadata: M };
 type FailedCall<M, E extends ResultValidErrors = Error> = {
   metadata: M;
   error: E;
@@ -164,8 +157,9 @@ class ConcurrentCalls<R = unknown, E extends ResultValidErrors = Error> {
       return async (): Promise<Result<R, E>> => {
         try {
           const valueOrPromise = call();
-          const value =
-            isPromise(valueOrPromise) ? await valueOrPromise : valueOrPromise;
+          const value = isPromise(valueOrPromise)
+            ? await valueOrPromise
+            : valueOrPromise;
           return Result.ok<R>(value);
         } catch (err) {
           return Result.err(unknownToError(err) as E);
@@ -249,19 +243,13 @@ class ConcurrentCalls<R = unknown, E extends ResultValidErrors = Error> {
 
     const allFailed = failed.length === total;
     const aggregatedError =
-      failed.length > 0 ?
-        new ConcurrentCallsAggregateError(failed, total, failed.length)
-      : null;
+      failed.length > 0
+        ? new ConcurrentCallsAggregateError(failed, total, failed.length)
+        : null;
 
     this.#pendingCalls = [];
 
-    return {
-      succeeded,
-      failures: failed,
-      allFailed,
-      total,
-      aggregatedError,
-    };
+    return { succeeded, failures: failed, allFailed, total, aggregatedError };
   }
 }
 
@@ -288,12 +276,7 @@ class ConcurrentCallsWithMetadata<
     this.allowResultify = allowResultify;
   }
 
-  add(
-    ...calls: {
-      fn: Action<R, E>;
-      metadata: M;
-    }[]
-  ): this {
+  add(...calls: { fn: Action<R, E>; metadata: M }[]): this {
     invariant(
       !this.#alreadyRun,
       'Cannot add calls after execution has started.',
@@ -315,15 +298,13 @@ class ConcurrentCallsWithMetadata<
       const cb: Action<R, E> = () =>
         resultify(async () => {
           const valueOrPromise = fn();
-          const value =
-            isPromise(valueOrPromise) ? await valueOrPromise : valueOrPromise;
+          const value = isPromise(valueOrPromise)
+            ? await valueOrPromise
+            : valueOrPromise;
           return value;
         }) as Promise<Result<R, E>>;
 
-      return {
-        fn: cb,
-        metadata,
-      };
+      return { fn: cb, metadata };
     });
     return this.add(...processedItems);
   }
@@ -354,11 +335,11 @@ class ConcurrentCallsWithMetadata<
           });
         } catch (exception) {
           if (
-            typeof exception === 'object' &&
-            exception !== null &&
-            'metadata' in exception &&
-            'error' in exception &&
-            exception.metadata === call.metadata
+            typeof exception === 'object'
+            && exception !== null
+            && 'metadata' in exception
+            && 'error' in exception
+            && exception.metadata === call.metadata
           ) {
             throw exception as FailedCall<M, E>;
           } else {
@@ -444,13 +425,13 @@ class ConcurrentCallsWithMetadata<
 
     const allFailed = failedProcessing.length === total;
     const aggregatedError =
-      failedProcessing.length > 0 ?
-        new ConcurrentCallsWithMetadataAggregateError(
-          failedProcessing,
-          total,
-          failedProcessing.length,
-        )
-      : null;
+      failedProcessing.length > 0
+        ? new ConcurrentCallsWithMetadataAggregateError(
+            failedProcessing,
+            total,
+            failedProcessing.length,
+          )
+        : null;
 
     return {
       succeeded: succeededProcessing,

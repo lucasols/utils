@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* oxlint-disable */
 var has = Object.prototype.hasOwnProperty;
 
 function find(iter: any[], tar: any, key?: any) {

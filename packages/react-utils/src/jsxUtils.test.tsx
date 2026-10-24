@@ -87,10 +87,7 @@ describe('replaceStringWithJSX', () => {
     const input = 'No replacements here';
 
     const result = replaceStringWithJSX(input, [
-      {
-        match: 'missing',
-        fn: (fullMatch) => <mark>{fullMatch}</mark>,
-      },
+      { match: 'missing', fn: (fullMatch) => <mark>{fullMatch}</mark> },
     ]);
 
     expect(result).toBe(input);
@@ -102,10 +99,7 @@ describe('replaceStringWithJSX', () => {
         match: /\*\*(.+?)\*\*/g,
         fn: (_, [content]) => <strong>{content}</strong>,
       },
-      {
-        match: /\*(.+?)\*/g,
-        fn: (_, [content]) => <em>{content}</em>,
-      },
+      { match: /\*(.+?)\*/g, fn: (_, [content]) => <em>{content}</em> },
     ]);
 
     const { container } = render(<>{node}</>);
@@ -117,10 +111,7 @@ describe('replaceStringWithJSX', () => {
 
   test('escapes special characters in literal matchers', () => {
     const node = replaceStringWithJSX('Use [x] + [x] to mark [x]', [
-      {
-        match: '[x]',
-        fn: () => <mark data-tag="x">[x]</mark>,
-      },
+      { match: '[x]', fn: () => <mark data-tag="x">[x]</mark> },
     ]);
 
     const { container } = render(<>{node}</>);
@@ -132,14 +123,8 @@ describe('replaceStringWithJSX', () => {
 
   test('advances cursor correctly for overlapping matches', () => {
     const node = replaceStringWithJSX('aaaa', [
-      {
-        match: 'aa',
-        fn: (value) => <strong>{value}</strong>,
-      },
-      {
-        match: 'a',
-        fn: (value) => <em>{value}</em>,
-      },
+      { match: 'aa', fn: (value) => <strong>{value}</strong> },
+      { match: 'a', fn: (value) => <em>{value}</em> },
     ]);
 
     const { container } = render(<>{node}</>);
@@ -152,10 +137,7 @@ describe('replaceStringWithJSX', () => {
   test('throws when string matchers are empty', () => {
     expect(() =>
       replaceStringWithJSX('value', [
-        {
-          match: '',
-          fn: () => <span>invalid</span>,
-        },
+        { match: '', fn: () => <span>invalid</span> },
       ]),
     ).toThrowErrorMatchingInlineSnapshot(
       `[Error: replaceStringWithJSX requires non-empty string matchers.]`,
@@ -165,10 +147,7 @@ describe('replaceStringWithJSX', () => {
   test('throws when regex can match empty strings', () => {
     expect(() =>
       replaceStringWithJSX('foo', [
-        {
-          match: /(?=o)/g,
-          fn: () => <span>ouch</span>,
-        },
+        { match: /(?=o)/g, fn: () => <span>ouch</span> },
       ]),
     ).toThrowErrorMatchingInlineSnapshot(
       `[Error: replaceStringWithJSX matchers must not resolve to empty strings.]`,
@@ -240,7 +219,9 @@ describe('keys', () => {
 
     const { container } = render(<ul>{node}</ul>);
 
-    expect(container.innerHTML).toMatchInlineSnapshot(`"<ul><li>item</li><li>item</li><li>item</li></ul>"`);
+    expect(container.innerHTML).toMatchInlineSnapshot(
+      `"<ul><li>item</li><li>item</li><li>item</li></ul>"`,
+    );
   });
 });
 

@@ -28,18 +28,9 @@ function asyncResultFn<T extends string | Error | number | boolean>(
 
 test('runAllSettled with success and metadata', async () => {
   const result = await parallelAsyncCalls<number>()
-    .add({
-      metadata: 1,
-      fn: () => asyncResultFn(1, 15),
-    })
-    .add({
-      metadata: 2,
-      fn: () => asyncResultFn(2, 10),
-    })
-    .add({
-      metadata: 3,
-      fn: () => asyncResultFn(3, 5),
-    })
+    .add({ metadata: 1, fn: () => asyncResultFn(1, 15) })
+    .add({ metadata: 2, fn: () => asyncResultFn(2, 10) })
+    .add({ metadata: 3, fn: () => asyncResultFn(3, 5) })
     .runAllSettled();
 
   expect(omit(result, ['results'])).toMatchInlineSnapshot(`
@@ -66,22 +57,10 @@ test('runAllSettled with success and metadata', async () => {
 
 test('runAllSettled with some failures', async () => {
   const result = await parallelAsyncCalls<number>()
-    .add({
-      metadata: 1,
-      fn: () => asyncResultFn(1, 15),
-    })
-    .add({
-      metadata: 2,
-      fn: () => asyncResultFn(2, 10),
-    })
-    .add({
-      metadata: 3,
-      fn: () => asyncResultFn(new Error('error 3'), 5),
-    })
-    .add({
-      metadata: 4,
-      fn: () => asyncResultFn('error: error 4', 10),
-    })
+    .add({ metadata: 1, fn: () => asyncResultFn(1, 15) })
+    .add({ metadata: 2, fn: () => asyncResultFn(2, 10) })
+    .add({ metadata: 3, fn: () => asyncResultFn(new Error('error 3'), 5) })
+    .add({ metadata: 4, fn: () => asyncResultFn('error: error 4', 10) })
     .runAllSettled();
 
   expect(omit(result, ['results'])).toMatchInlineSnapshot(`
@@ -159,18 +138,9 @@ test('start delay', async () => {
 
 test('runAll with successful result', async () => {
   const result = await parallelAsyncCalls<number>()
-    .add({
-      metadata: 1,
-      fn: () => asyncResultFn(1, 15),
-    })
-    .add({
-      metadata: 2,
-      fn: () => asyncResultFn(2, 10),
-    })
-    .add({
-      metadata: 3,
-      fn: () => asyncResultFn(3, 5),
-    })
+    .add({ metadata: 1, fn: () => asyncResultFn(1, 15) })
+    .add({ metadata: 2, fn: () => asyncResultFn(2, 10) })
+    .add({ metadata: 3, fn: () => asyncResultFn(3, 5) })
     .runAll();
 
   expect(result.ok && result.value).toMatchInlineSnapshot(`
@@ -193,22 +163,10 @@ test('runAll with successful result', async () => {
 
 test('runAll with some failures', async () => {
   const result = await parallelAsyncCalls<number>()
-    .add({
-      metadata: 1,
-      fn: () => asyncResultFn(1, 15),
-    })
-    .add({
-      metadata: 2,
-      fn: () => asyncResultFn(2, 10),
-    })
-    .add({
-      metadata: 3,
-      fn: () => asyncResultFn(new Error('error 3'), 5),
-    })
-    .add({
-      metadata: 4,
-      fn: () => asyncResultFn('error: error 4', 10),
-    })
+    .add({ metadata: 1, fn: () => asyncResultFn(1, 15) })
+    .add({ metadata: 2, fn: () => asyncResultFn(2, 10) })
+    .add({ metadata: 3, fn: () => asyncResultFn(new Error('error 3'), 5) })
+    .add({ metadata: 4, fn: () => asyncResultFn('error: error 4', 10) })
     .runAll();
 
   expect(!result.ok && result.error).toMatchInlineSnapshot(`
@@ -245,15 +203,9 @@ test('runAll without metadata', async () => {
 });
 
 describe('addTuple', () => {
-  type Succeeded<R, M> = {
-    value: R;
-    metadata: M;
-  };
+  type Succeeded<R, M> = { value: R; metadata: M };
 
-  type Failed<M> = {
-    metadata: M;
-    error: Error;
-  };
+  type Failed<M> = { metadata: M; error: Error };
 
   test('runAll', async () => {
     const result = await parallelAsyncCalls()

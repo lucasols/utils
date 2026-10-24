@@ -1,6 +1,6 @@
-import { getDiffs } from './getDiffs';
 import { yamlStringify } from '@ls-stack/utils/yamlStringify';
 import { describe, expect, test } from 'vitest';
+import { getDiffs } from './getDiffs';
 
 function getSnapshot(
   old: Record<string, unknown>,

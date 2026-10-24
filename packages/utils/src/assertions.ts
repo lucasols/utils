@@ -10,8 +10,9 @@ const nullishErrMsg = 'not nullish assertion failed';
 
 type NotUndefined<T> = T extends undefined ? never : T;
 
-type StrictNonUndefined<T, N = unknown> =
-  undefined extends T ? NotUndefined<T> : N;
+type StrictNonUndefined<T, N = unknown> = undefined extends T
+  ? NotUndefined<T>
+  : N;
 
 /**
  * Ensures a value is not undefined and returns it with the correct type.
@@ -49,10 +50,11 @@ export function notUndefined<T>(
   return value as any;
 }
 
-type StrictNonNullable<T, N = unknown> =
-  undefined extends T ? NonNullable<T>
-  : null extends T ? NonNullable<T>
-  : N;
+type StrictNonNullable<T, N = unknown> = undefined extends T
+  ? NonNullable<T>
+  : null extends T
+    ? NonNullable<T>
+    : N;
 
 /**
  * Ensures a value is not null or undefined and returns it with the correct
@@ -193,9 +195,9 @@ export function invariant(
   error: string | (() => Error) = 'Invariant violation',
 ): asserts condition {
   if (!condition) {
-    throw typeof error === 'function' ? error() : (
-        new Error(`Invariant violation: ${error}`)
-      );
+    throw typeof error === 'function'
+      ? error()
+      : new Error(`Invariant violation: ${error}`);
   }
 }
 
@@ -241,7 +243,7 @@ export function invariant(
  * @returns An Error object (this function should never actually execute)
  */
 export function exhaustiveCheck<Except = never>(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- we use this function only for type checking
+  // oxlint-disable-next-line @typescript-eslint/no-unused-vars -- we use this function only for type checking
   narrowedType: NoInfer<Except>,
 ): Error {
   return new Error('This should never happen');

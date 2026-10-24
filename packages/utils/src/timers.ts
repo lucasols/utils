@@ -234,56 +234,60 @@ export async function waitFor(
   }
 
   // Check condition immediately
-  checkCondition().then((resolved) => {
-    if (resolved) {
-      return;
-    }
-
-    // Set up timeout
-    timeoutId = setTimeout(() => {
-      resolveWith(
-        Result.err(
-          new Error(
-            `Timeout of ${timeout}ms exceeded while waiting for condition`,
-          ),
-        ),
-      );
-    }, timeout);
-
-    // Set up polling
-    if (polling === 'raf') {
-      if (typeof requestAnimationFrame === 'undefined') {
-        resolveWith(
-          Result.err(
-            new Error(
-              'requestAnimationFrame is not available in this environment',
-            ),
-          ),
-        );
+  checkCondition()
+    .then((resolved) => {
+      if (resolved) {
         return;
       }
 
-      function rafCheck() {
-        if (isResolved) return;
-        checkCondition().then((conditionResolved) => {
-          if (!conditionResolved && !isResolved) {
-            rafId = requestAnimationFrame(rafCheck);
-          }
-        }).catch(() => {
-          // Error handling is already done in checkCondition
-        });
+      // Set up timeout
+      timeoutId = setTimeout(() => {
+        resolveWith(
+          Result.err(
+            new Error(
+              `Timeout of ${timeout}ms exceeded while waiting for condition`,
+            ),
+          ),
+        );
+      }, timeout);
+
+      // Set up polling
+      if (polling === 'raf') {
+        if (typeof requestAnimationFrame === 'undefined') {
+          resolveWith(
+            Result.err(
+              new Error(
+                'requestAnimationFrame is not available in this environment',
+              ),
+            ),
+          );
+          return;
+        }
+
+        function rafCheck() {
+          if (isResolved) return;
+          checkCondition()
+            .then((conditionResolved) => {
+              if (!conditionResolved && !isResolved) {
+                rafId = requestAnimationFrame(rafCheck);
+              }
+            })
+            .catch(() => {
+              // Error handling is already done in checkCondition
+            });
+        }
+        rafId = requestAnimationFrame(rafCheck);
+      } else {
+        intervalId = setInterval(() => {
+          checkCondition().catch(() => {
+            // Error handling is already done in checkCondition
+          });
+        }, polling);
       }
-      rafId = requestAnimationFrame(rafCheck);
-    } else {
-      intervalId = setInterval(() => {
-        checkCondition().catch(() => {
-          // Error handling is already done in checkCondition
-        });
-      }, polling);
-    }
-  }).catch(() => {
-    // Error handling is already done in checkCondition
-  });
+    })
+    .catch(() => {
+      // Error handling is already done in checkCondition
+    });
 
   return promise;
 }

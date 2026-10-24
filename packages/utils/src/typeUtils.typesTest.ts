@@ -5,13 +5,7 @@ const { describe, test, expectTypesAre } = typingTest;
 
 describe('typeUtils', () => {
   test('DeepReplaceValue', () => {
-    type Input = {
-      a: {
-        b: {
-          c: string;
-        };
-      };
-    };
+    type Input = { a: { b: { c: string } } };
 
     type Output = DeepReplaceValue<Input, string, number>;
 
@@ -30,16 +24,8 @@ describe('typeUtils', () => {
 
   test('DeepReplaceValue with mixed objects and arrays', () => {
     type InputMixed = {
-      users: {
-        id: string;
-        tags: string[];
-      }[];
-      settings: {
-        theme: string;
-        options: {
-          debug: string;
-        };
-      };
+      users: { id: string; tags: string[] }[];
+      settings: { theme: string; options: { debug: string } };
     };
 
     type OutputMixed = DeepReplaceValue<InputMixed, string, number>;
@@ -47,16 +33,8 @@ describe('typeUtils', () => {
     expectTypesAre<
       OutputMixed,
       {
-        users: {
-          id: number;
-          tags: number[];
-        }[];
-        settings: {
-          theme: number;
-          options: {
-            debug: number;
-          };
-        };
+        users: { id: number; tags: number[] }[];
+        settings: { theme: number; options: { debug: number } };
       }
     >('equal');
   });
@@ -64,46 +42,25 @@ describe('typeUtils', () => {
   test('DeepReplaceValue with different type replacements', () => {
     type InputBoolean = {
       flag: boolean;
-      nested: {
-        active: boolean;
-        items: boolean[];
-      };
+      nested: { active: boolean; items: boolean[] };
     };
 
     type OutputBoolean = DeepReplaceValue<InputBoolean, boolean, string>;
 
     expectTypesAre<
       OutputBoolean,
-      {
-        flag: string;
-        nested: {
-          active: string;
-          items: string[];
-        };
-      }
+      { flag: string; nested: { active: string; items: string[] } }
     >('equal');
   });
 
   test('DeepReplaceValue with no matching types', () => {
-    type InputNoMatch = {
-      id: number;
-      count: number;
-      data: {
-        value: number;
-      };
-    };
+    type InputNoMatch = { id: number; count: number; data: { value: number } };
 
     type OutputNoMatch = DeepReplaceValue<InputNoMatch, string, boolean>;
 
     expectTypesAre<
       OutputNoMatch,
-      {
-        id: number;
-        count: number;
-        data: {
-          value: number;
-        };
-      }
+      { id: number; count: number; data: { value: number } }
     >('equal');
   });
 
@@ -112,10 +69,7 @@ describe('typeUtils', () => {
       name: string;
       age: number;
       tags: string[];
-      meta: {
-        created: Date;
-        title: string;
-      };
+      meta: { created: Date; title: string };
     };
 
     type OutputPartial = DeepReplaceValue<InputPartial, string, { test: 0 }>;
@@ -126,29 +80,19 @@ describe('typeUtils', () => {
         name: { test: 0 };
         age: number;
         tags: { test: 0 }[];
-        meta: {
-          created: Date;
-          title: { test: 0 };
-        };
+        meta: { created: Date; title: { test: 0 } };
       }
     >('equal');
   });
 
   test('DeepReplaceValue with union types', () => {
-    type InvalidType = {
-      test: 0;
-    };
+    type InvalidType = { test: 0 };
 
-    type ValidType = {
-      test: 1;
-    };
+    type ValidType = { test: 1 };
 
     type InputUnion = {
       value: string | InvalidType;
-      data: {
-        content: string | boolean;
-        items: (InvalidType | number)[];
-      };
+      data: { content: string | boolean; items: (InvalidType | number)[] };
     };
 
     type OutputUnion = DeepReplaceValue<InputUnion, InvalidType, ValidType>;
@@ -157,28 +101,16 @@ describe('typeUtils', () => {
       OutputUnion,
       {
         value: string | ValidType;
-        data: {
-          content: string | boolean;
-          items: (ValidType | number)[];
-        };
+        data: { content: string | boolean; items: (ValidType | number)[] };
       }
     >('equal');
   });
 
   test('DeepReplaceValue in discriminated union', () => {
     type Union =
-      | {
-          type: 'a';
-          value: string;
-        }
-      | {
-          type: 'b';
-          value: number;
-        }
-      | {
-          type: 'c';
-          value: boolean;
-        };
+      | { type: 'a'; value: string }
+      | { type: 'b'; value: number }
+      | { type: 'c'; value: boolean };
 
     type Output = DeepReplaceValue<
       Union,
@@ -190,30 +122,16 @@ describe('typeUtils', () => {
 
     expectTypesAre<
       Output,
-      | {
-          type: 'a';
-          value: number;
-        }
-      | {
-          type: 'b';
-          value: number;
-        }
-      | {
-          type: 'c';
-          value: boolean;
-        }
+      | { type: 'a'; value: number }
+      | { type: 'b'; value: number }
+      | { type: 'c'; value: boolean }
     >('equal');
   });
 
   test('DeepReplaceValue with SkipPaths', () => {
     type Input = {
       name: string;
-      user: {
-        id: string;
-        profile: {
-          bio: string;
-        };
-      };
+      user: { id: string; profile: { bio: string } };
       tags: string[];
     };
 
@@ -240,14 +158,7 @@ describe('typeUtils', () => {
   });
 
   test('DeepReplaceValue with SkipPaths array wildcard', () => {
-    type Input = {
-      items: {
-        id: string;
-        data: {
-          content: string;
-        };
-      }[];
-    };
+    type Input = { items: { id: string; data: { content: string } }[] };
 
     type OutputSkipArrayContent = DeepReplaceValue<
       Input,
@@ -270,12 +181,7 @@ describe('typeUtils', () => {
   });
 
   test('DeepReplaceValue with SkipPaths nested', () => {
-    type Input = {
-      user: {
-        name: string;
-      };
-      age: string;
-    };
+    type Input = { user: { name: string }; age: string };
 
     type OutputNestedSkip = DeepReplaceValue<
       Input,
@@ -296,13 +202,7 @@ describe('typeUtils', () => {
   });
 
   test('DeepReplaceValue with SkipPaths complex', () => {
-    type Input = {
-      config: {
-        theme: string;
-        debug: string;
-      };
-      items: string[];
-    };
+    type Input = { config: { theme: string; debug: string }; items: string[] };
 
     type OutputSkipDebug = DeepReplaceValue<
       Input,

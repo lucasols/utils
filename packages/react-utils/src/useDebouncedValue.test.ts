@@ -1,6 +1,6 @@
+import { sleep } from '@ls-stack/utils/sleep';
 import { renderHook, act } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
-import { sleep } from '@ls-stack/utils/sleep';
 import { useDebouncedValue } from './useDebouncedValue';
 
 describe('useDebouncedValue', () => {

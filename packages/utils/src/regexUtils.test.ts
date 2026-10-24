@@ -84,7 +84,9 @@ test('getRegexMatchAll should add global flag if not present', () => {
 });
 
 test('getRegexMatchAll should capture groups', () => {
-  const matches = Array.from(getRegexMatchAll('foo123 bar456', /([a-z]+)(\d+)/g));
+  const matches = Array.from(
+    getRegexMatchAll('foo123 bar456', /([a-z]+)(\d+)/g),
+  );
 
   expect(compactSnapshot(matches)).toMatchInlineSnapshot(`
     "
@@ -104,7 +106,10 @@ test('getRegexMatchAll should capture groups', () => {
 
 test('getRegexMatchAll should capture named groups', () => {
   const matches = Array.from(
-    getRegexMatchAll('2024-01-15 2024-12-31', /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/g)
+    getRegexMatchAll(
+      '2024-01-15 2024-12-31',
+      /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/g,
+    ),
   );
 
   expect(compactSnapshot(matches)).toMatchInlineSnapshot(`

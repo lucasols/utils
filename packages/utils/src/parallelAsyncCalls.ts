@@ -4,53 +4,42 @@ import { sleep } from './sleep';
 
 type ValidMetadata = string | number | boolean | Record<string, unknown>;
 
-type TupleRunAllSuccess<T> =
-  T extends () => Promise<Result<infer V>> ? Succeeded<V, undefined>
-  : T extends { metadata: infer M; fn: () => Promise<Result<infer V>> } ?
-    Succeeded<V, M>
-  : never;
+type TupleRunAllSuccess<T> = T extends () => Promise<Result<infer V>>
+  ? Succeeded<V, undefined>
+  : T extends { metadata: infer M; fn: () => Promise<Result<infer V>> }
+    ? Succeeded<V, M>
+    : never;
 
-type TupleRunAllFailed<T> =
-  T extends () => Promise<Result<any>> ? { metadata: undefined; error: Error }
-  : T extends { metadata: infer M extends ValidMetadata } ?
-    { metadata: M; error: Error }
-  : never;
+type TupleRunAllFailed<T> = T extends () => Promise<Result<any>>
+  ? { metadata: undefined; error: Error }
+  : T extends { metadata: infer M extends ValidMetadata }
+    ? { metadata: M; error: Error }
+    : never;
 
-type TupleRunAllSettled<T> =
-  T extends () => Promise<Result<infer V>> ?
-    Succeeded<V, undefined> | Failed<undefined>
-  : T extends { metadata: infer M; fn: () => Promise<Result<infer V>> } ?
-    Succeeded<V, M> | Failed<M>
-  : never;
+type TupleRunAllSettled<T> = T extends () => Promise<Result<infer V>>
+  ? Succeeded<V, undefined> | Failed<undefined>
+  : T extends { metadata: infer M; fn: () => Promise<Result<infer V>> }
+    ? Succeeded<V, M> | Failed<M>
+    : never;
 
-type RunProps = {
-  delayStart?: (index: number) => number;
-};
+type RunProps = { delayStart?: (index: number) => number };
 
-type Failed<M> = {
-  metadata: M;
-  error: Error;
-};
-type Succeeded<R, M> = {
-  value: R;
-  metadata: M;
-};
+type Failed<M> = { metadata: M; error: Error };
+type Succeeded<R, M> = { value: R; metadata: M };
 
 class ParallelAsyncResultCalls<
   M extends ValidMetadata | undefined = undefined,
   R = unknown,
 > {
-  private pendingCalls: {
-    metadata: M;
-    fn: () => Promise<Result<R>>;
-  }[] = [];
+  private pendingCalls: { metadata: M; fn: () => Promise<Result<R>> }[] = [];
   alreadyRun = false;
 
   constructor() {}
 
   add(
-    call: M extends undefined ? () => Promise<Result<R>>
-    : { metadata: M; fn: () => Promise<Result<R>> },
+    call: M extends undefined
+      ? () => Promise<Result<R>>
+      : { metadata: M; fn: () => Promise<Result<R>> },
   ) {
     this.pendingCalls.push(
       isObject(call) ? call : { metadata: undefined as any, fn: call },
@@ -65,8 +54,9 @@ class ParallelAsyncResultCalls<
    * @param calls
    */
   addTuple<
-    T extends (M extends undefined ? () => Promise<Result<R>>
-    : { metadata: M; fn: () => Promise<Result<R>> })[],
+    T extends (M extends undefined
+      ? () => Promise<Result<R>>
+      : { metadata: M; fn: () => Promise<Result<R>> })[],
   >(
     ...calls: T
   ): {
@@ -144,24 +134,13 @@ class ParallelAsyncResultCalls<
     this.alreadyRun = true;
     this.pendingCalls = [];
 
-    return {
-      failed,
-      succeeded,
-      allFailed,
-      results,
-    };
+    return { failed, succeeded, allFailed, results };
   }
 
   async runAll({
     delayStart,
   }: { delayStart?: (index: number) => number } = {}): Promise<
-    Result<
-      Succeeded<R, M>[],
-      {
-        metadata: M;
-        error: Error;
-      }
-    >
+    Result<Succeeded<R, M>[], { metadata: M; error: Error }>
   > {
     invariant(!this.alreadyRun, 'Already run');
 
@@ -179,27 +158,16 @@ class ParallelAsyncResultCalls<
               throw result.error;
             }
 
-            return {
-              value: result.value,
-              metadata: call.metadata,
-            };
+            return { value: result.value, metadata: call.metadata };
           } catch (exception) {
-            throw {
-              metadata: call.metadata,
-              error: unknownToError(exception),
-            };
+            throw { metadata: call.metadata, error: unknownToError(exception) };
           }
         }),
       );
 
       return Result.ok(asyncResults);
     } catch (exception) {
-      return Result.err(
-        exception as {
-          metadata: M;
-          error: Error;
-        },
-      );
+      return Result.err(exception as { metadata: M; error: Error });
     } finally {
       this.alreadyRun = true;
       this.pendingCalls = [];

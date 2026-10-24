@@ -15,10 +15,9 @@ export type ObjKeysWithValuesOfType<
   [K in keyof Obj]: Obj[K] extends ValueType ? K : never;
 }[keyof Obj];
 
-export type IsAny<T> =
-  unknown extends T ?
-    [keyof T] extends [never] ?
-      false
+export type IsAny<T> = unknown extends T
+  ? [keyof T] extends [never]
+    ? false
     : true
   : false;
 
@@ -27,8 +26,9 @@ export type Prettify<T extends Record<string, unknown>> = {
 } & {};
 
 export type DeepPrettify<T> = {
-  [K in keyof T]: T[K] extends Record<string, unknown> ? DeepPrettify<T[K]>
-  : T[K];
+  [K in keyof T]: T[K] extends Record<string, unknown>
+    ? DeepPrettify<T[K]>
+    : T[K];
 } & {};
 
 export type DefaultSkipTransverseDeepReplace =
@@ -41,30 +41,37 @@ export type DefaultSkipTransverseDeepReplace =
   | WeakSet<any>
   | WeakMap<any, any>;
 
-type PathMatches<CurrentPath extends string, SkipPaths extends string> =
-  true extends (
-    SkipPaths extends any ?
-      CurrentPath extends SkipPaths ? true
-      : SkipPaths extends `${infer Prefix}[*]${infer Suffix}` ?
-        CurrentPath extends `${Prefix}[${string}]${Suffix}` ?
-          true
+type PathMatches<
+  CurrentPath extends string,
+  SkipPaths extends string,
+> = true extends (
+  SkipPaths extends any
+    ? CurrentPath extends SkipPaths
+      ? true
+      : SkipPaths extends `${infer Prefix}[*]${infer Suffix}`
+        ? CurrentPath extends `${Prefix}[${string}]${Suffix}`
+          ? true
+          : false
         : false
-      : false
     : false
-  ) ?
-    true
+)
+  ? true
   : false;
 
-type BuildPath<BasePath extends string, Key extends PropertyKey> =
-  BasePath extends '$' ?
-    Key extends string | number ?
-      `${Key}`
+type BuildPath<
+  BasePath extends string,
+  Key extends PropertyKey,
+> = BasePath extends '$'
+  ? Key extends string | number
+    ? `${Key}`
     : never
-  : Key extends string | number ? `${BasePath}.${Key}`
-  : never;
+  : Key extends string | number
+    ? `${BasePath}.${Key}`
+    : never;
 
-type BuildArrayPath<BasePath extends string> =
-  BasePath extends '$' ? '[*]' : `${BasePath}[*]`;
+type BuildArrayPath<BasePath extends string> = BasePath extends '$'
+  ? '[*]'
+  : `${BasePath}[*]`;
 
 type DeepReplaceValueImpl<
   T,
@@ -73,65 +80,67 @@ type DeepReplaceValueImpl<
   SkipPaths extends string | undefined,
   SkipType,
   Path extends string = '$',
-> =
-  SkipPaths extends string ?
-    PathMatches<Path, SkipPaths> extends true ? T
-    : T extends ReplaceType ?
-      T extends SkipType ?
-        T
+> = SkipPaths extends string
+  ? PathMatches<Path, SkipPaths> extends true
+    ? T
+    : T extends ReplaceType
+      ? T extends SkipType
+        ? T
+        : NewType
+      : T extends readonly (infer U)[]
+        ? Array<
+            DeepReplaceValueImpl<
+              U,
+              ReplaceType,
+              NewType,
+              SkipPaths,
+              SkipType,
+              BuildArrayPath<Path>
+            >
+          >
+        : T extends SkipType
+          ? T
+          : T extends Record<string, any>
+            ? {
+                [K in keyof T]: DeepReplaceValueImpl<
+                  T[K],
+                  ReplaceType,
+                  NewType,
+                  SkipPaths,
+                  SkipType,
+                  BuildPath<Path, K>
+                >;
+              }
+            : T
+  : T extends ReplaceType
+    ? T extends SkipType
+      ? T
       : NewType
-    : T extends readonly (infer U)[] ?
-      Array<
-        DeepReplaceValueImpl<
-          U,
-          ReplaceType,
-          NewType,
-          SkipPaths,
-          SkipType,
-          BuildArrayPath<Path>
+    : T extends readonly (infer U)[]
+      ? Array<
+          DeepReplaceValueImpl<
+            U,
+            ReplaceType,
+            NewType,
+            SkipPaths,
+            SkipType,
+            BuildArrayPath<Path>
+          >
         >
-      >
-    : T extends SkipType ? T
-    : T extends Record<string, any> ?
-      {
-        [K in keyof T]: DeepReplaceValueImpl<
-          T[K],
-          ReplaceType,
-          NewType,
-          SkipPaths,
-          SkipType,
-          BuildPath<Path, K>
-        >;
-      }
-    : T
-  : T extends ReplaceType ?
-    T extends SkipType ?
-      T
-    : NewType
-  : T extends readonly (infer U)[] ?
-    Array<
-      DeepReplaceValueImpl<
-        U,
-        ReplaceType,
-        NewType,
-        SkipPaths,
-        SkipType,
-        BuildArrayPath<Path>
-      >
-    >
-  : T extends SkipType ? T
-  : T extends Record<string, any> ?
-    {
-      [K in keyof T]: DeepReplaceValueImpl<
-        T[K],
-        ReplaceType,
-        NewType,
-        SkipPaths,
-        SkipType,
-        BuildPath<Path, K>
-      >;
-    }
-  : T;
+      : T extends SkipType
+        ? T
+        : T extends Record<string, any>
+          ? {
+              [K in keyof T]: DeepReplaceValueImpl<
+                T[K],
+                ReplaceType,
+                NewType,
+                SkipPaths,
+                SkipType,
+                BuildPath<Path, K>
+              >;
+            }
+          : T;
 
 /**
  * Replaces all values that extends `ReplaceType` with `NewType` in a deeply
@@ -162,8 +171,8 @@ type KeysWithUndefinedValues<T extends Record<string, unknown>> = {
  */
 export type PartialPossiblyUndefinedValues<T extends Record<string, unknown>> =
   Prettify<
-    Partial<Pick<T, KeysWithUndefinedValues<T>>> &
-      Omit<T, KeysWithUndefinedValues<T>>
+    Partial<Pick<T, KeysWithUndefinedValues<T>>>
+      & Omit<T, KeysWithUndefinedValues<T>>
   >;
 
 type PickUndefinedKeys<T> = {

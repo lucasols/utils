@@ -15,11 +15,7 @@ export function clampRange(num: number, v1: number, v2: number) {
 }
 
 export function clamp(num: number, min: number, max: number) {
-  return (
-    num > max ? max
-    : num < min ? min
-    : num
-  );
+  return num > max ? max : num < min ? min : num;
 }
 
 export function fixFloatingPointNumber(value: number) {
@@ -29,13 +25,13 @@ export function fixFloatingPointNumber(value: number) {
 /**
  * Rounds a number to the nearest multiple of the specified step value.
  *
+ * @example
+ *   roundToStep(23, 5); // 25 (nearest multiple of 5)
+ *
  * @param value - The number to round
  * @param step - The step size to round to
  * @param offset - Optional offset to shift the rounding grid
  * @returns The rounded value
- *
- * @example
- * roundToStep(23, 5) // 25 (nearest multiple of 5)
  */
 export function roundToStep(value: number, step: number, offset = 0): number {
   const inv = 1 / step;
@@ -47,13 +43,13 @@ export function roundToStep(value: number, step: number, offset = 0): number {
 /**
  * Floors a number down to the nearest multiple of the specified step value.
  *
+ * @example
+ *   floorToStep(23, 5); // 20 (largest multiple of 5 ≤ 23)
+ *
  * @param value - The number to floor
  * @param step - The step size to floor to
  * @param offset - Optional offset to shift the flooring grid
  * @returns The floored value
- *
- * @example
- * floorToStep(23, 5) // 20 (largest multiple of 5 ≤ 23)
  */
 export function floorToStep(value: number, step: number, offset = 0): number {
   const inv = 1 / step;
@@ -64,13 +60,13 @@ export function floorToStep(value: number, step: number, offset = 0): number {
 /**
  * Ceils a number up to the nearest multiple of the specified step value.
  *
+ * @example
+ *   ceilToStep(23, 5); // 25 (smallest multiple of 5 ≥ 23)
+ *
  * @param value - The number to ceil
  * @param step - The step size to ceil to
  * @param offset - Optional offset to shift the ceiling grid
  * @returns The ceiled value
- *
- * @example
- * ceilToStep(23, 5) // 25 (smallest multiple of 5 ≥ 23)
  */
 export function ceilToStep(value: number, step: number, offset = 0): number {
   const inv = 1 / step;
@@ -81,12 +77,12 @@ export function ceilToStep(value: number, step: number, offset = 0): number {
 /**
  * Rounds a number to the specified number of decimal places.
  *
+ * @example
+ *   round(3.14159, 2); // 3.14
+ *
  * @param num - The number to round
  * @param precision - Number of decimal places
  * @returns The rounded number
- *
- * @example
- * round(3.14159, 2) // 3.14
  */
 export function round(num: number, precision: number) {
   return Math.round(num * 10 ** precision) / 10 ** precision;

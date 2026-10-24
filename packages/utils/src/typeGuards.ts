@@ -121,8 +121,8 @@ export function isPlainObject(value: any): value is Record<string, unknown> {
   const objectCtorString = Object.prototype.constructor.toString();
 
   return (
-    typeof Ctor == 'function' &&
-    Function.toString.call(Ctor) === objectCtorString
+    typeof Ctor == 'function'
+    && Function.toString.call(Ctor) === objectCtorString
   );
 }
 

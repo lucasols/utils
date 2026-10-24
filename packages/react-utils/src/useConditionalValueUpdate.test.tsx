@@ -44,9 +44,7 @@ test('ignores values accepted by renders that were never committed', async () =>
   type State = { value: string | null; suspend: boolean };
 
   const neverResolves = new Promise<never>(() => {});
-  const controls: { setState: (state: State) => void } = {
-    setState: () => {},
-  };
+  const controls: { setState: (state: State) => void } = { setState: () => {} };
 
   function Value({ value, suspend }: State) {
     const lastValue = useConditionalValueUpdate(

@@ -1,7 +1,7 @@
+import { sleep } from '@ls-stack/utils/sleep';
 import { renderHook } from '@testing-library/react';
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { describe, expect, test, vi } from 'vitest';
-import { sleep } from '@ls-stack/utils/sleep';
 import { useLatestCb } from './useLatestValue';
 
 describe('useLatestCb', () => {

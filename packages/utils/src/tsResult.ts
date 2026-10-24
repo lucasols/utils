@@ -1,11 +1,7 @@
 import { isFunction, isObject, isPromise } from './assertions';
 import { safeJsonStringify as internalSafeJsonStringify } from './safeJson';
 
-type Ok<T> = {
-  ok: true;
-  error: false;
-  value: T;
-} & AnyResultMethods;
+type Ok<T> = { ok: true; error: false; value: T } & AnyResultMethods;
 
 type AnyResultMethods = Record<ResultMethodsKeys, never>;
 
@@ -52,8 +48,8 @@ type ResultMethods<T, E extends ResultValidErrors> = {
 export type Result<T, E extends ResultValidErrors = Error> = (
   | Omit<Ok<T>, ResultMethodsKeys>
   | Omit<Err<E>, ResultMethodsKeys>
-) &
-  ResultMethods<T, E>;
+)
+  & ResultMethods<T, E>;
 
 type ResultMethodsKeys = keyof ResultMethods<any, any>;
 
@@ -71,10 +67,7 @@ function okMap<T, NewValue>(
 function errMap<
   E extends ResultValidErrors,
   NewError extends ResultValidErrors,
->(
-  this: Result<any, E>,
-  mapFn: (error: E) => NewError,
-): Result<any, NewError> {
+>(this: Result<any, E>, mapFn: (error: E) => NewError): Result<any, NewError> {
   return this.ok ? (this as any) : err(mapFn(this.error));
 }
 
@@ -88,10 +81,7 @@ function mapOkAndErr<
   {
     ok: mapFn,
     err: mapErrFn,
-  }: {
-    ok: (value: T) => NewValue;
-    err: (error: E) => NewError;
-  },
+  }: { ok: (value: T) => NewValue; err: (error: E) => NewError },
 ) {
   return this.ok ? ok(mapFn(this.value)) : err(mapErrFn(this.error));
 }
@@ -143,12 +133,7 @@ export function ok(value: any = undefined): Ok<any> {
     ifErr: returnResult,
   };
 
-  return {
-    ok: true,
-    error: false,
-    value,
-    ...(methods as AnyResultMethods),
-  };
+  return { ok: true, error: false, value, ...(methods as AnyResultMethods) };
 }
 
 /**
@@ -285,9 +270,9 @@ export function resultify(
       .then((value) => ok(value))
       .catch((error) =>
         err(
-          errorNormalizer ?
-            errorNormalizer(error)
-          : (unknownToError(error) as unknown as ResultValidErrors),
+          errorNormalizer
+            ? errorNormalizer(error)
+            : (unknownToError(error) as unknown as ResultValidErrors),
         ),
       );
   }
@@ -300,9 +285,9 @@ export function resultify(
         .then((value) => ok(value))
         .catch((error) =>
           err(
-            errorNormalizer ?
-              errorNormalizer(error)
-            : (unknownToError(error) as unknown as ResultValidErrors),
+            errorNormalizer
+              ? errorNormalizer(error)
+              : (unknownToError(error) as unknown as ResultValidErrors),
           ),
         );
     }
@@ -310,9 +295,9 @@ export function resultify(
     return ok(result);
   } catch (error) {
     return err(
-      errorNormalizer ?
-        errorNormalizer(error)
-      : (unknownToError(error) as unknown as ResultValidErrors),
+      errorNormalizer
+        ? errorNormalizer(error)
+        : (unknownToError(error) as unknown as ResultValidErrors),
     );
   }
 }
@@ -330,9 +315,9 @@ export function unknownToError(error: unknown): Error {
 
   if (isObject(error)) {
     return new Error(
-      'message' in error && error.message && typeof error.message === 'string' ?
-        error.message
-      : (internalSafeJsonStringify(error) ?? 'unknown'),
+      'message' in error && error.message && typeof error.message === 'string'
+        ? error.message
+        : (internalSafeJsonStringify(error) ?? 'unknown'),
       { cause: error },
     );
   }

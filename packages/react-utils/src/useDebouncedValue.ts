@@ -11,10 +11,10 @@ const noopFlush = () => {};
  * Hook that debounces a reactive value, returning a delayed version that only
  * updates after the specified delay has passed without changes.
  *
- * Pass `0` as `debounceMs` to disable debouncing entirely, which makes the
- * hook act as a passthrough (the returned value always matches the input).
- * This is useful for conditionally disabling debouncing without changing the
- * call site.
+ * Pass `0` as `debounceMs` to disable debouncing entirely, which makes the hook
+ * act as a passthrough (the returned value always matches the input). This is
+ * useful for conditionally disabling debouncing without changing the call
+ * site.
  *
  * @example
  *   ```tsx
@@ -73,7 +73,14 @@ export function useDebouncedValue<T>(
     debouncedSetter.flush();
   }, [debouncedSetter]);
 
-  const isPending = useMemo(() => !disabled && !deepEqual(value, debouncedValue), [disabled, value, debouncedValue]);
+  const isPending = useMemo(
+    () => !disabled && !deepEqual(value, debouncedValue),
+    [disabled, value, debouncedValue],
+  );
 
-  return [disabled ? value : debouncedValue, disabled ? noopFlush : flush, isPending] as const;
+  return [
+    disabled ? value : debouncedValue,
+    disabled ? noopFlush : flush,
+    isPending,
+  ] as const;
 }

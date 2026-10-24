@@ -97,12 +97,7 @@ describe('getValueFromPath', () => {
     name: 'test',
     user: {
       id: 123,
-      profile: {
-        email: 'test@example.com',
-        settings: {
-          theme: 'dark',
-        },
-      },
+      profile: { email: 'test@example.com', settings: { theme: 'dark' } },
     },
     items: [
       { name: 'item1', value: 100 },
@@ -191,7 +186,7 @@ describe('getValueFromPath', () => {
     const result = getValueFromPath(testObj, 'items[10].name');
 
     assert(!result.ok);
-    expect(result.error.message).toBe('Array index \'10\' out of bounds');
+    expect(result.error.message).toBe("Array index '10' out of bounds");
   });
 
   test('should return error for accessing array index on non-array', () => {
@@ -411,11 +406,7 @@ describe('addSuffixToObjKeys', () => {
         { name_old: string; age_old: number; city_old: string }
       >
     >();
-    expect(result).toEqual({
-      name_old: 'John',
-      age_old: 30,
-      city_old: 'NYC',
-    });
+    expect(result).toEqual({ name_old: 'John', age_old: 30, city_old: 'NYC' });
   });
 
   test('should work with empty suffix', () => {

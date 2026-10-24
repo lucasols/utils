@@ -1,3 +1,4 @@
+import { shallowEqual } from '@ls-stack/utils/shallowEqual';
 import {
   useCallback,
   useEffect,
@@ -7,7 +8,6 @@ import {
   useState,
 } from 'react';
 import { unknownToError } from 't-result';
-import { shallowEqual } from '@ls-stack/utils/shallowEqual';
 import { useOnChange } from './useOnChange';
 
 type AsyncState<T> = {
@@ -110,22 +110,19 @@ export function useAsyncResource<T>(
       const data = await asyncFn();
 
       // Only update state if this is still the current load and not aborted
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
+      // oxlint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
       if (!abortedRef.current && loadId === currentLoadIdRef.current) {
         setState({ status: 'success', error: null, data });
         hasInitialLoadRef.current = true;
       }
     } catch (error) {
       // Only update state if this is still the current load and not aborted
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
+      // oxlint-disable-next-line @typescript-eslint/no-unnecessary-condition -- false positive
       if (!abortedRef.current && loadId === currentLoadIdRef.current) {
-        setState({
-          status: 'error',
-          error: unknownToError(error),
-          data: null,
-        });
+        setState({ status: 'error', error: unknownToError(error), data: null });
         hasInitialLoadRef.current = true;
       }
+      // oxlint-disable-next-line react/todo -- the library isn't compiled by the React compiler, `finally` resets the state on success and on error
     } finally {
       // Only reset loading state if this is still the current load
       if (loadId === currentLoadIdRef.current) {
@@ -154,8 +151,8 @@ export function useAsyncResource<T>(
     const isCurrentlyLoading =
       state.status === 'loading' || state.status === 'refetching';
     const hasCompletedLoad =
-      hasInitialLoadRef.current &&
-      (state.status === 'success' || state.status === 'error');
+      hasInitialLoadRef.current
+      && (state.status === 'success' || state.status === 'error');
 
     if (hasCompletedLoad) {
       // Normal refetch case - we have previous data
@@ -179,8 +176,8 @@ export function useAsyncResource<T>(
 
       // Only refetch if we've completed at least one load
       const hasCompletedLoad =
-        hasInitialLoadRef.current &&
-        (state.status === 'success' || state.status === 'error');
+        hasInitialLoadRef.current
+        && (state.status === 'success' || state.status === 'error');
 
       if (hasCompletedLoad) {
         void fetchDataRef.current(true);
@@ -200,12 +197,11 @@ export function useAsyncResource<T>(
     void fetchDataRef.current(false);
   }, []);
 
-  const isLoading =
-    lazy ?
-      state.status === 'loading' || state.status === 'refetching'
-    : state.status === 'idle' ||
-      state.status === 'loading' ||
-      state.status === 'refetching';
+  const isLoading = lazy
+    ? state.status === 'loading' || state.status === 'refetching'
+    : state.status === 'idle'
+      || state.status === 'loading'
+      || state.status === 'refetching';
 
   return useMemo(
     (): AsyncResult<T | null> => ({ ...state, isLoading, load }),

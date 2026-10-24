@@ -3,9 +3,7 @@ import { filterObjectOrArrayKeys } from './filterObjectOrArrayKeys';
 import { yamlStringify } from './yamlStringify';
 
 function getSnapshot(data: any) {
-  return `\n${yamlStringify(data, {
-    collapseObjects: true,
-  })}`;
+  return `\n${yamlStringify(data, { collapseObjects: true })}`;
 }
 
 describe('array filtering by value', () => {
@@ -22,9 +20,7 @@ describe('array filtering by value', () => {
     // Filter users with name="John"
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['users[%name="John"]'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['users[%name="John"]'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -126,9 +122,7 @@ describe('array filtering by value', () => {
     // Filter users where name contains "oh"
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['users[%name*="oh"]'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['users[%name*="oh"]'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -168,9 +162,7 @@ describe('array filtering by value', () => {
     // Filter users where name starts with "Jo"
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['users[%name^="Jo"]'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['users[%name^="Jo"]'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -194,9 +186,7 @@ describe('array filtering by value', () => {
     // Filter files where name ends with ".pdf"
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['files[%name$=".pdf"]'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['files[%name$=".pdf"]'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -297,9 +287,7 @@ describe('array filtering by value', () => {
     // Filter files where name doesn't end with ".js"
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['files[%name!$=".js"]'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['files[%name!$=".js"]'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -324,9 +312,7 @@ describe('array filtering by value', () => {
     // Case-insensitive filter for name="john"
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['users[i%name="john"]'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['users[i%name="john"]'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -353,9 +339,7 @@ describe('array filtering by value', () => {
     // Case-insensitive filter for name starting with "JA"
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['users[i%name^="JA"]'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['users[i%name^="JA"]'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -402,9 +386,7 @@ describe('array filtering by value', () => {
     // Filter root array items with role="user"
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['[%role="user"]'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['[%role="user"]'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -455,9 +437,7 @@ describe('array filtering by value', () => {
     // Filter items with value=100
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['items[%value=100]'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['items[%value=100]'] }),
       ),
     ).toMatchInlineSnapshot(`
       "

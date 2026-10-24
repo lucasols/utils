@@ -7,6 +7,7 @@ export function usePrevious<T>(value: T, initial?: T): T | undefined {
   useEffect(() => {
     ref.current = value;
   });
+  // oxlint-disable-next-line react/refs -- returns the value of the last render whose effects ran, a render React throws away doesn't update it
   return ref.current;
 }
 
@@ -21,5 +22,6 @@ export function usePreviousChanged<T, I = T>(
       ref.current = value;
     }
   });
+  // oxlint-disable-next-line react/refs -- returns the value of the last render whose effects ran, a render React throws away doesn't update it
   return ref.current;
 }

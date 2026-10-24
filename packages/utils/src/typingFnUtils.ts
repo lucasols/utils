@@ -107,13 +107,16 @@ export function isObjKey<T extends Record<string, unknown>>(
   return typeof key === 'string' && key in obj;
 }
 
-type UnionDiff<T, U> =
-  [T] extends [U] ?
-    [U] extends [T] ?
-      null
+type UnionDiff<T, U> = [T] extends [U]
+  ? [U] extends [T]
+    ? null
     : { onRightHasExtraErr: Exclude<U, T> }
-  : [U] extends [T] ? { onRightHasMissingErr: Exclude<T, U> }
-  : { onRightHasExtraErr: Exclude<U, T>; onRightHasMissingErr: Exclude<T, U> };
+  : [U] extends [T]
+    ? { onRightHasMissingErr: Exclude<T, U> }
+    : {
+        onRightHasExtraErr: Exclude<U, T>;
+        onRightHasMissingErr: Exclude<T, U>;
+      };
 
 /**
  * Type helper to compare two union types and determine their relationship.

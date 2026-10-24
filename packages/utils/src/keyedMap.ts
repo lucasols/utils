@@ -1,8 +1,8 @@
 import { getCompositeKey } from './getCompositeKey';
 
 /**
- * A Map implementation that uses a custom key function to determine key equality.
- * Keys with the same computed internal key are considered equal.
+ * A Map implementation that uses a custom key function to determine key
+ * equality. Keys with the same computed internal key are considered equal.
  *
  * @example
  *   const map = new KeyedMap<{ x: number; y: number }, string, string>(
@@ -39,7 +39,10 @@ export class KeyedMap<K, V, InternalKey = string> {
     return this.map.size;
   }
 
-  /** Sets a value for the given key. If the key exists, replaces both key and value. */
+  /**
+   * Sets a value for the given key. If the key exists, replaces both key and
+   * value.
+   */
   set(key: K, value: V): this {
     const internalKey = this.getKey(key);
     this.map.set(internalKey, { key, value });
@@ -119,7 +122,10 @@ export class KeyedMap<K, V, InternalKey = string> {
     return value as V;
   }
 
-  /** Gets the value for the given key, or inserts and returns the fallback value. */
+  /**
+   * Gets the value for the given key, or inserts and returns the fallback
+   * value.
+   */
   getOrInsert(key: K, fallback: () => V): V {
     if (!this.has(key)) {
       this.set(key, fallback());
@@ -172,8 +178,8 @@ export class KeyedMap<K, V, InternalKey = string> {
 }
 
 /**
- * A Map that compares keys by value instead of reference.
- * Uses `getCompositeKey` to generate a stable string key for any value.
+ * A Map that compares keys by value instead of reference. Uses
+ * `getCompositeKey` to generate a stable string key for any value.
  *
  * @example
  *   const map = new CompositeKeyMap<{ x: number; y: number }, string>();

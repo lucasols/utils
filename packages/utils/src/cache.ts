@@ -18,9 +18,7 @@ import { DurationObj, durationObjToMs } from './time';
  * @param getter - Function that computes the value to cache
  * @returns Object with a `value` property that caches the result
  */
-export function cachedGetter<T>(getter: () => T): {
-  value: T;
-} {
+export function cachedGetter<T>(getter: () => T): { value: T } {
   return {
     get value() {
       const value = getter();
@@ -83,12 +81,9 @@ export class SkipCaching<T> {
  *     return withExpiration('temporary data', { minutes: 5 }); // Expires in 5 minutes
  *   });
  *
- *   const longLived = cache.getOrInsert(
- *     'long-lived',
- *     ({ withExpiration }) => {
- *       return withExpiration('persistent data', { days: 1 }); // Expires in 1 day
- *     },
- *   );
+ *   const longLived = cache.getOrInsert('long-lived', ({ withExpiration }) => {
+ *     return withExpiration('persistent data', { days: 1 }); // Expires in 1 day
+ *   });
  */
 export class WithExpiration<T> {
   value: T;
@@ -177,12 +172,9 @@ export type Cache<T> = {
  *   });
  *
  *   // Async caching with promise deduplication
- *   const asyncResult = await cache.getOrInsertAsync(
- *     'api:data',
- *     async () => {
- *       return await fetchFromApi('/data');
- *     },
- *   );
+ *   const asyncResult = await cache.getOrInsertAsync('api:data', async () => {
+ *     return await fetchFromApi('/data');
+ *   });
  *
  *   // Skip caching for certain values
  *   const value = cache.getOrInsert('dynamic', ({ skipCaching }) => {
@@ -194,12 +186,9 @@ export type Cache<T> = {
  *   });
  *
  *   // Custom expiration per item
- *   const shortLivedValue = cache.getOrInsert(
- *     'temp',
- *     ({ withExpiration }) => {
- *       return withExpiration('temporary data', { seconds: 30 });
- *     },
- *   );
+ *   const shortLivedValue = cache.getOrInsert('temp', ({ withExpiration }) => {
+ *     return withExpiration('temporary data', { seconds: 30 });
+ *   });
  *
  *   // Conditional caching based on the computed value
  *   const result = cache.getOrInsert(
@@ -207,16 +196,14 @@ export type Cache<T> = {
  *     () => {
  *       return computeValue();
  *     },
- *     {
- *       skipCachingWhen: (value) => value === null || value.error,
- *     },
+ *     { skipCachingWhen: (value) => value === null || value.error },
  *   );
  *
  * @param cacheOptions - Configuration options for the cache
  * @param cacheOptions.maxCacheSize - Maximum number of items to store. When
  *   exceeded, oldest items are removed first. Defaults to 1000.
- * @param cacheOptions.maxItemAge - Default expiration time for all cached items.
- *   Items older than this will be automatically removed.
+ * @param cacheOptions.maxItemAge - Default expiration time for all cached
+ *   items. Items older than this will be automatically removed.
  * @param cacheOptions.expirationThrottle - Minimum time in milliseconds between
  *   expiration cleanup runs. Prevents excessive cleanup operations. Defaults to
  *   10,000ms.
@@ -281,19 +268,14 @@ export function createCache<T>(cacheOptions: Options = {}): Cache<T> {
   function unwrapValue(
     value: T | WithExpiration<T>,
     now: number,
-  ): {
-    value: T;
-    timestamp: number;
-    expiration: number | undefined;
-  } {
+  ): { value: T; timestamp: number; expiration: number | undefined } {
     if (value instanceof WithExpiration) {
       return {
         value: value.value,
         timestamp: now,
-        expiration:
-          value.expiration ?
-            typeof value.expiration === 'number' ?
-              value.expiration
+        expiration: value.expiration
+          ? typeof value.expiration === 'number'
+            ? value.expiration
             : now + durationObjToMs(value.expiration)
           : undefined,
       };
@@ -557,9 +539,9 @@ export function createCache<T>(cacheOptions: Options = {}): Cache<T> {
      */
     cleanExpiredItems,
     /**
-     * Creates an independent copy of this cache with the same options.
-     * Only resolved (non-promise) and non-expired entries are copied.
-     * Timestamps and per-entry expirations are preserved.
+     * Creates an independent copy of this cache with the same options. Only
+     * resolved (non-promise) and non-expired entries are copied. Timestamps and
+     * per-entry expirations are preserved.
      */
     clone() {
       const now = Date.now();
@@ -602,8 +584,8 @@ type FastCacheOptions = { maxCacheSize?: number };
  *   cache.clear();
  *
  * @param fastCacheOptions - Configuration options for the cache
- * @param fastCacheOptions.maxCacheSize - Maximum number of items to store in the cache.
- *   When exceeded, oldest items are removed first. Defaults to 1000.
+ * @param fastCacheOptions.maxCacheSize - Maximum number of items to store in
+ *   the cache. When exceeded, oldest items are removed first. Defaults to 1000.
  * @returns An object with cache methods
  */
 export function fastCache<T>(fastCacheOptions: FastCacheOptions = {}) {
