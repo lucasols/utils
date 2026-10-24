@@ -10,7 +10,7 @@
 function useInfiniteLoading(__namedParameters): void;
 ```
 
-Defined in: [react-utils/src/useInfiniteLoading.ts:23](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useInfiniteLoading.ts#L23)
+Defined in: [react-utils/src/useInfiniteLoading.ts:21](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useInfiniteLoading.ts#L21)
 
 Calls `loadMore` when the container is scrolled near its end, or when the
 loaded content doesn't fill the container yet.
@@ -19,9 +19,6 @@ loaded content doesn't fill the container yet.
 every commit of the component that uses the hook, pass the element (e.g. from
 a `useState` callback ref) when it can be attached, replaced or removed by a
 child component without this one re-rendering.
-
-`loadMore` must be memoized, the scroll listener is attached again when it
-changes.
 
 #### Parameters
 
