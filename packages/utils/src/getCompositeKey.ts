@@ -1,13 +1,9 @@
 import { isObject } from './assertions';
 
-export type GetCompositeKeyStringifier = (
-  input: unknown,
-) => string | undefined;
+export type GetCompositeKeyStringifier = (input: unknown) => string | undefined;
 
 export type GetCompositeKeyOptions = {
-  /**
-   * The maximum depth to sort the input value. Default is 3.
-   */
+  /** The maximum depth to sort the input value. Default is 3. */
   maxSortingDepth?: number;
   /**
    * Custom stringifier for values that need special handling. Return undefined
@@ -18,8 +14,8 @@ export type GetCompositeKeyOptions = {
 
 type ResolvedGetCompositeKeyOptions = Required<
   Pick<GetCompositeKeyOptions, 'maxSortingDepth'>
-> &
-  Pick<GetCompositeKeyOptions, 'stringify'>;
+>
+  & Pick<GetCompositeKeyOptions, 'stringify'>;
 
 /**
  * Returns a stable key for the input value.
@@ -95,11 +91,7 @@ function stringifyCompact(
       result = '{}';
     } else {
       if (depth < options.maxSortingDepth) {
-        entries = entries.sort(([a], [b]) =>
-          a < b ? -1
-          : a > b ? 1
-          : 0,
-        );
+        entries = entries.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
       }
 
       result = '{';

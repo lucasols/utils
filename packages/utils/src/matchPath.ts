@@ -1,26 +1,30 @@
-/* eslint-disable no-param-reassign, @typescript-eslint/naming-convention -- forked file from react-router */
+/* oxlint-disable no-param-reassign -- forked file from react-router */
+/* fast-lint-disable naming-convention -- forked file from react-router */
 
 import { fastCache } from './cache';
 
 // Recursive helper for finding path parameters in the absence of wildcards
 type _PathParam<Path extends string> =
   // split path into individual path segments
-  Path extends `${infer L}/${infer R}` ? _PathParam<L> | _PathParam<R>
-  : // find params after `:`
-  Path extends `:${infer Param}` ?
-    Param extends `${infer Optional}?` ?
-      Optional
-    : Param
-  : // otherwise, there aren't any params present
-    never;
+  Path extends `${infer L}/${infer R}`
+    ? _PathParam<L> | _PathParam<R>
+    : // find params after `:`
+      Path extends `:${infer Param}`
+      ? Param extends `${infer Optional}?`
+        ? Optional
+        : Param
+      : // otherwise, there aren't any params present
+        never;
 
 export type PathParam<Path extends string> =
   // check if path is just a wildcard
-  Path extends '*' | '/*' ? '*'
-  : // look for wildcard at the end of the path
-  Path extends `${infer Rest}/*` ? '*' | _PathParam<Rest>
-  : // look for params in the absence of wildcards
-    _PathParam<Path>;
+  Path extends '*' | '/*'
+    ? '*'
+    : // look for wildcard at the end of the path
+      Path extends `${infer Rest}/*`
+      ? '*' | _PathParam<Rest>
+      : // look for params in the absence of wildcards
+        _PathParam<Path>;
 
 // Attempt to parse the given string segment. If it fails, then just return the
 // plain string type as a default fallback. Otherwise, return the union of the
@@ -92,7 +96,8 @@ export function matchPath<
   }
 
   // Normalize pathname to ensure leading slash for consistency (but preserve empty strings)
-  const normalizedPathname = pathname === '' ? '' : pathname.replace(/^\/*/, '/');
+  const normalizedPathname =
+    pathname === '' ? '' : pathname.replace(/^\/*/, '/');
 
   const [matcher, compiledParams] = compilePath(
     pattern.path,
@@ -106,7 +111,7 @@ export function matchPath<
   const matchedPathname = match[0];
   let pathnameBase = matchedPathname.replace(/(.)\/+$/, '$1');
   const captureGroups = match.slice(1);
-  // eslint-disable-next-line unicorn/no-array-reduce
+  // oxlint-disable-next-line unicorn/no-array-reduce
   const params: Params = compiledParams.reduce<Mutable<Params>>(
     (memo, { paramName, isOptional }, index) => {
       // We need to compute the pathnameBase here using the raw splat value
@@ -138,9 +143,8 @@ export function matchPath<
     pathname: matchedPathname,
     pathnameBase,
     pattern,
-    glob:
-      globPath ?
-        {
+    glob: globPath
+      ? {
           matchPath: (subPattern) => matchPath(subPattern, globPath),
           path: globPath,
         }
@@ -168,10 +172,10 @@ function compilePath(
     () => {
       warning(
         path === '*' || !path.endsWith('*') || path.endsWith('/*'),
-        `Route path "${path}" will be treated as if it were ` +
-          `"${path.replace(/\*$/, '/*')}" because the \`*\` character must ` +
-          'always follow a `/` in the pattern. To get rid of this warning, ' +
-          `please change the route path to "${path.replace(/\*$/, '/*')}".`,
+        `Route path "${path}" will be treated as if it were `
+          + `"${path.replace(/\*$/, '/*')}" because the \`*\` character must `
+          + 'always follow a `/` in the pattern. To get rid of this warning, '
+          + `please change the route path to "${path.replace(/\*$/, '/*')}".`,
       );
 
       const params: CompiledPathParam[] = [];
@@ -190,9 +194,9 @@ function compilePath(
       if (path.endsWith('*')) {
         params.push({ paramName: '*' });
         regexpSource +=
-          path === '*' || path === '/*' ?
-            '(.*)$' // Already matched the initial /, just match the rest
-          : '(?:\\/(.+)|\\/*)$'; // Don't include the / in params["*"]
+          path === '*' || path === '/*'
+            ? '(.*)$' // Already matched the initial /, just match the rest
+            : '(?:\\/(.+)|\\/*)$'; // Don't include the / in params["*"]
       } else if (end) {
         // When matching to the end, ignore trailing slashes
         regexpSource += '\\/*$';

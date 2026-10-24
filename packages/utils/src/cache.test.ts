@@ -337,61 +337,55 @@ describe('createCache', () => {
     expect(failingMock).toHaveBeenCalledTimes(2);
   });
 
-  test.concurrent(
-    'should handle concurrent async requests before resolution',
-    async () => {
-      const cache = createCache();
-      const resolvers: Array<(value: string) => void> = [];
-      const asyncMock = vi.fn(
-        () =>
-          new Promise<string>((resolve) => {
-            resolvers.push(resolve);
-          }),
-      );
+  test.concurrent('should handle concurrent async requests before resolution', async () => {
+    const cache = createCache();
+    const resolvers: Array<(value: string) => void> = [];
+    const asyncMock = vi.fn(
+      () =>
+        new Promise<string>((resolve) => {
+          resolvers.push(resolve);
+        }),
+    );
 
-      const promise1 = cache.getOrInsertAsync('key1', asyncMock);
-      const promise2 = cache.getOrInsertAsync('key1', asyncMock);
+    const promise1 = cache.getOrInsertAsync('key1', asyncMock);
+    const promise2 = cache.getOrInsertAsync('key1', asyncMock);
 
-      // Resolve the pending promise
-      resolvers[0]!('result');
-      const [result1, result2] = await Promise.all([promise1, promise2]);
+    // Resolve the pending promise
+    resolvers[0]!('result');
+    const [result1, result2] = await Promise.all([promise1, promise2]);
 
-      expect(result1).toBe('result');
-      expect(result2).toBe('result');
-      expect(asyncMock).toHaveBeenCalledTimes(1);
-      expect(cache[' cache'].map.get('key1')?.value).toBe('result');
-    },
-  );
+    expect(result1).toBe('result');
+    expect(result2).toBe('result');
+    expect(asyncMock).toHaveBeenCalledTimes(1);
+    expect(cache[' cache'].map.get('key1')?.value).toBe('result');
+  });
 
-  test.concurrent(
-    'should create new promise when expired entry exists',
-    async () => {
-      const cache = createCache({ maxItemAge: { ms: 10 } }); // 10ms expiration
+  test.concurrent('should create new promise when expired entry exists', async () => {
+    const cache = createCache({ maxItemAge: { ms: 10 } }); // 10ms expiration
 
-      // First call - store promise
-      const mockFn1 = vi.fn(async () => {
-        await sleep(10);
-        return 'first';
-      });
-      const result1 = await cache.getOrInsertAsync('key1', mockFn1);
+    // First call - store promise
+    const mockFn1 = vi.fn(async () => {
+      await sleep(10);
+      return 'first';
+    });
+    const result1 = await cache.getOrInsertAsync('key1', mockFn1);
 
-      // the item age is counted from the promise resolution, wait for the
-      // expiration plus a buffer
-      await sleep(30);
+    // the item age is counted from the promise resolution, wait for the
+    // expiration plus a buffer
+    await sleep(30);
 
-      // Second call - should create new promise
-      const mockFn2 = vi.fn(async () => {
-        await sleep(10);
-        return 'second';
-      });
-      const result2 = await cache.getOrInsertAsync('key1', mockFn2);
+    // Second call - should create new promise
+    const mockFn2 = vi.fn(async () => {
+      await sleep(10);
+      return 'second';
+    });
+    const result2 = await cache.getOrInsertAsync('key1', mockFn2);
 
-      expect(result1).toBe('first');
-      expect(result2).toBe('second');
-      expect(mockFn1).toHaveBeenCalledTimes(1);
-      expect(mockFn2).toHaveBeenCalledTimes(1);
-    },
-  );
+    expect(result1).toBe('first');
+    expect(result2).toBe('second');
+    expect(mockFn1).toHaveBeenCalledTimes(1);
+    expect(mockFn2).toHaveBeenCalledTimes(1);
+  });
 
   test('get and set should work with basic values', () => {
     const cache = createCache<string>();
@@ -429,34 +423,28 @@ describe('createCache', () => {
     vi.useRealTimers();
   });
 
-  test.concurrent(
-    'getAsync and setAsync should work with promises',
-    async () => {
-      const cache = createCache<string>();
-      const getValue = vi.fn(() => Promise.resolve('asyncValue1'));
+  test.concurrent('getAsync and setAsync should work with promises', async () => {
+    const cache = createCache<string>();
+    const getValue = vi.fn(() => Promise.resolve('asyncValue1'));
 
-      cache.setAsync('key1', getValue);
+    cache.setAsync('key1', getValue);
 
-      const value1 = await cache.getAsync('key1');
-      expect(value1).toBe('asyncValue1');
-      expect(getValue).toHaveBeenCalledTimes(1);
+    const value1 = await cache.getAsync('key1');
+    expect(value1).toBe('asyncValue1');
+    expect(getValue).toHaveBeenCalledTimes(1);
 
-      // Second get should return the same cached value
-      const value2 = await cache.getAsync('key1');
-      expect(value2).toBe('asyncValue1');
-      expect(getValue).toHaveBeenCalledTimes(1);
-    },
-  );
+    // Second get should return the same cached value
+    const value2 = await cache.getAsync('key1');
+    expect(value2).toBe('asyncValue1');
+    expect(getValue).toHaveBeenCalledTimes(1);
+  });
 
-  test.concurrent(
-    'getAsync should return undefined for non-existent key',
-    async () => {
-      const cache = createCache<string>();
+  test.concurrent('getAsync should return undefined for non-existent key', async () => {
+    const cache = createCache<string>();
 
-      const value = await cache.getAsync('nonexistent');
-      expect(value).toBeUndefined();
-    },
-  );
+    const value = await cache.getAsync('nonexistent');
+    expect(value).toBeUndefined();
+  });
 
   test.concurrent('setAsync should handle rejected promises', async () => {
     const cache = createCache<string>();
@@ -517,37 +505,34 @@ describe('createCache', () => {
     expect(cache[' cache'].map.size).toBe(0);
   });
 
-  test.concurrent(
-    'getOrInsertAsync should reject caching when using reject callback',
-    async () => {
-      const cache = createCache<string>();
-      const getValueMock = vi.fn((value: string) => {
-        return Promise.resolve(value);
-      });
+  test.concurrent('getOrInsertAsync should reject caching when using reject callback', async () => {
+    const cache = createCache<string>();
+    const getValueMock = vi.fn((value: string) => {
+      return Promise.resolve(value);
+    });
 
-      const value = await cache.getOrInsertAsync(
-        'key1',
-        async ({ skipCaching: reject }) => {
-          return reject(await getValueMock('rejected-value'));
-        },
-      );
+    const value = await cache.getOrInsertAsync(
+      'key1',
+      async ({ skipCaching: reject }) => {
+        return reject(await getValueMock('rejected-value'));
+      },
+    );
 
-      expect(value).toBe('rejected-value');
-      expect(getValueMock).toHaveBeenCalledTimes(1);
+    expect(value).toBe('rejected-value');
+    expect(getValueMock).toHaveBeenCalledTimes(1);
 
-      const value2 = await cache.getOrInsertAsync(
-        'key1',
-        async ({ skipCaching: reject }) => {
-          return reject(await getValueMock('rejected-value-2'));
-        },
-      );
+    const value2 = await cache.getOrInsertAsync(
+      'key1',
+      async ({ skipCaching: reject }) => {
+        return reject(await getValueMock('rejected-value-2'));
+      },
+    );
 
-      expect(value2).toBe('rejected-value-2');
-      expect(getValueMock).toHaveBeenCalledTimes(2);
+    expect(value2).toBe('rejected-value-2');
+    expect(getValueMock).toHaveBeenCalledTimes(2);
 
-      expect(cache[' cache'].map.size).toBe(0);
-    },
-  );
+    expect(cache[' cache'].map.size).toBe(0);
+  });
 });
 
 describe('withExpiration', () => {
@@ -625,9 +610,7 @@ describe('withExpiration', () => {
 
   test('works with cache.set and cache.get', () => {
     vi.useFakeTimers();
-    const cache = createCache<string>({
-      maxItemAge: { ms: 100 },
-    });
+    const cache = createCache<string>({ maxItemAge: { ms: 100 } });
     cache.set('key1', new WithExpiration('value1', { seconds: 30 }));
     expect(cache.get('key1')).toBe('value1');
 

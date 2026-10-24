@@ -1,4 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
+import { sleep } from './sleep';
 import {
   createDebouncedTimeout,
   createInterval,
@@ -6,7 +7,6 @@ import {
   createWaitUntil,
   waitFor,
 } from './timers';
-import { sleep } from './sleep';
 
 describe('timers', { retry: 2 }, () => {
   describe('createTimeout', () => {
@@ -334,10 +334,7 @@ describe('timers', { retry: 2 }, () => {
 
   describe('waitFor', () => {
     test('should resolve immediately if condition is already true', async () => {
-      const result = await waitFor(
-        () => true,
-        { polling: 10, timeout: 100 },
-      );
+      const result = await waitFor(() => true, { polling: 10, timeout: 100 });
 
       expect(result.ok).toBe(true);
       if (result.ok) {
@@ -353,10 +350,10 @@ describe('timers', { retry: 2 }, () => {
         conditionResult = true;
       }, 50);
 
-      const result = await waitFor(
-        () => conditionResult,
-        { polling: 10, timeout: 200 },
-      );
+      const result = await waitFor(() => conditionResult, {
+        polling: 10,
+        timeout: 200,
+      });
 
       const elapsed = Date.now() - startTime;
       expect(result.ok).toBe(true);
@@ -367,10 +364,7 @@ describe('timers', { retry: 2 }, () => {
     test('should timeout if condition never becomes true', async () => {
       const startTime = Date.now();
 
-      const result = await waitFor(
-        () => false,
-        { polling: 10, timeout: 50 },
-      );
+      const result = await waitFor(() => false, { polling: 10, timeout: 50 });
 
       const elapsed = Date.now() - startTime;
       expect(result.ok).toBe(false);
@@ -413,10 +407,10 @@ describe('timers', { retry: 2 }, () => {
         return 1; // Mock frame ID
       });
 
-      const resultPromise = waitFor(
-        () => conditionResult,
-        { polling: 'raf', timeout: 100 },
-      );
+      const resultPromise = waitFor(() => conditionResult, {
+        polling: 'raf',
+        timeout: 100,
+      });
 
       // Give a moment for the initial async check to complete and RAF to be set up
       await sleep(5);
@@ -448,14 +442,16 @@ describe('timers', { retry: 2 }, () => {
       // Ensure requestAnimationFrame is undefined
       vi.stubGlobal('requestAnimationFrame', undefined);
 
-      const result = await waitFor(
-        () => false,
-        { polling: 'raf', timeout: 100 },
-      );
+      const result = await waitFor(() => false, {
+        polling: 'raf',
+        timeout: 100,
+      });
 
       expect(result.ok).toBe(false);
       if (!result.ok) {
-        expect(result.error.message).toContain('requestAnimationFrame is not available');
+        expect(result.error.message).toContain(
+          'requestAnimationFrame is not available',
+        );
       }
 
       vi.unstubAllGlobals();
@@ -471,10 +467,10 @@ describe('timers', { retry: 2 }, () => {
         conditionResult = true;
       }, 30);
 
-      const result = await waitFor(
-        () => conditionResult,
-        { polling: 10, timeout: 200 },
-      );
+      const result = await waitFor(() => conditionResult, {
+        polling: 10,
+        timeout: 200,
+      });
 
       expect(result.ok).toBe(true);
       expect(mockClearTimeout).toHaveBeenCalled();
@@ -488,10 +484,7 @@ describe('timers', { retry: 2 }, () => {
       const mockClearTimeout = vi.spyOn(global, 'clearTimeout');
       const mockClearInterval = vi.spyOn(global, 'clearInterval');
 
-      const result = await waitFor(
-        () => false,
-        { polling: 10, timeout: 30 },
-      );
+      const result = await waitFor(() => false, { polling: 10, timeout: 30 });
 
       expect(result.ok).toBe(false);
       expect(mockClearTimeout).toHaveBeenCalled();
@@ -524,10 +517,10 @@ describe('timers', { retry: 2 }, () => {
     });
 
     test('should resolve immediately with async condition returning true', async () => {
-      const result = await waitFor(
-        async () => true,
-        { polling: 10, timeout: 100 },
-      );
+      const result = await waitFor(async () => true, {
+        polling: 10,
+        timeout: 100,
+      });
 
       expect(result.ok).toBe(true);
       if (result.ok) {

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* oxlint-disable @typescript-eslint/no-unused-vars */
 import { describe, expect, test } from 'vitest';
 import {
   asNonEmptyStringOrNull,

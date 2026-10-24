@@ -66,18 +66,17 @@ const MOD = APPLE_DEVICE ? 'Meta' : 'Control';
  * @see https://github.com/jamiebuilds/tinykeys/issues/185
  */
 const ALT_GRAPH_ALIASES =
-  PLATFORM === 'Win32' ? ['Control', 'Alt']
-  : APPLE_DEVICE ? ['Alt']
-  : [];
+  PLATFORM === 'Win32' ? ['Control', 'Alt'] : APPLE_DEVICE ? ['Alt'] : [];
 
 /**
  * There's a bug in Chrome that causes event.getModifierState not to exist on
  * KeyboardEvent's for F1/F2/etc keys.
  */
 function getModifierState(event: KeyboardEvent, mod: string) {
-  return typeof event.getModifierState === 'function' ?
-      event.getModifierState(mod) ||
-        (ALT_GRAPH_ALIASES.includes(mod) && event.getModifierState('AltGraph'))
+  return typeof event.getModifierState === 'function'
+    ? event.getModifierState(mod)
+        || (ALT_GRAPH_ALIASES.includes(mod)
+          && event.getModifierState('AltGraph'))
     : false;
 }
 
@@ -132,7 +131,7 @@ export function matchKeyBindingPress(
 		KEYBINDING_MODIFIER_KEYS.find(mod => {
 			return !mods.includes(mod) && key !== mod && getModifierState(event, mod)
 		})
-	)
+	);
 }
 
 /**
@@ -253,11 +252,11 @@ export function ignoreInputTypingEvents(
   return (e: KeyboardEvent) => {
     const active = document.activeElement;
     const enteringText =
-      e.code !== 'Escape' &&
-      active instanceof HTMLElement &&
-      (active.isContentEditable ||
-        active.tagName === 'INPUT' ||
-        active.tagName === 'TEXTAREA');
+      e.code !== 'Escape'
+      && active instanceof HTMLElement
+      && (active.isContentEditable
+        || active.tagName === 'INPUT'
+        || active.tagName === 'TEXTAREA');
 
     if (!enteringText) {
       e.preventDefault();
@@ -272,9 +271,9 @@ export function ignoreRichTextInputTypingEvents(
   return (e: KeyboardEvent) => {
     const active = document.activeElement;
     const enteringText =
-      e.code !== 'Escape' &&
-      active instanceof HTMLElement &&
-      active.isContentEditable;
+      e.code !== 'Escape'
+      && active instanceof HTMLElement
+      && active.isContentEditable;
 
     if (!enteringText) {
       e.preventDefault();

@@ -1,7 +1,10 @@
 export type DebounceOptions = {
   /** Invoke on the leading edge of the timeout. Defaults to `false`. */
   leading?: boolean;
-  /** Maximum time the function can be delayed before it's forced to invoke (in ms). */
+  /**
+   * Maximum time the function can be delayed before it's forced to invoke (in
+   * ms).
+   */
   maxWait?: number;
   /** Invoke on the trailing edge of the timeout. Defaults to `true`. */
   trailing?: boolean;
@@ -96,8 +99,8 @@ export function debounce<T extends (...args: any[]) => void>(
     const timeSinceLastInvoke = time - lastInvokeTime;
     const timeWaiting = waitMs - timeSinceLastCall;
 
-    return maxing ?
-        Math.min(timeWaiting, (maxWait ?? 0) - timeSinceLastInvoke)
+    return maxing
+      ? Math.min(timeWaiting, (maxWait ?? 0) - timeSinceLastInvoke)
       : timeWaiting;
   }
 
@@ -109,10 +112,10 @@ export function debounce<T extends (...args: any[]) => void>(
     // trailing edge, the system time has gone backwards and we're treating
     // it as the trailing edge, or we've hit the `maxWait` limit.
     return (
-      lastCallTime === undefined ||
-      timeSinceLastCall >= waitMs ||
-      timeSinceLastCall < 0 ||
-      (maxing && timeSinceLastInvoke >= (maxWait ?? 0))
+      lastCallTime === undefined
+      || timeSinceLastCall >= waitMs
+      || timeSinceLastCall < 0
+      || (maxing && timeSinceLastInvoke >= (maxWait ?? 0))
     );
   }
 
@@ -181,9 +184,9 @@ export function debounce<T extends (...args: any[]) => void>(
     const time = Date.now();
     const isInvoking = shouldInvoke(time);
 
-    // eslint-disable-next-line prefer-rest-params
+    // oxlint-disable-next-line prefer-rest-params
     lastArgs = arguments;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias -- this is a forked code, so a refactor is not worth it
+    // oxlint-disable-next-line @typescript-eslint/no-this-alias -- this is a forked code, so a refactor is not worth it
     lastThis = this;
     lastCallTime = time;
 
@@ -222,16 +225,16 @@ export function isDebouncedFn<T extends (...args: any[]) => void>(
   updateParams: (wait: number, options?: DebounceOptions) => void;
 } {
   return (
-    typeof fn === 'function' &&
-    'cancel' in fn &&
-    typeof (fn as any).cancel === 'function' &&
-    'flush' in fn &&
-    typeof (fn as any).flush === 'function' &&
-    'pending' in fn &&
-    typeof (fn as any).pending === 'function' &&
-    'updateCb' in fn &&
-    typeof (fn as any).updateCb === 'function' &&
-    'updateParams' in fn &&
-    typeof (fn as any).updateParams === 'function'
+    typeof fn === 'function'
+    && 'cancel' in fn
+    && typeof (fn as any).cancel === 'function'
+    && 'flush' in fn
+    && typeof (fn as any).flush === 'function'
+    && 'pending' in fn
+    && typeof (fn as any).pending === 'function'
+    && 'updateCb' in fn
+    && typeof (fn as any).updateCb === 'function'
+    && 'updateParams' in fn
+    && typeof (fn as any).updateParams === 'function'
   );
 }

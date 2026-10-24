@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+/* fast-lint-disable naming-convention */
 
 /**
  * Use this only when you have 100% of certainty that this will not break the

@@ -1,5 +1,11 @@
 import { test, expect } from 'vitest';
-import { enumerate, withIsLast, withPrevious, range, rangeArray } from './iteratorUtils';
+import {
+  enumerate,
+  withIsLast,
+  withPrevious,
+  range,
+  rangeArray,
+} from './iteratorUtils';
 
 test('enumerate yields indexed items', () => {
   const result = [...enumerate(['a', 'b', 'c'])];

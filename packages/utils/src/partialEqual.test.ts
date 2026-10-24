@@ -395,7 +395,11 @@ describe('partialEqual with error reporting', () => {
       });
 
       test('should match when array exceeds minimum length', () => {
-        const result = partialEqual([1, 2, 3, 4], match.array.minLength(2), true);
+        const result = partialEqual(
+          [1, 2, 3, 4],
+          match.array.minLength(2),
+          true,
+        );
         assert(result.ok);
         expect(result.ok).toBe(true);
       });
@@ -427,7 +431,11 @@ describe('partialEqual with error reporting', () => {
       });
 
       test('should report when array is too long', () => {
-        const result = partialEqual([1, 2, 3, 4], match.array.maxLength(2), true);
+        const result = partialEqual(
+          [1, 2, 3, 4],
+          match.array.maxLength(2),
+          true,
+        );
         assert(result.error);
         expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
           "
@@ -448,7 +456,10 @@ describe('partialEqual with error reporting', () => {
 
       test('should match when array includes object partially', () => {
         const result = partialEqual(
-          [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }],
+          [
+            { id: 1, name: 'John' },
+            { id: 2, name: 'Jane' },
+          ],
           match.array.includes({ id: 1 }),
           true,
         );
@@ -588,7 +599,11 @@ describe('partialEqual with error reporting', () => {
       });
 
       test('should work with not.array.includes', () => {
-        const result = partialEqual([1, 2, 3], match.not.array.includes(4), true);
+        const result = partialEqual(
+          [1, 2, 3],
+          match.not.array.includes(4),
+          true,
+        );
         assert(result.ok);
         expect(result.ok).toBe(true);
       });
@@ -645,8 +660,14 @@ describe('partialEqual with error reporting', () => {
               { user: { name: match.str.startsWith('J') } },
               { user: { active: true } },
             ]),
-            match.array.every(match.partialEqual({ user: match.hasType.object })),
-            match.array.some(match.partialEqual({ user: { age: match.num.isGreaterThan(30) } })),
+            match.array.every(
+              match.partialEqual({ user: match.hasType.object }),
+            ),
+            match.array.some(
+              match.partialEqual({
+                user: { age: match.num.isGreaterThan(30) },
+              }),
+            ),
           ),
           true,
         );
@@ -1409,10 +1430,7 @@ describe('partialEqual with error reporting', () => {
     });
 
     test('should report multiple errors in complex structures', () => {
-      const target = {
-        user: { name: 'John', age: 20 },
-        status: 'pending',
-      };
+      const target = { user: { name: 'John', age: 20 }, status: 'pending' };
 
       const result = partialEqual(
         target,
@@ -1534,10 +1552,7 @@ describe('partialEqual with error reporting', () => {
     test('should work with not.keyNotBePresent (key should be present)', () => {
       const result = partialEqual(
         { a: 1, b: 2 },
-        {
-          a: 1,
-          b: match.not.keyNotBePresent,
-        },
+        { a: 1, b: match.not.keyNotBePresent },
         true,
       );
       assert(result.ok);
@@ -1600,10 +1615,7 @@ describe('partialEqual with error reporting', () => {
     test('should handle keyNotBePresent', () => {
       const result = partialEqual(
         { a: 1 },
-        {
-          a: 1,
-          b: match.keyNotBePresent,
-        },
+        { a: 1, b: match.keyNotBePresent },
         true,
       );
       assert(result.ok);
@@ -1611,10 +1623,7 @@ describe('partialEqual with error reporting', () => {
 
       const result2 = partialEqual(
         { a: 1, b: 2 },
-        {
-          a: 1,
-          b: match.keyNotBePresent,
-        },
+        { a: 1, b: match.keyNotBePresent },
         true,
       );
       assert(result2.error);
@@ -1658,11 +1667,7 @@ describe('key matchers', () => {
     });
 
     test('should fail when object has no keys', () => {
-      const result = partialEqual(
-        {},
-        { [match.key.any]: 'test' },
-        true,
-      );
+      const result = partialEqual({}, { [match.key.any]: 'test' }, true);
       assert(result.error);
       expect(compactSnapshot(result.error)).toMatchInlineSnapshot(`
         "
@@ -1856,9 +1861,7 @@ describe('key matchers', () => {
     test('should pass when anyOther has no expectation but other keys exist', () => {
       const result = partialEqual(
         { foo: 'explicit', other1: 'value', other2: 'value' },
-        {
-          foo: match.str.contains('exp'),
-        },
+        { foo: match.str.contains('exp') },
         true,
       );
       assert(result.ok);

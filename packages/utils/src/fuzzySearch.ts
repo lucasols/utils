@@ -63,8 +63,8 @@ export function fuzzySearchItemsWithResultMetadata<T>({
             const chars = info.chars[filteredIndex] ?? 0;
             const terms = info.terms[filteredIndex] ?? 0;
             const inter =
-              (info.interLft2[filteredIndex] ?? 0) +
-              (info.interRgt2[filteredIndex] ?? 0);
+              (info.interLft2[filteredIndex] ?? 0)
+              + (info.interRgt2[filteredIndex] ?? 0);
             bestMatchScore = 50 - start;
             const intra = info.intraIns[filteredIndex] ?? 0;
 
@@ -154,22 +154,22 @@ export function getUFuzzyInstance() {
         .sort(
           (ia, ib) =>
             // most contiguous chars matched
-            chars[ib]! - chars[ia]! ||
+            chars[ib]! - chars[ia]!
             // least char intra-fuzz (most contiguous)
-            intraIns[ia]! - intraIns[ib]! ||
+            || intraIns[ia]! - intraIns[ib]!
             // most prefix bounds, boosted by full term matches
-            terms[ib]! +
-              interLft2[ib]! +
-              0.5 * interLft1[ib]! -
-              (terms[ia]! + interLft2[ia]! + 0.5 * interLft1[ia]!) ||
+            || terms[ib]!
+              + interLft2[ib]!
+              + 0.5 * interLft1[ib]!
+              - (terms[ia]! + interLft2[ia]! + 0.5 * interLft1[ia]!)
             // highest density of match (least term inter-fuzz)
-            interIns[ia]! - interIns[ib]! ||
+            || interIns[ia]! - interIns[ib]!
             // earliest start of match
-            start[ia]! - start[ib]! ||
+            || start[ia]! - start[ib]!
             // shortest match
-            haystack[idx[ia]!]!.length - haystack[idx[ib]!]!.length ||
+            || haystack[idx[ia]!]!.length - haystack[idx[ib]!]!.length
             // alphabetic
-            cmp(haystack[idx[ia]!]!, haystack[idx[ib]!]!),
+            || cmp(haystack[idx[ia]!]!, haystack[idx[ib]!]!),
         );
     },
   });

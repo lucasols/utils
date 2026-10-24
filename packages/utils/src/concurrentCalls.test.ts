@@ -734,14 +734,8 @@ describe('concurrentResultsWithMetadata', () => {
       { task: string },
       typeof resultFn
     >()
-      .add({
-        fn: () => resultFn(15),
-        metadata: { task: 'first' },
-      })
-      .add({
-        fn: () => resultFn(10),
-        metadata: { task: 'second' },
-      })
+      .add({ fn: () => resultFn(15), metadata: { task: 'first' } })
+      .add({ fn: () => resultFn(10), metadata: { task: 'second' } })
       .runAll();
 
     expectType<

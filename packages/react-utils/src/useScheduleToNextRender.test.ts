@@ -45,7 +45,9 @@ describe('useScheduleToNextRender - Basic functionality', () => {
     const callback1 = vi.fn();
     const callback2 = vi.fn();
     const callback3 = vi.fn();
-    const { result } = renderHook(() => useScheduleToNextRender({ mode: 'single' }));
+    const { result } = renderHook(() =>
+      useScheduleToNextRender({ mode: 'single' }),
+    );
 
     // Schedule multiple callbacks quickly
     result.current(callback1);

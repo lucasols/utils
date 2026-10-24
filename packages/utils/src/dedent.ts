@@ -72,9 +72,7 @@ export type CreateDedent = (options: DedentOptions) => Dedent;
  *   }"
  *   ```;
  */
-export const dedent: Dedent = createDedent({
-  identInterpolations: true,
-});
+export const dedent: Dedent = createDedent({ identInterpolations: true });
 
 function createDedent(options: DedentOptions): Dedent {
   d.withOptions = (newOptions: DedentOptions): Dedent =>
@@ -119,8 +117,8 @@ function createDedent(options: DedentOptions): Dedent {
         let val = values[i];
 
         if (
-          !showNullishOrFalseValues &&
-          (val === false || val === null || val === undefined)
+          !showNullishOrFalseValues
+          && (val === false || val === null || val === undefined)
         ) {
           continue;
         }

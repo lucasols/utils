@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 
 export function useOnMount(callback: () => void) {
+  // the ref, not the deps, ensures it's called once, a new callback runs the
+  // effect again but doesn't call it
   const called = useRef(false);
 
   useEffect(() => {
@@ -8,8 +10,7 @@ export function useOnMount(callback: () => void) {
       called.current = true;
       callback();
     }
-    // eslint-disable-next-line @ls-stack/exhaustive-deps -- empty array is needed here
-  }, []);
+  }, [callback]);
 }
 
 export function useOnMountLayoutEffect(callback: () => void) {
@@ -20,6 +21,5 @@ export function useOnMountLayoutEffect(callback: () => void) {
       called.current = true;
       callback();
     }
-    // eslint-disable-next-line @ls-stack/exhaustive-deps -- empty array is needed here
-  }, []);
+  }, [callback]);
 }

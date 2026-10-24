@@ -153,9 +153,7 @@ test('delayBetweenRetriesMs as function', { retry: 3 }, async () => {
   const startTime = Date.now();
 
   await expect(
-    retryOnError((_ctx) => fn(), 2, {
-      delayBetweenRetriesMs: delayFn,
-    }),
+    retryOnError((_ctx) => fn(), 2, { delayBetweenRetriesMs: delayFn }),
   ).rejects.toThrow('fail');
 
   expect(fn).toHaveBeenCalledTimes(3);
@@ -352,9 +350,8 @@ describe('signal', () => {
 
     try {
       const controller = new AbortController();
-      const fn = vi.fn(
-        async (): Promise<Result<string, Error>> =>
-          err(new Error('network error')),
+      const fn = vi.fn(async (): Promise<Result<string, Error>> =>
+        err(new Error('network error')),
       );
 
       const promise = retryResultOnError(fn, 3, {

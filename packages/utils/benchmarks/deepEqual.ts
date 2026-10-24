@@ -1,24 +1,15 @@
-import { bench, group, run, summary } from 'mitata';
-
 import { dequal } from 'dequal';
+import { bench, group, run, summary } from 'mitata';
 import { deepEqual } from '../src/deepEqual';
 
-const createShallowObj = () => ({
-  foo: 'bar',
-  baz: 1,
-  qux: false,
-});
+const createShallowObj = () => ({ foo: 'bar', baz: 1, qux: false });
 
 const createDeepObj = () => ({
   foo: 'bar',
   baz: 1,
   qux: false,
   arr: [1, 2, 3],
-  obj: {
-    foo: 'bar',
-    baz: 1,
-    qux: false,
-  },
+  obj: { foo: 'bar', baz: 1, qux: false },
   map: new Map<string, any>([
     ['foo', 'bar'],
     ['baz', 1],

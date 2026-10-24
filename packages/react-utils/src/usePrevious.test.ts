@@ -94,7 +94,9 @@ describe('usePrevious', () => {
 
 describe('usePreviousChanged', () => {
   test('returns initial value on first render', () => {
-    const { result } = renderHook(() => usePreviousChanged('current', 'initial'));
+    const { result } = renderHook(() =>
+      usePreviousChanged('current', 'initial'),
+    );
     expect(result.current).toBe('initial');
   });
 
@@ -136,9 +138,10 @@ describe('usePreviousChanged', () => {
 
   test('works with custom equality function', () => {
     const customEqualityFn = (a: any, b: any) => a?.id === b?.id;
-    
+
     const { result, rerender } = renderHook(
-      ({ value }) => usePreviousChanged(value, { id: 0, name: 'initial' }, customEqualityFn),
+      ({ value }) =>
+        usePreviousChanged(value, { id: 0, name: 'initial' }, customEqualityFn),
       { initialProps: { value: { id: 1, name: 'first' } } },
     );
 

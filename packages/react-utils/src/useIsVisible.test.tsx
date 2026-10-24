@@ -262,12 +262,12 @@ test('follows a ref attached, replaced and removed in later commits', () => {
     const ref = useRef<HTMLDivElement>(null);
     isVisible = useIsVisible(ref);
     return target === 'none' ? null : (
-        <div
-          key={target}
-          ref={ref}
-          data-testid={target}
-        />
-      );
+      <div
+        key={target}
+        ref={ref}
+        data-testid={target}
+      />
+    );
   }
 
   const { getByTestId } = render(<Component />);

@@ -1,14 +1,7 @@
 import { bench, group, run, summary } from 'mitata';
-
 import { murmur2, murmur3 } from '../src/hash';
 
-const shortInputs = [
-  'a',
-  'abc',
-  'hello',
-  'cache:key:123',
-  'user:42:settings',
-];
+const shortInputs = ['a', 'abc', 'hello', 'cache:key:123', 'user:42:settings'];
 
 const mediumInputs = [
   'The quick brown fox jumps over the lazy dog',

@@ -3,9 +3,7 @@ import { filterObjectOrArrayKeys } from './filterObjectOrArrayKeys';
 import { yamlStringify } from './yamlStringify';
 
 function getSnapshot(data: any) {
-  return `\n${yamlStringify(data, {
-    collapseObjects: true,
-  })}`;
+  return `\n${yamlStringify(data, { collapseObjects: true })}`;
 }
 
 describe('object key sorting', () => {
@@ -37,13 +35,8 @@ describe('object key sorting', () => {
       banana: 'fruit',
     };
 
-    expect(
-      getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          sortKeys: 'asc',
-        }),
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(getSnapshot(filterObjectOrArrayKeys(data, { sortKeys: 'asc' })))
+      .toMatchInlineSnapshot(`
       "
       apple: 'fruit'
       banana: 'fruit'
@@ -61,13 +54,8 @@ describe('object key sorting', () => {
       banana: 'fruit',
     };
 
-    expect(
-      getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          sortKeys: 'desc',
-        }),
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(getSnapshot(filterObjectOrArrayKeys(data, { sortKeys: 'desc' })))
+      .toMatchInlineSnapshot(`
       "
       zebra: 'animal'
       carrot: 'vegetable'
@@ -90,9 +78,7 @@ describe('object key sorting', () => {
 
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          sortKeys: 'simpleValuesFirst',
-        }),
+        filterObjectOrArrayKeys(data, { sortKeys: 'simpleValuesFirst' }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -124,9 +110,7 @@ describe('object key sorting', () => {
     // Priority: name first, then id, then everything else
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          sortPatterns: ['name', 'id'],
-        }),
+        filterObjectOrArrayKeys(data, { sortPatterns: ['name', 'id'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -179,9 +163,7 @@ describe('object key sorting', () => {
     // Sort nested properties: profile properties first, then everything else
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          sortPatterns: ['user.profile'],
-        }),
+        filterObjectOrArrayKeys(data, { sortPatterns: ['user.profile'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -195,21 +177,12 @@ describe('object key sorting', () => {
 
   test('should handle nested object sorting', () => {
     const data = {
-      parent: {
-        zebra: 'last',
-        apple: 'first',
-        banana: 'middle',
-      },
+      parent: { zebra: 'last', apple: 'first', banana: 'middle' },
       otherKey: 'value',
     };
 
-    expect(
-      getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          sortKeys: 'asc',
-        }),
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(getSnapshot(filterObjectOrArrayKeys(data, { sortKeys: 'asc' })))
+      .toMatchInlineSnapshot(`
       "
       otherKey: 'value'
       parent: { apple: 'first', banana: 'middle', zebra: 'last' }
@@ -225,13 +198,8 @@ describe('object key sorting', () => {
       ],
     };
 
-    expect(
-      getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          sortKeys: 'asc',
-        }),
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(getSnapshot(filterObjectOrArrayKeys(data, { sortKeys: 'asc' })))
+      .toMatchInlineSnapshot(`
       "
       users:
         - { apple: 'a', banana: 'b', zebra: 'z' }

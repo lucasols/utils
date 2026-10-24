@@ -37,12 +37,14 @@ export function usePreventMultipleConsecutiveChanges(
   // a suspended transition) doesn't count as a change
   const committedChange = useRef<Change | null>(null);
 
+  // oxlint-disable-next-line react/purity -- the render time is compared with the committed change time, a new time in every render is expected
   const renderTime = Date.now();
 
   // set during render so the render with the new key already returns `true`,
   // React drops this update if the render is thrown away
   if (loadingUntil === null) {
     const deadline = getLoadingDeadline(
+      // oxlint-disable-next-line react/refs -- reads the change of the last committed render, written in a layout effect, so a render React throws away doesn't count as a change
       committedChange.current,
       changeKey,
       renderTime,

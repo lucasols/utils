@@ -84,10 +84,7 @@ describe('createThrottleController', { retry: 2 }, () => {
   });
 
   test('async throttled requests', async () => {
-    const throttle = createThrottleController({
-      maxCalls: 2,
-      per: { ms: 8 },
-    });
+    const throttle = createThrottleController({ maxCalls: 2, per: { ms: 8 } });
 
     function throttledRequest() {
       if (throttle.shouldSkip()) {

@@ -1,4 +1,4 @@
-import { defineConfig } from '@ls-stack/pkg-manager'
+import { defineConfig } from '@ls-stack/pkg-manager';
 
 export default defineConfig({
   requireMajorConfirmation: true,
@@ -29,4 +29,4 @@ export default defineConfig({
       },
     ],
   },
-})
+});

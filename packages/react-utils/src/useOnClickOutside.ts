@@ -21,18 +21,22 @@ function checkIfTargetContainsRef(ref: Ref, target: Node) {
 }
 
 /**
- * React hook that triggers a handler when a click or touch event occurs outside the specified element(s).
+ * React hook that triggers a handler when a click or touch event occurs outside
+ * the specified element(s).
  *
- * Useful for closing popovers, modals, or dropdowns when the user clicks outside.
- *
- * @param ref - A single ref, DOM element, selector string, or an array of these, representing the element(s) to detect outside clicks for
- * @param handler - Function called when a click or touch event occurs outside the specified element(s)
+ * Useful for closing popovers, modals, or dropdowns when the user clicks
+ * outside.
  *
  * @example
- * ```tsx
- * const ref = useRef<HTMLDivElement>(null);
- * useOnClickOutside(ref, () => setOpen(false));
- * ```
+ *   ```tsx
+ *   const ref = useRef<HTMLDivElement>(null);
+ *   useOnClickOutside(ref, () => setOpen(false));
+ *   ```;
+ *
+ * @param ref - A single ref, DOM element, selector string, or an array of
+ *   these, representing the element(s) to detect outside clicks for
+ * @param handler - Function called when a click or touch event occurs outside
+ *   the specified element(s)
  */
 export function useOnClickOutside(
   ref: Ref | Ref[],
@@ -47,11 +51,11 @@ export function useOnClickOutside(
   useEffect(() => {
     function listener(event: MouseEvent | TouchEvent) {
       if (
-        Array.isArray(ref) ?
-          ref.some((item) =>
-            checkIfTargetContainsRef(item, event.target as Node),
-          )
-        : checkIfTargetContainsRef(ref, event.target as Node)
+        Array.isArray(ref)
+          ? ref.some((item) =>
+              checkIfTargetContainsRef(item, event.target as Node),
+            )
+          : checkIfTargetContainsRef(ref, event.target as Node)
       ) {
         return;
       }

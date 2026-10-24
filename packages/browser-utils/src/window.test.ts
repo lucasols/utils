@@ -15,10 +15,7 @@ Object.defineProperty(global, 'window', {
 });
 
 Object.defineProperty(global, 'document', {
-  value: {
-    visibilityState: 'visible',
-    hasFocus: mockHasFocus,
-  },
+  value: { visibilityState: 'visible', hasFocus: mockHasFocus },
   writable: true,
 });
 

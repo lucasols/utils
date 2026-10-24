@@ -53,9 +53,7 @@ type KeyComparison = {
   matchesRegex: `$${KeyComparisonPrefix}:matchesRegex:${string}$`;
 };
 
-type Comparison = {
-  '~sc': ComparisonsType;
-};
+type Comparison = { '~sc': ComparisonsType };
 
 function createComparison(type: ComparisonsType): Comparison {
   return { '~sc': type };
@@ -100,9 +98,7 @@ type BaseMatch = {
     every: (matcher: Comparison) => Comparison;
     some: (matcher: Comparison) => Comparison;
   };
-  jsonString: {
-    hasPartial: (value: any) => Comparison;
-  };
+  jsonString: { hasPartial: (value: any) => Comparison };
   equal: (value: any) => Comparison;
   partialEqual: (value: any) => Comparison;
   custom: (
@@ -122,9 +118,7 @@ type BaseMatch = {
   };
 };
 
-type Match = BaseMatch & {
-  not: BaseMatch;
-};
+type Match = BaseMatch & { not: BaseMatch };
 
 export const match: Match = {
   noExtraKeys: (partialShape: any) =>
@@ -338,11 +332,21 @@ function isComparison(value: any): value is Comparison {
 }
 
 function isKeyMatcher(key: string): boolean {
-  return typeof key === 'string' && (key.startsWith('$pqkc:') || key.startsWith('$pqkc-not:'));
+  return (
+    typeof key === 'string'
+    && (key.startsWith('$pqkc:') || key.startsWith('$pqkc-not:'))
+  );
 }
 
 type ParsedKeyMatcher = {
-  type: 'any' | 'anyOther' | 'numeric' | 'startingWith' | 'endingWith' | 'contains' | 'matchesRegex';
+  type:
+    | 'any'
+    | 'anyOther'
+    | 'numeric'
+    | 'startingWith'
+    | 'endingWith'
+    | 'contains'
+    | 'matchesRegex';
   parameter?: string | RegExp;
   negated: boolean;
 };
@@ -371,15 +375,27 @@ function parseKeyMatcher(key: string): ParsedKeyMatcher | null {
   }
 
   if (content.startsWith('startingWith:')) {
-    return { type: 'startingWith', parameter: content.slice('startingWith:'.length), negated };
+    return {
+      type: 'startingWith',
+      parameter: content.slice('startingWith:'.length),
+      negated,
+    };
   }
 
   if (content.startsWith('endingWith:')) {
-    return { type: 'endingWith', parameter: content.slice('endingWith:'.length), negated };
+    return {
+      type: 'endingWith',
+      parameter: content.slice('endingWith:'.length),
+      negated,
+    };
   }
 
   if (content.startsWith('contains:')) {
-    return { type: 'contains', parameter: content.slice('contains:'.length), negated };
+    return {
+      type: 'contains',
+      parameter: content.slice('contains:'.length),
+      negated,
+    };
   }
 
   if (content.startsWith('matchesRegex:')) {
@@ -390,10 +406,18 @@ function parseKeyMatcher(key: string): ParsedKeyMatcher | null {
         const lastSlashIndex = regexStr.lastIndexOf('/');
         const pattern = regexStr.slice(1, lastSlashIndex);
         const flags = regexStr.slice(lastSlashIndex + 1);
-        return { type: 'matchesRegex', parameter: new RegExp(pattern, flags), negated };
+        return {
+          type: 'matchesRegex',
+          parameter: new RegExp(pattern, flags),
+          negated,
+        };
       } else {
         // Fallback: treat as pattern without flags
-        return { type: 'matchesRegex', parameter: new RegExp(regexStr), negated };
+        return {
+          type: 'matchesRegex',
+          parameter: new RegExp(regexStr),
+          negated,
+        };
       }
     } catch {
       return null;
@@ -587,9 +611,9 @@ function executeComparison(
 
     case 'numIsInRange':
       if (
-        typeof target !== 'number' ||
-        target < value[0] ||
-        target > value[1]
+        typeof target !== 'number'
+        || target < value[0]
+        || target > value[1]
       ) {
         addError(context, {
           message: `Expected number in range [${value[0]}, ${value[1]}]`,
@@ -685,9 +709,7 @@ function executeComparison(
       addError(context, {
         message: 'None of the alternative comparisons matched',
         received: target,
-        expected: {
-          matchAny: value,
-        },
+        expected: { matchAny: value },
       });
       return false;
     }
@@ -717,10 +739,7 @@ function executeComparison(
 
     case 'arrayContains': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -750,10 +769,7 @@ function executeComparison(
 
     case 'arrayContainsInOrder': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -785,10 +801,7 @@ function executeComparison(
 
     case 'arrayStartsWith': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -814,10 +827,7 @@ function executeComparison(
 
     case 'arrayEndsWith': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -848,10 +858,7 @@ function executeComparison(
 
     case 'arrayLength': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -867,10 +874,7 @@ function executeComparison(
 
     case 'arrayMinLength': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -886,10 +890,7 @@ function executeComparison(
 
     case 'arrayMaxLength': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -905,10 +906,7 @@ function executeComparison(
 
     case 'arrayIncludes': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -937,10 +935,7 @@ function executeComparison(
 
     case 'arrayEvery': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -957,10 +952,7 @@ function executeComparison(
 
     case 'arraySome': {
       if (!Array.isArray(target)) {
-        addError(context, {
-          message: 'Expected array',
-          received: target,
-        });
+        addError(context, { message: 'Expected array', received: target });
         return false;
       }
 
@@ -993,10 +985,7 @@ type PartialError = {
   expected?: any;
 };
 
-type ErrorCollectionContext = {
-  errors: PartialError[];
-  path: string[];
-};
+type ErrorCollectionContext = { errors: PartialError[]; path: string[] };
 
 function formatPath(path: string[]): string {
   if (path.length === 0) return '';
@@ -1023,10 +1012,7 @@ function addError(
   context: ErrorCollectionContext,
   error: Omit<PartialError, 'path'>,
 ): void {
-  context.errors.push({
-    path: formatPath(context.path),
-    ...error,
-  });
+  context.errors.push({ path: formatPath(context.path), ...error });
 }
 
 function deepEqual(a: any, b: any): boolean {
@@ -1079,10 +1065,10 @@ function partialEqualInternal(
   if (target === sub) return true;
   if (Number.isNaN(target) && Number.isNaN(sub)) return true;
   if (
-    target === null ||
-    sub === null ||
-    target === undefined ||
-    sub === undefined
+    target === null
+    || sub === null
+    || target === undefined
+    || sub === undefined
   ) {
     if (target !== sub) {
       addError(context, {
@@ -1179,8 +1165,8 @@ function partialEqualInternal(
           path: context.path,
         };
         if (
-          partialEqualInternal(targetKey, subKey, tempContextKey) &&
-          partialEqualInternal(targetValue, subValue, tempContextValue)
+          partialEqualInternal(targetKey, subKey, tempContextKey)
+          && partialEqualInternal(targetValue, subValue, tempContextValue)
         ) {
           found = true;
           break;
@@ -1254,7 +1240,11 @@ function partialEqualInternal(
 
     // Separate key matchers from regular keys
     const regularKeys: string[] = [];
-    const keyMatchers: Array<{ key: string; matcher: ParsedKeyMatcher; value: any }> = [];
+    const keyMatchers: Array<{
+      key: string;
+      matcher: ParsedKeyMatcher;
+      value: any;
+    }> = [];
 
     for (const key of Object.keys(sub)) {
       if (isKeyMatcher(key)) {
@@ -1341,7 +1331,11 @@ function partialEqualInternal(
               matchedKeys.push(targetKey);
               const oldPath = context.path;
               context.path = [...oldPath, targetKey];
-              const result = partialEqualInternal(target[targetKey], value, context);
+              const result = partialEqualInternal(
+                target[targetKey],
+                value,
+                context,
+              );
               context.path = oldPath;
               if (!result) allMatch = false;
             }
@@ -1359,7 +1353,11 @@ function partialEqualInternal(
               errors: [],
               path: [...context.path, targetKey],
             };
-            const result = partialEqualInternal(target[targetKey], value, tempContext);
+            const result = partialEqualInternal(
+              target[targetKey],
+              value,
+              tempContext,
+            );
             if (result) {
               anyKeyMatched = true;
               break; // Found one matching key with correct value
@@ -1371,7 +1369,10 @@ function partialEqualInternal(
           // Keys matched the pattern but none had the correct value
           addError(context, {
             message: `No keys matching pattern had the expected value`,
-            received: { keysChecked: matchedKeys, availableKeys: Object.keys(target) },
+            received: {
+              keysChecked: matchedKeys,
+              availableKeys: Object.keys(target),
+            },
           });
           allMatch = false;
         }
@@ -1384,7 +1385,11 @@ function partialEqualInternal(
             explicitlySpecifiedKeys.add(targetKey); // Mark as explicitly handled
             const oldPath = context.path;
             context.path = [...oldPath, targetKey];
-            const result = partialEqualInternal(target[targetKey], value, context);
+            const result = partialEqualInternal(
+              target[targetKey],
+              value,
+              context,
+            );
             context.path = oldPath;
             if (!result) allMatch = false;
           }
@@ -1393,12 +1398,16 @@ function partialEqualInternal(
 
       // For all matchers, ensure at least one key matched
       if (!foundMatch) {
-        const patternDescription = matcher.type === 'anyOther'
-          ? 'anyOther (keys not explicitly specified)'
-          : `${matcher.type}${matcher.parameter ? ` (${matcher.parameter})` : ''}`;
+        const patternDescription =
+          matcher.type === 'anyOther'
+            ? 'anyOther (keys not explicitly specified)'
+            : `${matcher.type}${matcher.parameter ? ` (${matcher.parameter})` : ''}`;
         addError(context, {
           message: `No keys found matching pattern: ${patternDescription}`,
-          received: { availableKeys: Object.keys(target), explicitKeys: Array.from(explicitlySpecifiedKeys) },
+          received: {
+            availableKeys: Object.keys(target),
+            explicitKeys: Array.from(explicitlySpecifiedKeys),
+          },
         });
         allMatch = false;
       }
@@ -1457,10 +1466,10 @@ function checkNoExtraKeys(
   if (deep) {
     for (const key of Object.keys(partialShape)) {
       if (
-        typeof partialShape[key] === 'object' &&
-        partialShape[key] !== null &&
-        !Array.isArray(partialShape[key]) &&
-        !isComparison(partialShape[key])
+        typeof partialShape[key] === 'object'
+        && partialShape[key] !== null
+        && !Array.isArray(partialShape[key])
+        && !isComparison(partialShape[key])
       ) {
         const oldPath = context.path;
         context.path = [...oldPath, key];
@@ -1517,10 +1526,10 @@ function checkNoExtraDefinedKeys(
   if (deep) {
     for (const key of Object.keys(partialShape)) {
       if (
-        typeof partialShape[key] === 'object' &&
-        partialShape[key] !== null &&
-        !Array.isArray(partialShape[key]) &&
-        !isComparison(partialShape[key])
+        typeof partialShape[key] === 'object'
+        && partialShape[key] !== null
+        && !Array.isArray(partialShape[key])
+        && !isComparison(partialShape[key])
       ) {
         const oldPath = context.path;
         context.path = [...oldPath, key];
@@ -1560,10 +1569,7 @@ function checkNoExtraDefinedKeys(
  *   partialEqual([1, 2, 3], match.array.endsWith([2, 3])); // true - suffix matching
  *   partialEqual([1, 2, 3], match.array.length(3)); // true - exact length
  *   partialEqual([1, 2, 3], match.array.includes(2)); // true - includes element
- *   partialEqual(
- *     [10, 20, 30],
- *     match.array.every(match.num.isGreaterThan(5)),
- *   ); // true - all elements match
+ *   partialEqual([10, 20, 30], match.array.every(match.num.isGreaterThan(5))); // true - all elements match
  *   partialEqual([1, 10, 3], match.array.some(match.num.isGreaterThan(8))); // true - at least one matches
  *
  *   // Special comparisons

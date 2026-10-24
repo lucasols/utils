@@ -41,12 +41,7 @@ describe('deepReplaceValues', () => {
 
   test('should replace values in nested structures', () => {
     const input = {
-      level1: {
-        level2: {
-          value: 5,
-          arr: [1, 2, { nested: 3 }],
-        },
-      },
+      level1: { level2: { value: 5, arr: [1, 2, { nested: 3 }] } },
       topLevel: 10,
     };
 
@@ -77,13 +72,7 @@ describe('deepReplaceValues', () => {
   });
 
   test('should provide correct paths to replacement function', () => {
-    const input = {
-      a: 1,
-      b: {
-        c: 2,
-        d: [3, { e: 4 }],
-      },
-    };
+    const input = { a: 1, b: { c: 2, d: [3, { e: 4 }] } };
 
     const paths: string[] = [];
     deepReplaceValues(input, (value, path) => {
@@ -127,11 +116,7 @@ describe('deepReplaceValues', () => {
   });
 
   test('should handle replacement of entire objects and arrays', () => {
-    const input = {
-      obj: { replace: true },
-      arr: [1, 2, 3],
-      keep: 'this',
-    };
+    const input = { obj: { replace: true }, arr: [1, 2, 3], keep: 'this' };
 
     const result = deepReplaceValues(input, (value, path) => {
       if (path === 'obj') {
@@ -156,9 +141,7 @@ describe('deepReplaceValues', () => {
     const input = {
       nullValue: null,
       undefinedValue: undefined,
-      nested: {
-        alsoNull: null,
-      },
+      nested: { alsoNull: null },
     };
 
     const result = deepReplaceValues(input, (value) => {
@@ -183,13 +166,7 @@ describe('deepReplaceValues', () => {
   });
 
   test('should handle empty objects and arrays', () => {
-    const input = {
-      emptyObj: {},
-      emptyArr: [],
-      nested: {
-        alsoEmpty: {},
-      },
-    };
+    const input = { emptyObj: {}, emptyArr: [], nested: { alsoEmpty: {} } };
 
     const result = deepReplaceValues(input, (value) => {
       if (Array.isArray(value) && value.length === 0) {
@@ -250,7 +227,7 @@ describe('deepReplaceValues', () => {
 
   test('should throw error on circular references in arrays', () => {
     const input: any = [1, 2];
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-call
     input.push(input);
 
     expect(() => {
@@ -266,12 +243,7 @@ describe('deepReplaceValues', () => {
         { id: 1, name: 'Alice', active: true },
         { id: 2, name: 'Bob', active: false },
       ],
-      config: {
-        settings: {
-          theme: 'dark',
-          version: 1.5,
-        },
-      },
+      config: { settings: { theme: 'dark', version: 1.5 } },
       metadata: null,
     };
 
@@ -336,10 +308,7 @@ describe('deepReplaceValues', () => {
   });
 
   test('should handle Date objects as non-plain objects', () => {
-    const input = {
-      date: new Date('2023-01-01'),
-      obj: { nested: true },
-    };
+    const input = { date: new Date('2023-01-01'), obj: { nested: true } };
 
     const result = deepReplaceValues(input, (value) => {
       if (value instanceof Date) {
@@ -363,10 +332,7 @@ describe('deepReplaceValues', () => {
       constructor(public value: number) {}
     }
 
-    const input = {
-      instance: new CustomClass(42),
-      obj: { nested: true },
-    };
+    const input = { instance: new CustomClass(42), obj: { nested: true } };
 
     const result = deepReplaceValues(input, (value) => {
       if (value instanceof CustomClass) {

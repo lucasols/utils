@@ -45,10 +45,7 @@ export function exhaustiveMatch<T extends string>(value: T) {
     return pattern[value];
   }
 
-  return {
-    with: matchWith,
-    withObject,
-  };
+  return { with: matchWith, withObject };
 }
 
 export function exhaustiveMatchObjUnion<

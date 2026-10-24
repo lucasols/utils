@@ -14,9 +14,7 @@ describe('keyboardShortcuts utilities', () => {
 
   test('parseKeybinding resolves $mod to Meta on Apple devices', async () => {
     vi.resetModules();
-    vi.stubGlobal('navigator', {
-      platform: 'MacIntel',
-    });
+    vi.stubGlobal('navigator', { platform: 'MacIntel' });
     const mod = await import('./keyboardShortcuts.ts');
     expect(mod.parseKeybinding('$mod+d')).toMatchInlineSnapshot(`
       [
@@ -41,9 +39,8 @@ describe('keyboardShortcuts utilities', () => {
   test('matchKeyBindingPress matches by key or code and modifiers', async () => {
     vi.resetModules();
     vi.stubGlobal('navigator', { platform: 'Win32' });
-    const { parseKeybinding, matchKeyBindingPress } = await import(
-      './keyboardShortcuts.ts'
-    );
+    const { parseKeybinding, matchKeyBindingPress } =
+      await import('./keyboardShortcuts.ts');
     const press = parseKeybinding('Shift+d')[0]!;
     const e1 = new KeyboardEvent('keydown', {
       key: 'd',
@@ -65,11 +62,7 @@ describe('keyboardShortcuts utilities', () => {
     const onModD = vi.fn();
 
     const handler = createKeybindingsHandler(
-      {
-        'Shift+d': onShiftD,
-        'y e e t': onYeet,
-        '$mod+d': onModD,
-      },
+      { 'Shift+d': onShiftD, 'y e e t': onYeet, '$mod+d': onModD },
       { timeout: 200 },
     );
 
@@ -166,9 +159,8 @@ describe('keyboardShortcuts utilities', () => {
   test('ignoreRichTextInputTypingEvents blocks when typing in contenteditable and allows others', async () => {
     vi.resetModules();
     vi.stubGlobal('navigator', { platform: 'Win32' });
-    const { ignoreRichTextInputTypingEvents } = await import(
-      './keyboardShortcuts.ts'
-    );
+    const { ignoreRichTextInputTypingEvents } =
+      await import('./keyboardShortcuts.ts');
 
     const rich = document.createElement('div');
     rich.contentEditable = 'true';

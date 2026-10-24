@@ -1,15 +1,12 @@
 // TypeScript 7 no longer ships the JS compiler API, so tools that depend on it
-// (typescript-eslint, typedoc, dts generation, ...) get the TypeScript 6 compat package instead
+// (typedoc, dts generation, ...) get the TypeScript 6 compat package instead
 const ts6 = 'npm:@typescript/typescript6@^6.0.2';
 
 const needsTs6 = (name = '') =>
-  name === 'typescript-eslint' ||
-  name.startsWith('@typescript-eslint/') ||
-  name === '@ls-stack/extended-lint' ||
-  name === 'tsdown' ||
-  name === 'rolldown-plugin-dts' ||
-  name === 'typedoc' ||
-  name.startsWith('typedoc-plugin-');
+  name === 'tsdown'
+  || name === 'rolldown-plugin-dts'
+  || name === 'typedoc'
+  || name.startsWith('typedoc-plugin-');
 
 module.exports = {
   hooks: {

@@ -9,9 +9,7 @@ describe('exhaustiveMatch', () => {
   }
 
   typingTest.test('simple check', () => {
-    exhaustiveMatch('a' as const).with({
-      a: () => 'a',
-    });
+    exhaustiveMatch('a' as const).with({ a: () => 'a' });
   });
 
   typingTest.test('check excess keys', () => {

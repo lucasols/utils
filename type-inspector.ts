@@ -6,9 +6,17 @@ type TestInput = {
   mayBeUndefined: undefined | string;
 };
 
-type RemoveUndefinedValues<T extends Record<string, unknown>> = 
-  { [K in keyof T as undefined extends T[K] ? never : K]: T[K] } &
-  { [K in keyof T as undefined extends T[K] ? (T[K] extends undefined ? never : K) : never]?: T[K] };
+type RemoveUndefinedValues<T extends Record<string, unknown>> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K];
+} & {
+  [
+    K in keyof T as undefined extends T[K]
+      ? T[K] extends undefined
+        ? never
+        : K
+      : never
+  ]?: T[K];
+};
 
 type TestResult = RemoveUndefinedValues<TestInput>;
 
@@ -19,4 +27,8 @@ const showType = (x: TestResult): TestResult => x;
 const testObj: TestResult = { a: 1, c: { d: 'test' } };
 
 // Try to assign to expected type
-const expectedType: { a: number; c: { d: string }; mayBeUndefined?: undefined | string } = testObj;
+const expectedType: {
+  a: number;
+  c: { d: string };
+  mayBeUndefined?: undefined | string;
+} = testObj;

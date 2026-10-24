@@ -18,17 +18,13 @@ describe('unionsAreTheSame', () => {
     unionsAreTheSame<
       AVeryLargeTypeNameJustToImproveReadability<'a' | 'b' | 'c'>,
       AVeryLargeTypeNameJustToImproveReadability<'a' | 'b' | 'c' | 'd'>
-    >({
-      onRightHasExtraErr: 'd',
-    });
+    >({ onRightHasExtraErr: 'd' });
 
     // unions on right have missing items
     unionsAreTheSame<
       AVeryLargeTypeNameJustToImproveReadability<'a' | 'b' | 'c' | 'd'>,
       AVeryLargeTypeNameJustToImproveReadability<'a' | 'b' | 'c'>
-    >({
-      onRightHasMissingErr: 'd',
-    });
+    >({ onRightHasMissingErr: 'd' });
 
     expect(true).toBe(true);
   });
@@ -84,14 +80,10 @@ describe('unionsAreTheSame', () => {
     unionsAreTheSame<string, string>(null);
 
     // single type vs union with that type
-    unionsAreTheSame<string, string | number>({
-      onRightHasExtraErr: 42,
-    });
+    unionsAreTheSame<string, string | number>({ onRightHasExtraErr: 42 });
 
     // union vs single type
-    unionsAreTheSame<string | number, string>({
-      onRightHasMissingErr: 42,
-    });
+    unionsAreTheSame<string | number, string>({ onRightHasMissingErr: 42 });
 
     // empty object vs object with properties
     unionsAreTheSame<Record<string, never>, { name: string }>({
@@ -106,24 +98,16 @@ describe('unionsAreTheSame', () => {
     // number literal unions
     unionsAreTheSame<1 | 2 | 3, 1 | 2 | 3>(null);
 
-    unionsAreTheSame<1 | 2, 1 | 2 | 3>({
-      onRightHasExtraErr: 3,
-    });
+    unionsAreTheSame<1 | 2, 1 | 2 | 3>({ onRightHasExtraErr: 3 });
 
-    unionsAreTheSame<1 | 2 | 3, 1 | 2>({
-      onRightHasMissingErr: 3,
-    });
+    unionsAreTheSame<1 | 2 | 3, 1 | 2>({ onRightHasMissingErr: 3 });
 
     // boolean literal unions
     unionsAreTheSame<true, true>(null);
 
-    unionsAreTheSame<true, true | false>({
-      onRightHasExtraErr: false,
-    });
+    unionsAreTheSame<true, true | false>({ onRightHasExtraErr: false });
 
-    unionsAreTheSame<true | false, true>({
-      onRightHasMissingErr: false,
-    });
+    unionsAreTheSame<true | false, true>({ onRightHasMissingErr: false });
 
     expect(true).toBe(true);
   });

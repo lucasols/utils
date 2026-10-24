@@ -108,12 +108,8 @@ export async function retryOnError<T>(
 
       const normalizedError = unknownToError(error);
 
-      const shouldRetry =
-        retryCondition ?
-          retryCondition(normalizedError, {
-            duration: errorDuration,
-            retry,
-          })
+      const shouldRetry = retryCondition
+        ? retryCondition(normalizedError, { duration: errorDuration, retry })
         : true;
 
       if (!shouldRetry) {
@@ -121,17 +117,14 @@ export async function retryOnError<T>(
       }
 
       if (onRetry) {
-        onRetry(normalizedError, {
-          duration: errorDuration,
-          retry,
-        });
+        onRetry(normalizedError, { duration: errorDuration, retry });
       }
 
       if (delayBetweenRetriesMs) {
         await waitForRetryDelay(
-          typeof delayBetweenRetriesMs === 'function' ?
-            delayBetweenRetriesMs(retry)
-          : delayBetweenRetriesMs,
+          typeof delayBetweenRetriesMs === 'function'
+            ? delayBetweenRetriesMs(retry)
+            : delayBetweenRetriesMs,
           signal,
         );
 
@@ -215,9 +208,8 @@ export async function retryResultOnError<T, E extends ResultValidErrors>(
   if (maxRetries > 0 && !options.disableRetries && !signal?.aborted) {
     const errorDuration = Date.now() - startTime;
 
-    const shouldRetry =
-      retryCondition ?
-        retryCondition(result.error, {
+    const shouldRetry = retryCondition
+      ? retryCondition(result.error, {
           duration: errorDuration,
           retry: __retry,
         })
@@ -228,17 +220,14 @@ export async function retryResultOnError<T, E extends ResultValidErrors>(
     }
 
     if (onRetry) {
-      onRetry(result.error, {
-        duration: errorDuration,
-        retry: __retry,
-      });
+      onRetry(result.error, { duration: errorDuration, retry: __retry });
     }
 
     if (delayBetweenRetriesMs) {
       await waitForRetryDelay(
-        typeof delayBetweenRetriesMs === 'function' ?
-          delayBetweenRetriesMs(__retry)
-        : delayBetweenRetriesMs,
+        typeof delayBetweenRetriesMs === 'function'
+          ? delayBetweenRetriesMs(__retry)
+          : delayBetweenRetriesMs,
         signal,
       );
 

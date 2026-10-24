@@ -5,23 +5,15 @@ allowBuilds:
   esbuild: true
 
 catalog:
-  '@eslint/js': ^9.18.0
-  '@ls-stack/extended-lint': ^0.67.2
-  '@types/eslint': ^9.6.1
-  '@types/eslint__js': ^8.42.3
+  '@ls-stack/fast-lint': 0.7.0
   '@types/node': ^22.10.9
-  '@typescript-eslint/eslint-plugin': ^8.70.1
-  '@typescript-eslint/parser': ^8.70.1
   '@vitest/ui': ^3.0.4
   dequal: ^2.0.3
-  eslint: ^9.18.0
-  eslint-plugin-jsdoc: ^52.0.4
-  eslint-plugin-unicorn: ^56.0.1
-  eslint-plugin-vitest: ^0.5.4
   evtmitter: ^1.1.1
+  oxfmt: 0.74.0
+  oxlint: 1.89.0
+  oxlint-tsgolint: 7.0.2004
   mitata: ^1.0.32
-  prettier: 3.4.2
-  prettier-plugin-organize-imports: ^4.1.0
   t-result: ^0.6.1
   tsm: ^2.3.0
   tsdown: ^0.23.0
@@ -30,7 +22,6 @@ catalog:
   typedoc-plugin-missing-exports: ^4.0.0
   typedoc-vitepress-theme: ^1.1.2
   typescript: ^7.0.2
-  typescript-eslint: ^8.70.1
   vite: ^6.0.11
   vitest: ^3.0.4
 
@@ -38,6 +29,7 @@ minimumReleaseAgeExclude:
   - '@evtmitter/react@0.1.2'
   - evtmitter@1.1.1
   - '@ls-stack/pkg-manager@0.12.0'
+  - '@ls-stack/fast-lint@0.7.0'
 
 onlyBuiltDependencies:
   - esbuild

@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+/* oxlint-disable no-param-reassign */
 // cspell:disable
 // forked from https://github.com/ka-weihe/fastest-levenshtein/blob/master/mod.ts
 

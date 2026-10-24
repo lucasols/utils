@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { compactSnapshot } from './testUtils';
 import { mockList } from './mockList';
+import { compactSnapshot } from './testUtils';
 
 describe('mockList', () => {
   test('creates a list with the given size', () => {

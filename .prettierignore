@@ -1,7 +1,0 @@
-docs/
-**/docs/
-!docs/**/*.{ts,mts}
-lib/
-**/lib/
-node_modules/
-**/node_modules/

@@ -62,10 +62,10 @@ export function parseTimeStringToMs(timeString: string) {
   const [hours, minutes, seconds, ms] = timeString.split(':');
 
   return (
-    getTimeStringPartToInt(hours) * HOUR_AS_MS +
-    clampMax(getTimeStringPartToInt(minutes), 59) * MINUTE_AS_MS +
-    clampMax(getTimeStringPartToInt(seconds), 59) * 1000 +
-    getTimeStringPartToInt(ms, 3)
+    getTimeStringPartToInt(hours) * HOUR_AS_MS
+    + clampMax(getTimeStringPartToInt(minutes), 59) * MINUTE_AS_MS
+    + clampMax(getTimeStringPartToInt(seconds), 59) * 1000
+    + getTimeStringPartToInt(ms, 3)
   );
 }
 
@@ -118,10 +118,10 @@ export type DurationObj = {
 
 export function durationObjToMs(durationObj: DurationObj) {
   return (
-    (durationObj.hours ?? 0) * HOUR_AS_MS +
-    (durationObj.minutes ?? 0) * MINUTE_AS_MS +
-    (durationObj.seconds ?? 0) * 1000 +
-    (durationObj.ms ?? 0) +
-    (durationObj.days ?? 0) * DAY_AS_MS
+    (durationObj.hours ?? 0) * HOUR_AS_MS
+    + (durationObj.minutes ?? 0) * MINUTE_AS_MS
+    + (durationObj.seconds ?? 0) * 1000
+    + (durationObj.ms ?? 0)
+    + (durationObj.days ?? 0) * DAY_AS_MS
   );
 }

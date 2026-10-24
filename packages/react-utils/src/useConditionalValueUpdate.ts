@@ -13,12 +13,13 @@ export function useConditionalValueUpdate<T>(
   // throws away (e.g. a suspended transition) doesn't replace it
   const committedValue = useRef(initialValue);
 
+  // oxlint-disable-next-line react/refs -- reads the value of the last committed render, written in an insertion effect, so a render React throws away doesn't replace it
   const lastValidValue = committedValue.current;
 
   const nextValue =
-    value !== lastValidValue && shouldUpdate(lastValidValue, value) ?
-      value
-    : lastValidValue;
+    value !== lastValidValue && shouldUpdate(lastValidValue, value)
+      ? value
+      : lastValidValue;
 
   useInsertionEffect(() => {
     committedValue.current = nextValue;

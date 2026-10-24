@@ -1,11 +1,7 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 
 export function useConst<T>(getValue: () => T): T {
-  const store = useRef<[T] | undefined>(undefined);
+  const [value] = useState(getValue);
 
-  if (!store.current) {
-    store.current = [getValue()];
-  }
-
-  return store.current[0];
+  return value;
 }

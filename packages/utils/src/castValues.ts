@@ -1,13 +1,11 @@
 export function castToString(value: unknown): string | null {
   const valueType = typeof value;
 
-  return (
-      valueType === 'string' ||
-        valueType === 'number' ||
-        valueType === 'boolean' ||
-        valueType === 'bigint'
-    ) ?
-      String(value)
+  return valueType === 'string'
+    || valueType === 'number'
+    || valueType === 'boolean'
+    || valueType === 'bigint'
+    ? String(value)
     : null;
 }
 
@@ -20,7 +18,7 @@ function isFiniteNumeric(num: unknown) {
     case 'number':
       return num - num === 0;
     case 'string':
-      // eslint-disable-next-line no-implicit-coercion
+      // oxlint-disable-next-line no-implicit-coercion
       return num.trim() !== '' && Number.isFinite(+num);
     case 'bigint':
       return Number.isFinite(Number(num));

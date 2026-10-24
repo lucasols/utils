@@ -12,7 +12,7 @@ if (isTruthy(value1)) {
   const r1: Result1 = null!; // This should error if type is string
 }
 
-// Test 2: Complex union  
+// Test 2: Complex union
 const value2: string | number | boolean | null | undefined = 5;
 if (isTruthy(value2)) {
   // Type should be: Exclude<string | number | boolean | null | undefined, null | undefined | false | 0 | '' | 0n>

@@ -5,7 +5,9 @@ type Coord = { x: number; y: number };
 
 describe('KeyedMap', () => {
   test('constructor with getKey function', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     expect(map.size).toBe(0);
   });
 
@@ -22,26 +24,34 @@ describe('KeyedMap', () => {
   });
 
   test('set and get', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.set({ x: 1, y: 2 }, 'point A');
     expect(map.get({ x: 1, y: 2 })).toBe('point A');
   });
 
   test('get with different object but same key', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.set({ x: 1, y: 2 }, 'point A');
     expect(map.get({ x: 1, y: 2 })).toBe('point A');
   });
 
   test('set returns this for chaining', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     const result = map.set({ x: 1, y: 2 }, 'a').set({ x: 3, y: 4 }, 'b');
     expect(result).toBe(map);
     expect(map.size).toBe(2);
   });
 
   test('set replaces value with same key', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.set({ x: 1, y: 2 }, 'original');
     map.set({ x: 1, y: 2 }, 'replaced');
     expect(map.size).toBe(1);
@@ -49,7 +59,9 @@ describe('KeyedMap', () => {
   });
 
   test('setMultiple', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
@@ -60,14 +72,18 @@ describe('KeyedMap', () => {
   });
 
   test('has', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.set({ x: 1, y: 2 }, 'a');
     expect(map.has({ x: 1, y: 2 })).toBe(true);
     expect(map.has({ x: 3, y: 4 })).toBe(false);
   });
 
   test('delete', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.set({ x: 1, y: 2 }, 'a');
     expect(map.delete({ x: 1, y: 2 })).toBe(true);
     expect(map.size).toBe(0);
@@ -75,20 +91,28 @@ describe('KeyedMap', () => {
   });
 
   test('deleteMultiple', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
       [{ x: 5, y: 6 }, 'c'],
     ]);
-    const deleted = map.deleteMultiple([{ x: 1, y: 2 }, { x: 5, y: 6 }, { x: 7, y: 8 }]);
+    const deleted = map.deleteMultiple([
+      { x: 1, y: 2 },
+      { x: 5, y: 6 },
+      { x: 7, y: 8 },
+    ]);
     expect(deleted).toBe(2);
     expect(map.size).toBe(1);
     expect(map.has({ x: 3, y: 4 })).toBe(true);
   });
 
   test('clear', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
@@ -98,7 +122,9 @@ describe('KeyedMap', () => {
   });
 
   test('forEach', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
@@ -115,7 +141,9 @@ describe('KeyedMap', () => {
   });
 
   test('find', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
@@ -128,14 +156,20 @@ describe('KeyedMap', () => {
   });
 
   test('getOrThrow', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.set({ x: 1, y: 2 }, 'a');
     expect(map.getOrThrow({ x: 1, y: 2 })).toBe('a');
-    expect(() => map.getOrThrow({ x: 3, y: 4 })).toThrow('Key not found in KeyedMap');
+    expect(() => map.getOrThrow({ x: 3, y: 4 })).toThrow(
+      'Key not found in KeyedMap',
+    );
   });
 
   test('getOrInsert', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.set({ x: 1, y: 2 }, 'existing');
     expect(map.getOrInsert({ x: 1, y: 2 }, () => 'new')).toBe('existing');
     expect(map.getOrInsert({ x: 3, y: 4 }, () => 'inserted')).toBe('inserted');
@@ -143,7 +177,9 @@ describe('KeyedMap', () => {
   });
 
   test('toFilteredValues', () => {
-    const map = new KeyedMap<Coord, number, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, number, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 10],
       [{ x: 3, y: 4 }, 20],
@@ -153,7 +189,9 @@ describe('KeyedMap', () => {
   });
 
   test('toValues', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
@@ -162,7 +200,9 @@ describe('KeyedMap', () => {
   });
 
   test('toKeys', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
@@ -174,7 +214,9 @@ describe('KeyedMap', () => {
   });
 
   test('keys iterator', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
@@ -186,7 +228,9 @@ describe('KeyedMap', () => {
   });
 
   test('values iterator', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
@@ -195,7 +239,9 @@ describe('KeyedMap', () => {
   });
 
   test('entries iterator', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],
@@ -207,7 +253,9 @@ describe('KeyedMap', () => {
   });
 
   test('Symbol.iterator', () => {
-    const map = new KeyedMap<Coord, string, string>((key) => `${key.x},${key.y}`);
+    const map = new KeyedMap<Coord, string, string>(
+      (key) => `${key.x},${key.y}`,
+    );
     map.setMultiple([
       [{ x: 1, y: 2 }, 'a'],
       [{ x: 3, y: 4 }, 'b'],

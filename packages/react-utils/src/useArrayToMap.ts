@@ -23,12 +23,12 @@ export function useArrayToMap(
     if (!arr) return new Map<string | number, unknown>();
 
     const getId =
-      typeof getItemId === 'function' ? getItemId : (
-        (item: Record<PropertyKey, __LEGIT_ANY__>) => {
-          const itemId: string | number = item[getItemId];
-          return itemId;
-        }
-      );
+      typeof getItemId === 'function'
+        ? getItemId
+        : (item: Record<PropertyKey, __LEGIT_ANY__>) => {
+            const itemId: string | number = item[getItemId];
+            return itemId;
+          };
 
     return new Map(
       arr.map((item, i): [string | number, unknown] => [getId(item, i), item]),

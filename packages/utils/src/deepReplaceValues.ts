@@ -56,26 +56,28 @@ function applyValueReplacements(
 }
 
 /**
- * Recursively traverses an object or array and allows conditional replacement of values
- * based on a provided callback function. The callback receives each value and its path
- * within the data structure.
- *
- * @param value - The input value to process (object, array, or primitive)
- * @param replaceValues - Callback function that receives each value and its path.
- *   Return `false` to keep the original value, or `{ newValue: unknown }` to replace it.
- *   The path uses dot notation for objects (e.g., "user.name") and bracket notation for arrays (e.g., "items[0]")
- * @returns A new structure with replaced values. The original structure is not modified.
- * @throws Error if circular references are detected
+ * Recursively traverses an object or array and allows conditional replacement
+ * of values based on a provided callback function. The callback receives each
+ * value and its path within the data structure.
  *
  * @example
- * const data = { user: { id: 1, name: "Alice" }, scores: [85, 92] };
- * const result = deepReplaceValues(data, (value, path) => {
- *   if (typeof value === "number") {
- *     return { newValue: value * 2 };
- *   }
- *   return false;
- * });
- * // Result: { user: { id: 2, name: "Alice" }, scores: [170, 184] }
+ *   const data = { user: { id: 1, name: 'Alice' }, scores: [85, 92] };
+ *   const result = deepReplaceValues(data, (value, path) => {
+ *     if (typeof value === 'number') {
+ *       return { newValue: value * 2 };
+ *     }
+ *     return false;
+ *   });
+ *   // Result: { user: { id: 2, name: "Alice" }, scores: [170, 184] }
+ *
+ * @param value - The input value to process (object, array, or primitive)
+ * @param replaceValues - Callback function that receives each value and its
+ *   path. Return `false` to keep the original value, or `{ newValue: unknown }`
+ *   to replace it. The path uses dot notation for objects (e.g., "user.name")
+ *   and bracket notation for arrays (e.g., "items[0]")
+ * @returns A new structure with replaced values. The original structure is not
+ *   modified.
+ * @throws Error if circular references are detected
  */
 export function deepReplaceValues<T, R = T>(
   value: T,

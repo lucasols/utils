@@ -3,9 +3,7 @@ import { filterObjectOrArrayKeys } from './filterObjectOrArrayKeys';
 import { yamlStringify } from './yamlStringify';
 
 function getSnapshot(data: any) {
-  return `\n${yamlStringify(data, {
-    collapseObjects: true,
-  })}`;
+  return `\n${yamlStringify(data, { collapseObjects: true })}`;
 }
 
 describe('rejectKeys functionality', () => {
@@ -31,14 +29,8 @@ describe('rejectKeys functionality', () => {
     const data = {
       user: {
         name: 'John',
-        credentials: {
-          password: 'secret',
-          apiKey: 'key123',
-        },
-        profile: {
-          email: 'john@example.com',
-          age: 30,
-        },
+        credentials: { password: 'secret', apiKey: 'key123' },
+        profile: { email: 'john@example.com', age: 30 },
       },
     };
     expect(
@@ -128,20 +120,10 @@ describe('filterKeys functionality', () => {
     const data = {
       user: {
         name: 'John',
-        credentials: {
-          password: 'secret',
-          apiKey: 'key123',
-        },
-        profile: {
-          email: 'john@example.com',
-          age: 30,
-          active: true,
-        },
+        credentials: { password: 'secret', apiKey: 'key123' },
+        profile: { email: 'john@example.com', age: 30, active: true },
       },
-      system: {
-        version: '1.0',
-        status: 'online',
-      },
+      system: { version: '1.0', status: 'online' },
     };
     expect(
       getSnapshot(
@@ -200,15 +182,9 @@ describe('combined rejectKeys and filterKeys', () => {
         name: 'John',
         email: 'john@example.com',
         password: 'secret123',
-        settings: {
-          theme: 'dark',
-          apiKey: 'secret-key',
-          notifications: true,
-        },
+        settings: { theme: 'dark', apiKey: 'secret-key', notifications: true },
       },
-      metadata: {
-        version: '1.0',
-      },
+      metadata: { version: '1.0' },
     };
 
     expect(
@@ -389,9 +365,7 @@ describe('advanced wildcard patterns', () => {
         john: { profile: { name: 'John', age: 30 } },
         jane: { profile: { name: 'Jane', age: 25 } },
       },
-      admins: {
-        admin1: { profile: { name: 'Admin1', age: 40 } },
-      },
+      admins: { admin1: { profile: { name: 'Admin1', age: 40 } } },
     };
     expect(
       getSnapshot(
@@ -441,9 +415,7 @@ describe('advanced wildcard patterns', () => {
         section2: { prop: 'value2', other: 'data2' },
         section3: { other: 'data3' },
       },
-      other: {
-        section1: { prop: 'should-not-match', other: 'data4' },
-      },
+      other: { section1: { prop: 'should-not-match', other: 'data4' } },
     };
     expect(
       getSnapshot(
@@ -469,17 +441,11 @@ describe('advanced wildcard patterns', () => {
           other: { prop: 'should-not-match' },
         },
         section2: {
-          test: {
-            level1: { prop: 'deep3', other: 'data3' },
-          },
+          test: { level1: { prop: 'deep3', other: 'data3' } },
           other: { prop: 'should-not-match' },
         },
       },
-      other: {
-        section1: {
-          test: { prop: 'should-not-match' },
-        },
-      },
+      other: { section1: { test: { prop: 'should-not-match' } } },
     };
     expect(
       getSnapshot(
@@ -523,12 +489,7 @@ describe('edge cases and error handling', () => {
   });
 
   test('should handle null and undefined values', () => {
-    const data = {
-      name: 'John',
-      nullable: null,
-      undefined,
-      age: 30,
-    };
+    const data = { name: 'John', nullable: null, undefined, age: 30 };
     expect(
       getSnapshot(
         filterObjectOrArrayKeys(data, {
@@ -547,9 +508,7 @@ describe('edge cases and error handling', () => {
     const data = { name: 'John', age: 30 };
     expect(
       getSnapshot(
-        filterObjectOrArrayKeys(data, {
-          filterKeys: ['name', 'nonexistent'],
-        }),
+        filterObjectOrArrayKeys(data, { filterKeys: ['name', 'nonexistent'] }),
       ),
     ).toMatchInlineSnapshot(`
       "
@@ -572,12 +531,7 @@ describe('edge cases and error handling', () => {
     const data = {
       level1: {
         level2: {
-          level3: {
-            level4: {
-              value: 'deep value',
-              other: 'other value',
-            },
-          },
+          level3: { level4: { value: 'deep value', other: 'other value' } },
         },
       },
     };
@@ -600,9 +554,7 @@ describe('edge cases and error handling', () => {
 
 describe('rejectEmptyObjectsInArray option', () => {
   test('should keep empty objects when rejectEmptyObjectsInArray is false', () => {
-    const data = {
-      users: [{ test: 'John' }, { name: 'Jane' }],
-    };
+    const data = { users: [{ test: 'John' }, { name: 'Jane' }] };
 
     expect(
       getSnapshot(
@@ -621,9 +573,7 @@ describe('rejectEmptyObjectsInArray option', () => {
   });
 
   test('should remove empty objects from array using filterKeys', () => {
-    const data = {
-      users: [{ test: 'John' }, { name: 'Jane' }],
-    };
+    const data = { users: [{ test: 'John' }, { name: 'Jane' }] };
 
     expect(
       getSnapshot(
@@ -638,9 +588,7 @@ describe('rejectEmptyObjectsInArray option', () => {
   });
 
   test('should remove empty objects from array using rejectKeys', () => {
-    const data = {
-      users: [{ test: 'John' }, { name: 'Jane' }],
-    };
+    const data = { users: [{ test: 'John' }, { name: 'Jane' }] };
 
     expect(
       getSnapshot(
@@ -704,10 +652,7 @@ describe('complex mixed scenarios', () => {
           },
         },
       ],
-      metadata: {
-        version: '1.0',
-        debug: true,
-      },
+      metadata: { version: '1.0', debug: true },
     };
     expect(
       getSnapshot(
@@ -782,10 +727,7 @@ test('do not filter non plain objects', () => {
   }
   const date = new Date('2025-08-09T23:40:31.349Z');
   const classInstance = new MyClass();
-  const data = {
-    date,
-    myClass: classInstance,
-  };
+  const data = { date, myClass: classInstance };
 
   const filtered = filterObjectOrArrayKeys(data, {
     rejectKeys: ['**name', '**age', '**now'],
@@ -983,9 +925,7 @@ describe('pattern expansion functionality', () => {
           { config: { enabled: false, mode: 'manual' } },
         ],
       },
-      section2: {
-        items: [{ config: { enabled: true, mode: 'auto' } }],
-      },
+      section2: { items: [{ config: { enabled: true, mode: 'auto' } }] },
     };
     expect(
       getSnapshot(
@@ -1138,18 +1078,8 @@ describe('complex pattern expansion scenarios', () => {
   test('should handle expansion patterns with double wildcards', () => {
     const data = {
       root: {
-        level1: {
-          deep: {
-            target: 'found1',
-            other: 'ignored1',
-          },
-        },
-        level2: {
-          nested: {
-            target: 'found2',
-            other: 'ignored2',
-          },
-        },
+        level1: { deep: { target: 'found1', other: 'ignored1' } },
+        level2: { nested: { target: 'found2', other: 'ignored2' } },
       },
     };
     expect(
@@ -1218,10 +1148,7 @@ describe('complex pattern expansion scenarios', () => {
 
 describe('circular references with key filtering', () => {
   test('should throw when the circular reference key itself gets filtered', () => {
-    const obj: any = {
-      name: 'John',
-      active: true,
-    };
+    const obj: any = { name: 'John', active: true };
     obj.circular = obj;
     expect(() =>
       filterObjectOrArrayKeys(obj, { filterKeys: ['circular'] }),
@@ -1231,10 +1158,7 @@ describe('circular references with key filtering', () => {
   });
 
   test('should not throw when the circular reference key itself gets rejected', () => {
-    const obj: any = {
-      name: 'John',
-      active: true,
-    };
+    const obj: any = { name: 'John', active: true };
     obj.circular = obj;
     expect(
       getSnapshot(filterObjectOrArrayKeys(obj, { rejectKeys: ['circular'] })),

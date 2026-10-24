@@ -7,21 +7,18 @@ export type Replacer = {
   fn: (fullMatch: string, groups: (string | undefined)[]) => ReactElement;
 };
 
-type NormalizedReplacer = {
-  regex: RegExp;
-  fn: Replacer['fn'];
-  order: number;
-};
+type NormalizedReplacer = { regex: RegExp; fn: Replacer['fn']; order: number };
 
 /**
  * React 19 still warns about missing keys for elements re-keyed by
- * `Children.toArray` from an unkeyed array, so give them an explicit key first.
+ * `Children.toArray` from an unkeyed array, so give them an explicit key
+ * first.
  */
 function withIndexKeys(nodes: ReactNode[]): ReactNode[] {
   return nodes.map((node, index) =>
-    isValidElement(node) && node.key === null ?
-      cloneElement(node, { key: index })
-    : node,
+    isValidElement(node) && node.key === null
+      ? cloneElement(node, { key: index })
+      : node,
   );
 }
 
@@ -49,9 +46,9 @@ export function replaceStringWithJSX(
   const normalizedReplacers: NormalizedReplacer[] = replacers.map(
     ({ match, fn }, order) => ({
       regex:
-        typeof match === 'string' ?
-          normalizeStringMatcher(match)
-        : normalizeRegex(match),
+        typeof match === 'string'
+          ? normalizeStringMatcher(match)
+          : normalizeRegex(match),
       fn,
       order,
     }),
@@ -90,18 +87,12 @@ export function replaceStringWithJSX(
       }
 
       if (
-        !closestMatch ||
-        start < closestMatch.start ||
-        (start === closestMatch.start &&
-          replacer.order < closestMatch.replacer.order)
+        !closestMatch
+        || start < closestMatch.start
+        || (start === closestMatch.start
+          && replacer.order < closestMatch.replacer.order)
       ) {
-        closestMatch = {
-          start,
-          end,
-          groups,
-          fullMatch,
-          replacer,
-        };
+        closestMatch = { start, end, groups, fullMatch, replacer };
       }
     }
 

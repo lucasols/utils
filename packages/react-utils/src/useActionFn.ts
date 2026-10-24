@@ -16,6 +16,7 @@ export function useActionFn<A extends unknown[], T>(
       isInProgressRef.current = true;
       setIsInProgress(true);
 
+      // oxlint-disable-next-line react/todo -- the library isn't compiled by the React compiler, `finally` resets the state on success and on error
       try {
         const result = await action(...args);
 
@@ -27,11 +28,13 @@ export function useActionFn<A extends unknown[], T>(
     }
 
     return {
+      // oxlint-disable-next-line react/todo -- the getter reads the ref, so a call in the same event already sees it in progress
       get isInProgress() {
         return isInProgressRef.current;
       },
       call,
     };
+    // oxlint-disable-next-line react/memo-dependencies -- `isInProgress` creates a new object when the progress changes, re-rendering the consumers
   }, [action, isInProgress]);
 }
 
@@ -59,6 +62,7 @@ export function useActionFnWithState<
       isInProgressRef.set(state, true);
       setIsInProgress((prev) => ({ ...prev, [state]: true }));
 
+      // oxlint-disable-next-line react/todo -- the library isn't compiled by the React compiler, `finally` resets the state on success and on error
       try {
         const result = await action(state, ...args);
         return result;
@@ -72,6 +76,7 @@ export function useActionFnWithState<
       isInProgress: (state) => isInProgressRef.get(state) ?? false,
       call,
     };
+    // oxlint-disable-next-line react/memo-dependencies -- `isInProgress` creates a new object when the progress changes, re-rendering the consumers
   }, [action, isInProgress, isInProgressRef]);
 }
 

@@ -5,25 +5,27 @@ import { useOnUnMount } from './useOnUnMount';
 /**
  * Hook that manages multiple timeouts with a stable API.
  *
- * Automatically clears all pending timeouts on unmount unless `noClearOnUnmount` is true.
- *
- * @param ms - Default timeout duration in milliseconds
- * @param noClearOnUnmount - If true, timeouts will not be cleared on unmount (default: false)
- * @returns Object with `call`, `clearAndCall`, and `clear` methods
+ * Automatically clears all pending timeouts on unmount unless
+ * `noClearOnUnmount` is true.
  *
  * @example
- * ```tsx
- * function Toast({ message }: { message: string }) {
- *   const [show, setShow] = useState(true);
- *   const timeout = useTimeout(3000);
+ *   ```tsx
+ *   function Toast({ message }: { message: string }) {
+ *     const [show, setShow] = useState(true);
+ *     const timeout = useTimeout(3000);
  *
- *   useEffect(() => {
- *     timeout.call(() => setShow(false));
- *   }, [timeout]);
+ *     useEffect(() => {
+ *       timeout.call(() => setShow(false));
+ *     }, [timeout]);
  *
- *   return show ? <div>{message}</div> : null;
- * }
- * ```
+ *     return show ? <div>{message}</div> : null;
+ *   }
+ *   ```;
+ *
+ * @param ms - Default timeout duration in milliseconds
+ * @param noClearOnUnmount - If true, timeouts will not be cleared on unmount
+ *   (default: false)
+ * @returns Object with `call`, `clearAndCall`, and `clear` methods
  */
 export function useTimeout(
   ms: number,

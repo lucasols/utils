@@ -310,11 +310,7 @@ export function diffParser(input: string): DiffFile[] {
     const newRange = parseRange(newPart, '+');
     if (!newRange) return;
 
-    return {
-      parentRanges,
-      newRange,
-      parentCount: parentRanges.length,
-    };
+    return { parentRanges, newRange, parentCount: parentRanges.length };
   };
 
   const combinedChunk = (line: string): void => {
@@ -434,10 +430,10 @@ export function diffParser(input: string): DiffFile[] {
     }
 
     const parentCount =
-      currentChunk.parentCount ??
-      currentFileChanges.parentCount ??
-      currentFileChanges.parentLines?.length ??
-      0;
+      currentChunk.parentCount
+      ?? currentFileChanges.parentCount
+      ?? currentFileChanges.parentLines?.length
+      ?? 0;
 
     const parentLines = currentFileChanges.parentLines;
 
@@ -531,9 +527,9 @@ export function diffParser(input: string): DiffFile[] {
       parseCombinedContentLine(line);
       const parentLines = currentFileChanges.parentLines;
       if (
-        parentLines &&
-        parentLines.every((count) => count === 0) &&
-        currentFileChanges.newLines === 0
+        parentLines
+        && parentLines.every((count) => count === 0)
+        && currentFileChanges.newLines === 0
       ) {
         currentFileChanges = null;
       }
@@ -548,8 +544,8 @@ export function diffParser(input: string): DiffFile[] {
       }
     }
     if (
-      currentFileChanges?.oldLines === 0 &&
-      currentFileChanges.newLines === 0
+      currentFileChanges?.oldLines === 0
+      && currentFileChanges.newLines === 0
     ) {
       currentFileChanges = null;
     }
@@ -573,9 +569,9 @@ export function diffParser(input: string): DiffFile[] {
     }
     if (currentFile) {
       currentFile.rawDiff =
-        currentFile.rawDiff.length === 0 ?
-          line
-        : `${currentFile.rawDiff}\n${line}`;
+        currentFile.rawDiff.length === 0
+          ? line
+          : `${currentFile.rawDiff}\n${line}`;
     }
   };
 

@@ -10,8 +10,9 @@
  *
  * @template T - The substring that must be contained within the string
  */
-export type StringContaining<T extends string> =
-  string extends T ? never : `${string}${T}${string}`;
+export type StringContaining<T extends string> = string extends T
+  ? never
+  : `${string}${T}${string}`;
 
 /**
  * A type representing a string that starts with a specific substring. Uses
@@ -26,8 +27,9 @@ export type StringContaining<T extends string> =
  *
  * @template T - The substring that the string must start with
  */
-export type StringStartingWith<T extends string> =
-  string extends T ? never : `${T}${string}`;
+export type StringStartingWith<T extends string> = string extends T
+  ? never
+  : `${T}${string}`;
 
 /**
  * A type representing a string that ends with a specific substring. Uses
@@ -41,8 +43,9 @@ export type StringStartingWith<T extends string> =
  *
  * @template T - The substring that the string must end with
  */
-export type StringEndingWith<T extends string> =
-  string extends T ? never : `${string}${T}`;
+export type StringEndingWith<T extends string> = string extends T
+  ? never
+  : `${string}${T}`;
 
 /**
  * Type guard function that checks if a string contains a specific substring.
@@ -177,9 +180,7 @@ export function splitTypedStringAt<T extends string>(
  *   }
  *   ```;
  */
-export type NonEmptyString = string & {
-  __nonEmptyString: true;
-};
+export type NonEmptyString = string & { __nonEmptyString: true };
 
 /**
  * Type guard function that checks if a string is non-empty. Narrows the type to

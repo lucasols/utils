@@ -55,9 +55,7 @@ test('ignores the results of renders that were never committed', async () => {
   type State = { dep: string; suspend: boolean };
 
   const neverResolves = new Promise<never>(() => {});
-  const controls: { setState: (state: State) => void } = {
-    setState: () => {},
-  };
+  const controls: { setState: (state: State) => void } = { setState: () => {} };
 
   function Values({ dep, suspend }: State) {
     const values = useMemoWithPrev(

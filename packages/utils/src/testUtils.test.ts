@@ -209,9 +209,7 @@ describe('createLoggerStore', () => {
   test('use emoji for booleans', () => {
     const store = createLoggerStore();
 
-    store.add({
-      ok: null,
-    });
+    store.add({ ok: null });
 
     store.add({
       name: 'John Smith',
@@ -221,15 +219,9 @@ describe('createLoggerStore', () => {
       isDisabled: false,
     });
 
-    store.add({
-      yes: true,
-      no: false,
-    });
+    store.add({ yes: true, no: false });
 
-    store.add({
-      yes: false,
-      no: true,
-    });
+    store.add({ yes: false, no: true });
 
     expect(store.snapshot).toMatchInlineSnapshot(`
       "
@@ -266,12 +258,7 @@ describe('createLoggerStore', () => {
 
 describe('compactSnapshot', () => {
   test('should format basic objects with default boolean emojis', () => {
-    const data = {
-      name: 'John',
-      age: 30,
-      isActive: true,
-      isDisabled: false,
-    };
+    const data = { name: 'John', age: 30, isActive: true, isDisabled: false };
 
     expect(compactSnapshot(data)).toMatchInlineSnapshot(`
       "
@@ -287,10 +274,7 @@ describe('compactSnapshot', () => {
     const data = {
       user: {
         name: 'John',
-        settings: {
-          notifications: true,
-          darkMode: false,
-        },
+        settings: { notifications: true, darkMode: false },
       },
       features: [true, false, true],
     };
@@ -307,10 +291,7 @@ describe('compactSnapshot', () => {
   });
 
   test('should disable boolean replacement when showBooleansAs is false', () => {
-    const data = {
-      isActive: true,
-      isDisabled: false,
-    };
+    const data = { isActive: true, isDisabled: false };
 
     expect(compactSnapshot(data, { showBooleansAs: false }))
       .toMatchInlineSnapshot(`
@@ -322,17 +303,11 @@ describe('compactSnapshot', () => {
   });
 
   test('should use custom true/false text', () => {
-    const data = {
-      success: true,
-      error: false,
-    };
+    const data = { success: true, error: false };
 
     expect(
       compactSnapshot(data, {
-        showBooleansAs: {
-          trueText: 'YES',
-          falseText: 'NO',
-        },
+        showBooleansAs: { trueText: 'YES', falseText: 'NO' },
       }),
     ).toMatchInlineSnapshot(`
       "
@@ -372,17 +347,11 @@ describe('compactSnapshot', () => {
   });
 
   test('should ignore specified props', () => {
-    const data = {
-      showEmoji: true,
-      keepOriginal: false,
-      alsoShowEmoji: true,
-    };
+    const data = { showEmoji: true, keepOriginal: false, alsoShowEmoji: true };
 
     expect(
       compactSnapshot(data, {
-        showBooleansAs: {
-          ignoreProps: ['keepOriginal'],
-        },
+        showBooleansAs: { ignoreProps: ['keepOriginal'] },
       }),
     ).toMatchInlineSnapshot(`
       "
@@ -414,20 +383,13 @@ describe('compactSnapshot', () => {
     const data = {
       longProperty: 'This is a very long string that should be on its own line',
       active: true,
-      nested: {
-        deep: {
-          value: false,
-        },
-      },
+      nested: { deep: { value: false } },
     };
 
     expect(
       compactSnapshot(data, {
         maxLineLength: 20,
-        showBooleansAs: {
-          trueText: 'ON',
-          falseText: 'OFF',
-        },
+        showBooleansAs: { trueText: 'ON', falseText: 'OFF' },
       }),
     ).toMatchInlineSnapshot(`
       "
@@ -480,13 +442,7 @@ describe('compactSnapshot', () => {
   });
 
   test('should throw on nested circular references', () => {
-    const obj: any = {
-      level1: {
-        level2: {
-          active: true,
-        },
-      },
-    };
+    const obj: any = { level1: { level2: { active: true } } };
     obj.level1.level2.circular = obj;
 
     expect(() => compactSnapshot(obj)).toThrow(
@@ -496,10 +452,7 @@ describe('compactSnapshot', () => {
 
   test('should handle same object in different branches (not circular)', () => {
     const sharedObj = { shared: true };
-    const data = {
-      branch1: sharedObj,
-      branch2: sharedObj,
-    };
+    const data = { branch1: sharedObj, branch2: sharedObj };
 
     expect(compactSnapshot(data)).toMatchInlineSnapshot(`
       "
@@ -532,14 +485,8 @@ describe('compactSnapshot', () => {
       const data = {
         user: {
           name: 'John',
-          credentials: {
-            password: 'secret',
-            apiKey: 'key123',
-          },
-          profile: {
-            email: 'john@example.com',
-            age: 30,
-          },
+          credentials: { password: 'secret', apiKey: 'key123' },
+          profile: { email: 'john@example.com', age: 30 },
         },
       };
 
@@ -619,20 +566,10 @@ describe('compactSnapshot', () => {
       const data = {
         user: {
           name: 'John',
-          credentials: {
-            password: 'secret',
-            apiKey: 'key123',
-          },
-          profile: {
-            email: 'john@example.com',
-            age: 30,
-            active: true,
-          },
+          credentials: { password: 'secret', apiKey: 'key123' },
+          profile: { email: 'john@example.com', age: 30, active: true },
         },
-        system: {
-          version: '1.0',
-          status: 'online',
-        },
+        system: { version: '1.0', status: 'online' },
       };
 
       expect(
@@ -694,25 +631,16 @@ describe('compactSnapshot', () => {
   describe('replaceValues functionality', () => {
     test('should replace values based on path', () => {
       const data = {
-        user: {
-          id: '123',
-          email: 'user@example.com',
-          password: 'secret123',
-        },
-        settings: {
-          apiKey: 'abc-def-123',
-          config: {
-            token: 'xyz-789',
-          },
-        },
+        user: { id: '123', email: 'user@example.com', password: 'secret123' },
+        settings: { apiKey: 'abc-def-123', config: { token: 'xyz-789' } },
       };
 
       const result = compactSnapshot(data, {
         replaceValues: (_value, path) => {
           if (
-            path.includes('password') ||
-            path.includes('apiKey') ||
-            path.includes('token')
+            path.includes('password')
+            || path.includes('apiKey')
+            || path.includes('token')
           ) {
             return { newValue: '[REDACTED]' };
           }
@@ -849,10 +777,7 @@ describe('compactSnapshot', () => {
       const data = {
         emptyObj: {},
         emptyArray: [],
-        nested: {
-          emptyObj: {},
-          emptyArray: [],
-        },
+        nested: { emptyObj: {}, emptyArray: [] },
       };
 
       compactSnapshot(data, {
@@ -876,13 +801,7 @@ describe('compactSnapshot', () => {
 
     test('should replace values at specific paths accurately', () => {
       const data = {
-        user: {
-          id: 123,
-          profile: {
-            name: 'John',
-            email: 'john@example.com',
-          },
-        },
+        user: { id: 123, profile: { name: 'John', email: 'john@example.com' } },
         items: [
           { id: 1, secret: 'token1' },
           { id: 2, secret: 'token2' },
@@ -921,12 +840,7 @@ describe('compactSnapshot', () => {
 
   describe('sortKeys functionality', () => {
     test('should sort keys alphabetically ascending', () => {
-      const data = {
-        zebra: 1,
-        apple: 2,
-        mango: 3,
-        banana: 4,
-      };
+      const data = { zebra: 1, apple: 2, mango: 3, banana: 4 };
 
       expect(compactSnapshot(data, { sortKeys: 'asc' })).toMatchInlineSnapshot(`
         "
@@ -939,12 +853,7 @@ describe('compactSnapshot', () => {
     });
 
     test('should sort keys alphabetically descending', () => {
-      const data = {
-        zebra: 1,
-        apple: 2,
-        mango: 3,
-        banana: 4,
-      };
+      const data = { zebra: 1, apple: 2, mango: 3, banana: 4 };
 
       expect(compactSnapshot(data, { sortKeys: 'desc' }))
         .toMatchInlineSnapshot(`
@@ -982,12 +891,7 @@ describe('compactSnapshot', () => {
     });
 
     test('should preserve original order when sortKeys is false', () => {
-      const data = {
-        zebra: 1,
-        apple: 2,
-        nested: { x: 1 },
-        mango: 3,
-      };
+      const data = { zebra: 1, apple: 2, nested: { x: 1 }, mango: 3 };
 
       expect(compactSnapshot(data, { sortKeys: false })).toMatchInlineSnapshot(`
         "
@@ -1001,16 +905,8 @@ describe('compactSnapshot', () => {
 
     test('should apply sortKeys to nested objects', () => {
       const data = {
-        user: {
-          zebra: 'z',
-          apple: 'a',
-          mango: 'm',
-        },
-        settings: {
-          theme: 'dark',
-          notifications: true,
-          language: 'en',
-        },
+        user: { zebra: 'z', apple: 'a', mango: 'm' },
+        settings: { theme: 'dark', notifications: true, language: 'en' },
       };
 
       expect(compactSnapshot(data, { sortKeys: 'asc' })).toMatchInlineSnapshot(`
@@ -1093,12 +989,7 @@ describe('compactSnapshot', () => {
 
       err.stack = 'at inner.js:1:1';
 
-      expect(
-        compactSnapshot({
-          ok: false,
-          err,
-        }),
-      ).toMatchInlineSnapshot(`
+      expect(compactSnapshot({ ok: false, err })).toMatchInlineSnapshot(`
         "
         ok: '❌'
         err{Error}: { message: 'inner', name: 'Error' }
@@ -1134,9 +1025,8 @@ describe('compactSnapshot', () => {
       (err as Error & { code: string; status: number }).code = 'E1';
       (err as Error & { code: string; status: number }).status = 500;
 
-      expect(
-        compactSnapshot(err, { pickErrorOwnProps: ['code'] }),
-      ).toMatchInlineSnapshot(`
+      expect(compactSnapshot(err, { pickErrorOwnProps: ['code'] }))
+        .toMatchInlineSnapshot(`
         "
         Error#: { message: 'm', name: 'Error', code: 'E1' }
         "
@@ -1150,9 +1040,7 @@ describe('compactSnapshot', () => {
       (err as Error & { keep: number; drop: string }).drop = 'x';
 
       expect(
-        compactSnapshot(err, {
-          pickErrorOwnProps: (key) => key !== 'drop',
-        }),
+        compactSnapshot(err, { pickErrorOwnProps: (key) => key !== 'drop' }),
       ).toMatchInlineSnapshot(`
         "
         Error#: { message: 'm', name: 'Error', keep: 1 }

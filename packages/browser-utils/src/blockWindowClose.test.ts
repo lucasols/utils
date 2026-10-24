@@ -7,23 +7,16 @@ const mockConsoleError = vi.fn();
 const mockAlert = vi.fn();
 
 Object.defineProperty(global, 'window', {
-  value: {
-    onbeforeunload: null,
-  },
+  value: { onbeforeunload: null },
   writable: true,
 });
 
 Object.defineProperty(global, 'console', {
-  value: {
-    error: mockConsoleError,
-  },
+  value: { error: mockConsoleError },
   writable: true,
 });
 
-Object.defineProperty(global, 'alert', {
-  value: mockAlert,
-  writable: true,
-});
+Object.defineProperty(global, 'alert', { value: mockAlert, writable: true });
 
 describe('blockWindowClose', () => {
   beforeEach(() => {

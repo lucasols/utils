@@ -76,33 +76,33 @@ export function getDiffs(
       const simplifiedDiffResult = getSimplifiedDiff(old, value);
 
       updated[
-        (
-          typeof simplifiedDiffResult !== 'string' &&
-          simplifiedDiffResult !== undefined &&
-          '++new' in simplifiedDiffResult
-        ) ?
-          key
-        : Array.isArray(old) && Array.isArray(value) ? `${key}~~array_changes`
-        : key
+        typeof simplifiedDiffResult !== 'string'
+        && simplifiedDiffResult !== undefined
+        && '++new' in simplifiedDiffResult
+          ? key
+          : Array.isArray(old) && Array.isArray(value)
+            ? `${key}~~array_changes`
+            : key
       ] = simplifiedDiffResult;
     }
   }
 
   if (
-    ignoreDiffs?.includes(addKeysName) ||
-    Object.keys(diffs[addKeysName] ?? {}).length === 0
+    ignoreDiffs?.includes(addKeysName)
+    || Object.keys(diffs[addKeysName] ?? {}).length === 0
   ) {
     delete diffs[addKeysName];
   }
   if (
-    ignoreDiffs?.includes(removeKeysName) ||
-    Object.keys(diffs[removeKeysName] ?? {}).length === 0
+    ignoreDiffs?.includes(removeKeysName)
+    || Object.keys(diffs[removeKeysName] ?? {}).length === 0
   ) {
     delete diffs[removeKeysName];
   }
   if (
-    ignoreDiffs?.includes(updateKeysName) ||
-    (diffs[updateKeysName] && Object.keys(diffs[updateKeysName]).length === 0)
+    ignoreDiffs?.includes(updateKeysName)
+    || (diffs[updateKeysName]
+      && Object.keys(diffs[updateKeysName]).length === 0)
   ) {
     delete diffs[updateKeysName];
   }
@@ -138,11 +138,11 @@ function isPrimitive(
   value: unknown,
 ): value is string | number | boolean | null | undefined {
   return (
-    value === null ||
-    value === undefined ||
-    typeof value === 'string' ||
-    typeof value === 'number' ||
-    typeof value === 'boolean'
+    value === null
+    || value === undefined
+    || typeof value === 'string'
+    || typeof value === 'number'
+    || typeof value === 'boolean'
   );
 }
 
@@ -160,15 +160,15 @@ function getArrayDiffs(old: unknown[], newValue: unknown[]): ArrayDiffs | null {
   for (const item of old) {
     if (isObject(item)) {
       if (
-        (allItemsHaveKey === null || allItemsHaveKey === 'id') &&
-        'id' in item &&
-        isPrimitive(item.id)
+        (allItemsHaveKey === null || allItemsHaveKey === 'id')
+        && 'id' in item
+        && isPrimitive(item.id)
       ) {
         allItemsHaveKey = 'id';
       } else if (
-        (allItemsHaveKey === null || allItemsHaveKey === 'key') &&
-        'key' in item &&
-        isPrimitive(item.key)
+        (allItemsHaveKey === null || allItemsHaveKey === 'key')
+        && 'key' in item
+        && isPrimitive(item.key)
       ) {
         allItemsHaveKey = 'key';
       } else {
@@ -211,17 +211,17 @@ function getArrayDiffs(old: unknown[], newValue: unknown[]): ArrayDiffs | null {
   }
 
   if (
-    Math.min(newValue.length, old.length) /
-      Math.max(newValue.length, old.length) <
-    0.5
+    Math.min(newValue.length, old.length)
+      / Math.max(newValue.length, old.length)
+    < 0.5
   ) {
     return null;
   }
 
   diffs.size =
-    newValue.length === old.length ?
-      newValue.length
-    : [old.length, '->', newValue.length];
+    newValue.length === old.length
+      ? newValue.length
+      : [old.length, '->', newValue.length];
 
   for (const [index, value] of newValue.entries()) {
     const oldValue = old[index];

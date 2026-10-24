@@ -1,8 +1,6 @@
 /**
  * @file AsyncQueue - A powerful, type-safe async task queue with advanced error
- *   handling
- *
- *   Features:
+ *   handling Features:
  *
  *   - Concurrency control with configurable limits
  *   - Error handling with stop-on-error and reject-pending options
@@ -286,8 +284,8 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   #getRateLimitIntervalMs(): number {
     if (!this.#rateLimit) return 0;
 
-    return typeof this.#rateLimit.interval === 'number' ?
-        this.#rateLimit.interval
+    return typeof this.#rateLimit.interval === 'number'
+      ? this.#rateLimit.interval
       : durationObjToMs(this.#rateLimit.interval);
   }
 
@@ -407,9 +405,9 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
   ): Promise<Result<T, E | Error>> {
     if (this.#signal?.aborted) {
       return Result.err(
-        this.#signal.reason instanceof Error ?
-          this.#signal.reason
-        : new DOMException('This operation was aborted', 'AbortError'),
+        this.#signal.reason instanceof Error
+          ? this.#signal.reason
+          : new DOMException('This operation was aborted', 'AbortError'),
       );
     }
 
@@ -565,9 +563,9 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
       // Check if signal is already aborted before setting up anything
       if (signal?.aborted) {
         const error =
-          signal.reason instanceof Error ?
-            signal.reason
-          : new DOMException('This operation was aborted', 'AbortError');
+          signal.reason instanceof Error
+            ? signal.reason
+            : new DOMException('This operation was aborted', 'AbortError');
 
         throw error;
       }
@@ -578,9 +576,9 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
           abortListener = () => {
             const reason = signal.reason;
             const err =
-              reason instanceof Error ? reason : (
-                new DOMException('This operation was aborted', 'AbortError')
-              );
+              reason instanceof Error
+                ? reason
+                : new DOMException('This operation was aborted', 'AbortError');
             setTimeout(() => {
               reject(err);
             }, 0);
@@ -620,10 +618,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
         const error = new Error('Response not a Result');
         task.resolve(Result.err(error));
         this.#failed++;
-        this.events.emit('error', {
-          meta: task.meta,
-          error,
-        });
+        this.events.emit('error', { meta: task.meta, error });
         this.#stopOnErrorAndRejectPending(error);
       }
     } catch (error: any) {
@@ -631,10 +626,7 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
       task.resolve(Result.err(processedError));
 
       this.#failed++;
-      this.events.emit('error', {
-        meta: task.meta,
-        error: processedError,
-      });
+      this.events.emit('error', { meta: task.meta, error: processedError });
       this.#stopOnErrorAndRejectPending(processedError);
     } finally {
       // Clean up the abort listener if it was added
@@ -646,9 +638,9 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
       this.#processQueue(); // Try to process next task
 
       if (
-        this.#pending === 0 &&
-        this.#size === 0 &&
-        this.#rateLimitTimeouts.size === 0
+        this.#pending === 0
+        && this.#size === 0
+        && this.#rateLimitTimeouts.size === 0
       ) {
         // When everything is finished, resolve idle waiters
         this.#resolveIdleWaiters();
@@ -718,10 +710,10 @@ class AsyncQueue<T, E extends ResultValidErrors = Error, I = unknown> {
    */
   async onIdle(): Promise<void> {
     if (
-      this.#stopped ||
-      (this.#pending === 0 &&
-        this.#size === 0 &&
-        this.#rateLimitTimeouts.size === 0)
+      this.#stopped
+      || (this.#pending === 0
+        && this.#size === 0
+        && this.#rateLimitTimeouts.size === 0)
     ) {
       return Promise.resolve();
     }
