@@ -6,6 +6,7 @@ import {
   isCommittedElementOutdated,
   useCommittedElement,
 } from './internalUtils/useCommittedElement';
+import { useLatestCb } from './useLatestValue';
 import { useOnChange } from './useOnChange';
 
 /**
@@ -16,9 +17,6 @@ import { useOnChange } from './useOnChange';
  * every commit of the component that uses the hook, pass the element (e.g. from
  * a `useState` callback ref) when it can be attached, replaced or removed by a
  * child component without this one re-rendering.
- *
- * `loadMore` must be memoized, the scroll listener is attached again when it
- * changes.
  */
 export function useInfiniteLoading({
   containerRef,
@@ -36,6 +34,9 @@ export function useInfiniteLoading({
   disable?: boolean;
 }) {
   const containerElement = useCommittedElement(containerRef);
+  // a new loadMore must not attach the listener again, it would cancel a
+  // pending throttled scroll check
+  const latestLoadMore = useLatestCb(loadMore);
 
   useOnChange(
     [isLoaded, hasMore, containerElement, disable],
@@ -65,7 +66,7 @@ export function useInfiniteLoading({
             'useInfiniteLoading: content is smaller than container height and hasMore is true, which will trigger unoptimized refetching, prefer increasing the load size to prevent this',
           );
         }
-        loadMore();
+        latestLoadMore();
       }
     },
     // compare the container element by identity, deepEqual would walk its props
@@ -92,7 +93,7 @@ export function useInfiniteLoading({
       const scrollToEnd = scrollAvailableToEnd - scrollToStart;
 
       if (scrollToEnd < 2 + triggerMargin) {
-        loadMore();
+        latestLoadMore();
       }
     }, 500);
 
@@ -108,7 +109,7 @@ export function useInfiniteLoading({
     disable,
     hasMore,
     isLoaded,
-    loadMore,
+    latestLoadMore,
     triggerMargin,
   ]);
 }

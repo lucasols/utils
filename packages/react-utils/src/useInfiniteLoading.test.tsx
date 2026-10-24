@@ -54,6 +54,34 @@ test('calls the new loadMore when it changes', () => {
   expect(second).toHaveBeenCalledTimes(1);
 });
 
+test('keeps a pending throttled scroll when an inline loadMore changes', () => {
+  const container = createContainer({ scrollHeight: 1000, clientHeight: 100 });
+  const addEventListener = vi.spyOn(container, 'addEventListener');
+  const first = vi.fn();
+  const second = vi.fn();
+
+  const { rerender } = renderHook(
+    ({ onLoadMore }) =>
+      useInfiniteLoading({
+        containerRef: container,
+        loadMore: () => onLoadMore(),
+        hasMore: true,
+        isLoaded: true,
+      }),
+    { initialProps: { onLoadMore: first } },
+  );
+
+  scrollTo(container, 500);
+  scrollTo(container, 899);
+
+  rerender({ onLoadMore: second });
+  vi.advanceTimersByTime(500);
+
+  expect(first).not.toHaveBeenCalled();
+  expect(second).toHaveBeenCalledTimes(1);
+  expect(addEventListener).toHaveBeenCalledTimes(1);
+});
+
 test('loads more when scrolling near the end', () => {
   const container = createContainer({ scrollHeight: 1000, clientHeight: 100 });
   const loadMore = vi.fn();
