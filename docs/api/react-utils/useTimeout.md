@@ -10,11 +10,12 @@
 function useTimeout(ms, noClearOnUnmount): object;
 ```
 
-Defined in: [react-utils/src/useTimeout.ts:28](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useTimeout.ts#L28)
+Defined in: [react-utils/src/useTimeout.ts:30](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useTimeout.ts#L30)
 
 Hook that manages multiple timeouts with a stable API.
 
-Automatically clears all pending timeouts on unmount unless `noClearOnUnmount` is true.
+Automatically clears all pending timeouts on unmount unless
+`noClearOnUnmount` is true.
 
 #### Parameters
 
@@ -28,7 +29,8 @@ Default timeout duration in milliseconds
 
 `boolean` = `false`
 
-If true, timeouts will not be cleared on unmount (default: false)
+If true, timeouts will not be cleared on unmount
+  (default: false)
 
 #### Returns
 
@@ -89,14 +91,14 @@ clearAndCall: (cb, overrideMs?) => void;
 #### Example
 
 ```tsx
-function Toast({ message }: { message: string }) {
-  const [show, setShow] = useState(true);
-  const timeout = useTimeout(3000);
+  function Toast({ message }: { message: string }) {
+    const [show, setShow] = useState(true);
+    const timeout = useTimeout(3000);
 
-  useEffect(() => {
-    timeout.call(() => setShow(false));
-  }, [timeout]);
+    useEffect(() => {
+      timeout.call(() => setShow(false));
+    }, [timeout]);
 
-  return show ? <div>{message}</div> : null;
-}
-```
+    return show ? <div>{message}</div> : null;
+  }
+  ```;

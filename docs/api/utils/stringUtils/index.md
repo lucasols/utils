@@ -78,7 +78,7 @@ joinStrings('a', 'b', 'c'); // 'abc'
 function convertToCamelCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:120](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L120)
+Defined in: [packages/utils/src/stringUtils.ts:118](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L118)
 
 Convert a string to `camelCase`
 
@@ -100,7 +100,7 @@ Convert a string to `camelCase`
 function convertToConstantCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L149)
+Defined in: [packages/utils/src/stringUtils.ts:147](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L147)
 
 Convert a string to `CONSTANT_CASE`
 
@@ -122,7 +122,7 @@ Convert a string to `CONSTANT_CASE`
 function convertToDotCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:154](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L154)
+Defined in: [packages/utils/src/stringUtils.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L152)
 
 Convert a string to `dot.case`
 
@@ -144,7 +144,7 @@ Convert a string to `dot.case`
 function convertToKebabCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:95](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L95)
+Defined in: [packages/utils/src/stringUtils.ts:93](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L93)
 
 Convert a string to `kebab-case`
 
@@ -166,7 +166,7 @@ Convert a string to `kebab-case`
 function convertToPascalCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L112)
+Defined in: [packages/utils/src/stringUtils.ts:110](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L110)
 
 Convert a string to `PascalCase`
 
@@ -188,7 +188,7 @@ Convert a string to `PascalCase`
 function convertToPathCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:159](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L159)
+Defined in: [packages/utils/src/stringUtils.ts:157](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L157)
 
 Convert a string to `path/case`
 
@@ -210,7 +210,7 @@ Convert a string to `path/case`
 function convertToSentenceCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:126](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L126)
+Defined in: [packages/utils/src/stringUtils.ts:124](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L124)
 
 Convert a string to `Sentence Case`
 
@@ -232,7 +232,7 @@ Convert a string to `Sentence Case`
 function convertToSnakeCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L100)
+Defined in: [packages/utils/src/stringUtils.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L98)
 
 Convert a string to `snake_case`
 
@@ -254,7 +254,7 @@ Convert a string to `snake_case`
 function convertToTitleCase(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:138](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L138)
+Defined in: [packages/utils/src/stringUtils.ts:136](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L136)
 
 Convert a string to `Title Case`
 
@@ -300,7 +300,7 @@ Defined in: [packages/utils/src/stringUtils.ts:35](https://github.com/lucasols/u
 function isCamelCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L65)
+Defined in: [packages/utils/src/stringUtils.ts:63](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L63)
 
 Check if a string is `camelCase`
 
@@ -322,7 +322,7 @@ Check if a string is `camelCase`
 function isConstantCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:80](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L80)
+Defined in: [packages/utils/src/stringUtils.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L78)
 
 Check if a string is `CONSTANT_CASE`
 
@@ -344,7 +344,7 @@ Check if a string is `CONSTANT_CASE`
 function isDotCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:85](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L85)
+Defined in: [packages/utils/src/stringUtils.ts:83](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L83)
 
 Check if a string is `dot.case`
 
@@ -366,7 +366,7 @@ Check if a string is `dot.case`
 function isKebabCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L55)
+Defined in: [packages/utils/src/stringUtils.ts:53](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L53)
 
 Check if a string is `kebab-case`
 
@@ -388,7 +388,7 @@ Check if a string is `kebab-case`
 function isPascalCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:60](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L60)
+Defined in: [packages/utils/src/stringUtils.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L58)
 
 Check if a string is `PascalCase`
 
@@ -410,7 +410,7 @@ Check if a string is `PascalCase`
 function isPathCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:90](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L90)
+Defined in: [packages/utils/src/stringUtils.ts:88](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L88)
 
 Check if a string is `path/case`
 
@@ -432,7 +432,7 @@ Check if a string is `path/case`
 function isSentenceCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:75](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L75)
+Defined in: [packages/utils/src/stringUtils.ts:73](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L73)
 
 Check if a string is `Sentence Case`
 
@@ -454,7 +454,7 @@ Check if a string is `Sentence Case`
 function isSnakeCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L50)
+Defined in: [packages/utils/src/stringUtils.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L48)
 
 Check if a string is `snake_case`
 
@@ -476,7 +476,7 @@ Check if a string is `snake_case`
 function isTitleCase(str): boolean;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L70)
+Defined in: [packages/utils/src/stringUtils.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L68)
 
 Check if a string is `Title Case`
 
@@ -498,7 +498,7 @@ Check if a string is `Title Case`
 function removeANSIColors(str): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:169](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L169)
+Defined in: [packages/utils/src/stringUtils.ts:167](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L167)
 
 #### Parameters
 
@@ -521,7 +521,7 @@ function truncateString(
    ellipsis): string;
 ```
 
-Defined in: [packages/utils/src/stringUtils.ts:163](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L163)
+Defined in: [packages/utils/src/stringUtils.ts:161](https://github.com/lucasols/utils/blob/main/packages/utils/src/stringUtils.ts#L161)
 
 #### Parameters
 

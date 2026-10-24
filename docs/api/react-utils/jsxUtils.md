@@ -52,7 +52,7 @@ Defined in: [react-utils/src/jsxUtils.ts:6](https://github.com/lucasols/utils/bl
 function repeatJsx<T>(times, element): ReactNode;
 ```
 
-Defined in: [react-utils/src/jsxUtils.ts:136](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L136)
+Defined in: [react-utils/src/jsxUtils.ts:127](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L127)
 
 #### Type Parameters
 
@@ -82,7 +82,7 @@ Defined in: [react-utils/src/jsxUtils.ts:136](https://github.com/lucasols/utils/
 function replaceStringWithJSX(string, replacers): ReactNode;
 ```
 
-Defined in: [react-utils/src/jsxUtils.ts:41](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L41)
+Defined in: [react-utils/src/jsxUtils.ts:38](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/jsxUtils.ts#L38)
 
 #### Parameters
 

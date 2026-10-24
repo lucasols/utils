@@ -14,17 +14,20 @@
 function useOnClickOutside(ref, handler): void;
 ```
 
-Defined in: [react-utils/src/useOnClickOutside.ts:37](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnClickOutside.ts#L37)
+Defined in: [react-utils/src/useOnClickOutside.ts:41](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useOnClickOutside.ts#L41)
 
-React hook that triggers a handler when a click or touch event occurs outside the specified element(s).
+React hook that triggers a handler when a click or touch event occurs outside
+the specified element(s).
 
-Useful for closing popovers, modals, or dropdowns when the user clicks outside.
+Useful for closing popovers, modals, or dropdowns when the user clicks
+outside.
 
 #### Parameters
 
 ##### ref
 
-A single ref, DOM element, selector string, or an array of these, representing the element(s) to detect outside clicks for
+A single ref, DOM element, selector string, or an array of
+  these, representing the element(s) to detect outside clicks for
 
 [`Ref`](-internal-.md#ref) | [`Ref`](-internal-.md#ref)[]
 
@@ -32,7 +35,8 @@ A single ref, DOM element, selector string, or an array of these, representing t
 
 (`event`) => `void`
 
-Function called when a click or touch event occurs outside the specified element(s)
+Function called when a click or touch event occurs outside
+  the specified element(s)
 
 #### Returns
 
@@ -41,6 +45,6 @@ Function called when a click or touch event occurs outside the specified element
 #### Example
 
 ```tsx
-const ref = useRef<HTMLDivElement>(null);
-useOnClickOutside(ref, () => setOpen(false));
-```
+  const ref = useRef<HTMLDivElement>(null);
+  useOnClickOutside(ref, () => setOpen(false));
+  ```;

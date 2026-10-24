@@ -10,7 +10,7 @@
 type BuildArrayPath<BasePath> = BasePath extends "$" ? "[*]" : `${BasePath}[*]`;
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L66)
+Defined in: [packages/utils/src/typeUtils.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L72)
 
 #### Type Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/utils/src/typeUtils.ts:66](https://github.com/lucasols/uti
 type BuildPath<BasePath, Key> = BasePath extends "$" ? Key extends string | number ? `${Key}` : never : Key extends string | number ? `${BasePath}.${Key}` : never;
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L58)
+Defined in: [packages/utils/src/typeUtils.ts:61](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L61)
 
 #### Type Parameters
 
@@ -46,7 +46,7 @@ Defined in: [packages/utils/src/typeUtils.ts:58](https://github.com/lucasols/uti
 type DeepReplaceValueImpl<T, ReplaceType, NewType, SkipPaths, SkipType, Path> = SkipPaths extends string ? PathMatches<Path, SkipPaths> extends true ? T : T extends ReplaceType ? T extends SkipType ? T : NewType : T extends readonly infer U[] ? DeepReplaceValueImpl<U, ReplaceType, NewType, SkipPaths, SkipType, BuildArrayPath<Path>>[] : T extends SkipType ? T : T extends Record<string, any> ? { [K in keyof T]: DeepReplaceValueImpl<T[K], ReplaceType, NewType, SkipPaths, SkipType, BuildPath<Path, K>> } : T : T extends ReplaceType ? T extends SkipType ? T : NewType : T extends readonly infer U[] ? DeepReplaceValueImpl<U, ReplaceType, NewType, SkipPaths, SkipType, BuildArrayPath<Path>>[] : T extends SkipType ? T : T extends Record<string, any> ? { [K in keyof T]: DeepReplaceValueImpl<T[K], ReplaceType, NewType, SkipPaths, SkipType, BuildPath<Path, K>> } : T;
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:69](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L69)
+Defined in: [packages/utils/src/typeUtils.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L76)
 
 #### Type Parameters
 
@@ -102,7 +102,7 @@ Defined in: [packages/utils/src/typeUtils.ts:44](https://github.com/lucasols/uti
 type PickRequiredKeys<T> = { [K in keyof T]: undefined extends T[K] ? never : K }[keyof T];
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:173](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L173)
+Defined in: [packages/utils/src/typeUtils.ts:182](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L182)
 
 #### Type Parameters
 
@@ -118,7 +118,7 @@ Defined in: [packages/utils/src/typeUtils.ts:173](https://github.com/lucasols/ut
 type PickUndefinedKeys<T> = { [K in keyof T]: undefined extends T[K] ? K : never }[keyof T];
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:169](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L169)
+Defined in: [packages/utils/src/typeUtils.ts:178](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L178)
 
 #### Type Parameters
 

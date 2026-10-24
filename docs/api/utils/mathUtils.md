@@ -13,7 +13,7 @@ function ceilToStep(
    offset): number;
 ```
 
-Defined in: [packages/utils/src/mathUtils.ts:75](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L75)
+Defined in: [packages/utils/src/mathUtils.ts:71](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L71)
 
 Ceils a number up to the nearest multiple of the specified step value.
 
@@ -46,7 +46,7 @@ The ceiled value
 #### Example
 
 ```ts
-ceilToStep(23, 5) // 25 (smallest multiple of 5 ≥ 23)
+ceilToStep(23, 5); // 25 (smallest multiple of 5 ≥ 23)
 ```
 
 ***
@@ -167,7 +167,7 @@ Defined in: [packages/utils/src/mathUtils.ts:9](https://github.com/lucasols/util
 function fixFloatingPointNumber(value): number;
 ```
 
-Defined in: [packages/utils/src/mathUtils.ts:25](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L25)
+Defined in: [packages/utils/src/mathUtils.ts:21](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L21)
 
 #### Parameters
 
@@ -190,7 +190,7 @@ function floorToStep(
    offset): number;
 ```
 
-Defined in: [packages/utils/src/mathUtils.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L58)
+Defined in: [packages/utils/src/mathUtils.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L54)
 
 Floors a number down to the nearest multiple of the specified step value.
 
@@ -223,7 +223,7 @@ The floored value
 #### Example
 
 ```ts
-floorToStep(23, 5) // 20 (largest multiple of 5 ≤ 23)
+floorToStep(23, 5); // 20 (largest multiple of 5 ≤ 23)
 ```
 
 ***
@@ -234,7 +234,7 @@ floorToStep(23, 5) // 20 (largest multiple of 5 ≤ 23)
 function round(num, precision): number;
 ```
 
-Defined in: [packages/utils/src/mathUtils.ts:91](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L91)
+Defined in: [packages/utils/src/mathUtils.ts:87](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L87)
 
 Rounds a number to the specified number of decimal places.
 
@@ -261,7 +261,7 @@ The rounded number
 #### Example
 
 ```ts
-round(3.14159, 2) // 3.14
+round(3.14159, 2); // 3.14
 ```
 
 ***
@@ -275,7 +275,7 @@ function roundToStep(
    offset): number;
 ```
 
-Defined in: [packages/utils/src/mathUtils.ts:40](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L40)
+Defined in: [packages/utils/src/mathUtils.ts:36](https://github.com/lucasols/utils/blob/main/packages/utils/src/mathUtils.ts#L36)
 
 Rounds a number to the nearest multiple of the specified step value.
 
@@ -308,5 +308,5 @@ The rounded value
 #### Example
 
 ```ts
-roundToStep(23, 5) // 25 (nearest multiple of 5)
+roundToStep(23, 5); // 25 (nearest multiple of 5)
 ```

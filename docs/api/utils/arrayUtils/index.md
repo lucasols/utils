@@ -72,7 +72,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:45](https://github.com/lucasols/ut
 function arrayOps<T>(array): ArrayOps<T>;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:349](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L349)
+Defined in: [packages/utils/src/arrayUtils.ts:347](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L347)
 
 Enhance an array with extra methods
 
@@ -110,7 +110,7 @@ const enhancedItems = arrayOps(array);
 function arrayWithPrev<T>(array): [T, T | null][];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:144](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L144)
+Defined in: [packages/utils/src/arrayUtils.ts:142](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L142)
 
 #### Type Parameters
 
@@ -136,7 +136,7 @@ readonly `T`[]
 function arrayWithPrevAndIndex<T>(array): object[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:150](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L150)
+Defined in: [packages/utils/src/arrayUtils.ts:148](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L148)
 
 #### Type Parameters
 
@@ -217,7 +217,7 @@ function findAfterIndex<T>(
    predicate): T | undefined;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:187](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L187)
+Defined in: [packages/utils/src/arrayUtils.ts:185](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L185)
 
 #### Type Parameters
 
@@ -251,7 +251,7 @@ readonly `T`[]
 function findAndMap<T, R>(array, predicate): R | undefined;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:306](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L306)
+Defined in: [packages/utils/src/arrayUtils.ts:304](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L304)
 
 Finds the first item in an array where the predicate returns a non-false
 value and returns that mapped value.
@@ -317,7 +317,7 @@ function findBeforeIndex<T>(
    predicate): T | undefined;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:201](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L201)
+Defined in: [packages/utils/src/arrayUtils.ts:199](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L199)
 
 #### Type Parameters
 
@@ -351,7 +351,7 @@ readonly `T`[]
 function getAscIndexOrder(index): number;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:140](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L140)
+Defined in: [packages/utils/src/arrayUtils.ts:138](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L138)
 
 Get the correct 0 based value for sync with other array in ascending order
 
@@ -386,7 +386,7 @@ Get the correct 0 based value for sync with other array in ascending order
 function hasDuplicates<T>(array, getKey): boolean;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:225](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L225)
+Defined in: [packages/utils/src/arrayUtils.ts:223](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L223)
 
 #### Type Parameters
 
@@ -416,7 +416,7 @@ readonly `T`[]
 function intersperse<T, I>(array, separator): (T | I)[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:368](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L368)
+Defined in: [packages/utils/src/arrayUtils.ts:366](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L366)
 
 Inserts a separator value between each element in an array.
 
@@ -464,7 +464,7 @@ intersperse([1, 2, 3], 0); // [1, 0, 2, 0, 3]
 function isInArray<T, U>(value, oneOf): value is U;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:160](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L160)
+Defined in: [packages/utils/src/arrayUtils.ts:158](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L158)
 
 #### Type Parameters
 
@@ -498,7 +498,7 @@ readonly `U`[]
 function isInArrayWithoutNarrowing<T, U>(value, oneOf): boolean;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:173](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L173)
+Defined in: [packages/utils/src/arrayUtils.ts:171](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L171)
 
 #### Type Parameters
 
@@ -532,7 +532,7 @@ readonly `U`[]
 function looseIsInArray(value, array): boolean;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:180](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L180)
+Defined in: [packages/utils/src/arrayUtils.ts:178](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L178)
 
 #### Parameters
 
@@ -556,7 +556,7 @@ readonly `unknown`[]
 function rejectArrayUndefinedValues<T>(array): T;
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:221](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L221)
+Defined in: [packages/utils/src/arrayUtils.ts:219](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L219)
 
 #### Type Parameters
 
@@ -582,7 +582,7 @@ Defined in: [packages/utils/src/arrayUtils.ts:221](https://github.com/lucasols/u
 function rejectDuplicates<T>(array, getKey): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:242](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L242)
+Defined in: [packages/utils/src/arrayUtils.ts:240](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L240)
 
 #### Type Parameters
 
@@ -615,7 +615,7 @@ function repeat<T>(
    separator?): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:395](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L395)
+Defined in: [packages/utils/src/arrayUtils.ts:393](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L393)
 
 Creates an array by repeating a value a specified number of times, optionally
 with a separator between each repetition.
@@ -670,7 +670,7 @@ function sortBy<T>(
    props): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:82](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L82)
+Defined in: [packages/utils/src/arrayUtils.ts:80](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L80)
 
 Sort an array based on a value
 
@@ -731,7 +731,7 @@ function truncateArray<T>(
    appendIfTruncated?): T[];
 ```
 
-Defined in: [packages/utils/src/arrayUtils.ts:262](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L262)
+Defined in: [packages/utils/src/arrayUtils.ts:260](https://github.com/lucasols/utils/blob/main/packages/utils/src/arrayUtils.ts#L260)
 
 #### Type Parameters
 

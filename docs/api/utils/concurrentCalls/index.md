@@ -198,7 +198,7 @@ Defined in: [packages/utils/src/concurrentCalls.ts:67](https://github.com/lucaso
 function concurrentCalls<R>(): ConcurrentCalls<R, Error>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:274](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L274)
+Defined in: [packages/utils/src/concurrentCalls.ts:262](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L262)
 
 Executes multiple asynchronous calls concurrently and collects the results in
 a easier to use format.
@@ -223,7 +223,7 @@ The type of the result value.
 function concurrentCallsWithMetadata<M, R>(): ConcurrentCallsWithMetadata<M, R, Error>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:474](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L474)
+Defined in: [packages/utils/src/concurrentCalls.ts:455](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L455)
 
 Executes multiple asynchronous calls concurrently with metadata for each call
 and collects the results in a easier to use format.
@@ -254,7 +254,7 @@ The type of the result value.
 function concurrentResultCalls<ResultFn>(): ConcurrentCalls<ValueFromResult<Awaited<ReturnType<ResultFn>>>, ErrorFromResult<Awaited<ReturnType<ResultFn>>>>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:490](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L490)
+Defined in: [packages/utils/src/concurrentCalls.ts:471](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L471)
 
 Executes multiple asynchronous result calls concurrently and collects the
 results in a easier to use format.
@@ -277,7 +277,7 @@ results in a easier to use format.
 function concurrentResultsWithMetadata<M, ResultFn>(): ConcurrentCallsWithMetadata<M, ValueFromResult<Awaited<ReturnType<ResultFn>>>, ErrorFromResult<Awaited<ReturnType<ResultFn>>>>;
 ```
 
-Defined in: [packages/utils/src/concurrentCalls.ts:508](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L508)
+Defined in: [packages/utils/src/concurrentCalls.ts:489](https://github.com/lucasols/utils/blob/main/packages/utils/src/concurrentCalls.ts#L489)
 
 Executes multiple asynchronous result calls concurrently with metadata for
 each call and collects the results in a easier to use format.

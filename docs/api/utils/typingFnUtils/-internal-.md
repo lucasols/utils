@@ -10,7 +10,7 @@
 type KeysWithUndefinedValues<T> = { [K in keyof T]: undefined extends T[K] ? K : never }[keyof T];
 ```
 
-Defined in: [packages/utils/src/typeUtils.ts:155](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L155)
+Defined in: [packages/utils/src/typeUtils.ts:164](https://github.com/lucasols/utils/blob/main/packages/utils/src/typeUtils.ts#L164)
 
 #### Type Parameters
 

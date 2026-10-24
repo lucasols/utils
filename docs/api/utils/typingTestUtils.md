@@ -30,7 +30,7 @@ Defined in: [packages/utils/src/typingTestUtils.ts:1](https://github.com/lucasol
 type TestTypeNotEqual<X, Y> = true extends TestTypeIsEqual<X, Y> ? false : true;
 ```
 
-Defined in: [packages/utils/src/typingTestUtils.ts:4](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingTestUtils.ts#L4)
+Defined in: [packages/utils/src/typingTestUtils.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingTestUtils.ts#L5)
 
 #### Type Parameters
 
@@ -50,7 +50,7 @@ Defined in: [packages/utils/src/typingTestUtils.ts:4](https://github.com/lucasol
 const typingTest: object;
 ```
 
-Defined in: [packages/utils/src/typingTestUtils.ts:97](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingTestUtils.ts#L97)
+Defined in: [packages/utils/src/typingTestUtils.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingTestUtils.ts#L100)
 
 #### Type Declaration
 

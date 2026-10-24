@@ -94,7 +94,7 @@ function retryResultOnError<T, E>(
 __originalMaxRetries): Promise<Result<T, E>>;
 ```
 
-Defined in: [packages/utils/src/retryOnError.ts:174](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L174)
+Defined in: [packages/utils/src/retryOnError.ts:167](https://github.com/lucasols/utils/blob/main/packages/utils/src/retryOnError.ts#L167)
 
 Retries a result function on error with configurable retry logic.
 

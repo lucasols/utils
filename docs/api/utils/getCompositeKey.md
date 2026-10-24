@@ -10,7 +10,7 @@
 type GetCompositeKeyOptions = object;
 ```
 
-Defined in: [packages/utils/src/getCompositeKey.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L7)
+Defined in: [packages/utils/src/getCompositeKey.ts:5](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L5)
 
 #### Properties
 
@@ -20,7 +20,7 @@ Defined in: [packages/utils/src/getCompositeKey.ts:7](https://github.com/lucasol
 optional maxSortingDepth: number;
 ```
 
-Defined in: [packages/utils/src/getCompositeKey.ts:11](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L11)
+Defined in: [packages/utils/src/getCompositeKey.ts:7](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L7)
 
 The maximum depth to sort the input value. Default is 3.
 
@@ -30,7 +30,7 @@ The maximum depth to sort the input value. Default is 3.
 optional stringify: GetCompositeKeyStringifier;
 ```
 
-Defined in: [packages/utils/src/getCompositeKey.ts:16](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L16)
+Defined in: [packages/utils/src/getCompositeKey.ts:12](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L12)
 
 Custom stringifier for values that need special handling. Return undefined
 to keep using the default stringifier for that value.
@@ -66,7 +66,7 @@ function getCompositeKey(
    stringify?): string;
 ```
 
-Defined in: [packages/utils/src/getCompositeKey.ts:34](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L34)
+Defined in: [packages/utils/src/getCompositeKey.ts:30](https://github.com/lucasols/utils/blob/main/packages/utils/src/getCompositeKey.ts#L30)
 
 Returns a stable key for the input value.
 

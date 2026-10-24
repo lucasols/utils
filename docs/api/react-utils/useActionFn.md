@@ -62,7 +62,7 @@ isInProgress: boolean;
 function useActionFnWithState<T, A, R>(action): object;
 ```
 
-Defined in: [react-utils/src/useActionFn.ts:38](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L38)
+Defined in: [react-utils/src/useActionFn.ts:41](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useActionFn.ts#L41)
 
 #### Type Parameters
 

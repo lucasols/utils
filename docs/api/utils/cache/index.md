@@ -10,7 +10,7 @@
 
 ### SkipCaching\<T\>
 
-Defined in: [packages/utils/src/cache.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L66)
+Defined in: [packages/utils/src/cache.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L64)
 
 Wrapper class that prevents a value from being cached. When returned from a
 cache computation function, the value will be returned to the caller but not
@@ -43,7 +43,7 @@ const cache = createCache<string>();
 new SkipCaching<T>(value): SkipCaching<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:69](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L69)
+Defined in: [packages/utils/src/cache.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L67)
 
 ###### Parameters
 
@@ -63,13 +63,13 @@ Defined in: [packages/utils/src/cache.ts:69](https://github.com/lucasols/utils/b
 value: T;
 ```
 
-Defined in: [packages/utils/src/cache.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L67)
+Defined in: [packages/utils/src/cache.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L65)
 
 ***
 
 ### WithExpiration\<T\>
 
-Defined in: [packages/utils/src/cache.ts:93](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L93)
+Defined in: [packages/utils/src/cache.ts:88](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L88)
 
 Wrapper class that sets a custom expiration time for a cached value. Allows
 individual cache entries to have different expiration times than the default
@@ -84,12 +84,9 @@ const cache = createCache<string>({ maxItemAge: { hours: 1 } }); // Default 1 ho
     return withExpiration('temporary data', { minutes: 5 }); // Expires in 5 minutes
   });
 
-  const longLived = cache.getOrInsert(
-    'long-lived',
-    ({ withExpiration }) => {
-      return withExpiration('persistent data', { days: 1 }); // Expires in 1 day
-    },
-  );
+  const longLived = cache.getOrInsert('long-lived', ({ withExpiration }) => {
+    return withExpiration('persistent data', { days: 1 }); // Expires in 1 day
+  });
 ```
 
 #### Type Parameters
@@ -106,7 +103,7 @@ const cache = createCache<string>({ maxItemAge: { hours: 1 } }); // Default 1 ho
 new WithExpiration<T>(value, expiration): WithExpiration<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L102)
+Defined in: [packages/utils/src/cache.ts:97](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L97)
 
 ###### Parameters
 
@@ -135,7 +132,7 @@ The expiration time of the value in seconds or a
 expiration: number;
 ```
 
-Defined in: [packages/utils/src/cache.ts:95](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L95)
+Defined in: [packages/utils/src/cache.ts:90](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L90)
 
 ##### value
 
@@ -143,7 +140,7 @@ Defined in: [packages/utils/src/cache.ts:95](https://github.com/lucasols/utils/b
 value: T;
 ```
 
-Defined in: [packages/utils/src/cache.ts:94](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L94)
+Defined in: [packages/utils/src/cache.ts:89](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L89)
 
 ## Type Aliases
 
@@ -153,7 +150,7 @@ Defined in: [packages/utils/src/cache.ts:94](https://github.com/lucasols/utils/b
 type Cache<T> = object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:133](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L133)
+Defined in: [packages/utils/src/cache.ts:128](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L128)
 
 #### Type Parameters
 
@@ -169,7 +166,7 @@ Defined in: [packages/utils/src/cache.ts:133](https://github.com/lucasols/utils/
  cache: object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:157](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L157)
+Defined in: [packages/utils/src/cache.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L152)
 
 ###### map
 
@@ -186,7 +183,7 @@ map: Map<string, {
 cleanExpiredItems: () => void;
 ```
 
-Defined in: [packages/utils/src/cache.ts:150](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L150)
+Defined in: [packages/utils/src/cache.ts:145](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L145)
 
 ###### Returns
 
@@ -198,7 +195,7 @@ Defined in: [packages/utils/src/cache.ts:150](https://github.com/lucasols/utils/
 clear: () => void;
 ```
 
-Defined in: [packages/utils/src/cache.ts:144](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L144)
+Defined in: [packages/utils/src/cache.ts:139](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L139)
 
 ###### Returns
 
@@ -210,7 +207,7 @@ Defined in: [packages/utils/src/cache.ts:144](https://github.com/lucasols/utils/
 clone: () => Cache<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:156](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L156)
+Defined in: [packages/utils/src/cache.ts:151](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L151)
 
 ###### Returns
 
@@ -222,7 +219,7 @@ Defined in: [packages/utils/src/cache.ts:156](https://github.com/lucasols/utils/
 delete: (...cacheKeys) => void;
 ```
 
-Defined in: [packages/utils/src/cache.ts:145](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L145)
+Defined in: [packages/utils/src/cache.ts:140](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L140)
 
 ###### Parameters
 
@@ -240,7 +237,7 @@ Defined in: [packages/utils/src/cache.ts:145](https://github.com/lucasols/utils/
 get: (cacheKey) => T | undefined;
 ```
 
-Defined in: [packages/utils/src/cache.ts:148](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L148)
+Defined in: [packages/utils/src/cache.ts:143](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L143)
 
 ###### Parameters
 
@@ -258,7 +255,7 @@ Defined in: [packages/utils/src/cache.ts:148](https://github.com/lucasols/utils/
 getAsync: (cacheKey) => Promise<T | undefined>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:151](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L151)
+Defined in: [packages/utils/src/cache.ts:146](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L146)
 
 ###### Parameters
 
@@ -276,7 +273,7 @@ Defined in: [packages/utils/src/cache.ts:151](https://github.com/lucasols/utils/
 getOrInsert: (cacheKey, val, options?) => T;
 ```
 
-Defined in: [packages/utils/src/cache.ts:134](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L134)
+Defined in: [packages/utils/src/cache.ts:129](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L129)
 
 ###### Parameters
 
@@ -302,7 +299,7 @@ Defined in: [packages/utils/src/cache.ts:134](https://github.com/lucasols/utils/
 getOrInsertAsync: (cacheKey, val, options?) => Promise<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:139](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L139)
+Defined in: [packages/utils/src/cache.ts:134](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L134)
 
 ###### Parameters
 
@@ -328,7 +325,7 @@ Defined in: [packages/utils/src/cache.ts:139](https://github.com/lucasols/utils/
 has: (cacheKey) => boolean;
 ```
 
-Defined in: [packages/utils/src/cache.ts:146](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L146)
+Defined in: [packages/utils/src/cache.ts:141](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L141)
 
 ###### Parameters
 
@@ -346,7 +343,7 @@ Defined in: [packages/utils/src/cache.ts:146](https://github.com/lucasols/utils/
 set: (cacheKey, value) => void;
 ```
 
-Defined in: [packages/utils/src/cache.ts:149](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L149)
+Defined in: [packages/utils/src/cache.ts:144](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L144)
 
 ###### Parameters
 
@@ -368,7 +365,7 @@ Defined in: [packages/utils/src/cache.ts:149](https://github.com/lucasols/utils/
 setAsync: (cacheKey, value) => Promise<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:152](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L152)
+Defined in: [packages/utils/src/cache.ts:147](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L147)
 
 ###### Parameters
 
@@ -390,7 +387,7 @@ Defined in: [packages/utils/src/cache.ts:152](https://github.com/lucasols/utils/
 size: number;
 ```
 
-Defined in: [packages/utils/src/cache.ts:147](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L147)
+Defined in: [packages/utils/src/cache.ts:142](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L142)
 
 ## Functions
 
@@ -453,7 +450,7 @@ const expensive = cachedGetter(() => {
 function createCache<T>(cacheOptions): Cache<T>;
 ```
 
-Defined in: [packages/utils/src/cache.ts:226](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L226)
+Defined in: [packages/utils/src/cache.ts:213](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L213)
 
 Creates a full-featured cache with time-based expiration, async support, and
 advanced features. This is a more powerful alternative to `fastCache` when
@@ -495,12 +492,9 @@ A cache instance with various methods for storing and retrieving
   });
 
   // Async caching with promise deduplication
-  const asyncResult = await cache.getOrInsertAsync(
-    'api:data',
-    async () => {
-      return await fetchFromApi('/data');
-    },
-  );
+  const asyncResult = await cache.getOrInsertAsync('api:data', async () => {
+    return await fetchFromApi('/data');
+  });
 
   // Skip caching for certain values
   const value = cache.getOrInsert('dynamic', ({ skipCaching }) => {
@@ -512,12 +506,9 @@ A cache instance with various methods for storing and retrieving
   });
 
   // Custom expiration per item
-  const shortLivedValue = cache.getOrInsert(
-    'temp',
-    ({ withExpiration }) => {
-      return withExpiration('temporary data', { seconds: 30 });
-    },
-  );
+  const shortLivedValue = cache.getOrInsert('temp', ({ withExpiration }) => {
+    return withExpiration('temporary data', { seconds: 30 });
+  });
 
   // Conditional caching based on the computed value
   const result = cache.getOrInsert(
@@ -525,9 +516,7 @@ A cache instance with various methods for storing and retrieving
     () => {
       return computeValue();
     },
-    {
-      skipCachingWhen: (value) => value === null || value.error,
-    },
+    { skipCachingWhen: (value) => value === null || value.error },
   );
 ```
 
@@ -539,7 +528,7 @@ A cache instance with various methods for storing and retrieving
 function fastCache<T>(fastCacheOptions): object;
 ```
 
-Defined in: [packages/utils/src/cache.ts:609](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L609)
+Defined in: [packages/utils/src/cache.ts:591](https://github.com/lucasols/utils/blob/main/packages/utils/src/cache.ts#L591)
 
 Creates a simple, fast cache with FIFO (First In, First Out) eviction policy.
 This is a lightweight alternative to `createCache` for basic caching needs

@@ -118,7 +118,7 @@ A single press of a keybinding sequence
 function createKeybindingsHandler(keyBindingMap, options): EventListener;
 ```
 
-Defined in: [keyboardShortcuts.ts:160](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L160)
+Defined in: [keyboardShortcuts.ts:159](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L159)
 
 Creates an event listener for handling keybindings.
 
@@ -164,7 +164,7 @@ Creates an event listener for handling keybindings.
 function ignoreInputTypingEvents(callback): (e) => void;
 ```
 
-Defined in: [keyboardShortcuts.ts:250](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L250)
+Defined in: [keyboardShortcuts.ts:249](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L249)
 
 #### Parameters
 
@@ -198,7 +198,7 @@ Defined in: [keyboardShortcuts.ts:250](https://github.com/lucasols/utils/blob/ma
 function ignoreRichTextInputTypingEvents(callback): (e) => void;
 ```
 
-Defined in: [keyboardShortcuts.ts:269](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L269)
+Defined in: [keyboardShortcuts.ts:268](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L268)
 
 #### Parameters
 
@@ -235,7 +235,7 @@ function keyboardShortcuts(
    __namedParameters): () => void;
 ```
 
-Defined in: [keyboardShortcuts.ts:236](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L236)
+Defined in: [keyboardShortcuts.ts:235](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L235)
 
 Subscribes to keybindings.
 
@@ -291,7 +291,7 @@ Returns an unsubscribe method.
 function matchKeyBindingPress(event, __namedParameters): boolean;
 ```
 
-Defined in: [keyboardShortcuts.ts:109](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L109)
+Defined in: [keyboardShortcuts.ts:108](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L108)
 
 This tells us if a single keyboard event matches a single keybinding press.
 
@@ -317,7 +317,7 @@ This tells us if a single keyboard event matches a single keybinding press.
 function parseKeybinding(str): KeyBindingPress[];
 ```
 
-Defined in: [keyboardShortcuts.ts:92](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L92)
+Defined in: [keyboardShortcuts.ts:91](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L91)
 
 Parses a "Key Binding String" into its parts
 

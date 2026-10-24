@@ -14,7 +14,7 @@
 type NonEmptyArray<T> = [T, ...T[]];
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:135](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L135)
+Defined in: [packages/utils/src/typingFnUtils.ts:138](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L138)
 
 A type representing an array that is guaranteed to have at least one element.
 
@@ -94,7 +94,7 @@ Defined in: [packages/utils/src/typingFnUtils.ts:4](https://github.com/lucasols/
 function asPartialUndefinedValues<T>(value): T;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:128](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L128)
+Defined in: [packages/utils/src/typingFnUtils.ts:131](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L131)
 
 #### Type Parameters
 
@@ -120,7 +120,7 @@ Defined in: [packages/utils/src/typingFnUtils.ts:128](https://github.com/lucasol
 function asPossiblyUndefined<T>(value): T | undefined;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:166](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L166)
+Defined in: [packages/utils/src/typingFnUtils.ts:169](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L169)
 
 Type helper to cast a value to a type that may be undefined. Use this when
 some value may have incorrectly typed as non-undefined, but you have
@@ -178,7 +178,7 @@ A safe way to cast types, use to substitute the `as Type`
 function isNonEmptyArray<T>(array): array is NonEmptyArray<T>;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:143](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L143)
+Defined in: [packages/utils/src/typingFnUtils.ts:146](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L146)
 
 Type guard to check if an array has at least one element.
 
@@ -274,7 +274,7 @@ Narrow a string to a union of strings
 function objectHasKey<T>(obj, key): obj is object & { [K in string]: unknown };
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:154](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L154)
+Defined in: [packages/utils/src/typingFnUtils.ts:157](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L157)
 
 Type guard to check if an object has a specific key and narrow its type.
 
@@ -429,7 +429,7 @@ Returns undefined, only used for type checking
 function unionsAreTheSame<T, U>(_diff): void;
 ```
 
-Defined in: [packages/utils/src/typingFnUtils.ts:126](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L126)
+Defined in: [packages/utils/src/typingFnUtils.ts:129](https://github.com/lucasols/utils/blob/main/packages/utils/src/typingFnUtils.ts#L129)
 
 Type helper to compare two union types and determine their relationship.
 

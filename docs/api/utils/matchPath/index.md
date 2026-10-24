@@ -10,7 +10,7 @@
 
 ### PathMatch\<ParamKey\>
 
-Defined in: [packages/utils/src/matchPath.ts:62](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L62)
+Defined in: [packages/utils/src/matchPath.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L66)
 
 A PathMatch contains info about how a PathPattern matched on a URL pathname.
 
@@ -28,7 +28,7 @@ A PathMatch contains info about how a PathPattern matched on a URL pathname.
 glob: PathMatchGlob | null;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L72)
+Defined in: [packages/utils/src/matchPath.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L76)
 
 ##### params
 
@@ -36,7 +36,7 @@ Defined in: [packages/utils/src/matchPath.ts:72](https://github.com/lucasols/uti
 params: Params<ParamKey>;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L64)
+Defined in: [packages/utils/src/matchPath.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L68)
 
 The names and values of dynamic parameters in the URL.
 
@@ -46,7 +46,7 @@ The names and values of dynamic parameters in the URL.
 pathname: string;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L66)
+Defined in: [packages/utils/src/matchPath.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L70)
 
 The portion of the URL pathname that was matched.
 
@@ -56,7 +56,7 @@ The portion of the URL pathname that was matched.
 pathnameBase: string;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L68)
+Defined in: [packages/utils/src/matchPath.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L72)
 
 The portion of the URL pathname that was matched before child routes.
 
@@ -66,7 +66,7 @@ The portion of the URL pathname that was matched before child routes.
 pattern: PathPattern;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L70)
+Defined in: [packages/utils/src/matchPath.ts:74](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L74)
 
 The pattern that was used to match.
 
@@ -74,7 +74,7 @@ The pattern that was used to match.
 
 ### PathPattern\<Path\>
 
-Defined in: [packages/utils/src/matchPath.ts:33](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L33)
+Defined in: [packages/utils/src/matchPath.ts:37](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L37)
 
 A PathPattern is used to match on some portion of a URL pathname.
 
@@ -92,7 +92,7 @@ A PathPattern is used to match on some portion of a URL pathname.
 optional caseSensitive: boolean;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:44](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L44)
+Defined in: [packages/utils/src/matchPath.ts:48](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L48)
 
 Should be `true` if the static portions of the `path` should be matched in
 the same case.
@@ -103,7 +103,7 @@ the same case.
 optional end: boolean;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:46](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L46)
+Defined in: [packages/utils/src/matchPath.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L50)
 
 Should be `true` if this pattern should match the entire URL pathname.
 
@@ -113,7 +113,7 @@ Should be `true` if this pattern should match the entire URL pathname.
 path: Path;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:39](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L39)
+Defined in: [packages/utils/src/matchPath.ts:43](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L43)
 
 A string to match against a URL pathname. May contain `:id`-style segments
 to indicate placeholders for dynamic parameters. May also end with `/*` to
@@ -127,7 +127,7 @@ indicate matching the rest of the URL pathname.
 type ParamParseKey<Segment> = [PathParam<Segment>] extends [never] ? string : PathParam<Segment>;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:28](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L28)
+Defined in: [packages/utils/src/matchPath.ts:32](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L32)
 
 #### Type Parameters
 
@@ -143,7 +143,7 @@ Defined in: [packages/utils/src/matchPath.ts:28](https://github.com/lucasols/uti
 type Params<Key> = { readonly [key in Key]: string | undefined };
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:50](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L50)
+Defined in: [packages/utils/src/matchPath.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L54)
 
 The parameters that were parsed from the URL path.
 
@@ -161,7 +161,7 @@ The parameters that were parsed from the URL path.
 type PathMatchGlob = object;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:54](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L54)
+Defined in: [packages/utils/src/matchPath.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L58)
 
 #### Properties
 
@@ -171,7 +171,7 @@ Defined in: [packages/utils/src/matchPath.ts:54](https://github.com/lucasols/uti
 matchPath: <K, Path>(pattern) => PathMatch<K> | null;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:55](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L55)
+Defined in: [packages/utils/src/matchPath.ts:59](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L59)
 
 ###### Type Parameters
 
@@ -199,7 +199,7 @@ Defined in: [packages/utils/src/matchPath.ts:55](https://github.com/lucasols/uti
 path: string;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:58](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L58)
+Defined in: [packages/utils/src/matchPath.ts:62](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L62)
 
 ***
 
@@ -209,7 +209,7 @@ Defined in: [packages/utils/src/matchPath.ts:58](https://github.com/lucasols/uti
 type PathParam<Path> = Path extends "*" | "/*" ? "*" : Path extends `${infer Rest}/*` ? "*" | _PathParam<Rest> : _PathParam<Path>;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:17](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L17)
+Defined in: [packages/utils/src/matchPath.ts:19](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L19)
 
 #### Type Parameters
 
@@ -225,7 +225,7 @@ Defined in: [packages/utils/src/matchPath.ts:17](https://github.com/lucasols/uti
 function matchPath<ParamKey, Path>(pattern, pathname): PathMatch<ParamKey> | null;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:83](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L83)
+Defined in: [packages/utils/src/matchPath.ts:87](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L87)
 
 Performs pattern matching on a URL pathname and returns information about the
 match.
@@ -266,7 +266,7 @@ https://reactrouter.com/utils/match-path
 function matchPathWith(path): object;
 ```
 
-Defined in: [packages/utils/src/matchPath.ts:219](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L219)
+Defined in: [packages/utils/src/matchPath.ts:223](https://github.com/lucasols/utils/blob/main/packages/utils/src/matchPath.ts#L223)
 
 #### Parameters
 

@@ -10,7 +10,7 @@
 type BaseMatch = object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L64)
+Defined in: [packages/utils/src/partialEqual.ts:62](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L62)
 
 #### Properties
 
@@ -20,7 +20,7 @@ Defined in: [packages/utils/src/partialEqual.ts:64](https://github.com/lucasols/
 all: (...values) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:113](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L113)
+Defined in: [packages/utils/src/partialEqual.ts:109](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L109)
 
 ###### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [packages/utils/src/partialEqual.ts:113](https://github.com/lucasols
 any: (...values) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L112)
+Defined in: [packages/utils/src/partialEqual.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L108)
 
 ###### Parameters
 
@@ -56,7 +56,7 @@ Defined in: [packages/utils/src/partialEqual.ts:112](https://github.com/lucasols
 array: object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:91](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L91)
+Defined in: [packages/utils/src/partialEqual.ts:89](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L89)
 
 ###### contains()
 
@@ -224,7 +224,7 @@ startsWith: (elements) => Comparison;
 custom: (isEqual) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L108)
+Defined in: [packages/utils/src/partialEqual.ts:104](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L104)
 
 ###### Parameters
 
@@ -246,7 +246,7 @@ Defined in: [packages/utils/src/partialEqual.ts:108](https://github.com/lucasols
 deepNoExtraDefinedKeys: (partialShape) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L68)
+Defined in: [packages/utils/src/partialEqual.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L66)
 
 ###### Parameters
 
@@ -264,7 +264,7 @@ Defined in: [packages/utils/src/partialEqual.ts:68](https://github.com/lucasols/
 deepNoExtraKeys: (partialShape) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L66)
+Defined in: [packages/utils/src/partialEqual.ts:64](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L64)
 
 ###### Parameters
 
@@ -282,7 +282,7 @@ Defined in: [packages/utils/src/partialEqual.ts:66](https://github.com/lucasols/
 equal: (value) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:106](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L106)
+Defined in: [packages/utils/src/partialEqual.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L102)
 
 ###### Parameters
 
@@ -300,7 +300,7 @@ Defined in: [packages/utils/src/partialEqual.ts:106](https://github.com/lucasols
 hasType: object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:69](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L69)
+Defined in: [packages/utils/src/partialEqual.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L67)
 
 ###### array
 
@@ -344,7 +344,7 @@ string: Comparison;
 isInstanceOf: (constructor) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:77](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L77)
+Defined in: [packages/utils/src/partialEqual.ts:75](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L75)
 
 ###### Parameters
 
@@ -362,7 +362,7 @@ Defined in: [packages/utils/src/partialEqual.ts:77](https://github.com/lucasols/
 jsonString: object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:103](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L103)
+Defined in: [packages/utils/src/partialEqual.ts:101](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L101)
 
 ###### hasPartial()
 
@@ -386,7 +386,7 @@ hasPartial: (value) => Comparison;
 key: object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:114](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L114)
+Defined in: [packages/utils/src/partialEqual.ts:110](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L110)
 
 ###### any
 
@@ -476,7 +476,7 @@ startingWith: (substring) => KeyComparison["startingWith"];
 keyNotBePresent: Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:111](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L111)
+Defined in: [packages/utils/src/partialEqual.ts:107](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L107)
 
 ##### noExtraDefinedKeys()
 
@@ -484,7 +484,7 @@ Defined in: [packages/utils/src/partialEqual.ts:111](https://github.com/lucasols
 noExtraDefinedKeys: (partialShape) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:67](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L67)
+Defined in: [packages/utils/src/partialEqual.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L65)
 
 ###### Parameters
 
@@ -502,7 +502,7 @@ Defined in: [packages/utils/src/partialEqual.ts:67](https://github.com/lucasols/
 noExtraKeys: (partialShape) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:65](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L65)
+Defined in: [packages/utils/src/partialEqual.ts:63](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L63)
 
 ###### Parameters
 
@@ -520,7 +520,7 @@ Defined in: [packages/utils/src/partialEqual.ts:65](https://github.com/lucasols/
 num: object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:84](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L84)
+Defined in: [packages/utils/src/partialEqual.ts:82](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L82)
 
 ###### isGreaterThan()
 
@@ -608,7 +608,7 @@ isLessThanOrEqual: (value) => Comparison;
 partialEqual: (value) => Comparison;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:107](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L107)
+Defined in: [packages/utils/src/partialEqual.ts:103](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L103)
 
 ###### Parameters
 
@@ -626,7 +626,7 @@ Defined in: [packages/utils/src/partialEqual.ts:107](https://github.com/lucasols
 str: object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L78)
+Defined in: [packages/utils/src/partialEqual.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L76)
 
 ###### contains()
 
@@ -710,7 +710,7 @@ Defined in: [packages/utils/src/partialEqual.ts:56](https://github.com/lucasols/
 ~sc: ComparisonsType;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:57](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L57)
+Defined in: [packages/utils/src/partialEqual.ts:56](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L56)
 
 ***
 
@@ -845,7 +845,7 @@ Defined in: [packages/utils/src/partialEqual.ts:44](https://github.com/lucasols/
 type Match = BaseMatch & object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:125](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L125)
+Defined in: [packages/utils/src/partialEqual.ts:121](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L121)
 
 #### Type Declaration
 
@@ -863,7 +863,7 @@ not: BaseMatch;
 type PartialError = object;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:989](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L989)
+Defined in: [packages/utils/src/partialEqual.ts:981](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L981)
 
 #### Properties
 
@@ -873,7 +873,7 @@ Defined in: [packages/utils/src/partialEqual.ts:989](https://github.com/lucasols
 optional expected: any;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:993](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L993)
+Defined in: [packages/utils/src/partialEqual.ts:985](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L985)
 
 ##### message
 
@@ -881,7 +881,7 @@ Defined in: [packages/utils/src/partialEqual.ts:993](https://github.com/lucasols
 message: string;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:991](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L991)
+Defined in: [packages/utils/src/partialEqual.ts:983](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L983)
 
 ##### path
 
@@ -889,7 +889,7 @@ Defined in: [packages/utils/src/partialEqual.ts:991](https://github.com/lucasols
 path: string;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:990](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L990)
+Defined in: [packages/utils/src/partialEqual.ts:982](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L982)
 
 ##### received?
 
@@ -897,4 +897,4 @@ Defined in: [packages/utils/src/partialEqual.ts:990](https://github.com/lucasols
 optional received: any;
 ```
 
-Defined in: [packages/utils/src/partialEqual.ts:992](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L992)
+Defined in: [packages/utils/src/partialEqual.ts:984](https://github.com/lucasols/utils/blob/main/packages/utils/src/partialEqual.ts#L984)

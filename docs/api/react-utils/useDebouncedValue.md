@@ -18,10 +18,10 @@ Defined in: [react-utils/src/useDebouncedValue.ts:35](https://github.com/lucasol
 Hook that debounces a reactive value, returning a delayed version that only
 updates after the specified delay has passed without changes.
 
-Pass `0` as `debounceMs` to disable debouncing entirely, which makes the
-hook act as a passthrough (the returned value always matches the input).
-This is useful for conditionally disabling debouncing without changing the
-call site.
+Pass `0` as `debounceMs` to disable debouncing entirely, which makes the hook
+act as a passthrough (the returned value always matches the input). This is
+useful for conditionally disabling debouncing without changing the call
+site.
 
 #### Type Parameters
 

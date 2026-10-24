@@ -20,9 +20,10 @@ Defined in: [react-utils/src/DelayUnmount.ts:4](https://github.com/lucasols/util
 children: JSX.Element | null | false;
 ```
 
-Defined in: [react-utils/src/DelayUnmount.ts:8](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/DelayUnmount.ts#L8)
+Defined in: [react-utils/src/DelayUnmount.ts:11](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/DelayUnmount.ts#L11)
 
-The children to render. When set to null or false, the component will delay unmounting for the specified delay period
+The children to render. When set to null or false, the component will delay
+unmounting for the specified delay period
 
 ##### delay
 

@@ -10,11 +10,11 @@
 function deepReplaceValues<T, R>(value, replaceValues): R;
 ```
 
-Defined in: [packages/utils/src/deepReplaceValues.ts:80](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepReplaceValues.ts#L80)
+Defined in: [packages/utils/src/deepReplaceValues.ts:82](https://github.com/lucasols/utils/blob/main/packages/utils/src/deepReplaceValues.ts#L82)
 
-Recursively traverses an object or array and allows conditional replacement of values
-based on a provided callback function. The callback receives each value and its path
-within the data structure.
+Recursively traverses an object or array and allows conditional replacement
+of values based on a provided callback function. The callback receives each
+value and its path within the data structure.
 
 #### Type Parameters
 
@@ -42,29 +42,31 @@ The input value to process (object, array, or primitive)
   `newValue`: `unknown`;
 \}
 
-Callback function that receives each value and its path.
-  Return `false` to keep the original value, or `{ newValue: unknown }` to replace it.
-  The path uses dot notation for objects (e.g., "user.name") and bracket notation for arrays (e.g., "items[0]")
+Callback function that receives each value and its
+  path. Return `false` to keep the original value, or `{ newValue: unknown }`
+  to replace it. The path uses dot notation for objects (e.g., "user.name")
+  and bracket notation for arrays (e.g., "items[0]")
 
 #### Returns
 
 `R`
 
-A new structure with replaced values. The original structure is not modified.
-
-#### Throws
-
-Error if circular references are detected
+A new structure with replaced values. The original structure is not
+  modified.
 
 #### Example
 
 ```ts
-const data = { user: { id: 1, name: "Alice" }, scores: [85, 92] };
-const result = deepReplaceValues(data, (value, path) => {
-  if (typeof value === "number") {
-    return { newValue: value * 2 };
-  }
-  return false;
-});
-// Result: { user: { id: 2, name: "Alice" }, scores: [170, 184] }
+const data = { user: { id: 1, name: 'Alice' }, scores: [85, 92] };
+  const result = deepReplaceValues(data, (value, path) => {
+    if (typeof value === 'number') {
+      return { newValue: value * 2 };
+    }
+    return false;
+  });
+  // Result: { user: { id: 2, name: "Alice" }, scores: [170, 184] }
 ```
+
+#### Throws
+
+Error if circular references are detected

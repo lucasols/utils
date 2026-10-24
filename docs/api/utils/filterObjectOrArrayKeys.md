@@ -46,36 +46,36 @@ Filtering patterns in `rejectKeys` and `filterKeys`:
 - Pattern expansion with parentheses:
 
   - `'prop.test.(prop1|prop2|prop3)'` - Expands to `prop.test.prop1`,
-      `prop.test.prop2`, and `prop.test.prop3`
+    `prop.test.prop2`, and `prop.test.prop3`
   - `'components[*].(table_id|columns|filters[*].value)'` - Expands to
-      `components[*].table_id`, `components[*].columns`, and
-      `components[*].filters[*].value`
+    `components[*].table_id`, `components[*].columns`, and
+    `components[*].filters[*].value`
   - `'(users|admins)[*].name'` - Expands to `users[*].name` and `admins[*].name`
 - Array filtering by value:
 
   - `'users[%name="John"]'` - Filters the `users` with the `name` property equal
-      to `John`
+    to `John`
   - `'users[%name="John" | "Jane"]'` - Value-level OR using `|` for multiple
-      values of same property
+    values of same property
   - `'users[%name="Alice" || %age=35]'` - Property-level OR using `||` for
-      different properties
+    different properties
   - `'users[%age=30 && %role="admin"]'` - Property-level AND using `&&` for
-      different properties
+    different properties
   - Note: Mixing `&&` and `||` in the same filter is not supported - use separate
-      filter patterns instead
+    filter patterns instead
   - `'users[%config.name="John" | "Jane"]'` - Dot notation is supported
   - `'users[%name*="oh"]'` - Contains operator (*=) - filters users where name
-      contains "oh"
+    contains "oh"
   - `'users[%name^="Jo"]'` - Starts with operator (^=) - filters users where name
-      starts with "Jo"
+    starts with "Jo"
   - `'users[%name$="hn"]'` - Ends with operator ($=) - filters users where name
-      ends with "hn"
+    ends with "hn"
   - `'users[%name!="John"]'` - Not equal operator (!=) - filters users where name
-      is not "John"
+    is not "John"
   - `'users[%name!*="admin"]'` - Not contains operator (!*=) - filters users
-      where name doesn't contain "admin"
+    where name doesn't contain "admin"
   - `'users[i%name="john"]'` - Case-insensitive matching (i% prefix) - matches
-      "John", "JOHN", "john", etc.
+    "John", "JOHN", "john", etc.
 
 #### Parameters
 

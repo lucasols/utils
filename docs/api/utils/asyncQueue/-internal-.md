@@ -10,7 +10,7 @@
 type AddOptions<I, T, E> = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:94](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L94)
+Defined in: [packages/utils/src/asyncQueue.ts:92](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L92)
 
 Options for adding individual tasks to the queue
 
@@ -36,7 +36,7 @@ Options for adding individual tasks to the queue
 optional meta: I;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L100)
+Defined in: [packages/utils/src/asyncQueue.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L98)
 
 Metadata to associate with this task
 
@@ -46,7 +46,7 @@ Metadata to associate with this task
 optional onComplete: (value) => void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L102)
+Defined in: [packages/utils/src/asyncQueue.ts:100](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L100)
 
 Callback invoked when task completes successfully
 
@@ -66,7 +66,7 @@ Callback invoked when task completes successfully
 optional onError: (error) => void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:104](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L104)
+Defined in: [packages/utils/src/asyncQueue.ts:102](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L102)
 
 Callback invoked when task fails
 
@@ -86,7 +86,7 @@ Callback invoked when task fails
 optional signal: AbortSignal;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:96](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L96)
+Defined in: [packages/utils/src/asyncQueue.ts:94](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L94)
 
 AbortSignal to cancel this specific task
 
@@ -96,7 +96,7 @@ AbortSignal to cancel this specific task
 optional timeout: number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:98](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L98)
+Defined in: [packages/utils/src/asyncQueue.ts:96](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L96)
 
 Timeout for this specific task in milliseconds
 
@@ -108,7 +108,7 @@ Timeout for this specific task in milliseconds
 type AddOptionsWithId<I, T, E> = Omit<AddOptions<I, T, E>, "meta"> & object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:922](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L922)
+Defined in: [packages/utils/src/asyncQueue.ts:914](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L914)
 
 AddOptions variant that requires metadata to be provided
 
@@ -142,7 +142,7 @@ meta: I;
 type AsyncQueueOptions = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L76)
+Defined in: [packages/utils/src/asyncQueue.ts:74](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L74)
 
 Configuration options for AsyncQueue initialization
 
@@ -154,7 +154,7 @@ Configuration options for AsyncQueue initialization
 optional autoStart: boolean;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:88](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L88)
+Defined in: [packages/utils/src/asyncQueue.ts:86](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L86)
 
 Start processing tasks immediately when added (default: true)
 
@@ -164,7 +164,7 @@ Start processing tasks immediately when added (default: true)
 optional concurrency: number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L78)
+Defined in: [packages/utils/src/asyncQueue.ts:76](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L76)
 
 Maximum number of tasks to run concurrently (default: 1)
 
@@ -174,7 +174,7 @@ Maximum number of tasks to run concurrently (default: 1)
 optional rateLimit: RateLimit;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:90](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L90)
+Defined in: [packages/utils/src/asyncQueue.ts:88](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L88)
 
 Rate limit configuration to limit tasks per time interval
 
@@ -184,7 +184,7 @@ Rate limit configuration to limit tasks per time interval
 optional rejectPendingOnError: boolean;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:86](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L86)
+Defined in: [packages/utils/src/asyncQueue.ts:84](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L84)
 
 Reject all pending tasks when stopping on error (default: false)
 
@@ -194,7 +194,7 @@ Reject all pending tasks when stopping on error (default: false)
 optional signal: AbortSignal;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:80](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L80)
+Defined in: [packages/utils/src/asyncQueue.ts:78](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L78)
 
 AbortSignal to cancel the entire queue
 
@@ -204,7 +204,7 @@ AbortSignal to cancel the entire queue
 optional stopOnError: boolean;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:84](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L84)
+Defined in: [packages/utils/src/asyncQueue.ts:82](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L82)
 
 Stop processing new tasks when any task fails (default: false)
 
@@ -214,7 +214,7 @@ Stop processing new tasks when any task fails (default: false)
 optional timeout: number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:82](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L82)
+Defined in: [packages/utils/src/asyncQueue.ts:80](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L80)
 
 Default timeout for all tasks in milliseconds
 
@@ -226,7 +226,7 @@ Default timeout for all tasks in milliseconds
 type RateLimit = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L68)
+Defined in: [packages/utils/src/asyncQueue.ts:66](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L66)
 
 Configuration for rate limiting task execution
 
@@ -238,7 +238,7 @@ Configuration for rate limiting task execution
 interval: DurationObj | number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:72](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L72)
+Defined in: [packages/utils/src/asyncQueue.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L70)
 
 Time interval in milliseconds or as a duration object
 
@@ -248,7 +248,7 @@ Time interval in milliseconds or as a duration object
 maxTasks: number;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:70](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L70)
+Defined in: [packages/utils/src/asyncQueue.ts:68](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L68)
 
 Maximum number of tasks to execute within the interval
 
@@ -260,7 +260,7 @@ Maximum number of tasks to execute within the interval
 type RunCtx<I> = object;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L108)
+Defined in: [packages/utils/src/asyncQueue.ts:106](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L106)
 
 Runtime context passed to task functions
 
@@ -278,7 +278,7 @@ Runtime context passed to task functions
 optional meta: I;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:112](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L112)
+Defined in: [packages/utils/src/asyncQueue.ts:110](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L110)
 
 Metadata associated with this task
 
@@ -288,7 +288,7 @@ Metadata associated with this task
 optional signal: AbortSignal;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:110](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L110)
+Defined in: [packages/utils/src/asyncQueue.ts:108](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L108)
 
 Combined AbortSignal from task, queue, and timeout signals
 
@@ -300,7 +300,7 @@ Combined AbortSignal from task, queue, and timeout signals
 function add(fn, options?): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:404](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L404)
+Defined in: [packages/utils/src/asyncQueue.ts:402](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L402)
 
 Add a task that returns a Result to the queue
 
@@ -357,7 +357,7 @@ Promise that resolves with the task result
 function clear(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:775](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L775)
+Defined in: [packages/utils/src/asyncQueue.ts:767](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L767)
 
 Clear all queued tasks (does not affect currently running tasks)
 
@@ -393,7 +393,7 @@ tasks to complete normally.
 function onIdle(): Promise<void>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:719](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L719)
+Defined in: [packages/utils/src/asyncQueue.ts:711](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L711)
 
 Wait for the queue to become idle (no pending tasks, no queued tasks, and
 no rate-limit timers)
@@ -435,7 +435,7 @@ Promise that resolves when the queue is idle
 function onSizeLessThan(limit): Promise<void>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:744](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L744)
+Defined in: [packages/utils/src/asyncQueue.ts:736](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L736)
 
 Wait until the queued task count is below a limit
 
@@ -463,7 +463,7 @@ Threshold that `size` must be below to resolve
 function pause(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:854](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L854)
+Defined in: [packages/utils/src/asyncQueue.ts:846](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L846)
 
 Pause processing new tasks (currently running tasks continue)
 
@@ -495,7 +495,7 @@ Pause processing new tasks (currently running tasks continue)
 function reset(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:891](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L891)
+Defined in: [packages/utils/src/asyncQueue.ts:883](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L883)
 
 Reset the queue after being stopped, allowing new tasks to be processed
 
@@ -534,7 +534,7 @@ remaining queued tasks if autoStart was enabled.
 function resultifyAdd(fn, options?): Promise<Result<T, Error | E>>;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:494](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L494)
+Defined in: [packages/utils/src/asyncQueue.ts:492](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L492)
 
 Add a task that returns a plain value or throws errors to the queue
 
@@ -599,7 +599,7 @@ With Callbacks
 function resume(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:859](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L859)
+Defined in: [packages/utils/src/asyncQueue.ts:851](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L851)
 
 Resume processing tasks after pause
 
@@ -615,7 +615,7 @@ Resume processing tasks after pause
 function start(): void;
 ```
 
-Defined in: [packages/utils/src/asyncQueue.ts:828](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L828)
+Defined in: [packages/utils/src/asyncQueue.ts:820](https://github.com/lucasols/utils/blob/main/packages/utils/src/asyncQueue.ts#L820)
 
 Manually start processing tasks (only needed if autoStart: false)
 

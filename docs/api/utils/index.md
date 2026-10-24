@@ -18,8 +18,8 @@ Import specific utilities from their modules:
 
 ```typescript
 import { createAsyncQueue } from '@ls-stack/utils/asyncQueue';
-import { deepEqual } from '@ls-stack/utils/deepEqual';
 import { debounce } from '@ls-stack/utils/debounce';
+import { deepEqual } from '@ls-stack/utils/deepEqual';
 ```
 
 ## Documentation
