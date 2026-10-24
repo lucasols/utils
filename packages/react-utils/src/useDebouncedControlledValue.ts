@@ -1,10 +1,9 @@
 /* eslint-disable jsdoc/valid-types */
 import type { __LEGIT_ANY__ } from '@ls-stack/utils/saferTyping';
 import { shallowEqual } from '@ls-stack/utils/shallowEqual';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useConst } from './useConst';
 import { useDebouncedCallback } from './useDebouncedCallback';
-import { useLatestCb } from './useLatestValue';
 import { useOnChange } from './useOnChange';
 import { useOnUnMount } from './useOnUnMount';
 import { useTimeout } from './useTimeout';
@@ -175,13 +174,13 @@ export function useDebouncedControlledValue<T>({
    * synchronously, a different controlled value in the next render replaces
    * the internal value
    */
-  const flush = useLatestCb(() => {
+  function flush() {
     if (!debouncedHandleChange.pending()) return;
 
     debouncedHandleChange.flush();
     flushedValue.current = lastEmittedValue.current;
     setFlushCount((count) => count + 1);
-  });
+  }
 
   /**
    * Cancels the pending change and re-applies the controlled value to the
@@ -189,10 +188,9 @@ export function useDebouncedControlledValue<T>({
    * reset to the value it already holds (e.g. clearing an input whose pending
    * change was not emitted yet) doesn't re-render, so it would be ignored and
    * the pending change applied afterwards. A different controlled value in the
-   * next render replaces the internal value. Stable, it always reads the latest
-   * controlled value
+   * next render replaces the internal value
    */
-  const reset = useLatestCb(() => {
+  function reset() {
     debouncedHandleChange.cancel();
     ignoreNextControlledValueChange.current = false;
     resetIgnoreNextControlledValueTimeout.clear();
@@ -201,7 +199,20 @@ export function useDebouncedControlledValue<T>({
 
     setInternalValue(controlledValue);
     setIsEmpty(checkIfEmpty(controlledValue));
+  }
+
+  const flushRef = useRef(flush);
+  const resetRef = useRef(reset);
+
+  useLayoutEffect(() => {
+    flushRef.current = flush;
+    resetRef.current = reset;
   });
+
+  // stable, so a reset or flush captured in an earlier render reads the latest
+  // controlled value
+  const stableFlush = useCallback(() => flushRef.current(), []);
+  const stableReset = useCallback(() => resetRef.current(), []);
 
   useOnUnMount(() => {
     if (onUnMount === 'flush') {
@@ -216,9 +227,9 @@ export function useDebouncedControlledValue<T>({
     isEmpty,
     onChange,
     isTouched,
-    flush,
-    reset,
+    flush: stableFlush,
+    reset: stableReset,
     /** @deprecated Use `flush` instead */
-    flushDebounce: flush,
+    flushDebounce: stableFlush,
   };
 }
