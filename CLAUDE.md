@@ -52,6 +52,13 @@ To run commands in specific packages:
 
 - `cd package && pnpm test src/testUtils.test.ts -t "should filter with wildcard patterns"` - Run specific test in test file
 
+# Git and Publishing Workflow
+
+These are pre-approved, do them without asking the user for confirmation:
+
+- Always deliver changes through a pull request: create a branch from `main`, commit, push and open the PR with `gh pr create`. Never commit directly to `main`
+- Publish packages only from `main`, after the PR with the changes is merged: switch to an up-to-date `main` and run `pkg-manager publish <package-name> --type <patch|minor|major>` from the repo root
+
 # Architecture
 
 ## Monorepo Structure
