@@ -8,6 +8,10 @@ import { useOnChange } from './useOnChange';
 import { useOnUnMount } from './useOnUnMount';
 import { useTimeout } from './useTimeout';
 
+function isFalsy(value: unknown) {
+  return !value;
+}
+
 /**
  * Hook that manages a controlled value with debounced updates and bidirectional
  * synchronization.
@@ -48,7 +52,7 @@ import { useTimeout } from './useTimeout';
  * @param options.onUnMount - Whether to flush or cancel pending debounced
  *   updates on unmount (default: 'flush')
  * @returns Object with defaultValue, isEmpty, onChange, isTouched ref, and
- *   flushDebounce function
+ *   flush function
  */
 export function useDebouncedControlledValue<T>({
   controlledValue,
@@ -57,7 +61,7 @@ export function useDebouncedControlledValue<T>({
   debounce,
   readonly,
   setInternalValue,
-  checkIfEmpty = (value) => !value,
+  checkIfEmpty = isFalsy,
   onUnMount = 'flush',
 }: {
   controlledValue: T;
@@ -79,15 +83,34 @@ export function useDebouncedControlledValue<T>({
 
   const ignoreNextControlledValueChange = useRef(false);
   const resetIgnoreNextControlledValueTimeout = useTimeout(500);
+  const lastEmittedValue = useRef<{ value: T } | null>(null);
+  /**
+   * Set by `flush`, only the echo of the flushed value is ignored so a value
+   * replaced in the same event is still applied
+   */
+  const flushedValue = useRef<{ value: T } | null>(null);
+  /**
+   * A flushed change replaced in the same event (e.g. by its previous value
+   * when a message is sent and cleared) may not change the controlled value,
+   * so the flush also triggers the controlled value check
+   */
+  const [flushCount, setFlushCount] = useState(0);
 
   const debouncedHandleChange = useDebouncedCallback(
     useCallback(
       (inputValue: T) => {
         if (readonly) return;
 
+        lastEmittedValue.current = { value: inputValue };
+
+        // an unchanged value has no echo, ignoring the next controlled change
+        // would skip a later replacement of the value (e.g. a sent message clear)
+        if (inputValue === controlledValue) return;
+
         setControlledValue(inputValue);
 
         ignoreNextControlledValueChange.current = true;
+        flushedValue.current = null;
 
         isTouched.current = true;
 
@@ -95,16 +118,31 @@ export function useDebouncedControlledValue<T>({
           ignoreNextControlledValueChange.current = false;
         });
       },
-      [readonly, setControlledValue, resetIgnoreNextControlledValueTimeout],
+      [
+        readonly,
+        controlledValue,
+        setControlledValue,
+        resetIgnoreNextControlledValueTimeout,
+      ],
     ),
     debounce,
   );
 
-  useOnChange(controlledValue, () => {
-    if (ignoreNextControlledValueChange.current) {
+  useOnChange([controlledValue, flushCount], () => {
+    const flushed = flushedValue.current;
+    flushedValue.current = null;
+
+    if (flushed !== null && flushed.value === controlledValue) {
       ignoreNextControlledValueChange.current = false;
       resetIgnoreNextControlledValueTimeout.clear();
       return;
+    }
+
+    if (ignoreNextControlledValueChange.current) {
+      ignoreNextControlledValueChange.current = false;
+      resetIgnoreNextControlledValueTimeout.clear();
+
+      if (!flushed) return;
     }
 
     setInternalValue(controlledValue);
@@ -128,6 +166,22 @@ export function useDebouncedControlledValue<T>({
     debouncedHandleChange(value);
   }
 
+  /**
+   * Applies the pending change before an action that may replace the
+   * controlled value in the same event (e.g. sending a message clears it), so
+   * the replaced value is applied to the internal value instead of ignored as
+   * the echo of the flushed change. The parent must apply the flushed value
+   * synchronously, a different controlled value in the next render replaces
+   * the internal value
+   */
+  function flush() {
+    if (!debouncedHandleChange.pending()) return;
+
+    debouncedHandleChange.flush();
+    flushedValue.current = lastEmittedValue.current;
+    setFlushCount((count) => count + 1);
+  }
+
   useOnUnMount(() => {
     if (onUnMount === 'flush') {
       debouncedHandleChange.flush();
@@ -141,6 +195,8 @@ export function useDebouncedControlledValue<T>({
     isEmpty,
     onChange,
     isTouched,
-    flushDebounce: debouncedHandleChange.flush,
+    flush,
+    /** @deprecated Use `flush` instead */
+    flushDebounce: flush,
   };
 }

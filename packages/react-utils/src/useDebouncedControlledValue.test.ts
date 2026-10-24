@@ -1,6 +1,27 @@
-import { renderHook, waitFor } from '@testing-library/react';
-import { describe, expect, test, vi } from 'vitest';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { useState } from 'react';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { useDebouncedControlledValue } from './useDebouncedControlledValue';
+
+function renderWithParentState(initialValue: string) {
+  const setInternalValue = vi.fn();
+
+  const hook = renderHook(() => {
+    const [value, setValue] = useState(initialValue);
+
+    const controlled = useDebouncedControlledValue({
+      controlledValue: value,
+      setControlledValue: setValue,
+      setInternalValue,
+      debounce: 100,
+      readonly: false,
+    });
+
+    return { value, setValue, ...controlled };
+  });
+
+  return { ...hook, setInternalValue };
+}
 
 describe('useDebouncedControlledValue', () => {
   test('should initialize with default value', () => {
@@ -351,7 +372,7 @@ describe('useDebouncedControlledValue', () => {
 
     expect(setControlledValue).not.toHaveBeenCalled();
 
-    result.current.flushDebounce();
+    result.current.flush();
 
     expect(setControlledValue).toHaveBeenCalledWith('new value');
   });
@@ -456,5 +477,87 @@ describe('useDebouncedControlledValue', () => {
     rerender({ controlledValue: 'another value' });
 
     expect(setInputValue).toHaveBeenCalledWith('another value');
+  });
+
+  describe('flush and echo handling', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    test('should not ignore a later replacement when the emitted value equals the controlled value', () => {
+      vi.useFakeTimers();
+      const { result, setInternalValue } = renderWithParentState('initial');
+
+      act(() => {
+        result.current.onChange('typed');
+        result.current.onChange('initial');
+        vi.advanceTimersByTime(100);
+      });
+
+      act(() => {
+        result.current.setValue('');
+      });
+
+      expect(setInternalValue).toHaveBeenLastCalledWith('');
+    });
+
+    test('should ignore the echo of a flushed change', () => {
+      const { result, setInternalValue } = renderWithParentState('initial');
+
+      act(() => {
+        result.current.onChange('hello');
+      });
+
+      act(() => {
+        result.current.flush();
+      });
+
+      expect(result.current.value).toBe('hello');
+      expect(setInternalValue).not.toHaveBeenCalled();
+    });
+
+    test('should apply a value replaced in the same event as the flush', () => {
+      const { result, setInternalValue } = renderWithParentState('initial');
+
+      act(() => {
+        result.current.onChange('hello');
+      });
+
+      act(() => {
+        result.current.flush();
+        result.current.setValue('');
+      });
+
+      expect(result.current.value).toBe('');
+      expect(setInternalValue).toHaveBeenLastCalledWith('');
+      expect(result.current.isEmpty).toBe(true);
+    });
+
+    test('should apply the previous value when the flushed change is replaced by it', () => {
+      const { result, setInternalValue } = renderWithParentState('initial');
+
+      act(() => {
+        result.current.onChange('hello');
+      });
+
+      act(() => {
+        result.current.flush();
+        result.current.setValue('initial');
+      });
+
+      expect(result.current.value).toBe('initial');
+      expect(setInternalValue).toHaveBeenLastCalledWith('initial');
+    });
+
+    test('should do nothing when flushing without a pending change', () => {
+      const { result, setInternalValue } = renderWithParentState('initial');
+
+      act(() => {
+        result.current.flush();
+      });
+
+      expect(result.current.value).toBe('initial');
+      expect(setInternalValue).not.toHaveBeenCalled();
+    });
   });
 });
