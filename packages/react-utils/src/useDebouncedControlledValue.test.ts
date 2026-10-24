@@ -560,4 +560,75 @@ describe('useDebouncedControlledValue', () => {
       expect(setInternalValue).not.toHaveBeenCalled();
     });
   });
+  describe('reset', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    test('should cancel the pending change when the parent resets to the value it already holds', () => {
+      vi.useFakeTimers();
+      const { result, setInternalValue } = renderWithParentState('');
+
+      act(() => {
+        result.current.onChange('abc');
+      });
+
+      expect(result.current.isEmpty).toBe(false);
+
+      act(() => {
+        result.current.setValue('');
+        result.current.reset();
+      });
+
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(result.current.value).toBe('');
+      expect(setInternalValue).toHaveBeenLastCalledWith('');
+      expect(result.current.isEmpty).toBe(true);
+    });
+
+    test('should apply a different value set by the parent in the same event', () => {
+      vi.useFakeTimers();
+      const { result, setInternalValue } = renderWithParentState('initial');
+
+      act(() => {
+        result.current.onChange('abc');
+      });
+
+      act(() => {
+        result.current.setValue('');
+        result.current.reset();
+      });
+
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(result.current.value).toBe('');
+      expect(setInternalValue).toHaveBeenLastCalledWith('');
+      expect(result.current.isEmpty).toBe(true);
+    });
+
+    test('should apply a later change after a reset', () => {
+      vi.useFakeTimers();
+      const { result } = renderWithParentState('');
+
+      act(() => {
+        result.current.onChange('abc');
+      });
+
+      act(() => {
+        result.current.reset();
+      });
+
+      act(() => {
+        result.current.onChange('def');
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(result.current.value).toBe('def');
+    });
+  });
 });

@@ -51,8 +51,8 @@ function isFalsy(value: unknown) {
  *   (default: `!value`)
  * @param options.onUnMount - Whether to flush or cancel pending debounced
  *   updates on unmount (default: 'flush')
- * @returns Object with defaultValue, isEmpty, onChange, isTouched ref, and
- *   flush function
+ * @returns Object with defaultValue, isEmpty, onChange, isTouched ref, flush
+ *   and reset functions
  */
 export function useDebouncedControlledValue<T>({
   controlledValue,
@@ -182,6 +182,25 @@ export function useDebouncedControlledValue<T>({
     setFlushCount((count) => count + 1);
   }
 
+  /**
+   * Cancels the pending change and re-applies the controlled value to the
+   * internal value. Call it when the parent resets the controlled value, a
+   * reset to the value it already holds (e.g. clearing an input whose pending
+   * change was not emitted yet) doesn't re-render, so it would be ignored and
+   * the pending change applied afterwards. A different controlled value in the
+   * next render replaces the internal value
+   */
+  function reset() {
+    debouncedHandleChange.cancel();
+    ignoreNextControlledValueChange.current = false;
+    resetIgnoreNextControlledValueTimeout.clear();
+    flushedValue.current = null;
+    lastEmittedValue.current = null;
+
+    setInternalValue(controlledValue);
+    setIsEmpty(checkIfEmpty(controlledValue));
+  }
+
   useOnUnMount(() => {
     if (onUnMount === 'flush') {
       debouncedHandleChange.flush();
@@ -196,6 +215,7 @@ export function useDebouncedControlledValue<T>({
     onChange,
     isTouched,
     flush,
+    reset,
     /** @deprecated Use `flush` instead */
     flushDebounce: flush,
   };
