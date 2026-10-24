@@ -611,6 +611,38 @@ describe('useDebouncedControlledValue', () => {
       expect(result.current.isEmpty).toBe(true);
     });
 
+    test('should apply the latest controlled value when called from a reset captured in an earlier render', () => {
+      vi.useFakeTimers();
+      const { result, setInternalValue } = renderWithParentState('initial');
+
+      const { reset, flush } = result.current;
+
+      act(() => {
+        result.current.setValue('other');
+      });
+
+      expect(result.current.reset).toBe(reset);
+      expect(result.current.flush).toBe(flush);
+
+      act(() => {
+        result.current.onChange('abc');
+      });
+
+      setInternalValue.mockClear();
+
+      act(() => {
+        reset();
+      });
+
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+
+      expect(result.current.value).toBe('other');
+      expect(setInternalValue).toHaveBeenLastCalledWith('other');
+      expect(result.current.isEmpty).toBe(false);
+    });
+
     test('should apply a later change after a reset', () => {
       vi.useFakeTimers();
       const { result } = renderWithParentState('');
