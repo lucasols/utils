@@ -86,8 +86,8 @@ Callback to update the internal input value
 
 #### Returns
 
-Object with defaultValue, isEmpty, onChange, isTouched ref, and
-  flush function
+Object with defaultValue, isEmpty, onChange, isTouched ref, flush
+  and reset functions
 
 ##### defaultValue
 
@@ -156,6 +156,23 @@ onChange: (value) => void;
 ###### value
 
 `T`
+
+###### Returns
+
+`void`
+
+##### reset()
+
+```ts
+reset: () => void;
+```
+
+Cancels the pending change and re-applies the controlled value to the
+internal value. Call it when the parent resets the controlled value, a
+reset to the value it already holds (e.g. clearing an input whose pending
+change was not emitted yet) doesn't re-render, so it would be ignored and
+the pending change applied afterwards. A different controlled value in the
+next render replaces the internal value
 
 ###### Returns
 
