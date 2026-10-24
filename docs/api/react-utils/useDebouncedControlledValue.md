@@ -10,7 +10,7 @@
 function useDebouncedControlledValue<T>(options): object;
 ```
 
-Defined in: [react-utils/src/useDebouncedControlledValue.ts:53](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDebouncedControlledValue.ts#L53)
+Defined in: [react-utils/src/useDebouncedControlledValue.ts:57](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/useDebouncedControlledValue.ts#L57)
 
 Hook that manages a controlled value with debounced updates and bidirectional
 synchronization.
@@ -34,7 +34,7 @@ Configuration options
 
 ###### checkIfEmpty?
 
-(`value`) => `boolean` = `...`
+(`value`) => `boolean` = `isFalsy`
 
 Function to determine if value is empty
   (default: `!value`)
@@ -86,10 +86,8 @@ Callback to update the internal input value
 
 #### Returns
 
-`object`
-
 Object with defaultValue, isEmpty, onChange, isTouched ref, and
-  flushDebounce function
+  flush function
 
 ##### defaultValue
 
@@ -97,15 +95,43 @@ Object with defaultValue, isEmpty, onChange, isTouched ref, and
 defaultValue: T = initialValue;
 ```
 
-##### flushDebounce()
+##### flush()
 
 ```ts
-flushDebounce: () => void | undefined = debouncedHandleChange.flush;
+flush: () => void;
 ```
+
+Applies the pending change before an action that may replace the
+controlled value in the same event (e.g. sending a message clears it), so
+the replaced value is applied to the internal value instead of ignored as
+the echo of the flushed change. The parent must apply the flushed value
+synchronously, a different controlled value in the next render replaces
+the internal value
 
 ###### Returns
 
-`void` \| `undefined`
+`void`
+
+##### ~~flushDebounce()~~
+
+```ts
+flushDebounce: () => void = flush;
+```
+
+Applies the pending change before an action that may replace the
+controlled value in the same event (e.g. sending a message clears it), so
+the replaced value is applied to the internal value instead of ignored as
+the echo of the flushed change. The parent must apply the flushed value
+synchronously, a different controlled value in the next render replaces
+the internal value
+
+###### Returns
+
+`void`
+
+###### Deprecated
+
+Use `flush` instead
 
 ##### isEmpty
 
