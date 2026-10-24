@@ -1,11 +1,12 @@
 import { shallowEqual } from '@ls-stack/utils/shallowEqual';
 import { throttle } from '@ls-stack/utils/throttle';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import type { ElementTarget } from './internalUtils/useCommittedElement';
 import {
   isCommittedElementOutdated,
   useCommittedElement,
 } from './internalUtils/useCommittedElement';
+import { useLatestCb } from './useLatestValue';
 import { useOnChange } from './useOnChange';
 
 /**
@@ -35,11 +36,7 @@ export function useInfiniteLoading({
   const containerElement = useCommittedElement(containerRef);
   // a new loadMore must not attach the listener again, it would cancel a
   // pending throttled scroll check
-  const loadMoreRef = useRef(loadMore);
-
-  useLayoutEffect(() => {
-    loadMoreRef.current = loadMore;
-  });
+  const latestLoadMore = useLatestCb(loadMore);
 
   useOnChange(
     [isLoaded, hasMore, containerElement, disable],
@@ -69,7 +66,7 @@ export function useInfiniteLoading({
             'useInfiniteLoading: content is smaller than container height and hasMore is true, which will trigger unoptimized refetching, prefer increasing the load size to prevent this',
           );
         }
-        loadMoreRef.current();
+        latestLoadMore();
       }
     },
     // compare the container element by identity, deepEqual would walk its props
@@ -96,7 +93,7 @@ export function useInfiniteLoading({
       const scrollToEnd = scrollAvailableToEnd - scrollToStart;
 
       if (scrollToEnd < 2 + triggerMargin) {
-        loadMoreRef.current();
+        latestLoadMore();
       }
     }, 500);
 
@@ -112,6 +109,7 @@ export function useInfiniteLoading({
     disable,
     hasMore,
     isLoaded,
+    latestLoadMore,
     triggerMargin,
   ]);
 }
