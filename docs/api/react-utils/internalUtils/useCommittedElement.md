@@ -71,11 +71,14 @@ Defined in: [react-utils/src/internalUtils/useCommittedElement.ts:14](https://gi
 function useCommittedElement(target): HTMLElement | null;
 ```
 
-Defined in: [react-utils/src/internalUtils/useCommittedElement.ts:45](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/internalUtils/useCommittedElement.ts#L45)
+Defined in: [react-utils/src/internalUtils/useCommittedElement.ts:48](https://github.com/lucasols/utils/blob/main/packages/react-utils/src/internalUtils/useCommittedElement.ts#L48)
 
 Returns the element committed for `target`. An element is returned as is, a
 ref is read again after every commit, so the result follows the element
 attached to it instead of the one read during render.
+
+A ref attached by an ancestor is only attached after the layout effects of
+this component, it is picked up by a resync after the commit.
 
 A ref whose element is recreated on every render can't be followed, the
 resync stops after a few consecutive commits instead of looping.
