@@ -1,4 +1,5 @@
 import { act, render, renderHook } from '@testing-library/react';
+import type { RefObject } from 'react';
 import { useRef, useState } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { useIsVisible } from './useIsVisible';
@@ -359,5 +360,89 @@ test('does not loop when the ref element is recreated on every render', () => {
 
   expect(observers.map((observer) => observer.observed)).toEqual([
     [getByTestId('recreated-target')],
+  ]);
+});
+
+test('observes a ref attached by an ancestor after mount without another render', () => {
+  let isVisible: boolean | undefined;
+
+  function Child({
+    containerRef,
+  }: {
+    containerRef: RefObject<HTMLDivElement | null>;
+  }) {
+    isVisible = useIsVisible(containerRef);
+    return null;
+  }
+
+  function Parent() {
+    const containerRef = useRef<HTMLDivElement>(null);
+    return (
+      <div
+        ref={containerRef}
+        data-testid="container"
+      >
+        <Child containerRef={containerRef} />
+      </div>
+    );
+  }
+
+  const { getByTestId } = render(<Parent />);
+
+  expect(observers.map((observer) => observer.observed)).toEqual([
+    [getByTestId('container')],
+  ]);
+
+  setIntersecting(true);
+  expect(isVisible).toBe(true);
+});
+
+test('follows a ref moved by an ancestor in a commit that renders the hook', () => {
+  const controls: { setTarget: (target: 'outer' | 'inner') => void } = {
+    setTarget: () => {},
+  };
+
+  function Child({
+    containerRef,
+  }: {
+    containerRef: RefObject<HTMLDivElement | null>;
+    target: 'outer' | 'inner';
+  }) {
+    useIsVisible(containerRef);
+    return null;
+  }
+
+  function Parent() {
+    const [target, setTarget] = useState<'outer' | 'inner'>('outer');
+    controls.setTarget = setTarget;
+    const containerRef = useRef<HTMLDivElement>(null);
+    return (
+      <div
+        ref={target === 'outer' ? containerRef : undefined}
+        data-testid="outer-container"
+      >
+        <div
+          ref={target === 'inner' ? containerRef : undefined}
+          data-testid="inner-container"
+        >
+          <Child
+            containerRef={containerRef}
+            target={target}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  const { getByTestId } = render(<Parent />);
+  expect(observers.map((observer) => observer.observed)).toEqual([
+    [getByTestId('outer-container')],
+  ]);
+
+  act(() => {
+    controls.setTarget('inner');
+  });
+  expect(observers.map((observer) => observer.observed)).toEqual([
+    [getByTestId('inner-container')],
   ]);
 });
