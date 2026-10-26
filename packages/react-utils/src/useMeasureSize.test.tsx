@@ -1,4 +1,5 @@
 import { act, render, renderHook } from '@testing-library/react';
+import type { RefObject } from 'react';
 import { useRef, useState } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { useMeasureSize } from './useMeasureSize';
@@ -198,4 +199,34 @@ test('measures an element passed directly', () => {
 
   expect(result.current.width).toBe(100);
   expect(result.current.height).toBe(50);
+});
+
+test('measures a ref attached by an ancestor after mount', () => {
+  function Child({
+    containerRef,
+  }: {
+    containerRef: RefObject<HTMLDivElement | null>;
+  }) {
+    useMeasureSize(containerRef, 0);
+    return null;
+  }
+
+  function Parent() {
+    const containerRef = useRef<HTMLDivElement>(null);
+    return (
+      <div
+        ref={containerRef}
+        data-testid="container"
+      >
+        <Child containerRef={containerRef} />
+      </div>
+    );
+  }
+
+  const { getByTestId } = render(<Parent />);
+
+  expect(observe).toHaveBeenCalledExactlyOnceWith(
+    getByTestId('container'),
+    undefined,
+  );
 });

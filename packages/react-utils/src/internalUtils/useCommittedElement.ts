@@ -1,5 +1,5 @@
 import type { RefObject } from 'react';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export type ElementTarget = RefObject<HTMLElement | null> | HTMLElement | null;
 
@@ -39,39 +39,53 @@ export function isCommittedElementOutdated(
  * ref is read again after every commit, so the result follows the element
  * attached to it instead of the one read during render.
  *
+ * A ref attached by an ancestor is only attached after the layout effects of
+ * this component, it is picked up by a resync after the commit.
+ *
  * A ref whose element is recreated on every render can't be followed, the
  * resync stops after a few consecutive commits instead of looping.
  */
 export function useCommittedElement(target: ElementTarget): HTMLElement | null {
   const [refElement, setRefElement] = useState<HTMLElement | null>(null);
   const consecutiveSyncs = useRef(0);
+  const layoutSyncFoundChange = useRef(false);
 
   // only updates the state when the attached element changed, so the re-render
-  // it causes doesn't trigger another update
-  function syncRefElement() {
-    if (!target || !('current' in target)) return;
+  // it causes doesn't trigger another update. Returns if the element changed
+  function syncRefElement(): boolean {
+    if (!target || !('current' in target)) return false;
 
     const current = target.current;
 
     if (current === refElement) {
       consecutiveSyncs.current = 0;
-      return;
+      return false;
     }
 
     if (consecutiveSyncs.current >= MAX_CONSECUTIVE_SYNCS) {
       // the element changed again in the commit caused by the previous syncs,
       // the next unrelated commit can try again
       consecutiveSyncs.current = 0;
-      return;
+      return true;
     }
 
     consecutiveSyncs.current += 1;
     setRefElement(current);
+    return true;
   }
 
   // runs after every commit, a ref can be attached to another element in any
   // commit without the ref object itself changing
   useLayoutEffect(() => {
+    layoutSyncFoundChange.current = syncRefElement();
+  });
+
+  // refs of ancestors are attached after the layout effects of this component,
+  // passive effects run after every ref of the commit is attached. Skipped when
+  // the layout sync already handled a change, the sync is bounded per commit
+  useEffect(() => {
+    if (layoutSyncFoundChange.current) return;
+
     syncRefElement();
   });
 
