@@ -10,7 +10,7 @@
 type CmdResult = object;
 ```
 
-Defined in: [runShellCmd.ts:3](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L3)
+Defined in: [runShellCmd.ts:5](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L5)
 
 #### Properties
 
@@ -20,7 +20,7 @@ Defined in: [runShellCmd.ts:3](https://github.com/lucasols/utils/blob/main/packa
 error: boolean;
 ```
 
-Defined in: [runShellCmd.ts:6](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L6)
+Defined in: [runShellCmd.ts:8](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L8)
 
 ##### label
 
@@ -28,7 +28,7 @@ Defined in: [runShellCmd.ts:6](https://github.com/lucasols/utils/blob/main/packa
 label: string | null;
 ```
 
-Defined in: [runShellCmd.ts:4](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L4)
+Defined in: [runShellCmd.ts:6](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L6)
 
 ##### out
 
@@ -36,7 +36,7 @@ Defined in: [runShellCmd.ts:4](https://github.com/lucasols/utils/blob/main/packa
 out: string;
 ```
 
-Defined in: [runShellCmd.ts:5](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L5)
+Defined in: [runShellCmd.ts:7](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L7)
 
 ##### stderr
 
@@ -44,7 +44,7 @@ Defined in: [runShellCmd.ts:5](https://github.com/lucasols/utils/blob/main/packa
 stderr: string;
 ```
 
-Defined in: [runShellCmd.ts:8](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L8)
+Defined in: [runShellCmd.ts:10](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L10)
 
 ##### stdout
 
@@ -52,7 +52,7 @@ Defined in: [runShellCmd.ts:8](https://github.com/lucasols/utils/blob/main/packa
 stdout: string;
 ```
 
-Defined in: [runShellCmd.ts:7](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L7)
+Defined in: [runShellCmd.ts:9](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L9)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [runShellCmd.ts:7](https://github.com/lucasols/utils/blob/main/packa
 type RunCmdOptions = object;
 ```
 
-Defined in: [runShellCmd.ts:13](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L13)
+Defined in: [runShellCmd.ts:20](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L20)
 
 #### Properties
 
@@ -72,7 +72,17 @@ Defined in: [runShellCmd.ts:13](https://github.com/lucasols/utils/blob/main/pack
 optional cwd: string;
 ```
 
-Defined in: [runShellCmd.ts:16](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L16)
+Defined in: [runShellCmd.ts:23](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L23)
+
+##### exitOnError?
+
+```ts
+optional exitOnError: boolean;
+```
+
+Defined in: [runShellCmd.ts:27](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L27)
+
+Logs the stderr and exits the process with code 1
 
 ##### mock?
 
@@ -80,7 +90,7 @@ Defined in: [runShellCmd.ts:16](https://github.com/lucasols/utils/blob/main/pack
 optional mock: CmdResult;
 ```
 
-Defined in: [runShellCmd.ts:14](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L14)
+Defined in: [runShellCmd.ts:21](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L21)
 
 ##### noCiColorForce?
 
@@ -88,7 +98,19 @@ Defined in: [runShellCmd.ts:14](https://github.com/lucasols/utils/blob/main/pack
 optional noCiColorForce: boolean;
 ```
 
-Defined in: [runShellCmd.ts:18](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L18)
+Defined in: [runShellCmd.ts:31](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L31)
+
+Doesn't force colors, the process env is passed as is
+
+##### noColor?
+
+```ts
+optional noColor: boolean;
+```
+
+Defined in: [runShellCmd.ts:29](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L29)
+
+Sets `NO_COLOR=1` instead of forcing colors
 
 ##### silent?
 
@@ -96,7 +118,7 @@ Defined in: [runShellCmd.ts:18](https://github.com/lucasols/utils/blob/main/pack
 optional silent: boolean | "timeOnly";
 ```
 
-Defined in: [runShellCmd.ts:15](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L15)
+Defined in: [runShellCmd.ts:22](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L22)
 
 ##### throwOnError?
 
@@ -104,4 +126,16 @@ Defined in: [runShellCmd.ts:15](https://github.com/lucasols/utils/blob/main/pack
 optional throwOnError: boolean;
 ```
 
-Defined in: [runShellCmd.ts:17](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L17)
+Defined in: [runShellCmd.ts:25](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L25)
+
+Rejects the promise with an `Error` whose message is the stderr
+
+##### timeout?
+
+```ts
+optional timeout: number;
+```
+
+Defined in: [runShellCmd.ts:33](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L33)
+
+Passed to `spawn`, the process is killed after `timeout` ms

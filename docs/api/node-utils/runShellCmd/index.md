@@ -6,6 +6,20 @@
 
 - [\<internal\>](-internal-.md)
 
+## Type Aliases
+
+### Command
+
+```ts
+type Command = string | (string | null)[];
+```
+
+Defined in: [runShellCmd.ts:18](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L18)
+
+A command to run. Strings are split on spaces. In arrays, `null` items are
+dropped and items starting with `$` are split on spaces (with the `$`
+removed), e.g. `['$git log -1', '--format=%s', ref]`.
+
 ## Functions
 
 ### concurrentCmd()
@@ -17,7 +31,7 @@ function concurrentCmd(
 onResult): Promise<() => void>;
 ```
 
-Defined in: [runShellCmd.ts:123](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L123)
+Defined in: [runShellCmd.ts:191](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L191)
 
 Runs a command concurrently with logging and error handling.
 
@@ -31,9 +45,9 @@ Label for the command
 
 ##### cmd
 
-The command to run
+[`Command`](#command)
 
-`string` | `string`[]
+The command to run
 
 ##### onResult
 
@@ -58,7 +72,7 @@ function runCmd(
 options): Promise<CmdResult>;
 ```
 
-Defined in: [runShellCmd.ts:35](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L35)
+Defined in: [runShellCmd.ts:81](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L81)
 
 Runs a shell command and returns the result.
 
@@ -72,9 +86,9 @@ Optional label for the command (used for logging)
 
 ##### command
 
-The command to run (string or array of strings)
+[`Command`](#command)
 
-`string` | `string`[]
+The command to run, see [Command](#command)
 
 ##### options
 
@@ -96,7 +110,7 @@ Promise that resolves to the command result
 function runCmdSilent(command): Promise<CmdResult>;
 ```
 
-Defined in: [runShellCmd.ts:176](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L176)
+Defined in: [runShellCmd.ts:244](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L244)
 
 Runs a command silently without any output.
 
@@ -104,9 +118,9 @@ Runs a command silently without any output.
 
 ##### command
 
-The command to run
+[`Command`](#command)
 
-`string` | `string`[]
+The command to run
 
 #### Returns
 
@@ -122,7 +136,7 @@ Promise that resolves to the command result
 function runCmdSilentUnwrap(command): Promise<string>;
 ```
 
-Defined in: [runShellCmd.ts:186](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L186)
+Defined in: [runShellCmd.ts:254](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L254)
 
 Runs a command silently and returns only the stdout.
 
@@ -130,9 +144,9 @@ Runs a command silently and returns only the stdout.
 
 ##### command
 
-The command to run
+[`Command`](#command)
 
-`string` | `string`[]
+The command to run
 
 #### Returns
 
@@ -151,9 +165,10 @@ function runCmdUnwrap(
 options): Promise<string>;
 ```
 
-Defined in: [runShellCmd.ts:161](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L161)
+Defined in: [runShellCmd.ts:229](https://github.com/lucasols/utils/blob/main/packages/node-utils/src/runShellCmd.ts#L229)
 
-Runs a command and returns only the stdout, throwing on error.
+Runs a command and returns only the stdout, rejecting with an `Error` whose
+message is the stderr if the command fails.
 
 #### Parameters
 
@@ -165,25 +180,16 @@ Optional label for the command
 
 ##### command
 
-The command to run
+[`Command`](#command)
 
-`string` | `string`[]
+The command to run
 
 ##### options
 
-Configuration options
+`Omit`\<[`RunCmdOptions`](-internal-.md#runcmdoptions), `"mock"` \| `"throwOnError"`\> = `{}`
 
-###### cwd?
-
-`string`
-
-Working directory for the command
-
-###### silent?
-
-`boolean` \| `"timeOnly"`
-
-Whether to suppress output
+Same options as [runCmd](#runcmd), except `mock` and
+  `throwOnError`
 
 #### Returns
 
