@@ -156,6 +156,44 @@ describe('keyboardShortcuts utilities', () => {
     expect(e2.defaultPrevented).toBe(true);
   });
 
+  test('ignoreInputTypingEvents blocks when typing in elements with an EditContext', async () => {
+    vi.resetModules();
+    vi.stubGlobal('navigator', { platform: 'Win32' });
+    const { ignoreInputTypingEvents } = await import('./keyboardShortcuts.ts');
+
+    const editor = document.createElement('div');
+    editor.tabIndex = 0;
+    Object.defineProperty(editor, 'editContext', { value: {} });
+    document.body.appendChild(editor);
+    editor.focus();
+
+    const cb = vi.fn();
+    const wrapper = ignoreInputTypingEvents(cb);
+
+    const e1 = new KeyboardEvent('keydown', { key: 'a', code: 'KeyA' });
+    wrapper(e1);
+    expect(cb).not.toHaveBeenCalled();
+    expect(e1.defaultPrevented).toBe(false);
+
+    const e2 = new KeyboardEvent('keydown', {
+      key: 'Escape',
+      code: 'Escape',
+      cancelable: true,
+    });
+    wrapper(e2);
+    expect(cb).toHaveBeenCalledTimes(1);
+
+    const plain = document.createElement('div');
+    plain.tabIndex = 0;
+    Object.defineProperty(plain, 'editContext', { value: null });
+    document.body.appendChild(plain);
+    plain.focus();
+
+    const e3 = new KeyboardEvent('keydown', { key: 'a', code: 'KeyA' });
+    wrapper(e3);
+    expect(cb).toHaveBeenCalledTimes(2);
+  });
+
   test('ignoreRichTextInputTypingEvents blocks when typing in contenteditable and allows others', async () => {
     vi.resetModules();
     vi.stubGlobal('navigator', { platform: 'Win32' });
