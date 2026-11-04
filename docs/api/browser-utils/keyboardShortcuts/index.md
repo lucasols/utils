@@ -164,7 +164,7 @@ Creates an event listener for handling keybindings.
 function ignoreInputTypingEvents(callback): (e) => void;
 ```
 
-Defined in: [keyboardShortcuts.ts:249](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L249)
+Defined in: [keyboardShortcuts.ts:257](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L257)
 
 #### Parameters
 
@@ -198,7 +198,7 @@ Defined in: [keyboardShortcuts.ts:249](https://github.com/lucasols/utils/blob/ma
 function ignoreRichTextInputTypingEvents(callback): (e) => void;
 ```
 
-Defined in: [keyboardShortcuts.ts:268](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L268)
+Defined in: [keyboardShortcuts.ts:277](https://github.com/lucasols/utils/blob/main/packages/browser-utils/src/keyboardShortcuts.ts#L277)
 
 #### Parameters
 
