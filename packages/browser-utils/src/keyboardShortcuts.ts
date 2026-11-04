@@ -246,6 +246,14 @@ export function keyboardShortcuts(
 
 type Callback = (event: KeyboardEvent) => void;
 
+/**
+ * Elements with an EditContext attached (e.g. Monaco in Chromium) receive text
+ * input without being an input, textarea or contenteditable element.
+ */
+function hasEditContext(element: HTMLElement): boolean {
+  return 'editContext' in element && element.editContext != null;
+}
+
 export function ignoreInputTypingEvents(
   callback: Callback | { current: Callback },
 ) {
@@ -256,7 +264,8 @@ export function ignoreInputTypingEvents(
       && active instanceof HTMLElement
       && (active.isContentEditable
         || active.tagName === 'INPUT'
-        || active.tagName === 'TEXTAREA');
+        || active.tagName === 'TEXTAREA'
+        || hasEditContext(active));
 
     if (!enteringText) {
       e.preventDefault();
