@@ -54,6 +54,22 @@ items: T[];
 
 Defined in: [packages/utils/src/fuzzySearch.ts:4](https://github.com/lucasols/utils/blob/main/packages/utils/src/fuzzySearch.ts#L4)
 
+##### matchWordsInAnyOrder?
+
+```ts
+optional matchWordsInAnyOrder: boolean;
+```
+
+Defined in: [packages/utils/src/fuzzySearch.ts:20](https://github.com/lucasols/utils/blob/main/packages/utils/src/fuzzySearch.ts#L20)
+
+Match the words of the query in any order, e.g. `ferreira joao` matches
+`João Ferreira`. Among matches of the same quality, the ones with the words
+in the query order come first.
+
+The results are ranked with the criteria of `getUFuzzyInstance`, a custom
+`sort` of the uFuzzy instance is not used. Queries with more than 5 words
+are matched in any order but keep the order of `items`.
+
 ##### searchQuery
 
 ```ts
