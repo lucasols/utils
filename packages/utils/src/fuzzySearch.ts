@@ -8,7 +8,20 @@ type SearchOptions<T> = {
   uFuzzy: uFuzzy;
   ignoreBestMatch?: boolean;
   throwOnError?: boolean;
+  /**
+   * Match the words of the query in any order, e.g. `ferreira joao` matches
+   * `João Ferreira`. Among matches of the same quality, the ones with the words
+   * in the query order come first.
+   *
+   * The results are ranked with the criteria of `getUFuzzyInstance`, a custom
+   * `sort` of the uFuzzy instance is not used. Queries with more than 5 words
+   * are matched in any order but keep the order of `items`.
+   */
+  matchWordsInAnyOrder?: boolean;
 };
+
+/** Every word order is searched by uFuzzy, 5 words are 120 searches */
+const MAX_WORDS_TO_REORDER = 5;
 
 /**
  * Performs fuzzy search on a list of items and returns matched items with score
@@ -27,6 +40,7 @@ export function fuzzySearchItemsWithResultMetadata<T>({
   uFuzzy: uf,
   ignoreBestMatch,
   throwOnError,
+  matchWordsInAnyOrder,
 }: SearchOptions<T>): { items: T[]; bestMatchScore: number } {
   const searchQuery = normalizeSearchQuery(_searchQuery ?? '');
 
@@ -42,23 +56,41 @@ export function fuzzySearchItemsWithResultMetadata<T>({
     let [filteredIndexes, info, orderedIndexes] = uf.search(
       searchStrings,
       searchQuery,
+      matchWordsInAnyOrder ? MAX_WORDS_TO_REORDER : 0,
     );
 
     if (!filteredIndexes) {
       filteredIndexes = [];
     }
 
+    if (matchWordsInAnyOrder && info && orderedIndexes?.length) {
+      // uFuzzy ranks each word order on its own and lists the query order
+      // first, so a weak match in the query order would come before an exact
+      // match in another order. Rank all the matches together instead.
+      const [inQueryOrderIndexes] = uf.search(searchStrings, searchQuery, 0, 0);
+
+      orderedIndexes = sortMatches(
+        info,
+        searchStrings,
+        new Set(inQueryOrderIndexes),
+      );
+    }
+
     const sortedItems: T[] = [];
     let bestMatchScore: undefined | number = undefined;
 
-    if (orderedIndexes) {
+    if (info && orderedIndexes) {
       for (const filteredIndex of orderedIndexes) {
-        const index = filteredIndexes[filteredIndex]!;
+        // `info` can have fewer entries than `filteredIndexes`, `info.idx` is
+        // the one aligned with `orderedIndexes`
+        const index = info.idx[filteredIndex];
+
+        if (index === undefined) continue;
 
         const item = items[index];
 
         if (item) {
-          if (!ignoreBestMatch && bestMatchScore === undefined && info) {
+          if (!ignoreBestMatch && bestMatchScore === undefined) {
             const start = info.start[filteredIndex] ?? 0;
             const chars = info.chars[filteredIndex] ?? 0;
             const terms = info.terms[filteredIndex] ?? 0;
@@ -117,6 +149,7 @@ export function fuzzySearchItems<T>({
   searchQuery: _searchQuery,
   getStringToMatch,
   uFuzzy: uf,
+  matchWordsInAnyOrder,
 }: Omit<SearchOptions<T>, 'ignoreBestMatch'>): T[] {
   return fuzzySearchItemsWithResultMetadata({
     items,
@@ -124,6 +157,7 @@ export function fuzzySearchItems<T>({
     getStringToMatch,
     uFuzzy: uf,
     ignoreBestMatch: true,
+    matchWordsInAnyOrder,
   }).items;
 }
 
@@ -137,42 +171,51 @@ export function fuzzySearchItems<T>({
 export function getUFuzzyInstance() {
   return new uFuzzy({
     intraMode: 1,
-    sort(info, haystack) {
-      const {
-        idx,
-        chars,
-        terms,
-        interLft2,
-        interLft1,
-        start,
-        intraIns,
-        interIns,
-      } = info;
-
-      return idx
-        .map((_, i) => i)
-        .sort(
-          (ia, ib) =>
-            // most contiguous chars matched
-            chars[ib]! - chars[ia]!
-            // least char intra-fuzz (most contiguous)
-            || intraIns[ia]! - intraIns[ib]!
-            // most prefix bounds, boosted by full term matches
-            || terms[ib]!
-              + interLft2[ib]!
-              + 0.5 * interLft1[ib]!
-              - (terms[ia]! + interLft2[ia]! + 0.5 * interLft1[ia]!)
-            // highest density of match (least term inter-fuzz)
-            || interIns[ia]! - interIns[ib]!
-            // earliest start of match
-            || start[ia]! - start[ib]!
-            // shortest match
-            || haystack[idx[ia]!]!.length - haystack[idx[ib]!]!.length
-            // alphabetic
-            || cmp(haystack[idx[ia]!]!, haystack[idx[ib]!]!),
-        );
-    },
+    sort: (info, haystack) => sortMatches(info, haystack),
   });
+}
+
+/**
+ * @param inQueryOrderIndexes - Haystack indexes that match the words in the
+ *   query order, the other matches are ranked after them when the match quality
+ *   is the same
+ */
+function sortMatches(
+  info: uFuzzy.Info,
+  haystack: string[],
+  inQueryOrderIndexes?: Set<number>,
+): uFuzzy.InfoIdxOrder {
+  const { idx, chars, terms, interLft2, interLft1, start, intraIns, interIns } =
+    info;
+
+  const wordOrderRank = idx.map((haystackIndex) =>
+    !inQueryOrderIndexes || inQueryOrderIndexes.has(haystackIndex) ? 0 : 1,
+  );
+
+  return idx
+    .map((_, i) => i)
+    .sort(
+      (ia, ib) =>
+        // most contiguous chars matched
+        chars[ib]! - chars[ia]!
+        // least char intra-fuzz (most contiguous)
+        || intraIns[ia]! - intraIns[ib]!
+        // most prefix bounds, boosted by full term matches
+        || terms[ib]!
+          + interLft2[ib]!
+          + 0.5 * interLft1[ib]!
+          - (terms[ia]! + interLft2[ia]! + 0.5 * interLft1[ia]!)
+        // words in the query order
+        || (wordOrderRank[ia] ?? 0) - (wordOrderRank[ib] ?? 0)
+        // highest density of match (least term inter-fuzz)
+        || interIns[ia]! - interIns[ib]!
+        // earliest start of match
+        || start[ia]! - start[ib]!
+        // shortest match
+        || haystack[idx[ia]!]!.length - haystack[idx[ib]!]!.length
+        // alphabetic
+        || cmp(haystack[idx[ia]!]!, haystack[idx[ib]!]!),
+    );
 }
 
 const cmp = new Intl.Collator('en', { numeric: true, sensitivity: 'base' })
